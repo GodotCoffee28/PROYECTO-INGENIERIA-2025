@@ -1,0 +1,38 @@
+@startuml Diagrama_caso_de_uso
+left to right direction
+
+
+' Actores
+actor "Estudiante/Empleado" as Usuario
+actor "Administrador del Comedor" as Admin
+actor "Sistema de Control" as Sistema <<externo>>
+
+rectangle "Sistema Comedor UCV Simple" {
+    
+    ' Casos de Uso del Usuario
+    usecase "Registrarse en el Sistema" as UC_Registro
+    usecase "Consultar Menú Disponible" as UC_ConsultarMenu
+    usecase "Registrar Acceso / Turno" as UC_RegAcceso
+    
+    'Casos de Uso del Administrador
+    usecase "Gestionar Menús Semanales" as UC_GestionarMenu
+    usecase "Gestionar Turnos de Comida" as UC_GestionarTurnos
+    usecase "Registrar Consumo Diario" as UC_RegConsumo
+    usecase "Registrar Insumos" as UC_RegInsumos
+    usecase "Generar Reportes" as UC_Reportes
+
+    ' Relaciones (Asociaciones)
+    Usuario --> UC_Registro
+    Usuario --> UC_ConsultarMenu
+    Usuario --> UC_RegAcceso
+    
+    Admin --> UC_GestionarMenu
+    Admin --> UC_GestionarTurnos
+    Admin --> UC_RegConsumo
+    Admin --> UC_RegInsumos
+    Admin --> UC_Reportes
+    Admin --> UC_Registro
+    
+    UC_RegAcceso --> Sistema
+}
+@enduml
