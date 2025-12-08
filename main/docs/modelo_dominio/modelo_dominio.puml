@@ -1,0 +1,51 @@
+@startuml
+title Modelo de Dominio - Gestión Comedor UCV
+
+abstract class Usuario {
+  + id: String
+  + nombre: String
+  + email: String
+  + comprobante: String
+}
+
+class Estudiante extends Usuario
+class Empleado extends Usuario
+class Administrador extends Usuario
+
+class Menu {
+  + fecha: int
+  + descripcion: String
+}
+
+class Insumo {
+  + nombre: String
+  + cantidad: int
+  + tipoNutricional: String
+}
+
+class Sistema {
+  + horarios_disponibles: String
+  + capacidad: int
+  + disponibilidad: bool
+}
+
+/'nota, con disponibilidad me refiero a si ese usuario pude o no optar por un turno, en base a que si por ejemplo comio un desayuno y el amineto es limitado, puede o no permitircele optar por un cupo pasra comer el almuerzo, esto depende meramete de la disponibilidad elos aimentos y deriva en Turno (lo dejo como una relacion simple porque hay un sistema en cada dispositivo, que apesar de ser el mismo funciona poe ceparado, y este recerva un tuno) (como tal es un condiocional)'/
+
+class Turno {
+  + fecha: int
+  + Hora: int
+}
+
+class Reporte {
+  + tipo: String
+  + datos: String
+}
+
+Menu "1" *-- "1..*" Insumo : compone
+Administrador "1" -- "1..*" Menu : gestiona
+Usuario "1..*" -- Sistema : accede/registra
+Sistema -- Turno : reserva
+Usuario "1" -- "1..*" Menu : consulta
+Administrador "1" -- "0..*" Reporte : genera
+
+@enduml

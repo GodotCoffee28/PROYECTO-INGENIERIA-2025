@@ -1,0 +1,42 @@
+@startuml UseCase
+left to right direction
+
+' Actores
+actor "Estudiante" as Usuario1
+actor "Empleado" as Usuario2
+actor "Administrador del Comedor" as Admin
+actor "Sistema de Control" as Sistema <<externo>>
+
+rectangle "Sistema Comedor UCV Simple" {
+    
+    ' Casos de Uso del Usuario
+    usecase "UC3-Registrarse en el Sistema" as UC_Registro
+    usecase "UC1-Consultar Menú Disponible" as UC_ConsultarMenu
+    usecase "UC2-Registrar Acceso / Turno" as UC_RegAcceso
+    
+    'Casos de Uso del Administrador
+    usecase "UC7-Gestionar Menús Semanales" as UC_GestionarMenu
+    usecase "UC8-Gestionar Turnos de Comida" as UC_GestionarTurnos
+    usecase "UC4-Registrar Consumo Diario" as UC_RegConsumo
+    usecase "UC5-Registrar Insumos" as UC_RegInsumos
+    usecase "UC6-Generar Reportes" as UC_Reportes
+
+    ' Relaciones (Asociaciones)
+    Usuario1 --> UC_Registro
+    Usuario1 --> UC_ConsultarMenu
+    Usuario1 --> UC_RegAcceso
+
+    Usuario2 --> UC_Registro
+    Usuario2 --> UC_ConsultarMenu
+    Usuario2 --> UC_RegAcceso
+    
+    Admin --> UC_GestionarMenu
+    Admin --> UC_GestionarTurnos
+    Admin --> UC_RegConsumo
+    Admin --> UC_RegInsumos
+    Admin --> UC_Reportes
+    Admin --> UC_Registro
+    
+    UC_RegAcceso --> Sistema
+}
+@enduml
