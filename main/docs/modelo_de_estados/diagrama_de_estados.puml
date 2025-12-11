@@ -1,0 +1,92 @@
+@startuml
+title Diagrama de Estados - Ciclo de Vida de un Turno\nGestión Comedor Universitario UCV
+
+[*] --> Organizacion
+
+state "En Creacion" as Creacion {
+  state "Turno" as Turno {
+    Turno: Turno creado por Administrador basado en horarios, capacidad y insumos disponibles
+  }
+  state "Disponible" as Disponible {
+    Disponible: hay cupos e insumos suficientes
+  }
+  
+  Turno --> Disponible : Administrador confirma insumos y menú\n(genera turno disponible)
+  Disponible --> [*] : Cupo libre
+  Creacion --> Cancelacion : Capacidad agotada o falta de insumos\n(decisión del Administrador)
+}
+
+state "En Organizacion" as Organizacion {
+    state "Horario" as Horario{
+        Horario: Se establece un horario para la disponibilidad del comedor
+    }
+    state "Menu" as Menu{
+        Menu: Platillos disponibles para la semana
+    }
+    
+    Horario --> Menu : Administrador confirma horario\n (asigna platillos)
+
+    Menu --> [*]: finaliza face
+}
+
+Organizacion --> Creacion
+
+state "En Reserva" as Reserva {
+  state "Reservado" as Reservado <<reserved>> {
+    Reservado: Cupo asignado a un Usuario
+    Reservado: Se verifica comprobante y se reduce capacidad
+  }
+  
+  Reserva --> Cancelacion : Usuario no llega / Administrador cancela\n(libera cupo)
+  Reserva --> Consumo : Usuario presenta comprobante en el horario\n(se registra consumo)
+}
+
+Creacion --> Reserva
+
+state "En Consumo" as Consumo {
+  state "Consumido" as Consumido  {
+    Consumido: Usuario ingresa y consume la comida en el horario
+    Consumido: Se registra consumo y se actualizan insumos
+  }
+  
+  Consumido --> [*] : Fin del ciclo
+}
+
+state "En Cancelacion" as Cancelacion {
+  state "Cancelado" as Cancelado {
+    Cancelado: Se elimina el cupo (por cancelación o expiración)
+  }
+  
+  Cancelado --> [*] : Cupo liberado
+  Cancelacion --> Creacion : Se reactiva el turno si hay cupos/insumos nuevamente
+}
+
+Consumo --> [*] : final del proceso 
+
+' Notas explicativas 
+note right of Organizacion
+  Esta fase agrupa los estados iniciales donde el Administrador
+  prepara el horario y hace el Menú basado en los Insumos.
+end note
+
+note left of Creacion
+    Fase donde el administrador determina los cupos disponibles
+    basandose en los tomados y los cancelados.
+end note
+
+note left of Reserva
+  Fase donde el Usuario interactúa para reservar,
+  vinculando el Turno a su cuenta.
+end note
+
+note right of Consumo
+  Fase final del sistema,
+  actualiza Insumos y
+  genera datos para Reportes.
+end note
+
+note right of Cancelacion
+  Fase de final alternativo, permite reciclaje
+   de cupos y reactivación.
+end note
+@enduml
