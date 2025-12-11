@@ -2,7 +2,7 @@
 left to right direction
 
 ' Actores
-actor "Comensal" as UsuarioGeneral
+actor "Usuario" as UsuarioGeneral
 actor "Empleado" as Usuario2
 actor "Estudiante" as Usuario1
 actor "Administrador del Comedor" as Admin
