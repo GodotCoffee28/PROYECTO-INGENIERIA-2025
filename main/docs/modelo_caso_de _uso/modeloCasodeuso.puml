@@ -2,41 +2,49 @@
 left to right direction
 
 ' Actores
-actor "Estudiante" as Usuario1
+actor "Comensal" as UsuarioGeneral
 actor "Empleado" as Usuario2
+actor "Estudiante" as Usuario1
 actor "Administrador del Comedor" as Admin
-actor "Sistema de Control" as Sistema <<externo>>
 
-rectangle "Sistema Comedor UCV Simple" {
+
+Usuario1-|> UsuarioGeneral
+Usuario2-|> UsuarioGeneral
+Administrador-|> Usuario2
+rectangle "Sistema Comedor UCV" {
     
     ' Casos de Uso del Usuario
-    usecase "UC3-Registrarse en el Sistema" as UC_Registro
-    usecase "UC1-Consultar Menú Disponible" as UC_ConsultarMenu
-    usecase "UC2-Registrar Acceso / Turno" as UC_RegAcceso
+    usecase "UC1-Registrarse" as UC_Registro
+    usecase "UC3-Consultar Menú" as UC_ConsultarMenu
+    usecase "UC2-Inicio De Sesion" as UC_RegAcceso
+    usecase "UC4-Ingresar Fila / Turno" as UC_IngresarFila
+    usecase "UC5-Salir de Fila / Turno" as UC_SalirFila
+   UC_IngresarFila <.. UC_SalirFila : <<extend>>
+   usecase "UC6-Verificar horarios de apertura" as UC_verificar
+    
     
     'Casos de Uso del Administrador
-    usecase "UC7-Gestionar Menús Semanales" as UC_GestionarMenu
-    usecase "UC8-Gestionar Turnos de Comida" as UC_GestionarTurnos
-    usecase "UC4-Registrar Consumo Diario" as UC_RegConsumo
-    usecase "UC5-Registrar Insumos" as UC_RegInsumos
-    usecase "UC6-Generar Reportes" as UC_Reportes
+    usecase "UC7-Gestionar Menús " as UC_GestionarMenu
+    usecase "UC11-Añadir Tarea" as UC_GestionarTurnos
+    usecase "UC8-Registrar Consumo " as UC_RegConsumo
+    usecase "UC10-Registrar Insumos" as UC_RegInsumos
+    usecase "UC9-Generar Reportes" as UC_Reportes
 
-    ' Relaciones (Asociaciones)
-    Usuario1 --> UC_Registro
-    Usuario1 --> UC_ConsultarMenu
-    Usuario1 --> UC_RegAcceso
+    ' Relaciones
 
-    Usuario2 --> UC_Registro
-    Usuario2 --> UC_ConsultarMenu
-    Usuario2 --> UC_RegAcceso
+    UsuarioGeneral--> UC_Registro
+    UsuarioGeneral--> UC_ConsultarMenu
+    UsuarioGeneral --> UC_RegAcceso
+    UsuarioGeneral --> UC_IngresarFila
+    UsuarioGeneral --> UC_verificar
     
     Admin --> UC_GestionarMenu
     Admin --> UC_GestionarTurnos
     Admin --> UC_RegConsumo
     Admin --> UC_RegInsumos
     Admin --> UC_Reportes
-    Admin --> UC_Registro
     
-    UC_RegAcceso --> Sistema
+
+    
 }
 @enduml
