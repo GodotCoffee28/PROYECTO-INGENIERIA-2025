@@ -1,6 +1,5 @@
 @startuml UseCase
 left to right direction
-title Diagrama de casos de uso - Comedor UCV
 
 ' Ajustes visuales suaves para mejorar la legibilidad
 skinparam nodesep 30
