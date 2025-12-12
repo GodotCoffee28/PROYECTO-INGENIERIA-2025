@@ -36,10 +36,10 @@ rectangle "Sistema Comedor UCV" {
     ' Casos de Uso del Administrador (agrupados para layout)
     together {
         usecase "UC7-Gestionar Menús " as UC_GestionarMenu
-        usecase "UC11-Añadir Tarea" as UC_GestionarTurnos
         usecase "UC8-Registrar Consumo " as UC_RegConsumo
-        usecase "UC10-Registrar Insumos" as UC_RegInsumos
         usecase "UC9-Generar Reportes" as UC_Reportes
+        usecase "UC10-Registrar Insumos" as UC_RegInsumos
+        usecase "UC11-Añadir Tarea" as UC_GestionarTurnos
     }
 
     ' Relaciones
