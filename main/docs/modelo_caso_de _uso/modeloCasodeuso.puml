@@ -1,50 +1,61 @@
 @startuml UseCase
 left to right direction
+title Diagrama de casos de uso - Comedor UCV
+
+' Ajustes visuales suaves para mejorar la legibilidad
+skinparam nodesep 30
+skinparam ranksep 30
+skinparam usecase {
+    BackgroundColor #f8f8f8
+    BorderColor #888888
+}
 
 ' Actores
+together{
 actor "Usuario" as UsuarioGeneral
 actor "Empleado" as Usuario2
 actor "Estudiante" as Usuario1
+}
 actor "Administrador del Comedor" as Admin
 
 
-Usuario1-|> UsuarioGeneral
-Usuario2-|> UsuarioGeneral
-Administrador-|> Usuario2
+Usuario1 -|> UsuarioGeneral
+Usuario2 -|> UsuarioGeneral
+Admin -|> Usuario2
 rectangle "Sistema Comedor UCV" {
-    
-    ' Casos de Uso del Usuario
-    usecase "UC1-Registrarse" as UC_Registro
-    usecase "UC3-Consultar Menú" as UC_ConsultarMenu
-    usecase "UC2-Inicio De Sesion" as UC_RegAcceso
-    usecase "UC4-Ingresar Fila / Turno" as UC_IngresarFila
-    usecase "UC5-Salir de Fila / Turno" as UC_SalirFila
-   UC_IngresarFila <.. UC_SalirFila : <<extend>>
-   usecase "UC6-Verificar horarios de apertura" as UC_verificar
-    
-    
-    'Casos de Uso del Administrador
-    usecase "UC7-Gestionar Menús " as UC_GestionarMenu
-    usecase "UC11-Añadir Tarea" as UC_GestionarTurnos
-    usecase "UC8-Registrar Consumo " as UC_RegConsumo
-    usecase "UC10-Registrar Insumos" as UC_RegInsumos
-    usecase "UC9-Generar Reportes" as UC_Reportes
+    ' Casos de Uso del Usuario (agrupados para layout)
+    together {
+        usecase "UC1-Registrarse" as UC_Registro
+        usecase "UC2-Inicio De Sesion" as UC_RegAcceso
+        usecase "UC3-Consultar Menú" as UC_ConsultarMenu
+        usecase "UC4-Ingresar Fila / Turno" as UC_IngresarFila
+        usecase "UC5-Salir de Fila / Turno" as UC_SalirFila
+        usecase "UC6-Verificar horarios de apertura" as UC_verificar
+    }
+
+    ' Casos de Uso del Administrador (agrupados para layout)
+    together {
+        usecase "UC7-Gestionar Menús " as UC_GestionarMenu
+        usecase "UC11-Añadir Tarea" as UC_GestionarTurnos
+        usecase "UC8-Registrar Consumo " as UC_RegConsumo
+        usecase "UC10-Registrar Insumos" as UC_RegInsumos
+        usecase "UC9-Generar Reportes" as UC_Reportes
+    }
 
     ' Relaciones
 
-    UsuarioGeneral--> UC_Registro
-    UsuarioGeneral--> UC_ConsultarMenu
+    UsuarioGeneral --> UC_Registro
+    UsuarioGeneral --> UC_ConsultarMenu
     UsuarioGeneral --> UC_RegAcceso
     UsuarioGeneral --> UC_IngresarFila
     UsuarioGeneral --> UC_verificar
-    
+
     Admin --> UC_GestionarMenu
     Admin --> UC_GestionarTurnos
     Admin --> UC_RegConsumo
     Admin --> UC_RegInsumos
     Admin --> UC_Reportes
-    
 
-    
+    UC_IngresarFila <.. UC_SalirFila : <<extend>>
 }
 @enduml
