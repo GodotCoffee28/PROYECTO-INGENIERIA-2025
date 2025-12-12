@@ -10,7 +10,7 @@ abstract class Usuario {
 
 class Estudiante extends Usuario
 class Empleado extends Usuario
-class Administrador extends Usuario
+class Administrador extends Empleado
 
 class Menu {
   + fecha: int
@@ -42,10 +42,12 @@ class Reporte {
 }
 
 Menu "1" *-- "1..*" Insumo : compone
-Administrador "1" -- "1..*" Menu : gestiona
-Usuario "1..*" -- Sistema : accede/registra
+Administrador "1" --> "1..*" Menu : gestiona
+Usuario "1..*" --> Sistema : accede/registra
 Sistema -- Turno : reserva
 Usuario "1" -- "1..*" Menu : consulta
-Administrador "1" -- "0..*" Reporte : genera
+Administrador "1" --> "0..*" Reporte : genera
+Administrador "1" --> Turno : Gestiona
+Administrador "1" --> Sistema : Modifica
 
 @enduml
