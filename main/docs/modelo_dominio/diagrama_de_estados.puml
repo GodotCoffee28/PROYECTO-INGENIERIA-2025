@@ -1,92 +1,44 @@
 @startuml
-title Diagrama de Estados - Ciclo de Vida de un Turno\nGestión Comedor Universitario UCV
+title Diagrama de Estados - Acciones de Usuarios (Estudiantes y Empleados)\nCiclo de Vida de un Turno - Gestión Comedor Universitario UCV
 
-[*] --> Organizacion
+[*] --> Verificando
 
-state "En Creacion" as Creacion {
-  state "Turno" as Turno {
-    Turno: Turno creado por Administrador basado en horarios, capacidad y insumos disponibles
-  }
-  state "Disponible" as Disponible {
-    Disponible: hay cupos e insumos suficientes
-  }
-  
-  Turno --> Disponible : Administrador confirma insumos y menú\n(genera turno disponible)
-  Disponible --> [*] : Cupo libre
-  Creacion --> Cancelacion : Capacidad agotada o falta de insumos\n(decisión del Administrador)
+state Verificando {
+  Verificando : Se verifica en el sistema si hay cupos disponibles y la identidad del usuario
 }
 
-state "En Organizacion" as Organizacion {
-    state "Horario" as Horario{
-        Horario: Se establece un horario para la disponibilidad del comedor
-    }
-    state "Menu" as Menu{
-        Menu: Platillos disponibles para la semana
-    }
-    
-    Horario --> Menu : Administrador confirma horario\n (asigna platillos)
-
-    Menu --> [*]: finaliza face
+state Reservando {
+ Reservando : Se le asigna un turno al usuario
+ Reservando : Tomando en cuanta el comprobante
+ Reservando : Se reduce de capacidad
 }
 
-Organizacion --> Creacion
-
-state "En Reserva" as Reserva {
-  state "Reservado" as Reservado <<reserved>> {
-    Reservado: Cupo asignado a un Usuario
-    Reservado: Se verifica comprobante y se reduce capacidad
-  }
-  
-  Reserva --> Cancelacion : Usuario no llega / Administrador cancela\n(libera cupo)
-  Reserva --> Consumo : Usuario presenta comprobante en el horario\n(se registra consumo)
+state Consumiendo {
+ Consumiendo : Usuario consume la comida
+ Consumiendo : Registro de consumo y actualización de insumos
 }
 
-Creacion --> Reserva
-
-state "En Consumo" as Consumo {
-  state "Consumido" as Consumido  {
-    Consumido: Usuario ingresa y consume la comida en el horario
-    Consumido: Se registra consumo y se actualizan insumos
-  }
-  
-  Consumido --> [*] : Fin del ciclo
+state Cancelando {
+ Cancelando : Turno cancelado por el usuario
+ Cancelando : Liberación de cupo
 }
 
-state "En Cancelacion" as Cancelacion {
-  state "Cancelado" as Cancelado {
-    Cancelado: Se elimina el cupo (por cancelación o expiración)
-  }
-  
-  Cancelado --> [*] : Cupo liberado
-  Cancelacion --> Creacion : Se reactiva el turno si hay cupos/insumos nuevamente
-}
+Verificando --> Reservando : Usuario reserva turno\n(Ya verificado comprobante y disponibilidad)
+Reservando --> Consumiendo : Usuario presenta comprobante y consume
+Reservando --> Cancelando : Usuario cancela reserva
 
-Consumo --> [*] : final del proceso 
+Consumiendo --> [*] : Fin del ciclo para el usuario
+Cancelando --> [*] 
 
-' Notas explicativas 
-note right of Organizacion
-  Esta fase agrupa los estados iniciales donde el Administrador
-  prepara el horario y hace el Menú basado en los Insumos.
+note right of Reservando
+  Fase donde el usuario reserva el turno.
 end note
 
-note left of Creacion
-    Fase donde el administrador determina los cupos disponibles
-    basandose en los tomados y los cancelados.
+note left of Consumiendo
+  Fase donde el usuario consume el turno reservado.
 end note
 
-note left of Reserva
-  Fase donde el Usuario interactúa para reservar,
-  vinculando el Turno a su cuenta.
-end note
-
-note right of Consumo
-  Fase final del sistema,
-  actualiza Insumos y
-  genera datos para Reportes.
-end note
-
-note right of Cancelacion
-  Fase de final alternativo, permite reciclaje
-   de cupos y reactivación.
+note right of Cancelando
+  Fase alternativa donde el usuario cancela.
 end note
 @enduml

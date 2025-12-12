@@ -1,0 +1,78 @@
+@startuml
+title Diagrama de Estados - Acciones del Administrador\nCiclo de Vida de un Turno - Gestión Comedor Universitario UCV
+
+[*] --> Organizando
+
+state Organizando {
+  state Horario {
+    Horario : Estableciendo horario de disponibilidad
+  }
+  state Menu {
+    Menu : Asignando platillos basados en insumos
+  }
+  
+  Horario --> Menu : Confirmación de horario \n y asignación de menú
+}
+
+state Creando {
+  state Turno {
+    Turno : Creando turno basado en horarios y capacidad
+  }
+  state Disponible {
+    Disponible : Turno disponible (cupos e insumos suficientes)
+  }
+  
+  Turno --> Disponible : Confirmación de insumos \n y generación de turno
+}
+
+state Reservando {
+    Reservando : Monitoreo de turnos asignados
+}
+
+state Consumiendo {
+  Consumiendo : Registro de consumo y actualización de insumos
+  Consumiendo : Generación de datos para reportes
+  
+}
+
+state Cancelando {
+  Cancelando: Turno cancelado (por admin o expiración)
+  Cancelando: Liberación y posible reactivación
+}
+
+Organizando --> Creando : Finalización de organización
+Creando --> Reservando : Turno disponible para usuarios
+Creando --> Cancelando : Capacidad agotada o falta de insumos
+Reservando --> Cancelando : Admin cancela turno \n (si el usuario incuple \n normativas)
+/'nota, el admin puede cancelar el turno ya que si es la segunda vez que el usuario consume un producto, generaria problemas'/
+Cancelando --> [*] : No hay servicio
+Reservando --> Consumiendo : Consumo registrado
+Consumiendo --> [*] : Fin del ciclo → reportes generados
+Cancelando --> Creando : Reactivación si hay cupos/insumos
+
+note right of Organizando
+  Fase inicial donde 
+  el admin prepara horario 
+  y menú basado en insumos.
+end note
+
+note left of Creando
+  Fase donde el admin 
+  crea y hace disponible el turno.
+end note
+
+note left of Reservando
+  Monitoreo de reservas 
+  por el admin.
+end note
+
+note right of Consumiendo
+  Actualización de insumos 
+  y generación de reportes.
+end note
+
+note right of Cancelando
+  Gestión de cancelaciones 
+  y reactivaciones por el admin.
+end note
+@enduml
