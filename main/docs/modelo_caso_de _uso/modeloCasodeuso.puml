@@ -1,42 +1,60 @@
 @startuml UseCase
 left to right direction
 
+' Ajustes visuales suaves para mejorar la legibilidad
+skinparam nodesep 30
+skinparam ranksep 30
+skinparam usecase {
+    BackgroundColor #f8f8f8
+    BorderColor #888888
+}
+
 ' Actores
-actor "Estudiante" as Usuario1
+together{
+actor "Usuario" as UsuarioGeneral
 actor "Empleado" as Usuario2
+actor "Estudiante" as Usuario1
+}
 actor "Administrador del Comedor" as Admin
-actor "Sistema de Control" as Sistema <<externo>>
 
-rectangle "Sistema Comedor UCV Simple" {
-    
-    ' Casos de Uso del Usuario
-    usecase "UC3-Registrarse en el Sistema" as UC_Registro
-    usecase "UC1-Consultar Menú Disponible" as UC_ConsultarMenu
-    usecase "UC2-Registrar Acceso / Turno" as UC_RegAcceso
-    
-    'Casos de Uso del Administrador
-    usecase "UC7-Gestionar Menús Semanales" as UC_GestionarMenu
-    usecase "UC8-Gestionar Turnos de Comida" as UC_GestionarTurnos
-    usecase "UC4-Registrar Consumo Diario" as UC_RegConsumo
-    usecase "UC5-Registrar Insumos" as UC_RegInsumos
-    usecase "UC6-Generar Reportes" as UC_Reportes
 
-    ' Relaciones (Asociaciones)
-    Usuario1 --> UC_Registro
-    Usuario1 --> UC_ConsultarMenu
-    Usuario1 --> UC_RegAcceso
+Usuario1 -|> UsuarioGeneral
+Usuario2 -|> UsuarioGeneral
+Admin -|> Usuario2
+rectangle "Sistema Comedor UCV" {
+    ' Casos de Uso del Usuario (agrupados para layout)
+    together {
+        usecase "UC1-Registrarse" as UC_Registro
+        usecase "UC2-Inicio De Sesion" as UC_RegAcceso
+        usecase "UC3-Consultar Menú" as UC_ConsultarMenu
+        usecase "UC4-Ingresar Fila / Turno" as UC_IngresarFila
+        usecase "UC5-Salir de Fila / Turno" as UC_SalirFila
+        usecase "UC6-Verificar horarios de apertura" as UC_verificar
+    }
 
-    Usuario2 --> UC_Registro
-    Usuario2 --> UC_ConsultarMenu
-    Usuario2 --> UC_RegAcceso
-    
+    ' Casos de Uso del Administrador (agrupados para layout)
+    together {
+        usecase "UC7-Gestionar Menús " as UC_GestionarMenu
+        usecase "UC8-Registrar Consumo " as UC_RegConsumo
+        usecase "UC9-Generar Reportes" as UC_Reportes
+        usecase "UC10-Registrar Insumos" as UC_RegInsumos
+        usecase "UC11-Añadir Tarea" as UC_GestionarTurnos
+    }
+
+    ' Relaciones
+
+    UsuarioGeneral --> UC_Registro
+    UsuarioGeneral --> UC_ConsultarMenu
+    UsuarioGeneral --> UC_RegAcceso
+    UsuarioGeneral --> UC_IngresarFila
+    UsuarioGeneral --> UC_verificar
+
     Admin --> UC_GestionarMenu
     Admin --> UC_GestionarTurnos
     Admin --> UC_RegConsumo
     Admin --> UC_RegInsumos
     Admin --> UC_Reportes
-    Admin --> UC_Registro
-    
-    UC_RegAcceso --> Sistema
+
+    UC_IngresarFila <.. UC_SalirFila : <<extend>>
 }
 @enduml
