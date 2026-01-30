@@ -1,0 +1,26 @@
+NOTAS CONSULTA MARCEL
+*Requisitos iniciales generales (Épicas): Requisitos generales iniciales, luego historias de usuario por cada uno (Piensa de forma modular)
+*Las historias de usuario dicen a q épica pertenecen
+*De las épicas surgen las historias de usuario
+*2.0 son las épicas
+*Hay un video de estimación de esfuerzo 
+*Reflejar las épicas en el formato
+*Se reestructura el software como se tiene, agregando funcionalidades que ya se tengan en los casos de uso según el nuevo contexto
+*En los criterios se pone Escenario: (texto). Deben ser varios escenarios.
+*En el contexto aparecen nuevos "casos de uso" basados en el nuevo contexto, pero sí, las HU pueden plantearse en base a los caso de uso prioritarios, pero aparecen nuevas.
+*Se usa cada caso de uso, pero tmb va más allá
+*Al desarrollar el software es bajo el contexto de interfaces en java
+*Modificar las HU q ya tenemos para agg las nuevas características
+*De todo el Backlog se eligen las q van al Sprint 
+*Elegimos qué queremos lograr en el sprint 1
+*Definición de hecho: Un checklist que debemos validar al culminar el sprint, se plantea según nuestras necesidades.
+*El tiempo es un aproximado
+*Fijar un objetivo para el primer sprint,(Registro e inicio, planteando todo lo nuevo)
+*Un sprint, son 2 semanas, q se puede hacer de lo q se considera el punto de partida
+*Se listan todas las HU al final de realizarlas
+*Organizar las historias de usuario por épicas, no debe haber un orden específico
+*Considerar q hay sistemas que deben comunicarse. Se puede hacer un módulo aparte para reconocimiento facial o plantearlo diferente. Para reubicarlo lo maneja secretaría, pero lo implementa el comedor.
+*Es una simulación
+*Recuerden lo de recargar saldo
+*El reconocimiento facial es una historia de usuario que pertenece a una épica. Todas las nuevas funcionalidades son HU (organizar).
+*Plantea las fechas del sprint según la planificación del aula virtual.

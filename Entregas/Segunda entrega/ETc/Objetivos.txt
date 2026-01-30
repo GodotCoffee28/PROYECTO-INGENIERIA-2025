@@ -1,0 +1,12 @@
+Objetivos
+
+Objetivos de gestión de usuario y acceso
+-Diseñar las interfaces de registro e inicio de sesión
+-Desarrollar la funcionalidad de registro de nuevos usuarios
+-Desarrollar la funcionalidad completa de inicio de sesión (implementar la capacidad de identificar el rol según el usuario)
+-Construir la lógica e implementar la verificación facial como funcionalidad extra para el inicio de sesión.
+
+
+Objetivos de la visualización del menú
+Diseñar la interfaz de usuario (tablero con un resumen del menú y la opción de verificar horarios)
+Diseñar la interfaz de consulta de menú y verificación de horarios

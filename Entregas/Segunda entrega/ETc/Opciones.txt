@@ -1,0 +1,36 @@
+Opciones
+
+Gestión de usuarios y acceso
+- Registro
+-Inicio de sesión
+-Reconocimiento facial
+-Recuperación de la cuenta
+
+Gestión del menú
+-Reinicio y edición del menú
+-Creación y actualización de menú
+(Acá tienen spr general gestión del menú, ns si lo dejamos tal cual)
+Habilitar turnos de comida
+
+Generación de reportes
+Generar reporte general
+Registrar consumo
+Registrar insumos recibidos
+
+Estadísticas y planificación
+-Añadir tarea
+-Verificar análisis de demanda
+-Verificar consumo diario
+-Añadir información para el cálculo del CCB
+
+Visualización del menú
+Verificar horarios
+Consultar menú
+
+Acceso a la fila
+-Ingresar fila/turno
+
+Monedero
+Aplicar tarifas diferenciadas
+Gestionar monedero virtual
+
