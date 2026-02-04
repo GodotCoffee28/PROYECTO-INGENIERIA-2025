@@ -1,24 +1,9 @@
 
 package com.gesco.views.PlantillasViews;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 public class PlantillaGesco extends JFrame {
 
@@ -33,16 +18,8 @@ public class PlantillaGesco extends JFrame {
         setResizable(false);
 
         //Fondo con degradado
-        contenedorPrincipal = new JPanel(new BorderLayout()) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2d = (Graphics2D) g;
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                GradientPaint gp = new GradientPaint(0, 0, new Color(45, 45, 50), 0, getHeight(), new Color(15, 15, 18));
-                g2d.setPaint(gp);
-                g2d.fillRect(0, 0, getWidth(), getHeight());
-            }
-        };
+        contenedorPrincipal = new JPanel(new BorderLayout());
+        contenedorPrincipal.setBackground(new Color(33, 33, 39));
 
         contenedorPrincipal.add(Encabezado(), BorderLayout.NORTH);
 
