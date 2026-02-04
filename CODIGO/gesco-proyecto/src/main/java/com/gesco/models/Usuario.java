@@ -1,3 +1,4 @@
+package com.gesco.models;
 class Usuario {
 	private final int id;
 	private String nombre;
