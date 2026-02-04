@@ -1,5 +1,6 @@
 
-package com.gesco.views;
+package com.gesco.views.PlantillasViews;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;

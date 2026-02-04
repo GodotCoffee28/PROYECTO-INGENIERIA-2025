@@ -1,5 +1,5 @@
 
-package com.gesco.views;
+package com.gesco.views.PlantillasViews;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

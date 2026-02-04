@@ -1,5 +1,5 @@
 package com.gesco;
-import com.gesco.views.PlantillaGesco;
+import com.gesco.views.PlantillasViews.PlantillaGesco;;
 /**
  * Hello world!
  *

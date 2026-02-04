@@ -1,6 +1,24 @@
 package com.gesco.views;
-import javax.swing.*;
-import java.awt.*;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+import com.gesco.views.PlantillasViews.BotonNeon;
+import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaInicioSesion extends PlantillaGesco {
     private BotonNeon btnInicioSesion;
