@@ -1,3 +1,4 @@
+package  com.gesco.models;
 class Menu {
 	private final String nombre;
 	private final Insumo insumo;

@@ -146,6 +146,6 @@ public class VistaInicioSesion extends PlantillaGesco {
     }
 
    //Getters (Gabriel/Alejandro)
-   public string getCedula(){ return cedula.getText();}
+   public String getCedula(){ return cedula.getText();}
    public String getClave(){ return clave.getText();}
 }
