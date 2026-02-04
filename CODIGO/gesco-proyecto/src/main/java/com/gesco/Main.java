@@ -1,5 +1,5 @@
 package com.gesco;
-import com.gesco.views.RegistroView;
+import com.gesco.views.PlantillaGesco;
 /**
  * Hello world!
  *
@@ -7,8 +7,8 @@ import com.gesco.views.RegistroView;
 public class Main{
     public static void main( String[] args )    {
         javax.swing.SwingUtilities.invokeLater(() -> {
-            RegistroView view = new RegistroView();
-            view.setVisible(true);
+            PlantillaGesco VIsta = new PlantillaGesco();
+            VIsta.setVisible(true);
         });
     }
 }

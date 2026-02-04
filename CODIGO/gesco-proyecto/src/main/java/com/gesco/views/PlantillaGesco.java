@@ -1,7 +1,24 @@
-import javax.swing.*;
-import java.awt.*;
+
+package com.gesco.views;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 public class PlantillaGesco extends JFrame {
 
@@ -68,12 +85,26 @@ public class PlantillaGesco extends JFrame {
         relleno.setForeground(new Color(0,0,0,0)); 
         relleno.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
 
+        JLabel backIcon = new JLabel("🢀");
+        backIcon.setFont(new Font("Dialog", Font.PLAIN, 45));
+        backIcon.setForeground(new Color(180, 180, 180));
+        backIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        backIcon.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
+
+        JLabel rellenoBack = new JLabel("🢀");
+        rellenoBack.setFont(new Font("Dialog", Font.PLAIN, 45));
+        rellenoBack.setForeground(new Color(0,0,0,0)); 
+        rellenoBack.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
+
+
         topPanel.add(menuIcon, BorderLayout.WEST);
         topPanel.add(tituloEncabezado, BorderLayout.CENTER);
         topPanel.add(relleno, BorderLayout.EAST);
+        topPanel.add(backIcon, BorderLayout.EAST);
 
         return topPanel;
     }
+    
      protected JLabel crearEtiquetaSimple(String texto, int size, Color color) {
         JLabel etiqueta = new JLabel(texto);
         etiqueta.setFont(new Font("Arial", Font.PLAIN, size));

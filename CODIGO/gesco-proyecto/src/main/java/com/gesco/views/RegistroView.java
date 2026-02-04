@@ -1,11 +1,9 @@
 package com.gesco.views;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -16,7 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 
 
 public class RegistroView extends JFrame{
@@ -44,7 +41,7 @@ public class RegistroView extends JFrame{
         agregarCampos(panel);
 
         agregarInferior(panel);
-
+        add(panel, BorderLayout.CENTER); 
         setVisible(true);
         }
 
@@ -119,29 +116,37 @@ public class RegistroView extends JFrame{
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
 
     }
-    private void agregarCampos(JPanel panel){
-        JPanel formPanel = new JPanel(new GridLayout(6, 2, 10, 10));
-        
-        agregarCampo(formPanel, " Nombre y Apellido ", TxtNombreApellido = new JTextField());
-        agregarCampo(formPanel, " Cédula de identidad ", TxtCedula = new JTextField());
-        agregarCampo(formPanel, " Correo electronico ", TxtCorreo = new JTextField());
-        agregarCampo(formPanel, " Contraseña ", TxtContra = new JPasswordField());
+    private void agregarCampos(JPanel panel) {
+
+        JPanel formPanel = new JPanel();
+        formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+        formPanel.setOpaque(false);
+        TxtNombreApellido = new JTextField();
+        TxtCedula = new JTextField();
+        TxtCorreo = new JTextField();
+        TxtContra = new JPasswordField();
+        agregarCampo(formPanel, "Nombre y Apellido", TxtNombreApellido);
+        agregarCampo(formPanel, "Cédula de identidad", TxtCedula);
+        agregarCampo(formPanel, "Correo electrónico", TxtCorreo);
+        agregarCampo(formPanel, "Contraseña", TxtContra);
+
         panel.add(formPanel);
     }
-    private void agregarCampo(JPanel Panel, String TextoLabel, JTextField Campo){
-        JLabel label = new JLabel(TextoLabel); //Agregamos la etiqueta del campo
-        label.setFont(new Font("Arial", Font.BOLD, 12));
-        label.setHorizontalAlignment(SwingConstants.CENTER);
 
-        Dimension DimensionCampo = new Dimension(340, 40);
-        Campo.setMaximumSize(DimensionCampo);
-        Campo.setPreferredSize(DimensionCampo);
-        Campo.setAlignmentX(Component.CENTER_ALIGNMENT);
+    private void agregarCampo(JPanel panel, String textoLabel, JTextField campo) {
+        JLabel label = new JLabel(textoLabel);
+        label.setFont(new Font("Arial", Font.BOLD, 14));
+        label.setAlignmentX(Component.CENTER_ALIGNMENT); 
 
-        Panel.add(label);
-        Panel.add(Box.createVerticalStrut(5));
-        Panel.add(Campo);
-        Panel.add(Box.createVerticalStrut(15));
+        Dimension dim = new Dimension(400, 35);
+        campo.setMaximumSize(dim);
+        campo.setPreferredSize(dim);
+        campo.setAlignmentX(Component.CENTER_ALIGNMENT); //Centra
+
+        panel.add(label);
+        panel.add(Box.createVerticalStrut(5)); // Espacio etiqueta-campo
+        panel.add(campo);
+        panel.add(Box.createVerticalStrut(15)); // Espacio entre bloques
     }
     private void agregarInferior(JPanel panel){
         JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
@@ -152,10 +157,6 @@ public class RegistroView extends JFrame{
         panelInferior.add(registroBoton);
 
         panel.add(panelInferior);
-
     }
 
 }
-
-
-

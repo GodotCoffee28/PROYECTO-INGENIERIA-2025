@@ -1,13 +1,22 @@
-import java.awt.*;
+
+package com.gesco.views;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import javax.swing.JButton;
 
 public class BotonNeon extends JButton {
     private final int radioEsquinas = 40;
     
-    private Color colorBase = new Color(200, 200, 205);      
-    private Color colorBrillo = new Color(255, 255, 255); 
+    private final Color colorBase = new Color(200, 200, 205);      
+    private final Color colorBrillo = new Color(255, 255, 255); 
     private boolean mouseEncima = false;
 
     public BotonNeon(String texto) {
