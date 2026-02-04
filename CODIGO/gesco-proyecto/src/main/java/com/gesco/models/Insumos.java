@@ -1,4 +1,6 @@
+
 package  com.gesco.models;
+
 class Insumo {
 	private final String nombre;
 	private final int cantidad;
