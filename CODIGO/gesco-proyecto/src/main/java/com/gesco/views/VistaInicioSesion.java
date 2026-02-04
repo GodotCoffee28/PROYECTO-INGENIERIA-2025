@@ -144,4 +144,8 @@ public class VistaInicioSesion extends PlantillaGesco {
 
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
     }
+
+   //Getters (Gabriel/Alejandro)
+   public string getCedula(){ return cedula.getText();}
+   public String getClave(){ return clave.getText();}
 }
