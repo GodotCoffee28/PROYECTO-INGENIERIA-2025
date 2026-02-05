@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Cursor;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -24,6 +25,7 @@ public class VistaInicioSesion extends PlantillaGesco {
     private BotonNeon btnInicioSesion;
     private JTextField cedula, clave;
     private JLabel Saludo;
+    private JLabel registroLink;
     
     public VistaInicioSesion() {
         super(); 
@@ -131,11 +133,12 @@ public class VistaInicioSesion extends PlantillaGesco {
         
         panelFondo.add(Box.createVerticalStrut(20));
         
-        JLabel registroLink = new JLabel("¿Aún no tiene una cuenta? Registrarse");
+        registroLink = new JLabel("¿Aún no tiene una cuenta? Registrarse");
         registroLink.setForeground(new Color(220, 220, 220));
         registroLink.setFont(new Font("Arial", Font.PLAIN, 15));
+        registroLink.setCursor(new Cursor(Cursor.HAND_CURSOR));
         registroLink.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panelFondo.add(registroLink); //Aún no es funcional, por obvias razones
+        panelFondo.add(registroLink);
 
         panelFondo.add(Box.createVerticalStrut(30)); 
         panelFondo.add(btnInicioSesion);  
@@ -148,4 +151,6 @@ public class VistaInicioSesion extends PlantillaGesco {
    //Getters (Gabriel/Alejandro)
    public String getCedula(){ return cedula.getText();}
    public String getClave(){ return clave.getText();}
+    public BotonNeon getBtnInicioSesion() { return btnInicioSesion; }
+    public JLabel getRegistroLink() { return registroLink; }
 }
