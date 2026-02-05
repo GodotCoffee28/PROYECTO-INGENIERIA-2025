@@ -1,14 +1,10 @@
 package com.gesco;
-import com.gesco.views.PlantillasViews.PlantillaGesco;
-/**
- * Hello world!
- *
- */
+
+import com.gesco.controllers.LogicaInterfaz;
+
 public class Main{
     public static void main( String[] args ){
-        javax.swing.SwingUtilities.invokeLater(() -> {
-            PlantillaGesco VIsta = new PlantillaGesco();
-            VIsta.setVisible(true);
-        });
+        LogicaInterfaz logica = new LogicaInterfaz();
+        logica.iniciar();
     }
 }

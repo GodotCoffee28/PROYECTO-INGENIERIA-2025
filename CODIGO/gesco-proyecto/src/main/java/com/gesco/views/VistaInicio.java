@@ -90,5 +90,13 @@ public class VistaInicio extends PlantillaGesco {
 
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
     }
+
+    public BotonNeon getBtnRegistrarse() {
+        return btnRegistrarse;
+    }
+
+    public BotonNeon getBtnInicioSesion() {
+        return btnInicioSesion;
+    }
     
 }
