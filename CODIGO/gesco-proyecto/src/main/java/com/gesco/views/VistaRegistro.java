@@ -3,6 +3,7 @@ package com.gesco.views;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -21,11 +22,11 @@ import javax.swing.JTextField;
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
-public class VistaRegistro extends PlantillaGesco{
+public class VistaRegistro extends PlantillaGesco {
     private JTextField TxtNombreApellido, TxtCedula, TxtCorreo;
     private JPasswordField TxtContra;
-    private BotonNeon btnRegistrarse, btnIrLogin;
-    private JLabel Saludo;
+    private BotonNeon btnRegistrarse;
+    private JLabel Saludo, loginLink;
 
     public VistaRegistro() {
         super(); 
@@ -36,23 +37,24 @@ public class VistaRegistro extends PlantillaGesco{
         setVisible(true);
     }
 
- private void inicializarComponentes() {
+    private void inicializarComponentes() {
         Dimension tamBotonPrincipal = new Dimension(400, 55);
-        Dimension tamBotonLogin = new Dimension(220, 45);
 
+        // Botón Neon para la acción principal
         btnRegistrarse = new BotonNeon("Registrarse");
         btnRegistrarse.setPreferredSize(tamBotonPrincipal);
         btnRegistrarse.setMaximumSize(tamBotonPrincipal);
         btnRegistrarse.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        btnIrLogin = new BotonNeon("Inicie sesión");
-        btnIrLogin.setFont(new Font("Arial", Font.BOLD, 18)); 
-        btnIrLogin.setPreferredSize(tamBotonLogin);
-        btnIrLogin.setMaximumSize(tamBotonLogin);
-        btnIrLogin.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // JLabel interactivo (estilo link) sin MouseListener complejo
+        loginLink = new JLabel("¿Ya tiene cuenta? Inicie sesión");
+        loginLink.setFont(new Font("Arial", Font.PLAIN, 16));
+        loginLink.setForeground(new Color(220, 220, 220)); // Color gris claro como el de inicio de sesión
+        loginLink.setCursor(new Cursor(Cursor.HAND_CURSOR)); // La "manito"
+        loginLink.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         Saludo = new JLabel("¡Únete, Ucevista!");
-        Saludo.setFont(new Font("Arial", Font.BOLD, 40)); // Reducido un poco para ahorrar espacio
+        Saludo.setFont(new Font("Arial", Font.BOLD, 40)); 
         Saludo.setForeground(new Color(240, 240, 240)); 
         Saludo.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
@@ -61,28 +63,31 @@ public class VistaRegistro extends PlantillaGesco{
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
         formPanel.setOpaque(false);
-        // Ajustamos la altura máxima para que no empuje lo de abajo
         formPanel.setMaximumSize(new Dimension(450, 320)); 
         formPanel.setAlignmentX(Component.CENTER_ALIGNMENT); 
 
-        Dimension tamanoCaja = new Dimension(450, 35); // Altura de caja ligeramente menor
+        Dimension tamanoCaja = new Dimension(450, 35); 
         Font labelFont = new Font("Arial", Font.BOLD, 14);
 
+        // Campo: Nombre y apellido
         formPanel.add(crearLabelForm("Nombre y apellido", labelFont));
         TxtNombreApellido = crearTextField(tamanoCaja);
         formPanel.add(TxtNombreApellido);
-        formPanel.add(Box.createVerticalStrut(8)); // Espacio menor
+        formPanel.add(Box.createVerticalStrut(8)); 
 
+        // Campo: Cédula
         formPanel.add(crearLabelForm("Cédula de identidad", labelFont));
         TxtCedula = crearTextField(tamanoCaja);
         formPanel.add(TxtCedula);
         formPanel.add(Box.createVerticalStrut(8));
 
+        // Campo: Correo
         formPanel.add(crearLabelForm("Correo electrónico", labelFont));
         TxtCorreo = crearTextField(tamanoCaja);
         formPanel.add(TxtCorreo);
         formPanel.add(Box.createVerticalStrut(8));
 
+        // Campo: Contraseña
         formPanel.add(crearLabelForm("Contraseña", labelFont));
         TxtContra = new JPasswordField();
         estilizarComponente(TxtContra, tamanoCaja);
@@ -121,7 +126,6 @@ public class VistaRegistro extends PlantillaGesco{
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 
-                // Ajustamos el rectángulo para que cubra mejor el contenido centrado
                 int x = 200;
                 int w = getWidth() - 400;
                 g2.setColor(new Color(255, 255, 255, 15)); 
@@ -149,15 +153,12 @@ public class VistaRegistro extends PlantillaGesco{
 
         agregarCampos(panelFondo); 
         
-        panelFondo.add(Box.createVerticalStrut(20));
+        panelFondo.add(Box.createVerticalStrut(30));
         
-        // Sección Login integrada
-        JLabel loginInfo = crearEtiquetaSimple("¿Ya tiene cuenta?", 16, new Color(160, 160, 165));
-        panelFondo.add(loginInfo);
-        panelFondo.add(Box.createVerticalStrut(5));
-        panelFondo.add(btnIrLogin);
+        // Texto informativo/link
+        panelFondo.add(loginLink);
 
-        panelFondo.add(Box.createVerticalStrut(25)); 
+        panelFondo.add(Box.createVerticalStrut(30)); 
         
         // Botón Final
         panelFondo.add(btnRegistrarse);  
@@ -167,10 +168,11 @@ public class VistaRegistro extends PlantillaGesco{
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
     }
 
-
-    // Getters para los controladores
+    // Getters para acceso externo
     public String getNombreApellido() { return TxtNombreApellido.getText(); }
     public String getCedula() { return TxtCedula.getText(); }
     public String getCorreo() { return TxtCorreo.getText(); }
     public String getContra() { return new String(TxtContra.getPassword()); }
+    public JLabel getLoginLink() { return loginLink; }
+    public BotonNeon getBtnRegistrarse() { return btnRegistrarse; }
 }
