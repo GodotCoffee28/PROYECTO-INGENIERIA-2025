@@ -1,4 +1,3 @@
-
 package com.gesco.views.PlantillasViews;
 
 import java.awt.BorderLayout;
@@ -19,6 +18,7 @@ import javax.swing.SwingConstants;
 public class PlantillaGesco extends JFrame {
 
     protected JPanel contenedorPrincipal; 
+    private JLabel backIcon;  
 
     public PlantillaGesco() {
         //Configuración de la ventana
@@ -73,7 +73,7 @@ public class PlantillaGesco extends JFrame {
         relleno.setForeground(new Color(0,0,0,0)); 
         relleno.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
 
-        JLabel backIcon = new JLabel("🢀");
+        backIcon = new JLabel("🢀");  
         backIcon.setFont(new Font("Dialog", Font.PLAIN, 45));
         backIcon.setForeground(new Color(180, 180, 180));
         backIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -99,5 +99,9 @@ public class PlantillaGesco extends JFrame {
         etiqueta.setForeground(color);
         etiqueta.setAlignmentX(Component.CENTER_ALIGNMENT);
         return etiqueta;
+    }
+
+    public JLabel getBackIcon() {
+        return backIcon;
     }
 }

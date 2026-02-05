@@ -31,10 +31,19 @@ public class LogicaInterfaz {
 
 	private void mostrarInicioSesion() {
 		if (vistaInicio != null) {
-			vistaInicio.dispose();
+			vistaInicio.dispose();  // Cierra la ventana de inicio
 		}
 		vistaInicioSesion = new VistaInicioSesion();
 		conectarVistaInicioSesion();
+
+		// Botón ←: vuelve al inicio
+		vistaInicioSesion.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent e) {
+				vistaInicioSesion.dispose();
+				iniciar(); // Vuelve a la pantalla principal
+			}
+		});
 	}
 
 	private void conectarVistaInicioSesion() {
@@ -54,7 +63,7 @@ public class LogicaInterfaz {
 		if (cedula == null || cedula.isBlank() || clave == null || clave.isBlank()) {
 			JOptionPane.showMessageDialog(
 				vistaInicioSesion,
-				"Debe completar cedula y clave.",
+				"Debe completar cédula y clave.",
 				"Datos incompletos",
 				JOptionPane.WARNING_MESSAGE
 			);
@@ -65,10 +74,11 @@ public class LogicaInterfaz {
 		if (valido) {
 			JOptionPane.showMessageDialog(
 				vistaInicioSesion,
-				"Inicio de sesion correcto.",
+				"Inicio de sesión correcto.",
 				"Acceso",
 				JOptionPane.INFORMATION_MESSAGE
 			);
+			// Aquí podrías ir a otra pantalla (ej. menú principal) en el futuro
 		} else {
 			JOptionPane.showMessageDialog(
 				vistaInicioSesion,
@@ -80,10 +90,22 @@ public class LogicaInterfaz {
 	}
 
 	private void mostrarRegistro() {
+		if (vistaInicio != null) {
+			vistaInicio.dispose();  // ← AQUÍ ESTABA EL ERROR: no cerraba la ventana de inicio
+		}
 		if (registroView != null) {
 			registroView.dispose();
 		}
 		registroView = new RegistroView();
 		registroView.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+		// Botón ←: vuelve al inicio
+		registroView.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent e) {
+				registroView.dispose();
+				iniciar(); // Vuelve a la pantalla principal
+			}
+		});
 	}
 }

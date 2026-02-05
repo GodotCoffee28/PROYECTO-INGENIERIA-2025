@@ -1,5 +1,7 @@
 package com.gesco.views;
+
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -9,154 +11,143 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import com.gesco.views.PlantillasViews.BotonNeon;
+import com.gesco.views.PlantillasViews.PlantillaGesco;
 
-public class RegistroView extends JFrame{
+public class RegistroView extends PlantillaGesco {
 
-    //JFrame ventana = new JFrame("GESCO");
     private JTextField TxtNombreApellido, TxtCedula, TxtCorreo;
     private JPasswordField TxtContra;
-    private JButton registroBoton;
-
+    private BotonNeon btnRegistrarse;
+    private JLabel loginLink;
 
     public RegistroView() {
-            //El constructor de la clase
+        super(); 
         setTitle("Registro Comedor UCV");
-        setSize(1122, 654);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setLayout(new BorderLayout()); 
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-        agregarTitulo(panel);
-
-        agregarCampos(panel);
-
-        agregarInferior(panel);
-        add(panel, BorderLayout.CENTER); 
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);  // Mejor que EXIT_ON_CLOSE
+        inicializarComponentes();
+        construirCuerpo();
+        revalidate();
+        repaint();
         setVisible(true);
-        }
-
-    /*private void InicializarForm(){
-        //Titulo superior
-        JLabel Titulo = new JLabel("Crea una nueva cuenta", SwingConstants.CENTER);
-        Titulo.setFont(new Font("Arial", Font.BOLD, 20));
-        add(Titulo, BorderLayout.NORTH);
-
-        //Este panel contendra el formulario, y se posicionara de forma central en la interfaz
-        JPanel ContenedorForm = new JPanel(new GridBagLayout());
-        ContenedorForm.setBackground(Color.GRAY);
-        //Patron decorator de hecho
-        JPanel PanelForm = new JPanel();
-        PanelForm.setLayout(new BoxLayout(PanelForm, BoxLayout.Y_AXIS)); //Box para que los campos sean uno abajo de otro
-        PanelForm.setPreferredSize(new Dimension(461,554)); //dimension del panel de campos
-        PanelForm.setBackground(Color.WHITE);
-
-        //Dimension para los FieldText y alineasion
-        Dimension CampoDimension = new Dimension(800,20);
-        //Agregar el apartado de poner nombre
-        PanelForm.add(new JLabel(" Nombre y Apellido:"), Component.CENTER_ALIGNMENT); //Etiqueta o poner nombre de campo
-        TxtNombreApellido = new JTextField(20);
-        TxtNombreApellido.setMaximumSize(CampoDimension); //agregamos el tamaño maximo que puede agarrar
-        TxtNombreApellido.setPreferredSize(CampoDimension); //El preferido
-        TxtNombreApellido.setAlignmentX(Component.CENTER_ALIGNMENT); //Y su alineacion
-        PanelForm.add(TxtNombreApellido); //Se agrega al panel
-
-        PanelForm.add(Box.createVerticalStrut(15)); //Espacio vacío
-
-        //Agregar el apartado de poner cedula
-        PanelForm.add(new JLabel(" Cédula de identidad:"),Component.CENTER_ALIGNMENT);
-        TxtCedula = new JTextField(20);
-        TxtCedula.setMaximumSize(CampoDimension);
-        TxtCedula.setPreferredSize(CampoDimension);
-        TxtCedula.setAlignmentX(Component.CENTER_ALIGNMENT);
-        PanelForm.add(TxtCedula);
-
-        PanelForm.add(Box.createVerticalStrut(15));
-
-        //Agregar el apartado de poner correo
-        PanelForm.add(new JLabel(" Correo electrónico:"),Component.CENTER_ALIGNMENT);
-        TxtCorreo = new JTextField(20);
-        TxtCorreo.setMaximumSize(CampoDimension);
-        TxtCorreo.setPreferredSize(CampoDimension);
-        TxtCorreo.setAlignmentX(Component.CENTER_ALIGNMENT);
-        PanelForm.add(TxtCorreo);
-
-        PanelForm.add(Box.createVerticalStrut(15));
-
-        //Agregar el apartado de poner contraseña
-        PanelForm.add(new JLabel(" Contraseña:"), Component.CENTER_ALIGNMENT);
-        TxtContra = new JPasswordField(20);
-        TxtContra.setMaximumSize(CampoDimension);
-        TxtContra.setPreferredSize(CampoDimension);
-        TxtContra.setAlignmentX(Component.CENTER_ALIGNMENT);
-        PanelForm.add(TxtContra);
-
-        PanelForm.add(Box.createVerticalGlue());
-
-        ContenedorForm.add(PanelForm,  new GridBagConstraints());
-
-        add(ContenedorForm, BorderLayout.CENTER);
-        
-        PanelForm.setVisible(true);
-    }*/
-    private void agregarTitulo(JPanel panel) {
-        JLabel TituloLabel = new JLabel(" Crea una cuenta nueva: ");
-        TituloLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        TituloLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(TituloLabel);
-        panel.add(Box.createRigidArea(new Dimension(0, 20)));
-
     }
-    private void agregarCampos(JPanel panel) {
 
-        JPanel formPanel = new JPanel();
-        formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
-        formPanel.setOpaque(false);
+    private void inicializarComponentes() {
+        Dimension tamBoton = new Dimension(400, 55);
+
+        btnRegistrarse = new BotonNeon("Registrarse");
+        btnRegistrarse.setPreferredSize(tamBoton);
+        btnRegistrarse.setMaximumSize(tamBoton);
+        btnRegistrarse.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Link de login (estilo clickable)
+        loginLink = new JLabel("¿Ya tienes una cuenta? Inicia sesión");
+        loginLink.setFont(new Font("Arial", Font.PLAIN, 16));
+        loginLink.setForeground(new Color(220, 220, 220));
+        loginLink.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        loginLink.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         TxtNombreApellido = new JTextField();
         TxtCedula = new JTextField();
         TxtCorreo = new JTextField();
         TxtContra = new JPasswordField();
-        agregarCampo(formPanel, "Nombre y Apellido", TxtNombreApellido);
-        agregarCampo(formPanel, "Cédula de identidad", TxtCedula);
-        agregarCampo(formPanel, "Correo electrónico", TxtCorreo);
-        agregarCampo(formPanel, "Contraseña", TxtContra);
-
-        panel.add(formPanel);
     }
 
-    private void agregarCampo(JPanel panel, String textoLabel, JTextField campo) {
-        JLabel label = new JLabel(textoLabel);
-        label.setFont(new Font("Arial", Font.BOLD, 14));
-        label.setAlignmentX(Component.CENTER_ALIGNMENT); 
+    private void construirCuerpo() {
+        JPanel panelFondo = new JPanel() {
+            @Override
+            protected void paintComponent(java.awt.Graphics g) {
+                java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+                g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new java.awt.Color(255, 255, 255, 15));
+                g2.fillRoundRect(200, 10, getWidth() - 400, getHeight() - 25, 50, 50);
+                g2.setColor(new java.awt.Color(255, 255, 255, 30));
+                g2.drawRoundRect(200, 10, getWidth() - 400, getHeight() - 25, 50, 50);
+                g2.dispose();
+            }
+        };
+        panelFondo.setLayout(new BoxLayout(panelFondo, BoxLayout.Y_AXIS));
+        panelFondo.setOpaque(false);
+        panelFondo.setBorder(BorderFactory.createEmptyBorder(60, 20, 60, 20));
 
-        Dimension dim = new Dimension(400, 35);
-        campo.setMaximumSize(dim);
+        panelFondo.add(Box.createVerticalGlue());
+
+        // Saludo grande (estilo de tu amigo)
+        JLabel saludo = new JLabel("¡Únete, Ucevista!");
+        saludo.setFont(new Font("Arial", Font.BOLD, 40));
+        saludo.setForeground(new Color(240, 240, 240));
+        saludo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panelFondo.add(saludo);
+
+        panelFondo.add(Box.createVerticalStrut(10));
+
+        JLabel subTitulo = new JLabel("Crea tu cuenta para el comedor", JLabel.CENTER);
+        subTitulo.setFont(new Font("Arial", Font.PLAIN, 18));
+        subTitulo.setForeground(new Color(180, 180, 185));
+        subTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panelFondo.add(subTitulo);
+
+        panelFondo.add(Box.createVerticalStrut(40));
+
+        // Formulario de campos (tu diseño centrado)
+        JPanel formPanel = new JPanel();
+        formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+        formPanel.setOpaque(false);
+        formPanel.setMaximumSize(new Dimension(450, 300));
+        formPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        Dimension tamCampo = new Dimension(450, 35);
+        Font fontLabel = new Font("Arial", Font.BOLD, 14);
+
+        agregarCampoForm(formPanel, "Nombre y Apellido", TxtNombreApellido, tamCampo, fontLabel);
+        agregarCampoForm(formPanel, "Cédula de identidad", TxtCedula, tamCampo, fontLabel);
+        agregarCampoForm(formPanel, "Correo electrónico", TxtCorreo, tamCampo, fontLabel);
+        agregarCampoForm(formPanel, "Contraseña", TxtContra, tamCampo, fontLabel);
+
+        panelFondo.add(formPanel);
+
+        panelFondo.add(Box.createVerticalStrut(30));
+
+        panelFondo.add(loginLink);
+
+        panelFondo.add(Box.createVerticalStrut(30));
+
+        panelFondo.add(btnRegistrarse);
+
+        panelFondo.add(Box.createVerticalGlue());
+
+        this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
+    }
+
+    private void agregarCampoForm(JPanel panel, String texto, JTextField campo, Dimension dim, Font font) {
+        JLabel label = new JLabel(texto);
+        label.setFont(font);
+        label.setForeground(new Color(220, 220, 225));
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         campo.setPreferredSize(dim);
-        campo.setAlignmentX(Component.CENTER_ALIGNMENT); //Centra
+        campo.setMaximumSize(dim);
+        campo.setMinimumSize(dim);
+        campo.setAlignmentX(Component.LEFT_ALIGNMENT);
+        campo.setBorder(BorderFactory.createEmptyBorder(2, 12, 2, 12));
+        campo.setBackground(Color.WHITE);
 
         panel.add(label);
-        panel.add(Box.createVerticalStrut(5)); // Espacio etiqueta-campo
+        panel.add(Box.createVerticalStrut(5));
         panel.add(campo);
-        panel.add(Box.createVerticalStrut(15)); // Espacio entre bloques
-    }
-    private void agregarInferior(JPanel panel){
-        JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
-        panelInferior.add(new JLabel(" ¿Ya tienes una cuenta? ") );
-        registroBoton = new JButton("Registrarse");
-        
-
-        panelInferior.add(registroBoton);
-
-        panel.add(panelInferior);
+        panel.add(Box.createVerticalStrut(15));
     }
 
+    // Getters para acceso desde el controlador
+    public String getNombreApellido() { return TxtNombreApellido.getText(); }
+    public String getCedula() { return TxtCedula.getText(); }
+    public String getCorreo() { return TxtCorreo.getText(); }
+    public String getContra() { return new String(TxtContra.getPassword()); }
+    public JLabel getLoginLink() { return loginLink; }
+    public BotonNeon getBtnRegistrarse() { return btnRegistrarse; }
 }
