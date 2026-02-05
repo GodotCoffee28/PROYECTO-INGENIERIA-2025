@@ -92,9 +92,15 @@ public class LogicaInterfaz {
 	private void mostrarRegistro() {
 		if (vistaInicio != null) {
 			vistaInicio.dispose();  // ← AQUÍ ESTABA EL ERROR: no cerraba la ventana de inicio
+			vistaInicio = null;
 		}
+		if (vistaInicioSesion != null) {
+        	vistaInicioSesion.dispose();
+        	vistaInicioSesion = null;
+    	}
 		if (vistaRegistro != null) {
 			vistaRegistro.dispose();
+			vistaRegistro = null;
 		}
 		vistaRegistro = new VistaRegistro();
 		vistaRegistro.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
