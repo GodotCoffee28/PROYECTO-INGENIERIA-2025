@@ -15,7 +15,7 @@ public class LogicaInterfaz {
 
 	private VistaInicio vistaInicio;
 	private VistaInicioSesion vistaInicioSesion;
-	private VistaRegistro registroView;
+	private VistaRegistro vistaRegistro;
 
 	public void iniciar() {
 		SwingUtilities.invokeLater(() -> {
@@ -93,18 +93,25 @@ public class LogicaInterfaz {
 		if (vistaInicio != null) {
 			vistaInicio.dispose();  // ← AQUÍ ESTABA EL ERROR: no cerraba la ventana de inicio
 		}
-		if (registroView != null) {
-			registroView.dispose();
+		if (vistaRegistro != null) {
+			vistaRegistro.dispose();
 		}
-		registroView = new VistaRegistro();
-		registroView.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		vistaRegistro = new VistaRegistro();
+		vistaRegistro.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		// Botón ←: vuelve al inicio
-		registroView.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
+		vistaRegistro.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent e) {
-				registroView.dispose();
+				vistaRegistro.dispose();
 				iniciar(); // Vuelve a la pantalla principal
+			}
+		});
+		vistaRegistro.getLoginLink().addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent e) {
+				vistaRegistro.dispose();
+				mostrarInicioSesion(); // Vuelve a inicio sesion
 			}
 		});
 	}

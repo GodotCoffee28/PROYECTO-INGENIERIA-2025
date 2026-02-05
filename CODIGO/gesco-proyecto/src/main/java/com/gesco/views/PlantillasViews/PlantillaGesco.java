@@ -19,6 +19,7 @@ public class PlantillaGesco extends JFrame {
 
     protected JPanel contenedorPrincipal; 
     private JLabel backIcon;  
+    private JLabel menuIcon;
 
     public PlantillaGesco() {
         //Configuración de la ventana
@@ -47,7 +48,7 @@ public class PlantillaGesco extends JFrame {
         
         topPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(255, 255, 255)));
         
-        JLabel menuIcon = new JLabel("☰");
+        menuIcon = new JLabel("☰");
         menuIcon.setFont(new Font("Dialog", Font.PLAIN, 45));
         menuIcon.setForeground(new Color(180, 180, 180));
         menuIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -63,6 +64,7 @@ public class PlantillaGesco extends JFrame {
                 menuIcon.setForeground(new Color(180, 180, 180));
             }
         });
+
         
         JLabel tituloEncabezado = new JLabel("Comedor estudiantil UCV", SwingConstants.CENTER);
         tituloEncabezado.setFont(new Font("Arial", Font.BOLD, 30));
@@ -83,7 +85,17 @@ public class PlantillaGesco extends JFrame {
         rellenoBack.setFont(new Font("Dialog", Font.PLAIN, 45));
         rellenoBack.setForeground(new Color(0,0,0,0)); 
         rellenoBack.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
-
+        
+        backIcon.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                backIcon.setForeground(Color.WHITE);
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                backIcon.setForeground(new Color(180, 180, 180));
+            }
+        });
 
         topPanel.add(menuIcon, BorderLayout.WEST);
         topPanel.add(tituloEncabezado, BorderLayout.CENTER);
@@ -101,6 +113,9 @@ public class PlantillaGesco extends JFrame {
         return etiqueta;
     }
 
+    public JLabel getMenuIcon(){
+        return menuIcon;
+    }
     public JLabel getBackIcon() {
         return backIcon;
     }

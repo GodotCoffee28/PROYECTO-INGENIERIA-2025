@@ -46,7 +46,6 @@ public class VistaRegistro extends PlantillaGesco {
         btnRegistrarse.setMaximumSize(tamBotonPrincipal);
         btnRegistrarse.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // JLabel interactivo (estilo link) sin MouseListener complejo
         loginLink = new JLabel("¿Ya tiene cuenta? Inicie sesión");
         loginLink.setFont(new Font("Arial", Font.PLAIN, 16));
         loginLink.setForeground(new Color(220, 220, 220)); // Color gris claro como el de inicio de sesión
