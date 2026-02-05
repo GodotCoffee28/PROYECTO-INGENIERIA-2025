@@ -1,21 +1,21 @@
 package com.gesco.controllers;
 
+import java.awt.event.MouseEvent;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputAdapter;
 
-import com.gesco.views.RegistroView;
 import com.gesco.views.VistaInicio;
 import com.gesco.views.VistaInicioSesion;
-
-import java.awt.event.MouseEvent;
+import com.gesco.views.VistaRegistro;
 
 public class LogicaInterfaz {
 
 	private VistaInicio vistaInicio;
 	private VistaInicioSesion vistaInicioSesion;
-	private RegistroView registroView;
+	private VistaRegistro registroView;
 
 	public void iniciar() {
 		SwingUtilities.invokeLater(() -> {
@@ -83,7 +83,7 @@ public class LogicaInterfaz {
 		if (registroView != null) {
 			registroView.dispose();
 		}
-		registroView = new RegistroView();
+		registroView = new VistaRegistro();
 		registroView.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 }
