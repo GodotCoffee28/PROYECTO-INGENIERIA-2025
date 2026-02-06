@@ -20,7 +20,7 @@ public class PlantillaGesco extends JFrame {
     protected JPanel contenedorPrincipal; 
     private JLabel backIcon;  
     private JLabel menuIcon;
-    private MenuDesplegable menuDesplegableGeneral;
+    private final MenuDesplegable menuDesplegableGeneral;
     public PlantillaGesco() {
         //Configuración de la ventana
         setTitle("Comedor estudiantil UCV");
