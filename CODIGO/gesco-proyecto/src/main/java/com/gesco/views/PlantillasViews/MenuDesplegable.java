@@ -31,39 +31,40 @@ public class MenuDesplegable {
         menu.setBackground(new Color(60, 60, 65));
         menu.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
 
-        // Creamos los items comunes
-        JMenuItem itemInicio = new JMenuItem("Ir a Inicio");
-        JMenuItem itemInicioSesion = new JMenuItem("Ir a Inicio de sesión");
-        JMenuItem itemRegistro = new JMenuItem("Ir a Registro");
-        JMenuItem itemFila = new JMenuItem("Ir a la Fila");
-        JMenuItem itemMenuSemana = new JMenuItem("Ver Menu de la semana");
-        JMenuItem itemTurnos = new JMenuItem("Ver turnos");
+        String[] etiquetas = {
+            "Ir a Inicio", 
+            "Ir a Inicio de sesión", 
+            "Ir a Registro", 
+            "Ir a la Fila", 
+            "Ver Menu de la semana", 
+            "Ver turnos"
+        };
 
-        // Comandos
-        itemInicio.setActionCommand("CMD_INICIO");
-        itemInicioSesion.setActionCommand("CMD_SESION");
-        itemRegistro.setActionCommand("CMD_REGISTRO");
-        itemFila.setActionCommand("CMD_FILA");
-        itemMenuSemana.setActionCommand("CMD_MENUSEMANA");
-        itemTurnos.setActionCommand("CMD_TURNOS");
+        String[] comandos = {
+            "CMD_INICIO", 
+            "CMD_SESION", 
+            "CMD_REGISTRO", 
+            "CMD_FILA", 
+            "CMD_MENUSEMANA", 
+            "CMD_TURNOS"
+        };
 
-        // Diseño
-        diseñarItem(itemInicio);
-        diseñarItem(itemInicioSesion);
-        diseñarItem(itemRegistro);
-        diseñarItem(itemFila);
-        diseñarItem(itemMenuSemana);
-        diseñarItem(itemTurnos);
+        // 2. Iteramos una sola vez para crear, configurar y agregar todo
+        for (int i = 0; i < etiquetas.length; i++) {
+            // Creación
+            JMenuItem item = new JMenuItem(etiquetas[i]);
+            
+            // Configuración
+            item.setActionCommand(comandos[i]);
+            
+            // Diseño (Estilo)
+            diseñarItem(item);
+            
+            // Agregado al menú
+            menu.add(item);
+        }
 
-        // Agregamos al menú nuevo
-        menu.add(itemInicio);
-        menu.add(itemInicioSesion);
-        menu.add(itemRegistro);
-        menu.add(itemFila);
-        menu.add(itemMenuSemana);
-        menu.add(itemTurnos);
-
-        return menu; // Devolvemos el menú "virgen" listo para usarse
+        return menu; 
     }
 
     private void diseñarItem(JMenuItem item) {
@@ -94,6 +95,29 @@ private void PonerItemsAdmin(JPopupMenu menuDestino){
         // itemPanelAdmin.setActionCommand("CMD_ADMIN_PANEL");
         // diseñarItem(itemPanelAdmin);
         // menuDestino.add(itemPanelAdmin); 
+
+        String etiquetasAdmin[] = {
+        "Ir a carga del CCB ",
+        "Ir a crear menu",
+        "Ir a editar menu",
+        "Ir a gestion de menu"
+        };
+        String comandosAdmin[] = {
+        "CMD_CCB",
+        "CMD_CREARMENU",
+        "CMD_EDITARMENU",
+        "CMD_GESTIONMENU"
+        };
+
+        for (int i= 0; i < etiquetasAdmin.length; i++) {
+            JMenuItem item = new JMenuItem(etiquetasAdmin[i]);
+            item.setActionCommand(comandosAdmin[i]);
+            diseñarItem(item);
+            menuDestino.add(item);
+        }
+
+
+
     }
     private void PonerItemSalir(JPopupMenu Jp){
         JMenuItem itemSalir = new JMenuItem("Salir");
