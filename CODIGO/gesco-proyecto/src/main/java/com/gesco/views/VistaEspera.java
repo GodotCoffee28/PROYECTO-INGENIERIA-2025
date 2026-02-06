@@ -65,4 +65,8 @@ public class VistaEspera extends PlantillaGesco {
 
         this.contenedorPrincipal.add(panelContenido, BorderLayout.CENTER);
     }
+
+    public BotonNeon getVolver() {
+        return volver;
+    }
 }

@@ -121,4 +121,18 @@ public class PlantillaGesco extends JFrame {
     public JLabel getBackIcon() {
         return backIcon;
     }
+
+    protected void ocultarMenu() {
+        if (menuIcon != null) {
+            menuIcon.setVisible(false);
+            menuIcon.setEnabled(false);
+        }
+    }
+
+    protected void ocultarBack() {
+        if (backIcon != null) {
+            backIcon.setVisible(false);
+            backIcon.setEnabled(false);
+        }
+    }
 }

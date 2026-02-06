@@ -29,6 +29,7 @@ public class VistaInicioSesion extends PlantillaGesco {
     
     public VistaInicioSesion() {
         super(); 
+        ocultarMenu();
         inicializarComponentes();
         construirCuerpo();
         revalidate();

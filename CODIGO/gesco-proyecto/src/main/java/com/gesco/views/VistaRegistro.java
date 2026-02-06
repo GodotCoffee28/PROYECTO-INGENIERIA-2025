@@ -30,6 +30,7 @@ public class VistaRegistro extends PlantillaGesco {
 
     public VistaRegistro() {
         super(); 
+        ocultarMenu();
         inicializarComponentes();
         construirCuerpo();
         revalidate();
