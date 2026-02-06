@@ -218,14 +218,32 @@ public class LogicaInterfaz {
             if (comp instanceof javax.swing.JMenuItem) {
                 ((javax.swing.JMenuItem) comp).addActionListener(e -> {
                     procesarAccionMenu(e.getActionCommand());
+                    //procesarAccionMenuAdmin(e.getActionCommand()); esta linea para q toque lo de admin
                 });
             }
         }
     }
 
+	//aqui esta la funcion
+	private void procesarAccionMenuAdmin(String comando){
+		switch (comando) {
+			case "CMD_CCB": 
+
+				break;
+			case "CMD_CREARMENU": 
+
+				break;
+			case "CMD_EDITARMENU": 
+
+				break;
+			case "CMD_GESTIONMENU": 
+
+				break;
+		}
+	}
     private void procesarAccionMenu(String comando) {
         switch (comando) {
-            case "CMD_INICIO_":
+            case "CMD_INICIO":
 				//iR A inicio
                 break;
             case "CMD_SESION":
@@ -243,6 +261,9 @@ public class LogicaInterfaz {
 			case "CMD_TURNOS":
 				//Ir a la interfaz de turnos (por hacer)
 				break;
+
+			//Gabriel se que estas leyendo esto, apartir de aquí irian las acciones de admin pero no se si es mas comodo que las tengas 
+			//asi que hice una funcion aparte
             case "CMD_SALIR":
                 System.exit(0); // Cierra la app
                 break;
