@@ -1,5 +1,10 @@
-import javax.swing.*;
+package com.gesco.views;
+
 import java.awt.*;
+import javax.swing.*;
+
+import com.gesco.views.PlantillasViews.BotonNeon;
+import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaCrearMenu extends PlantillaGesco {
     private BotonNeon btnCrear;

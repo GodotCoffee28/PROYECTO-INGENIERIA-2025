@@ -1,6 +1,10 @@
+package com.gesco.views;
+
 import java.awt.*;
 import javax.swing.*;
 
+import com.gesco.views.PlantillasViews.BotonNeon;
+import com.gesco.views.PlantillasViews.PlantillaGesco;
 public class VistaGestionMenu extends PlantillaGesco {
      private BotonNeon btnEditar, btnCrear, btnReiniciar;
     private JLabel Titulo;
