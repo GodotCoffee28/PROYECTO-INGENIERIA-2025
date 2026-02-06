@@ -11,7 +11,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputAdapter;
 
-import com.gesco.views.PlantillasViews.PlantillaGesco;
 import com.gesco.views.VistaInicio;
 import com.gesco.views.VistaInicioSesion;
 import com.gesco.views.VistaRegistro;
@@ -20,6 +19,7 @@ public class LogicaInterfaz {
 	private VistaInicio vistaInicio;
 	private VistaInicioSesion vistaInicioSesion;
 	private VistaRegistro vistaRegistro;
+	private VistaEspera vistaEspera;
 
 	public void iniciar() {
 		SwingUtilities.invokeLater(() -> {
@@ -133,6 +133,78 @@ public class LogicaInterfaz {
 				vistaRegistro.dispose();
 				mostrarInicioSesion(); // Vuelve a inicio sesion
 			}
+		});
+		vistaRegistro.getBtnRegistrarse().addActionListener(e -> procesarRegistro());
+	}
+
+	private void procesarRegistro() {
+		String nombre = vistaRegistro.getNombreApellido();
+		String cedula = vistaRegistro.getCedula();
+		String correo = vistaRegistro.getCorreo();
+		String clave = vistaRegistro.getContra();
+
+		if (nombre == null || nombre.isBlank()
+			|| cedula == null || cedula.isBlank()
+			|| correo == null || correo.isBlank()
+			|| clave == null || clave.isBlank()) {
+			JOptionPane.showMessageDialog(
+				vistaRegistro,
+				"Debe completar todos los campos.",
+				"Datos incompletos",
+				JOptionPane.WARNING_MESSAGE
+			);
+			return;
+		}
+
+		if (!cedula.matches("\\d+")) {
+			JOptionPane.showMessageDialog(
+				vistaRegistro,
+				"La cédula debe contener solo números.",
+				"Cédula inválida",
+				JOptionPane.WARNING_MESSAGE
+			);
+			return;
+		}
+
+		if (!correo.contains("@")) {
+			JOptionPane.showMessageDialog(
+				vistaRegistro,
+				"El correo debe contener un '@'.",
+				"Correo inválido",
+				JOptionPane.WARNING_MESSAGE
+			);
+			return;
+		}
+
+		boolean guardado = DataBase.registrarUsuario(cedula, clave, nombre, correo);
+		if (!guardado) {
+			JOptionPane.showMessageDialog(
+				vistaRegistro,
+				"No se pudo guardar el usuario. La cedula ya esta registrada.",
+				"Registro fallido",
+				JOptionPane.ERROR_MESSAGE
+			);
+			return;
+		}
+
+		JOptionPane.showMessageDialog(
+			vistaRegistro,
+			"Registro exitoso. Estamos validando sus datos.",
+			"Registro",
+			JOptionPane.INFORMATION_MESSAGE
+		);
+		mostrarEspera();
+	}
+
+	private void mostrarEspera() {
+		if (vistaRegistro != null) {
+			vistaRegistro.dispose();
+			vistaRegistro = null;
+		}
+		vistaEspera = new VistaEspera();
+		vistaEspera.getVolver().addActionListener(e -> {
+			vistaEspera.dispose();
+			iniciar();
 		});
 	}
 
