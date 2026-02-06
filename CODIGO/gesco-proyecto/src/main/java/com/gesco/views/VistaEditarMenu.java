@@ -12,7 +12,7 @@ public class VistaEditarMenu extends PlantillaGesco {
         inicializarComponentes();
         construirCuerpo();
         revalidate();
-        repaint();
+        repaint(); 
         setVisible(true);
     }
 
