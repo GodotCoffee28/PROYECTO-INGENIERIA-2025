@@ -10,7 +10,6 @@ import javax.swing.event.MouseInputAdapter;
 import com.gesco.views.VistaInicio;
 import com.gesco.views.VistaInicioSesion;
 import com.gesco.views.VistaRegistro;
-
 public class LogicaInterfaz {
 
 	private VistaInicio vistaInicio;
@@ -23,7 +22,15 @@ public class LogicaInterfaz {
 			conectarVistaInicio();
 		});
 	}
+	/* queria generalizar el inicio jj
+		public void iniciar(PlantillaGesco pG){
+		SwingUtilities.invokeLater(() -> {
+			pG = new PlantillaGesco();
 
+		});
+	}
+
+	*/
 	private void conectarVistaInicio() {
 		vistaInicio.getBtnInicioSesion().addActionListener(e -> mostrarInicioSesion());
 		vistaInicio.getBtnRegistrarse().addActionListener(e -> mostrarRegistro());
@@ -35,7 +42,7 @@ public class LogicaInterfaz {
 		}
 		vistaInicioSesion = new VistaInicioSesion();
 		conectarVistaInicioSesion();
-
+		conectarMenuGesco(vistaInicioSesion);
 		// Botón ←: vuelve al inicio
 		vistaInicioSesion.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
@@ -78,7 +85,6 @@ public class LogicaInterfaz {
 				"Acceso",
 				JOptionPane.INFORMATION_MESSAGE
 			);
-			// Aquí podrías ir a otra pantalla (ej. menú principal) en el futuro
 		} else {
 			JOptionPane.showMessageDialog(
 				vistaInicioSesion,
@@ -91,12 +97,13 @@ public class LogicaInterfaz {
 
 	private void mostrarRegistro() {
 		if (vistaInicio != null) {
-			vistaInicio.dispose();  // ← AQUÍ ESTABA EL ERROR: no cerraba la ventana de inicio
+			vistaInicio.dispose();  
 		}
 		if (vistaRegistro != null) {
 			vistaRegistro.dispose();
 		}
 		vistaRegistro = new VistaRegistro();
+		conectarMenuGesco(vistaRegistro);
 		vistaRegistro.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		// Botón ←: vuelve al inicio
@@ -115,4 +122,48 @@ public class LogicaInterfaz {
 			}
 		});
 	}
+	private void conectarMenuGesco(com.gesco.views.PlantillasViews.PlantillaGesco vista) {
+        
+        vista.getMenuIcon().addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                vista.getPopupMenu().getMenu().show(e.getComponent(), 0, e.getComponent().getHeight());
+            }
+        });
+
+
+        for (java.awt.Component comp : vista.getPopupMenu().getMenu().getComponents()) {
+            if (comp instanceof javax.swing.JMenuItem) {
+                ((javax.swing.JMenuItem) comp).addActionListener(e -> {
+                    procesarAccionMenu(e.getActionCommand());
+                });
+            }
+        }
+    }
+
+    private void procesarAccionMenu(String comando) {
+        switch (comando) {
+            case "CMD_INICIO_":
+				//iR A inicio
+                break;
+            case "CMD_SESION":
+					//Ir a inicio de sesion
+                break;
+			case "CMD_REGISTRO":
+				//Ir al registro
+				break;
+			case "CMD_FILA":
+				//Ir a fila (Ya montare esa interfaz)
+				break;
+			case "CMD_MENUSEMANA":
+				//Ir menu de la semana (me falta hacerlo)
+				break;
+			case "CMD_TURNOS":
+				//Ir a la interfaz de turnos (por hacer)
+				break;
+            case "CMD_SALIR":
+                System.exit(0); // Cierra la app
+                break;
+        }
+    }
 }

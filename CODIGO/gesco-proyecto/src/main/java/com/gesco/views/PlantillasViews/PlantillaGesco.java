@@ -20,7 +20,7 @@ public class PlantillaGesco extends JFrame {
     protected JPanel contenedorPrincipal; 
     private JLabel backIcon;  
     private JLabel menuIcon;
-
+    private MenuDesplegable menuDesplegableGeneral;
     public PlantillaGesco() {
         //Configuración de la ventana
         setTitle("Comedor estudiantil UCV");
@@ -28,7 +28,7 @@ public class PlantillaGesco extends JFrame {
         setSize(1100, 750); 
         setLocationRelativeTo(null);
         setResizable(false);
-
+        menuDesplegableGeneral = new MenuDesplegable();
         //Fondo con degradado
         contenedorPrincipal = new JPanel(new BorderLayout());
         contenedorPrincipal.setBackground(new Color(33, 33, 39));
@@ -104,7 +104,7 @@ public class PlantillaGesco extends JFrame {
 
         return topPanel;
     }
-    
+
      protected JLabel crearEtiquetaSimple(String texto, int size, Color color) {
         JLabel etiqueta = new JLabel(texto);
         etiqueta.setFont(new Font("Arial", Font.PLAIN, size));
@@ -112,7 +112,9 @@ public class PlantillaGesco extends JFrame {
         etiqueta.setAlignmentX(Component.CENTER_ALIGNMENT);
         return etiqueta;
     }
-
+    public MenuDesplegable getPopupMenu() {
+        return menuDesplegableGeneral;
+    }
     public JLabel getMenuIcon(){
         return menuIcon;
     }
