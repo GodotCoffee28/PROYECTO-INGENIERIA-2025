@@ -97,10 +97,20 @@ public class LogicaInterfaz {
 
 	private void mostrarRegistro() {
 		if (vistaInicio != null) {
+<<<<<<< HEAD
 			vistaInicio.dispose();  
+=======
+			vistaInicio.dispose();  // ← AQUÍ ESTABA EL ERROR: no cerraba la ventana de inicio
+			vistaInicio = null;
+>>>>>>> c4b8c0a8bfba150e7d197e2ffdcb7cbcfafd6563
 		}
+		if (vistaInicioSesion != null) {
+        	vistaInicioSesion.dispose();
+        	vistaInicioSesion = null;
+    	}
 		if (vistaRegistro != null) {
 			vistaRegistro.dispose();
+			vistaRegistro = null;
 		}
 		vistaRegistro = new VistaRegistro();
 		conectarMenuGesco(vistaRegistro);
