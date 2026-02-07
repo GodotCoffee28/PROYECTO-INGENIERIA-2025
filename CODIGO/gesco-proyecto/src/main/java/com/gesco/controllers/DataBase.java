@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DataBase {
     private static final String ARCHIVO = "data/usuarios.txt";
@@ -39,42 +41,70 @@ public class DataBase {
         try {
             file.createNewFile();
         } catch (IOException e) {
-            System.out.println("No se pudo crear el archivo de usuarios.");
+            System.out.println("Error al crear el archivo de usuarios.");
         }
     }
 
-    private static File obtenerArchivoAdmins() {
-        try {
-            Path basePath = Paths.get(
-                DataBase.class.getProtectionDomain().getCodeSource().getLocation().toURI()
-            );
-            return basePath.resolve(ADMIN_ARCHIVO).toFile();
-        } catch (URISyntaxException e) {
-            return new File(ADMIN_ARCHIVO);
-        }
-    }
-
-    private static void asegurarArchivoAdmins() {
-        File file = obtenerArchivoAdmins();
-        if (file.exists()) {
-            return;
-        }
-
-        File parent = file.getParentFile();
-        if (parent != null && !parent.exists()) {
-            parent.mkdirs();
-        }
-
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            System.out.println("No se pudo crear el archivo de admins.");
-        }
-    }
-
-    public static boolean validarInicioSesion(String usuario, String clave) {
-        if (usuario == null || usuario.isBlank() || clave == null || clave.isBlank()) {
+    // Nuevo registro: agrega saldo por defecto 0.0
+    public static boolean registrarUsuario(String cedula, String clave, String nombre, String correo) {
+        if (usuarioExiste(cedula)) {
             return false;
+        }
+
+        asegurarArchivo();
+
+        String linea = String.format("%s:%s:%s:%s:0.0;%n", 
+                valorSeguro(cedula), valorSeguro(clave), valorSeguro(nombre), valorSeguro(correo));
+
+        File archivo = obtenerArchivoUsuarios();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, true))) {
+            writer.write(linea);
+            return true;
+        } catch (IOException e) {
+            System.out.println("Error al registrar usuario.");
+            return false;
+        }
+    }
+
+    // Validación de login (solo cédula y clave)
+    public static boolean validarInicioSesion(String cedula, String clave) {
+        if (cedula == null || cedula.isBlank() || clave == null || clave.isBlank()) {
+            return false;
+        }
+
+        asegurarArchivo();
+
+        File archivo = obtenerArchivoUsuarios();
+        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                if (linea.trim().isEmpty()) {
+                    continue;
+                }
+
+                String[] partes = linea.split(":", 5);
+                if (partes.length < 4) {
+                    continue;
+                }
+
+                String cedulaArchivo = partes[0].trim();
+                String claveArchivo = partes[1].trim();
+
+                if (cedula.equals(cedulaArchivo) && clave.equals(claveArchivo)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error al validar inicio de sesión.");
+        }
+
+        return false;
+    }
+
+    // Nuevo método: obtener saldo del usuario (devuelve 0.0 si no existe o formato viejo)
+    public static double obtenerSaldo(String cedula) {
+        if (cedula == null || cedula.isBlank()) {
+            return 0.0;
         }
 
         asegurarArchivo();
@@ -88,69 +118,76 @@ public class DataBase {
                 }
 
                 String[] partes = linea.split(":");
-                if (partes.length < 2) {
+                if (partes.length < 1 || !cedula.equals(partes[0].trim())) {
                     continue;
                 }
 
-                String usuarioArchivo = partes[0].trim();
-                String claveArchivo = partes[1].trim();
-
-                if (usuario.equals(usuarioArchivo) && clave.equals(claveArchivo)) {
-                    return true;
+                // Si hay 5 partes (incluye saldo)
+                if (partes.length >= 5) {
+                    try {
+                        return Double.parseDouble(partes[4].replace(";", "").trim());
+                    } catch (NumberFormatException e) {
+                        return 0.0;
+                    }
                 }
+                // Formato viejo (sin saldo) → devuelve 0.0
+                return 0.0;
             }
         } catch (IOException e) {
-            System.out.println("Error al leer el archivo de usuarios.");
+            System.out.println("Error al leer saldo.");
         }
 
-        return false;
+        return 0.0;
     }
 
-    public static boolean registrarUsuario(String cedula, String clave, String nombre, String correo) {
-        if (cedula == null || cedula.isBlank() || clave == null || clave.isBlank()) {
+    // Nuevo método: actualizar saldo del usuario
+    public static boolean actualizarSaldo(String cedula, double nuevoSaldo) {
+        if (cedula == null || cedula.isBlank()) {
             return false;
         }
 
         asegurarArchivo();
 
-        if (usuarioExiste(cedula)) {
-            return false;
-        }
-
         File archivo = obtenerArchivoUsuarios();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, true))) {
-            String linea = String.format("%s:%s:%s:%s", cedula.trim(), clave.trim(),
-                valorSeguro(nombre), valorSeguro(correo));
-            writer.write(linea);
-            writer.newLine();
-            return true;
-        } catch (IOException e) {
-            System.out.println("Error al escribir el archivo de usuarios.");
-            return false;
-        }
-    }
+        File tempArchivo = new File(archivo.getParent(), "usuarios_temp.txt");
 
-    public static boolean esAdmin(String cedula) {
-        if (cedula == null || cedula.isBlank()) {
-            return false;
-        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(archivo));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(tempArchivo))) {
 
-        asegurarArchivoAdmins();
-
-        File archivo = obtenerArchivoAdmins();
-        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
             String linea;
+            boolean encontrado = false;
+
             while ((linea = reader.readLine()) != null) {
                 if (linea.trim().isEmpty()) {
+                    writer.write(linea + System.lineSeparator());
                     continue;
                 }
 
-                if (cedula.trim().equals(linea.trim())) {
-                    return true;
+                String[] partes = linea.split(":", 5);
+                if (partes.length < 4 || !cedula.equals(partes[0].trim())) {
+                    writer.write(linea + System.lineSeparator());
+                    continue;
                 }
+
+                // Reescribir con nuevo saldo
+                String nuevaLinea = String.format("%s:%s:%s:%s:%.2f;%n",
+                        partes[0].trim(), partes[1].trim(), partes[2].trim(), partes[3].trim(), nuevoSaldo);
+                writer.write(nuevaLinea);
+                encontrado = true;
             }
+
+            if (!encontrado) {
+                return false;
+            }
+
         } catch (IOException e) {
-            System.out.println("Error al leer el archivo de admins.");
+            System.out.println("Error al actualizar saldo.");
+            return false;
+        }
+
+        // Reemplazar archivo original
+        if (archivo.delete() && tempArchivo.renameTo(archivo)) {
+            return true;
         }
 
         return false;
