@@ -71,8 +71,11 @@ public class LogicaInterfaz {
 			vistaInicioComensal = new VistaInicioComensal("Estudiante", 50);
 		}
 
-		
 		menuGescoController.conectar(vistaInicioComensal, esAdmin);
+		new VistaInicioComensalControlador(
+			vistaInicioComensal,
+			this::iniciar
+		).conectar();
 	}
 
 	private void cerrarVistaInicio() {
