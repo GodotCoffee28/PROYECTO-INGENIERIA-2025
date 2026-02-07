@@ -12,6 +12,11 @@ public class Platillo {
         this.nombre = nombre;
         this.insumos = new ArrayList<>();
     }
+    public Platillo() {
+        this.nombre = "Nuevo Platillo";
+        this.insumos = new ArrayList<>();
+        this.insumos.add(new Insumo());
+    }
     public void agregarInsumo(Insumo insumo) {
         if (insumo != null) {
             this.insumos.add(insumo);
