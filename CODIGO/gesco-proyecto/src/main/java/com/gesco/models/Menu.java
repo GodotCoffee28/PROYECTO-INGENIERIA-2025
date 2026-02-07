@@ -14,6 +14,11 @@ public class Menu {
         this.fecha = fecha;
         this.platillos = new ArrayList<>();
     }
+    public Menu() {
+        this.fecha = LocalDate.now();
+        this.platillos = new ArrayList<>();
+        this.platillos.add(new Platillo());
+    }
     public void agregarPlatillo(Platillo platillo) {
         if (platillo != null) {
             this.platillos.add(platillo);

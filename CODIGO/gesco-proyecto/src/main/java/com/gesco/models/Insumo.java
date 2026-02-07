@@ -11,6 +11,11 @@ public class Insumo {
         this.cantidad = cantidad;
         this.tipoNutricional = tipoNutricional;
     }
+    public Insumo(){
+        this.nombre = "Sin nombre";
+        this.cantidad = 0;
+        this.tipoNutricional = "N/A";
+    }
 	public String getNombre() { return nombre; }
     public int getCantidad() { return cantidad; }
     public String getTipoNutricional() { return tipoNutricional; }
