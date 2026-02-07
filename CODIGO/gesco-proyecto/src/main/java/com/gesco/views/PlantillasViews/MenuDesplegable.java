@@ -73,10 +73,12 @@ public class MenuDesplegable {
 
     private void ponerItemsAdmin(JPopupMenu menuDestino) {
         String[] etiquetasAdmin = {
+            "Ir a panel de control",
             "Ir a carga del CCB", "Ir a crear menu", 
             "Ir a editar menu", "Ir a gestion de menu"
         };
         String[] comandosAdmin = {
+            "CMD_CONTROL",
             "CMD_CCB", "CMD_CREARMENU", "CMD_EDITARMENU", "CMD_GESTIONMENU"
         };
 

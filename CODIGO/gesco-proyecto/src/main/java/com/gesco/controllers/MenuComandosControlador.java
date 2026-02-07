@@ -30,6 +30,7 @@ public class MenuComandosControlador {
         }
 
         switch (comando) {
+            case "CMD_CONTROL"     -> acciones.irPanelControl();
             case "CMD_CCB"         -> acciones.irCargaCCB();
             case "CMD_CREARMENU"   -> acciones.irCrearMenu();
             case "CMD_EDITARMENU"  -> acciones.irEditarMenu();
