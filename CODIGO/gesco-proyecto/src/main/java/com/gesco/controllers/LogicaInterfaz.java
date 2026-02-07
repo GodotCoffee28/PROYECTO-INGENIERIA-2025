@@ -17,6 +17,7 @@ public class LogicaInterfaz {
 	private VistaInicioSesion vistaInicioSesion;
 	private VistaRegistro vistaRegistro;
 	private VistaEspera vistaEspera;
+	private boolean usuarioAdmin;
 
 	public void iniciar() {
 		SwingUtilities.invokeLater(() -> {
@@ -44,7 +45,7 @@ public class LogicaInterfaz {
 		}
 		vistaInicioSesion = new VistaInicioSesion();
 		conectarVistaInicioSesion();
-		conectarMenuGesco(vistaInicioSesion);
+		conectarMenuGesco(vistaInicioSesion, false);
 		// Botón ←: vuelve al inicio
 		vistaInicioSesion.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
@@ -81,6 +82,7 @@ public class LogicaInterfaz {
 
 		boolean valido = DataBase.validarInicioSesion(cedula, clave);
 		if (valido) {
+			usuarioAdmin = DataBase.esAdmin(cedula);
 			JOptionPane.showMessageDialog(
 				vistaInicioSesion,
 				"Inicio de sesión correcto.",
@@ -113,7 +115,7 @@ public class LogicaInterfaz {
 			vistaRegistro = null;
 		}
 		vistaRegistro = new VistaRegistro();
-		conectarMenuGesco(vistaRegistro);
+		conectarMenuGesco(vistaRegistro, false);
 		vistaRegistro.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		// Botón ←: vuelve al inicio
@@ -204,21 +206,25 @@ public class LogicaInterfaz {
 			iniciar();
 		});
 	}
-	private void conectarMenuGesco(com.gesco.views.PlantillasViews.PlantillaGesco vista) {
-        
-        vista.getMenuIcon().addMouseListener(new java.awt.event.MouseAdapter() {
+	private void conectarMenuGesco(com.gesco.views.PlantillasViews.PlantillaGesco vista, boolean esAdmin) {
+		javax.swing.JPopupMenu menu = esAdmin
+			? vista.getPopupMenu().getMenuAdmin()
+			: vista.getPopupMenu().getMenuUsuario();
+		
+		vista.getMenuIcon().addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                vista.getPopupMenu().getMenu().show(e.getComponent(), 0, e.getComponent().getHeight());
+				menu.show(e.getComponent(), 0, e.getComponent().getHeight());
             }
         });
 
-
-        for (java.awt.Component comp : vista.getPopupMenu().getMenu().getComponents()) {
+		for (java.awt.Component comp : menu.getComponents()) {
             if (comp instanceof javax.swing.JMenuItem) {
                 ((javax.swing.JMenuItem) comp).addActionListener(e -> {
                     procesarAccionMenu(e.getActionCommand());
-                    //procesarAccionMenuAdmin(e.getActionCommand()); esta linea para q toque lo de admin
+					if (esAdmin) {
+						procesarAccionMenuAdmin(e.getActionCommand());
+					}
                 });
             }
         }

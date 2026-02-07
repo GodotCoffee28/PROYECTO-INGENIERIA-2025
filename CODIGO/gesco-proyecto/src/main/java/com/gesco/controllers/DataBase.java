@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 
 public class DataBase {
     private static final String ARCHIVO = "data/usuarios.txt";
+    private static final String ADMIN_ARCHIVO = "data/admins.txt";
 
     private static File obtenerArchivoUsuarios() {
         try {
@@ -39,6 +40,35 @@ public class DataBase {
             file.createNewFile();
         } catch (IOException e) {
             System.out.println("No se pudo crear el archivo de usuarios.");
+        }
+    }
+
+    private static File obtenerArchivoAdmins() {
+        try {
+            Path basePath = Paths.get(
+                DataBase.class.getProtectionDomain().getCodeSource().getLocation().toURI()
+            );
+            return basePath.resolve(ADMIN_ARCHIVO).toFile();
+        } catch (URISyntaxException e) {
+            return new File(ADMIN_ARCHIVO);
+        }
+    }
+
+    private static void asegurarArchivoAdmins() {
+        File file = obtenerArchivoAdmins();
+        if (file.exists()) {
+            return;
+        }
+
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists()) {
+            parent.mkdirs();
+        }
+
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            System.out.println("No se pudo crear el archivo de admins.");
         }
     }
 
@@ -98,6 +128,32 @@ public class DataBase {
             System.out.println("Error al escribir el archivo de usuarios.");
             return false;
         }
+    }
+
+    public static boolean esAdmin(String cedula) {
+        if (cedula == null || cedula.isBlank()) {
+            return false;
+        }
+
+        asegurarArchivoAdmins();
+
+        File archivo = obtenerArchivoAdmins();
+        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                if (linea.trim().isEmpty()) {
+                    continue;
+                }
+
+                if (cedula.trim().equals(linea.trim())) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error al leer el archivo de admins.");
+        }
+
+        return false;
     }
 
     private static boolean usuarioExiste(String cedula) {
