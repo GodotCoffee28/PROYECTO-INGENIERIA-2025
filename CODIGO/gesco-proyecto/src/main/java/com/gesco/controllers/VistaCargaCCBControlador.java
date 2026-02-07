@@ -1,7 +1,8 @@
 package com.gesco.controllers;
 
-import com.gesco.views.VistaCargaCCB;
 import javax.swing.JOptionPane;
+
+import com.gesco.views.VistaCargaCCB;
 
 public class VistaCargaCCBControlador {
 
@@ -64,7 +65,7 @@ public class VistaCargaCCBControlador {
         }
 
         double ccb = ((cf + cv) / nb) * (1.0 + merma);
-        vista.setResultado(String.format("CCB: %.2f", ccb));
+        vista.setResultado(String.format("%.2f", ccb));
     }
 
     private double parsearNumero(String texto, String nombreCampo) {
