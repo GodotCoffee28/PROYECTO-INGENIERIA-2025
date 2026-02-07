@@ -1,6 +1,23 @@
-import java.awt.*;
-import javax.swing.*;
+package com.gesco.views;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.RenderingHints;
 
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+import com.gesco.views.PlantillasViews.BotonNeon;
+import com.gesco.views.PlantillasViews.PlantillaGesco;
 public class VistaInicioAdmin extends PlantillaGesco {
 
     private BotonNeon btnGestión, btnSubirDatos, btnCambio, btnVerDatos;
