@@ -149,4 +149,20 @@ public class VistaInicioAdmin extends PlantillaGesco {
         
         return tarjeta;
     }
+
+    public BotonNeon getBtnGestion() {
+        return btnGestión;
+    }
+
+    public BotonNeon getBtnSubirDatos() {
+        return btnSubirDatos;
+    }
+
+    public BotonNeon getBtnVerDatos() {
+        return btnVerDatos;
+    }
+
+    public BotonNeon getBtnCambio() {
+        return btnCambio;
+    }
 }
