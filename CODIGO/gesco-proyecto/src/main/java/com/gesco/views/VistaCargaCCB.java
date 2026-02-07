@@ -10,6 +10,7 @@ public class VistaCargaCCB extends PlantillaGesco {
     private BotonNeon btnSubirDatos;
     private JTextField usuario, NB, MERMA, CF, CV;
     private JLabel Titulo;
+    private JLabel lblResultado;
     
     public VistaCargaCCB() {
         super(); 
@@ -31,6 +32,11 @@ public class VistaCargaCCB extends PlantillaGesco {
         Titulo.setFont(new Font("Arial", Font.BOLD, 45)); 
         Titulo.setForeground(new Color(240, 240, 240)); 
         Titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        lblResultado = new JLabel(" ");
+        lblResultado.setFont(new Font("Arial", Font.BOLD, 22));
+        lblResultado.setForeground(new Color(240, 240, 240));
+        lblResultado.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
     
     private void agregarCampos(JPanel panelFondoBase) {
@@ -124,6 +130,8 @@ public class VistaCargaCCB extends PlantillaGesco {
         
         panelFondo.add(Box.createVerticalStrut(30)); 
         panelFondo.add(btnSubirDatos); 
+        panelFondo.add(Box.createVerticalStrut(20));
+        panelFondo.add(lblResultado);
         panelFondo.add(Box.createVerticalGlue());
 
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
@@ -134,4 +142,8 @@ public class VistaCargaCCB extends PlantillaGesco {
     public String getCF(){ return CF.getText();}
     public String getCV(){ return CV.getText();}
     public BotonNeon getBtnSubirDatos() { return btnSubirDatos; }
+
+    public void setResultado(String resultado) {
+        lblResultado.setText(resultado);
+    }
 }

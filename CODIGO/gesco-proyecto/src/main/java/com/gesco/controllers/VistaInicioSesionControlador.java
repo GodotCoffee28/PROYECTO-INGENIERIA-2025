@@ -65,12 +65,6 @@ public class VistaInicioSesionControlador {
                 nombre = "Usuario";
             }
             onLoginSuccess.accept(esAdmin, nombre);
-            JOptionPane.showMessageDialog(
-                vista,
-                "Inicio de sesion correcto.",
-                "Acceso",
-                JOptionPane.INFORMATION_MESSAGE
-            );
         } else {
             JOptionPane.showMessageDialog(
                 vista,

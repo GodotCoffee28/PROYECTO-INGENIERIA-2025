@@ -88,13 +88,6 @@ public class VistaRegistroControlador {
             );
             return;
         }
-
-        JOptionPane.showMessageDialog(
-            vista,
-            "Registro exitoso. Estamos validando sus datos.",
-            "Registro",
-            JOptionPane.INFORMATION_MESSAGE
-        );
         onRegistroSuccess.run();
     }
 }

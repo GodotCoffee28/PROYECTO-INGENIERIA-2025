@@ -1,6 +1,7 @@
 package com.gesco.controllers;
 
 import com.gesco.views.VistaCargaCCB;
+import javax.swing.JOptionPane;
 
 public class VistaCargaCCBControlador {
 
@@ -19,5 +20,74 @@ public class VistaCargaCCBControlador {
                 onBack.run();
             }
         });
+
+        vista.getBtnSubirDatos().addActionListener(e -> calcularCcb());
+    }
+
+    private void calcularCcb() {
+        String nbTexto = vista.getNB();
+        String mermaTexto = vista.getMERMA();
+        String cfTexto = vista.getCF();
+        String cvTexto = vista.getCV();
+
+        double nb = parsearNumero(nbTexto, "NB");
+        double merma = parsearNumero(mermaTexto, "%merma");
+        double cf = parsearNumero(cfTexto, "CF");
+        double cv = parsearNumero(cvTexto, "CV");
+
+        if (Double.isNaN(nb) || Double.isNaN(merma) || Double.isNaN(cf) || Double.isNaN(cv)) {
+            return;
+        }
+
+        if (nb <= 0) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "NB debe ser mayor que 0.",
+                "Datos invalidos",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        if (merma < 0) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "%merma no puede ser negativo.",
+                "Datos invalidos",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        if (merma > 1.0) {
+            merma = merma / 100.0;
+        }
+
+        double ccb = ((cf + cv) / nb) * (1.0 + merma);
+        vista.setResultado(String.format("CCB: %.2f", ccb));
+    }
+
+    private double parsearNumero(String texto, String nombreCampo) {
+        if (texto == null || texto.isBlank()) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "Debe completar " + nombreCampo + ".",
+                "Datos incompletos",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return Double.NaN;
+        }
+
+        try {
+            return Double.parseDouble(texto.trim().replace(',', '.'));
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "Valor invalido en " + nombreCampo + ".",
+                "Datos invalidos",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return Double.NaN;
+        }
     }
 }
