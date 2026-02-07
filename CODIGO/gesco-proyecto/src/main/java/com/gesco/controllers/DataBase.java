@@ -7,316 +7,275 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.gesco.models.Insumo;
+import com.gesco.models.Menu;
+import com.gesco.models.Platillo;
 
 public class DataBase {
-    private static final String ARCHIVO = "usuarios.txt";
-    private static final String ADMIN_ARCHIVO = "admins.txt";
+
+    // --- CONSTANTES ---
+    private static final String ARCHIVO_USUARIOS = "usuarios.txt";
+    private static final String ARCHIVO_ADMINS = "admins.txt";
+    private static final String ARCHIVO_MENUS = "menus.txt";
     private static final String DATA_DIR = "src/main/java/com/gesco/models/data";
 
-    private static File obtenerArchivoUsuarios() {
-        return obtenerArchivo(DATA_DIR, ARCHIVO);
-    }
 
-    private static void asegurarArchivo() {
-        File file = obtenerArchivoUsuarios();
-        if (file.exists()) {
-            return;
-        }
 
-        File parent = file.getParentFile();
-        if (parent != null && !parent.exists()) {
-            parent.mkdirs();
-        }
-
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            System.out.println("Error al crear el archivo de usuarios.");
-        }
-    }
-
-    private static File obtenerArchivoAdmins() {
-        return obtenerArchivo(DATA_DIR, ADMIN_ARCHIVO);
-    }
-
-    private static File obtenerArchivo(String carpeta, String nombreArchivo) {
+    /**
+     * Obtiene el objeto File para cualquier nombre de archivo dentro de DATA_DIR.
+     */
+    private static File obtenerArchivo(String nombreArchivo) {
         Path basePath = obtenerBaseProyecto();
-        return basePath.resolve(carpeta).resolve(nombreArchivo).toFile();
+        return basePath.resolve(DATA_DIR).resolve(nombreArchivo).toFile();
     }
 
-    private static Path obtenerBaseProyecto() {
-        try {
-            Path ubicacion = Paths.get(
-                DataBase.class.getProtectionDomain().getCodeSource().getLocation().toURI()
-            );
-            if (ubicacion.endsWith("classes") && ubicacion.getParent() != null
-                && ubicacion.getParent().getParent() != null) {
-                return ubicacion.getParent().getParent();
+    /**
+     * Asegura que el archivo y sus carpetas existan.
+     */
+    private static void asegurarArchivoGenerico(String nombreArchivo) {
+        File file = obtenerArchivo(nombreArchivo);
+        if (!file.exists()) {
+            try {
+                File parent = file.getParentFile();
+                if (parent != null && !parent.exists()) {
+                    parent.mkdirs();
+                }
+                file.createNewFile();
+            } catch (IOException e) {
+                System.err.println("Error creando estructura para: " + nombreArchivo);
             }
-        } catch (URISyntaxException e) {
-            // Fallback a user.dir si la URI no es valida.
-        }
-
-        return Paths.get(System.getProperty("user.dir"));
-    }
-
-    private static void asegurarArchivoAdmins() {
-        File file = obtenerArchivoAdmins();
-        if (file.exists()) {
-            return;
-        }
-
-        File parent = file.getParentFile();
-        if (parent != null && !parent.exists()) {
-            parent.mkdirs();
-        }
-
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            System.out.println("Error al crear el archivo de admins.");
         }
     }
 
-    // Nuevo registro: agrega saldo por defecto 0.0
-    public static boolean registrarUsuario(String cedula, String clave, String nombre, String correo) {
-        if (usuarioExiste(cedula)) {
-            return false;
-        }
+    /**
+     * Escribe contenido al final de un archivo (Append).
+     * Maneja automáticamente la creación del archivo y los errores.
+     */
+    private static boolean escribirLineaGenerica(String nombreArchivo, String contenido) {
+        asegurarArchivoGenerico(nombreArchivo);
+        File archivo = obtenerArchivo(nombreArchivo);
 
-        asegurarArchivo();
-
-        String linea = String.format("%s:%s:%s:%s:0.0;%n", 
-                valorSeguro(cedula), valorSeguro(clave), valorSeguro(nombre), valorSeguro(correo));
-
-        File archivo = obtenerArchivoUsuarios();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, true))) {
-            writer.write(linea);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, StandardCharsets.UTF_8, true))) {
+            writer.write(contenido);
             return true;
         } catch (IOException e) {
-            System.out.println("Error al registrar usuario.");
+            System.err.println("Error escribiendo en " + nombreArchivo + ": " + e.getMessage());
             return false;
         }
     }
 
-    // Validación de login (solo cédula y clave)
+    /**
+     * Lee todo el contenido de un archivo y lo devuelve como una lista de líneas.
+     * Filtra líneas vacías automáticamente.
+     */
+    private static List<String> leerLineasGenericas(String nombreArchivo) {
+        List<String> lineas = new ArrayList<>();
+        File archivo = obtenerArchivo(nombreArchivo);
+
+        if (!archivo.exists()) return lineas;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(archivo, StandardCharsets.UTF_8))) {
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                if (!linea.trim().isEmpty()) {
+                    lineas.add(linea);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error leyendo " + nombreArchivo + ": " + e.getMessage());
+        }
+        return lineas;
+    }
+
+    /**
+     * Sobrescribe un archivo completo con una nueva lista de líneas.
+     * Útil para actualizaciones (Update/Delete).
+     */
+    private static boolean reescribirArchivoGenerico(String nombreArchivo, List<String> nuevasLineas) {
+        asegurarArchivoGenerico(nombreArchivo);
+        File archivo = obtenerArchivo(nombreArchivo);
+        
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, false))) {
+            for (String linea : nuevasLineas) {
+                writer.write(linea);
+                writer.newLine();
+            }
+            return true;
+        } catch (IOException e) {
+            System.err.println("Error reescribiendo " + nombreArchivo);
+            return false;
+        }
+    }
+
+
+    // USUARIOS 
+
+    public static boolean registrarUsuario(String cedula, String clave, String nombre, String correo) {
+        if (usuarioExiste(cedula)) return false;
+
+        String linea = String.format("%s:%s:%s:%s:0.0;", 
+                valorSeguro(cedula), valorSeguro(clave), valorSeguro(nombre), valorSeguro(correo));
+        
+        return escribirLineaGenerica(ARCHIVO_USUARIOS, linea + System.lineSeparator());
+    }
+
     public static boolean validarInicioSesion(String cedula, String clave) {
-        if (cedula == null || cedula.isBlank() || clave == null || clave.isBlank()) {
-            return false;
-        }
+        List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
 
-        asegurarArchivo();
-
-        File archivo = obtenerArchivoUsuarios();
-        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
-            String linea;
-            while ((linea = reader.readLine()) != null) {
-                if (linea.trim().isEmpty()) {
-                    continue;
-                }
-
-                String[] partes = linea.split(":", 5);
-                if (partes.length < 4) {
-                    continue;
-                }
-
-                String cedulaArchivo = partes[0].trim();
-                String claveArchivo = partes[1].trim();
-
-                if (cedula.equals(cedulaArchivo) && clave.equals(claveArchivo)) {
-                    return true;
-                }
+        for (String linea : lineas) {
+            String[] partes = linea.split(":");
+            if (partes.length >= 2 && partes[0].equals(cedula) && partes[1].equals(clave)) {
+                return true;
             }
-        } catch (IOException e) {
-            System.out.println("Error al validar inicio de sesión.");
         }
-
-        return false;
-    }
-
-    public static boolean esAdmin(String cedula) {
-        if (cedula == null || cedula.isBlank()) {
-            return false;
-        }
-
-        asegurarArchivoAdmins();
-
-        File archivo = obtenerArchivoAdmins();
-        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
-            String linea;
-            while ((linea = reader.readLine()) != null) {
-                if (linea.trim().isEmpty()) {
-                    continue;
-                }
-
-                if (cedula.trim().equals(linea.trim())) {
-                    return true;
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error al leer el archivo de admins.");
-        }
-
         return false;
     }
 
     public static String obtenerNombre(String cedula) {
-        if (cedula == null || cedula.isBlank()) {
-            return null;
-        }
-
-        asegurarArchivo();
-
-        File archivo = obtenerArchivoUsuarios();
-        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
-            String linea;
-            while ((linea = reader.readLine()) != null) {
-                if (linea.trim().isEmpty()) {
-                    continue;
-                }
-
-                String[] partes = linea.split(":", 5);
-                if (partes.length < 3) {
-                    continue;
-                }
-
-                String cedulaArchivo = partes[0].trim();
-                if (cedula.equals(cedulaArchivo)) {
-                    String nombre = partes[2].trim();
-                    return nombre.isEmpty() ? null : nombre;
-                }
+        List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
+        for (String linea : lineas) {
+            String[] partes = linea.split(":");
+            if (partes.length >= 3 && partes[0].equals(cedula)) {
+                return partes[2];
             }
-        } catch (IOException e) {
-            System.out.println("Error al leer el nombre del usuario.");
         }
-
         return null;
     }
 
-    // Nuevo método: obtener saldo del usuario (devuelve 0.0 si no existe o formato viejo)
+    private static boolean usuarioExiste(String cedula) {
+        List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
+        for (String linea : lineas) {
+            String[] partes = linea.split(":");
+            if (partes.length > 0 && partes[0].equals(cedula)) return true;
+        }
+        return false;
+    }
+
+    //  ADMINS 
+
+    public static boolean esAdmin(String cedula) {
+        List<String> admins = leerLineasGenericas(ARCHIVO_ADMINS);
+        for (String linea : admins) {
+            if (linea.trim().equals(cedula)) return true;
+        }
+        return false;
+    }
+
+    // SALDOS
+
     public static double obtenerSaldo(String cedula) {
-        if (cedula == null || cedula.isBlank()) {
-            return 0.0;
-        }
-
-        asegurarArchivo();
-
-        File archivo = obtenerArchivoUsuarios();
-        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
-            String linea;
-            while ((linea = reader.readLine()) != null) {
-                if (linea.trim().isEmpty()) {
-                    continue;
-                }
-
-                String[] partes = linea.split(":");
-                if (partes.length < 1 || !cedula.equals(partes[0].trim())) {
-                    continue;
-                }
-
-                // Si hay 5 partes (incluye saldo)
-                if (partes.length >= 5) {
-                    try {
-                        return Double.parseDouble(partes[4].replace(";", "").trim());
-                    } catch (NumberFormatException e) {
-                        return 0.0;
-                    }
-                }
-                // Formato viejo (sin saldo) → devuelve 0.0
-                return 0.0;
+        List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
+        for (String linea : lineas) {
+            String[] partes = linea.split(":");
+            if (partes.length >= 5 && partes[0].equals(cedula)) {
+                try {
+                    return Double.parseDouble(partes[4].replace(";", "").trim());
+                } catch (NumberFormatException e) { return 0.0; }
             }
-        } catch (IOException e) {
-            System.out.println("Error al leer saldo.");
         }
-
         return 0.0;
     }
 
-    // Nuevo método: actualizar saldo del usuario
     public static boolean actualizarSaldo(String cedula, double nuevoSaldo) {
-        if (cedula == null || cedula.isBlank()) {
-            return false;
-        }
+        List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
+        List<String> lineasActualizadas = new ArrayList<>();
+        boolean encontrado = false;
 
-        asegurarArchivo();
-
-        File archivo = obtenerArchivoUsuarios();
-        File tempArchivo = new File(archivo.getParent(), "usuarios_temp.txt");
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(archivo));
-             BufferedWriter writer = new BufferedWriter(new FileWriter(tempArchivo))) {
-
-            String linea;
-            boolean encontrado = false;
-
-            while ((linea = reader.readLine()) != null) {
-                if (linea.trim().isEmpty()) {
-                    writer.write(linea + System.lineSeparator());
-                    continue;
-                }
-
-                String[] partes = linea.split(":", 5);
-                if (partes.length < 4 || !cedula.equals(partes[0].trim())) {
-                    writer.write(linea + System.lineSeparator());
-                    continue;
-                }
-
-                // Reescribir con nuevo saldo
-                String nuevaLinea = String.format("%s:%s:%s:%s:%.2f;%n",
-                        partes[0].trim(), partes[1].trim(), partes[2].trim(), partes[3].trim(), nuevoSaldo);
-                writer.write(nuevaLinea);
+        for (String linea : lineas) {
+            String[] partes = linea.split(":", 5);
+            if (partes.length >= 4 && partes[0].equals(cedula)) {
+                String nuevaLinea = String.format("%s:%s:%s:%s:%.2f;",
+                        partes[0], partes[1], partes[2], partes[3], nuevoSaldo);
+                lineasActualizadas.add(nuevaLinea);
                 encontrado = true;
+            } else {
+                lineasActualizadas.add(linea); 
             }
-
-            if (!encontrado) {
-                return false;
-            }
-
-        } catch (IOException e) {
-            System.out.println("Error al actualizar saldo.");
-            return false;
         }
 
-        // Reemplazar archivo original
-        if (archivo.delete() && tempArchivo.renameTo(archivo)) {
-            return true;
+        if (encontrado) {
+            return reescribirArchivoGenerico(ARCHIVO_USUARIOS, lineasActualizadas);
         }
-
         return false;
     }
 
-    private static boolean usuarioExiste(String cedula) {
-        if (cedula == null || cedula.isBlank()) {
-            return false;
-        }
+    //  MENÚS 
 
-        File archivo = obtenerArchivoUsuarios();
-        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
-            String linea;
-            while ((linea = reader.readLine()) != null) {
-                if (linea.trim().isEmpty()) {
-                    continue;
-                }
+    public static boolean guardarMenu(Menu menu) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(menu.getFecha().toString()).append("|");
 
-                String[] partes = linea.split(":");
-                if (partes.length < 1) {
-                    continue;
-                }
-
-                String cedulaArchivo = partes[0].trim();
-                if (cedula.equals(cedulaArchivo)) {
-                    return true;
-                }
+        for (Platillo p : menu.getPlatillos()) {
+            sb.append(p.getNombre()).append(">");
+            List<Insumo> insumos = p.getInsumos();
+            for (int i = 0; i < insumos.size(); i++) {
+                sb.append(insumos.get(i).getNombre());
+                if (i < insumos.size() - 1) sb.append(",");
             }
-        } catch (IOException e) {
-            System.out.println("Error al leer el archivo de usuarios.");
+            sb.append(";");
         }
+        
+        return escribirLineaGenerica(ARCHIVO_MENUS, sb.toString() + System.lineSeparator());
+    }
 
-        return false;
+    public static Menu obtenerMenuPorFecha(String fechaStr) {
+        List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
+
+        for (String linea : lineas) {
+            String[] partes = linea.split("\\|");
+            if (partes.length > 0 && partes[0].equals(fechaStr)) {
+                return parsearLineaMenu(partes); // Delegamos el parsing a otro método auxiliar
+            }
+        }
+        return new Menu(); // Retorno por defecto
+    }
+
+    private static Menu parsearLineaMenu(String[] partesPrincipales) {
+        try {
+            LocalDate fecha = LocalDate.parse(partesPrincipales[0]);
+            Menu menu = new Menu(fecha);
+
+            if (partesPrincipales.length < 2) return menu;
+
+            String[] partesPlatillos = partesPrincipales[1].split(";");
+            for (String parteP : partesPlatillos) {
+                if (parteP.isBlank()) continue;
+
+                String[] datosPlato = parteP.split(">");
+                Platillo platillo = new Platillo(datosPlato[0]);
+
+                if (datosPlato.length > 1) {
+                    for (String nomInsumo : datosPlato[1].split(",")) {
+                        platillo.agregarInsumo(new Insumo(nomInsumo, 1, "Ingrediente"));
+                    }
+                } else {
+                    platillo.agregarInsumo(new Insumo("Sin insumos", 0, "N/A"));
+                }
+                menu.agregarPlatillo(platillo);
+            }
+            return menu;
+        } catch (Exception e) {
+            System.err.println("Error parseando menú: " + e.getMessage());
+            return new Menu();
+        }
+    }
+
+
+    private static Path obtenerBaseProyecto() {
+        try {
+            Path ubicacion = Paths.get(DataBase.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            if (ubicacion.endsWith("classes") && ubicacion.getParent() != null && ubicacion.getParent().getParent() != null) {
+                return ubicacion.getParent().getParent();
+            }
+        } catch (URISyntaxException e) { }
+        return Paths.get(System.getProperty("user.dir"));
     }
 
     private static String valorSeguro(String valor) {
