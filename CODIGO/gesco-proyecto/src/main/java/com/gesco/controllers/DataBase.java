@@ -153,7 +153,13 @@ public class DataBase {
                     continue;
                 }
 
-                if (cedula.trim().equals(linea.trim())) {
+                String cedulaLinea = linea;
+                int sep = linea.indexOf(':');
+                if (sep >= 0) {
+                    cedulaLinea = linea.substring(0, sep);
+                }
+
+                if (cedula.trim().equals(cedulaLinea.trim())) {
                     return true;
                 }
             }

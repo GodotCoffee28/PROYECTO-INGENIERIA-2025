@@ -4,6 +4,7 @@ import javax.swing.SwingUtilities;
 
 import com.gesco.views.VistaEspera;
 import com.gesco.views.VistaInicio;
+import com.gesco.views.VistaInicioAdmin;
 import com.gesco.views.VistaInicioComensal;  
 import com.gesco.views.VistaInicioSesion;
 import com.gesco.views.VistaMenuSemana;
@@ -21,6 +22,7 @@ public class LogicaInterfaz {
 	private VistaInicioSesion vistaInicioSesion;
 	private VistaRegistro vistaRegistro;
 	private VistaEspera vistaEspera;
+	private VistaInicioAdmin vistaInicioAdmin;
 	private VistaInicioComensal vistaInicioComensal;  
 	private VistaMenuSemana vistaMenuSemana;
 	private VistaTurnos vistaTurnos;
@@ -31,6 +33,8 @@ public class LogicaInterfaz {
 	private VistaGestionMenu vistaGestionMenu;
 	private boolean usuarioAdmin;
 	private String nombreUsuario;
+	private final InicioSesionRedireccionador inicioSesionRedireccionador =
+		new InicioSesionRedireccionador(this::mostrarPantallaAdmin, nombre -> mostrarPantallaPrincipal(false, nombre));
 	private final MenuGescoControlador menuGescoController = new MenuGescoControlador(
 		new MenuAccionesControlador(
 			this::iniciar,
@@ -66,7 +70,7 @@ public class LogicaInterfaz {
 			vistaInicioSesion,
 			this::iniciar,  
 			this::mostrarRegistro,
-			(esAdmin, nombre) -> mostrarPantallaPrincipal(esAdmin, nombre)  
+			(esAdmin, nombre) -> inicioSesionRedireccionador.redirigir(esAdmin, nombre)  
 		).conectar();
 	}
 
@@ -108,6 +112,23 @@ public class LogicaInterfaz {
 			this::iniciar,
 			this::mostrarMenuSemana,
 			this::mostrarTurnos
+		).conectar();
+	}
+
+	private void mostrarPantallaAdmin(String nombre) {
+		cerrarVistas();
+		usuarioAdmin = true;
+		nombreUsuario = nombre;
+		vistaInicioAdmin = new VistaInicioAdmin();
+		menuGescoController.conectar(vistaInicioAdmin, true);
+		new VistaInicioAdminControlador(
+			vistaInicioAdmin,
+			this::iniciar,
+			this::mostrarGestionMenu,
+			this::mostrarCargaCCB,
+			() -> {
+			},
+			() -> mostrarPantallaPrincipal(false, nombreUsuario)
 		).conectar();
 	}
 
@@ -216,6 +237,13 @@ public class LogicaInterfaz {
 		}
 	}
 
+	private void cerrarVistaInicioAdmin() {
+		if (vistaInicioAdmin != null) {
+			vistaInicioAdmin.dispose();
+			vistaInicioAdmin = null;
+		}
+	}
+
 	private void cerrarVistaInicioComensal() {
 		if (vistaInicioComensal != null) {
 			vistaInicioComensal.dispose();
@@ -277,6 +305,7 @@ public class LogicaInterfaz {
 		cerrarVistaInicioSesion();
 		cerrarVistaRegistro();
 		cerrarVistaEspera();
+		cerrarVistaInicioAdmin();
 		cerrarVistaInicioComensal();  
 		cerrarVistaMenuSemana();
 		cerrarVistaTurnos();
