@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import com.gesco.controllers.DataBase;
 import com.gesco.models.Menu;
 import com.gesco.models.Platillo;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
@@ -33,8 +34,8 @@ public class VistaMenuSemana extends PlantillaGesco {
         inicializarComponentes();
         construirCuerpo();
         
-        cargarDatosPrueba();
-        
+        //cargarDatosPrueba();
+        cargarDatosReales();
         revalidate();
         repaint();
         setVisible(true);
@@ -143,6 +144,22 @@ public class VistaMenuSemana extends PlantillaGesco {
         for (Menu m : semana) {
             TarjetaMenu tarjeta = new TarjetaMenu(m);
             tarjeta.setPreferredSize(new Dimension(250, 185));
+            tarjetasSemana.add(tarjeta);
+            panelContenedorTarjetas.add(tarjeta);
+        }
+    }
+    
+    private void cargarDatosReales() {
+        LocalDate fechaInicio= LocalDate.of(2025, 2, 10);
+
+        for (int i = 0; i < 5; i++) {
+            LocalDate fechaDia = fechaInicio.plusDays(i);
+            Menu menuDelDia = DataBase.obtenerMenuPorFecha(fechaDia.toString());
+            
+
+            TarjetaMenu tarjeta = new TarjetaMenu(menuDelDia);
+            tarjeta.setPreferredSize(new Dimension(250, 160));
+            
             tarjetasSemana.add(tarjeta);
             panelContenedorTarjetas.add(tarjeta);
         }
