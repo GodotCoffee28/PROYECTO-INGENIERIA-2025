@@ -43,6 +43,7 @@ public class LogicaInterfaz {
 			this::mostrarFila,
 			this::mostrarMenuSemana,
 			this::mostrarTurnos,
+			this::mostrarPanelControl,
 			this::mostrarCargaCCB,
 			this::mostrarCrearMenu,
 			this::mostrarEditarMenu,
@@ -130,6 +131,11 @@ public class LogicaInterfaz {
 			},
 			() -> mostrarPantallaPrincipal(false, nombreUsuario)
 		).conectar();
+	}
+
+	private void mostrarPanelControl() {
+		String nombreMostrar = (nombreUsuario == null || nombreUsuario.isBlank()) ? "Usuario" : nombreUsuario;
+		mostrarPantallaAdmin(nombreMostrar);
 	}
 
 	private void mostrarMenuSemana() {

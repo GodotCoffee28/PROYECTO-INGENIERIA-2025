@@ -7,6 +7,7 @@ public interface MenuAcciones {
     void irFila();
     void irMenuSemana();
     void irTurnos();
+    void irPanelControl();
     void irCargaCCB();
     void irCrearMenu();
     void irEditarMenu();

@@ -8,6 +8,7 @@ public class MenuAccionesControlador implements MenuAcciones {
     private final Runnable onFila;
     private final Runnable onMenuSemana;
     private final Runnable onTurnos;
+    private final Runnable onPanelControl;
     private final Runnable onCargaCCB;
     private final Runnable onCrearMenu;
     private final Runnable onEditarMenu;
@@ -21,6 +22,7 @@ public class MenuAccionesControlador implements MenuAcciones {
         Runnable onFila,
         Runnable onMenuSemana,
         Runnable onTurnos,
+        Runnable onPanelControl,
         Runnable onCargaCCB,
         Runnable onCrearMenu,
         Runnable onEditarMenu,
@@ -33,6 +35,7 @@ public class MenuAccionesControlador implements MenuAcciones {
         this.onFila = onFila;
         this.onMenuSemana = onMenuSemana;
         this.onTurnos = onTurnos;
+        this.onPanelControl = onPanelControl;
         this.onCargaCCB = onCargaCCB;
         this.onCrearMenu = onCrearMenu;
         this.onEditarMenu = onEditarMenu;
@@ -68,6 +71,11 @@ public class MenuAccionesControlador implements MenuAcciones {
     @Override
     public void irTurnos() {
         onTurnos.run();
+    }
+
+    @Override
+    public void irPanelControl() {
+        onPanelControl.run();
     }
 
     @Override
