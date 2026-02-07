@@ -1,4 +1,16 @@
 package com.gesco;
+
+import com.gesco.controllers.LogicaInterfaz;
+
+public class Main {
+
+    public static void main(String[] args) {
+        LogicaInterfaz logica = new LogicaInterfaz();
+        logica.iniciar();
+    }
+}
+
+/*package com.gesco;
 import java.time.LocalDate;
 
 import javax.swing.JFrame;
@@ -12,10 +24,10 @@ import com.gesco.views.TarjetaMenu;
 public class Main{
 
     public static void main( String[] args ){
-        //LogicaInterfaz logica = new LogicaInterfaz();
-        //logica.iniciar();
-        //VistaFila vistafila = new VistaFila("Enrique");
-        //vistafila.setVisible(true);
+        LogicaInterfaz logica = new LogicaInterfaz();
+        logica.iniciar();
+        VistaFila vistafila = new VistaFila("Enrique");
+        vistafila.setVisible(true);
         SwingUtilities.invokeLater(() -> {
             
 
@@ -50,4 +62,4 @@ public class Main{
         });
     }
 
-}
+}*/

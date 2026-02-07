@@ -11,6 +11,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputAdapter;
 
+import com.gesco.views.VistaEspera;
+import com.gesco.views.PlantillasViews.PlantillaGesco;
 import com.gesco.views.VistaInicio;
 import com.gesco.views.VistaInicioSesion;
 import com.gesco.views.VistaRegistro;
