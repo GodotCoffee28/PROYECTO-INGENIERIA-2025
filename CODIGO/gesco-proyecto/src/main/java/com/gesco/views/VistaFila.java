@@ -175,4 +175,8 @@ public class VistaFila extends PlantillaGesco {
         btn.setPreferredSize(new Dimension(200, 40)); 
         return btn;
     }
+
+    public BotonNeon getBtnVerMenuSemana() {
+        return btnVerMenuSemana;
+    }
 }

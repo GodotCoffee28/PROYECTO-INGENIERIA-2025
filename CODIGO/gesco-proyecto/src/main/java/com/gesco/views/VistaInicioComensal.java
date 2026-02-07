@@ -155,4 +155,12 @@ public class VistaInicioComensal extends PlantillaGesco {
         
         return tarjeta;
     }
+
+    public BotonNeon getBtnVerMenu() {
+        return btnVerMenu;
+    }
+
+    public BotonNeon getBtnHorarios() {
+        return btnHorarios;
+    }
 }

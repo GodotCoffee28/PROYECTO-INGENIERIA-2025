@@ -164,6 +164,39 @@ public class DataBase {
         return false;
     }
 
+    public static String obtenerNombre(String cedula) {
+        if (cedula == null || cedula.isBlank()) {
+            return null;
+        }
+
+        asegurarArchivo();
+
+        File archivo = obtenerArchivoUsuarios();
+        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                if (linea.trim().isEmpty()) {
+                    continue;
+                }
+
+                String[] partes = linea.split(":", 5);
+                if (partes.length < 3) {
+                    continue;
+                }
+
+                String cedulaArchivo = partes[0].trim();
+                if (cedula.equals(cedulaArchivo)) {
+                    String nombre = partes[2].trim();
+                    return nombre.isEmpty() ? null : nombre;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error al leer el nombre del usuario.");
+        }
+
+        return null;
+    }
+
     // Nuevo método: obtener saldo del usuario (devuelve 0.0 si no existe o formato viejo)
     public static double obtenerSaldo(String cedula) {
         if (cedula == null || cedula.isBlank()) {

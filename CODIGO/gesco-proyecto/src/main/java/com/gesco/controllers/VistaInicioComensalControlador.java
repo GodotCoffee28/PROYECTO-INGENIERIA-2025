@@ -6,10 +6,19 @@ public class VistaInicioComensalControlador {
 
     private final VistaInicioComensal vista;
     private final Runnable onBack;
+    private final Runnable onMenuSemana;
+    private final Runnable onTurnos;
 
-    public VistaInicioComensalControlador(VistaInicioComensal vista, Runnable onBack) {
+    public VistaInicioComensalControlador(
+        VistaInicioComensal vista,
+        Runnable onBack,
+        Runnable onMenuSemana,
+        Runnable onTurnos
+    ) {
         this.vista = vista;
         this.onBack = onBack;
+        this.onMenuSemana = onMenuSemana;
+        this.onTurnos = onTurnos;
     }
 
     public void conectar() {
@@ -19,5 +28,8 @@ public class VistaInicioComensalControlador {
                 onBack.run();
             }
         });
+
+        vista.getBtnVerMenu().addActionListener(e -> onMenuSemana.run());
+        vista.getBtnHorarios().addActionListener(e -> onTurnos.run());
     }
 }

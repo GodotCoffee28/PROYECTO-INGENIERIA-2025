@@ -6,7 +6,14 @@ import com.gesco.views.VistaEspera;
 import com.gesco.views.VistaInicio;
 import com.gesco.views.VistaInicioComensal;  
 import com.gesco.views.VistaInicioSesion;
+import com.gesco.views.VistaMenuSemana;
 import com.gesco.views.VistaRegistro;
+import com.gesco.views.VistaTurnos;
+import com.gesco.views.VistaFila;
+import com.gesco.views.VistaCargaCCB;
+import com.gesco.views.VistaCrearMenu;
+import com.gesco.views.VistaEditarMenu;
+import com.gesco.views.VistaGestionMenu;
 
 public class LogicaInterfaz {
 
@@ -15,8 +22,30 @@ public class LogicaInterfaz {
 	private VistaRegistro vistaRegistro;
 	private VistaEspera vistaEspera;
 	private VistaInicioComensal vistaInicioComensal;  
+	private VistaMenuSemana vistaMenuSemana;
+	private VistaTurnos vistaTurnos;
+	private VistaFila vistaFila;
+	private VistaCargaCCB vistaCargaCCB;
+	private VistaCrearMenu vistaCrearMenu;
+	private VistaEditarMenu vistaEditarMenu;
+	private VistaGestionMenu vistaGestionMenu;
 	private boolean usuarioAdmin;
-	private final MenuGescoControlador menuGescoController = new MenuGescoControlador();
+	private String nombreUsuario;
+	private final MenuGescoControlador menuGescoController = new MenuGescoControlador(
+		new MenuAccionesControlador(
+			this::iniciar,
+			this::mostrarInicioSesion,
+			this::mostrarRegistro,
+			this::mostrarFila,
+			this::mostrarMenuSemana,
+			this::mostrarTurnos,
+			this::mostrarCargaCCB,
+			this::mostrarCrearMenu,
+			this::mostrarEditarMenu,
+			this::mostrarGestionMenu,
+			() -> System.exit(0)
+		)
+	);
 
 	public void iniciar() {
 		SwingUtilities.invokeLater(() -> {
@@ -37,7 +66,7 @@ public class LogicaInterfaz {
 			vistaInicioSesion,
 			this::iniciar,  
 			this::mostrarRegistro,
-			esAdmin -> mostrarPantallaPrincipal(esAdmin)  
+			(esAdmin, nombre) -> mostrarPantallaPrincipal(esAdmin, nombre)  
 		).conectar();
 	}
 
@@ -61,21 +90,102 @@ public class LogicaInterfaz {
 		).conectar();
 	}
 
-	private void mostrarPantallaPrincipal(boolean esAdmin) {
+	private void mostrarPantallaPrincipal(boolean esAdmin, String nombre) {
 		cerrarVistas();
 		usuarioAdmin = esAdmin;
+		nombreUsuario = nombre;
 
+		String nombreMostrar = (nombre == null || nombre.isBlank()) ? "Usuario" : nombre;
 		if (esAdmin) {
-			vistaInicioComensal = new VistaInicioComensal("Administrador", 999999);
+			vistaInicioComensal = new VistaInicioComensal(nombreMostrar, 999999);
 		} else {
-			vistaInicioComensal = new VistaInicioComensal("Estudiante", 50);
+			vistaInicioComensal = new VistaInicioComensal(nombreMostrar, 50);
 		}
 
 		menuGescoController.conectar(vistaInicioComensal, esAdmin);
 		new VistaInicioComensalControlador(
 			vistaInicioComensal,
-			this::iniciar
+			this::iniciar,
+			this::mostrarMenuSemana,
+			this::mostrarTurnos
 		).conectar();
+	}
+
+	private void mostrarMenuSemana() {
+		cerrarVistas();
+		vistaMenuSemana = new VistaMenuSemana();
+		menuGescoController.conectar(vistaMenuSemana, usuarioAdmin);
+		new VistaMenuSemanaControlador(
+			vistaMenuSemana,
+			this::volverAPantallaPrincipal
+		).conectar();
+	}
+
+	private void mostrarTurnos() {
+		cerrarVistas();
+		vistaTurnos = new VistaTurnos();
+		menuGescoController.conectar(vistaTurnos, usuarioAdmin);
+		new VistaTurnosControlador(
+			vistaTurnos,
+			this::volverAPantallaPrincipal,
+			this::mostrarMenuSemana
+		).conectar();
+	}
+
+	private void mostrarFila() {
+		cerrarVistas();
+		String nombreMostrar = (nombreUsuario == null || nombreUsuario.isBlank()) ? "Usuario" : nombreUsuario;
+		vistaFila = new VistaFila(nombreMostrar);
+		menuGescoController.conectar(vistaFila, usuarioAdmin);
+		new VistaFilaControlador(
+			vistaFila,
+			this::volverAPantallaPrincipal,
+			this::mostrarMenuSemana
+		).conectar();
+	}
+
+	private void mostrarCargaCCB() {
+		cerrarVistas();
+		vistaCargaCCB = new VistaCargaCCB();
+		menuGescoController.conectar(vistaCargaCCB, usuarioAdmin);
+		new VistaCargaCCBControlador(
+			vistaCargaCCB,
+			this::volverAPantallaPrincipal
+		).conectar();
+	}
+
+	private void mostrarCrearMenu() {
+		cerrarVistas();
+		vistaCrearMenu = new VistaCrearMenu();
+		menuGescoController.conectar(vistaCrearMenu, usuarioAdmin);
+		new VistaCrearMenuControlador(
+			vistaCrearMenu,
+			this::volverAPantallaPrincipal
+		).conectar();
+	}
+
+	private void mostrarEditarMenu() {
+		cerrarVistas();
+		vistaEditarMenu = new VistaEditarMenu();
+		menuGescoController.conectar(vistaEditarMenu, usuarioAdmin);
+		new VistaEditarMenuControlador(
+			vistaEditarMenu,
+			this::volverAPantallaPrincipal
+		).conectar();
+	}
+
+	private void mostrarGestionMenu() {
+		cerrarVistas();
+		vistaGestionMenu = new VistaGestionMenu();
+		menuGescoController.conectar(vistaGestionMenu, usuarioAdmin);
+		new VistaGestionMenuControlador(
+			vistaGestionMenu,
+			this::volverAPantallaPrincipal
+		).conectar();
+	}
+
+	private void volverAPantallaPrincipal() {
+		mostrarPantallaPrincipal(usuarioAdmin, nombreUsuario);
 	}
 
 	private void cerrarVistaInicio() {
@@ -113,11 +223,68 @@ public class LogicaInterfaz {
 		}
 	}
 
+	private void cerrarVistaMenuSemana() {
+		if (vistaMenuSemana != null) {
+			vistaMenuSemana.dispose();
+			vistaMenuSemana = null;
+		}
+	}
+
+	private void cerrarVistaTurnos() {
+		if (vistaTurnos != null) {
+			vistaTurnos.dispose();
+			vistaTurnos = null;
+		}
+	}
+
+	private void cerrarVistaFila() {
+		if (vistaFila != null) {
+			vistaFila.dispose();
+			vistaFila = null;
+		}
+	}
+
+	private void cerrarVistaCargaCCB() {
+		if (vistaCargaCCB != null) {
+			vistaCargaCCB.dispose();
+			vistaCargaCCB = null;
+		}
+	}
+
+	private void cerrarVistaCrearMenu() {
+		if (vistaCrearMenu != null) {
+			vistaCrearMenu.dispose();
+			vistaCrearMenu = null;
+		}
+	}
+
+	private void cerrarVistaEditarMenu() {
+		if (vistaEditarMenu != null) {
+			vistaEditarMenu.dispose();
+			vistaEditarMenu = null;
+		}
+	}
+
+	private void cerrarVistaGestionMenu() {
+		if (vistaGestionMenu != null) {
+			vistaGestionMenu.dispose();
+			vistaGestionMenu = null;
+		}
+	}
+
 	private void cerrarVistas() {
 		cerrarVistaInicio();
 		cerrarVistaInicioSesion();
 		cerrarVistaRegistro();
 		cerrarVistaEspera();
 		cerrarVistaInicioComensal();  
+		cerrarVistaMenuSemana();
+		cerrarVistaTurnos();
+		cerrarVistaFila();
+		cerrarVistaCargaCCB();
+		cerrarVistaCrearMenu();
+		cerrarVistaEditarMenu();
+		cerrarVistaGestionMenu();
 	}
+
 }

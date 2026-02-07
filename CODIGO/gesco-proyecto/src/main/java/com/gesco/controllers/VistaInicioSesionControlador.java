@@ -1,7 +1,7 @@
 package com.gesco.controllers;
 
 import java.awt.event.MouseEvent;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
@@ -13,13 +13,13 @@ public class VistaInicioSesionControlador {
     private final VistaInicioSesion vista;
     private final Runnable onBack;
     private final Runnable onRegistro;
-    private final Consumer<Boolean> onLoginSuccess;
+    private final BiConsumer<Boolean, String> onLoginSuccess;
 
     public VistaInicioSesionControlador(
         VistaInicioSesion vista,
         Runnable onBack,
         Runnable onRegistro,
-        Consumer<Boolean> onLoginSuccess
+        BiConsumer<Boolean, String> onLoginSuccess
     ) {
         this.vista = vista;
         this.onBack = onBack;
@@ -60,7 +60,11 @@ public class VistaInicioSesionControlador {
         boolean valido = DataBase.validarInicioSesion(cedula, clave);
         if (valido) {
             boolean esAdmin = DataBase.esAdmin(cedula);
-            onLoginSuccess.accept(esAdmin);
+            String nombre = DataBase.obtenerNombre(cedula);
+            if (nombre == null || nombre.isBlank()) {
+                nombre = "Usuario";
+            }
+            onLoginSuccess.accept(esAdmin, nombre);
             JOptionPane.showMessageDialog(
                 vista,
                 "Inicio de sesion correcto.",
