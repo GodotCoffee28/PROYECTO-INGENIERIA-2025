@@ -4,14 +4,17 @@ import javax.swing.SwingUtilities;
 
 import com.gesco.views.VistaEspera;
 import com.gesco.views.VistaInicio;
+import com.gesco.views.VistaInicioComensal;  
 import com.gesco.views.VistaInicioSesion;
 import com.gesco.views.VistaRegistro;
+
 public class LogicaInterfaz {
 
 	private VistaInicio vistaInicio;
 	private VistaInicioSesion vistaInicioSesion;
 	private VistaRegistro vistaRegistro;
 	private VistaEspera vistaEspera;
+	private VistaInicioComensal vistaInicioComensal;  
 	private boolean usuarioAdmin;
 	private final MenuGescoControlador menuGescoController = new MenuGescoControlador();
 
@@ -26,81 +29,50 @@ public class LogicaInterfaz {
 			).conectar();
 		});
 	}
-	/* queria generalizar el inicio jj
-		public void iniciar(PlantillaGesco pG){
-		SwingUtilities.invokeLater(() -> {
-			pG = new PlantillaGesco();
 
-		});
-	}
-
-	*/
 	private void mostrarInicioSesion() {
-		cerrarVistaInicio();
-		cerrarVistaRegistro();
-		cerrarVistaInicioSesion();
+		cerrarVistas();
 		vistaInicioSesion = new VistaInicioSesion();
-		menuGescoController.conectar(vistaInicioSesion, usuarioAdmin);
 		new VistaInicioSesionControlador(
 			vistaInicioSesion,
-			this::volverDesdeInicioSesion,
-			this::mostrarRegistroDesdeInicioSesion,
-			esAdmin -> usuarioAdmin = esAdmin
+			this::iniciar,  
+			this::mostrarRegistro,
+			esAdmin -> mostrarPantallaPrincipal(esAdmin)  
 		).conectar();
 	}
 
 	private void mostrarRegistro() {
-		cerrarVistaInicio();
-		cerrarVistaInicioSesion();
-		cerrarVistaRegistro();
+		cerrarVistas();
 		vistaRegistro = new VistaRegistro();
-		menuGescoController.conectar(vistaRegistro, false);
 		new VistaRegistroControlador(
 			vistaRegistro,
-			this::volverDesdeRegistro,
-			this::mostrarInicioSesionDesdeRegistro,
-			this::mostrarEsperaDesdeRegistro
+			this::iniciar,  
+			this::mostrarInicioSesion,
+			this::mostrarEsperaRegistro  
 		).conectar();
 	}
 
-	private void mostrarEspera() {
-		cerrarVistaRegistro();
-		cerrarVistaEspera();
+	private void mostrarEsperaRegistro() {
+		cerrarVistas();
 		vistaEspera = new VistaEspera();
 		new VistaEsperaControlador(
 			vistaEspera,
-			this::volverDesdeEspera
+			this::iniciar
 		).conectar();
 	}
 
-	private void mostrarRegistroDesdeInicioSesion() {
-		cerrarVistaInicioSesion();
-		mostrarRegistro();
-	}
+	private void mostrarPantallaPrincipal(boolean esAdmin) {
+		cerrarVistas();
+		usuarioAdmin = esAdmin;
 
-	private void mostrarInicioSesionDesdeRegistro() {
-		cerrarVistaRegistro();
-		mostrarInicioSesion();
-	}
+		if (esAdmin) {
+			vistaInicioComensal = new VistaInicioComensal("Administrador", 999999);
+		} else {
+			vistaInicioComensal = new VistaInicioComensal("Estudiante", 50);
+		}
 
-	private void mostrarEsperaDesdeRegistro() {
-		cerrarVistaRegistro();
-		mostrarEspera();
-	}
-
-	private void volverDesdeInicioSesion() {
-		cerrarVistaInicioSesion();
-		iniciar();
-	}
-
-	private void volverDesdeRegistro() {
-		cerrarVistaRegistro();
-		iniciar();
-	}
-
-	private void volverDesdeEspera() {
-		cerrarVistaEspera();
-		iniciar();
+		
+		menuGescoController.conectar(vistaInicioComensal, esAdmin);
 	}
 
 	private void cerrarVistaInicio() {
@@ -131,10 +103,18 @@ public class LogicaInterfaz {
 		}
 	}
 
+	private void cerrarVistaInicioComensal() {
+		if (vistaInicioComensal != null) {
+			vistaInicioComensal.dispose();
+			vistaInicioComensal = null;
+		}
+	}
+
 	private void cerrarVistas() {
 		cerrarVistaInicio();
 		cerrarVistaInicioSesion();
 		cerrarVistaRegistro();
 		cerrarVistaEspera();
+		cerrarVistaInicioComensal();  
 	}
 }
