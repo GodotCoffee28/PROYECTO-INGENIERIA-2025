@@ -37,13 +37,11 @@ public abstract class TarjetaGeneral extends JPanel{
         add(containerCabecera, BorderLayout.NORTH);
         add(containerCuerpo, BorderLayout.CENTER);
         
-        // Llamada al método que las hijas deben implementar
         construirContenido();
     }
 
     protected abstract void construirContenido();
 
-    // Métodos de utilidad para personalizar la estética desde las hijas
     protected void setTituloEstilo(JLabel label) {
         label.setFont(new Font("Arial", Font.BOLD, 26));
         label.setForeground(Color.DARK_GRAY);

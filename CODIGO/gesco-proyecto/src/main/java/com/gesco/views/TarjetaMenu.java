@@ -27,7 +27,7 @@ public class TarjetaMenu extends TarjetaGeneral {
     @Override
     protected final void construirContenido() {
         lblDia = new JLabel("", SwingConstants.CENTER);
-        lblDia.setFont(new Font("Arial", Font.BOLD, 16));
+        lblDia.setFont(new Font("Arial", Font.BOLD, 26));
         containerCabecera.add(lblDia, BorderLayout.CENTER);
         
     }
@@ -46,11 +46,12 @@ public class TarjetaMenu extends TarjetaGeneral {
             case SATURDAY  -> "Sábado";
             case SUNDAY    -> "Domingo";
         };
+
         lblDia.setText(diaStr);
         containerCuerpo.add(vacio);
         for (Platillo platillo : menu.getPlatillos()) {
             JLabel lblNombrePlatillo = new JLabel(" - " + platillo.getNombre().toUpperCase());
-            lblNombrePlatillo.setFont(new Font("Arial", Font.BOLD, 18));
+            lblNombrePlatillo.setFont(new Font("Arial", Font.PLAIN, 18));
             lblNombrePlatillo.setForeground(new Color(50, 50, 50));
             containerCuerpo.add(lblNombrePlatillo);
         }
