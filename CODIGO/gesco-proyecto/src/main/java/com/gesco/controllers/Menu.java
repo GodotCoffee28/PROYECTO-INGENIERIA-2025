@@ -1,27 +1,15 @@
-package com.gesco;
-
-import com.gesco.controllers.LogicaInterfaz;
-
-public class Main {
-
-    public static void main(String[] args) {
-        LogicaInterfaz logica = new LogicaInterfaz();
-        logica.iniciar();
-    }
-}
-
-/*package com.gesco;
+package com.gesco.controllers;
 import java.time.LocalDate;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import com.gesco.models.Insumo;
-import com.gesco.models.Menu;
 import com.gesco.models.Platillo;
 import com.gesco.views.TarjetaMenu;
+import com.gesco.views.VistaFila;
 
-public class Main{
+public class Menu{
 
     public static void main( String[] args ){
         LogicaInterfaz logica = new LogicaInterfaz();
@@ -31,7 +19,7 @@ public class Main{
         SwingUtilities.invokeLater(() -> {
             
 
-            Menu menuLunes = new Menu(LocalDate.of(2025, 2, 9));
+            com.gesco.models.Menu menuLunes = new com.gesco.models.Menu(LocalDate.of(2025, 2, 9));
             
             Platillo Carnita = new Platillo("Carnita asada");
             Insumo aceite = new Insumo("Aceite", 1, "Natural");
@@ -62,4 +50,4 @@ public class Main{
         });
     }
 
-}*/
+}

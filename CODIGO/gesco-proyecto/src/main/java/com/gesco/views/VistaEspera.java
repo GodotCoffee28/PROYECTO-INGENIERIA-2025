@@ -1,6 +1,8 @@
 package com.gesco.views;
 
 import java.awt.*;
+import java.io.File;
+import java.net.URL;
 import javax.swing.*;
 
 import com.gesco.views.PlantillasViews.BotonNeon;
@@ -31,12 +33,27 @@ public class VistaEspera extends PlantillaGesco {
         anuncio = crearEtiquetaSimple("Estamos verificando sus datos, intente ingresar en breve.", 32, new Color(240, 240, 240));
         anuncio.setFont(new Font("Arial", Font.BOLD, 32));
         
-        taza = new ImageIcon("Taza_VistaEspera.png");
+        taza = cargarTaza();
         if (taza.getIconWidth() > 0) {
             // Taza gigante
             Image imagenEscalada = taza.getImage().getScaledInstance(280, 280, Image.SCALE_SMOOTH);
             taza = new ImageIcon(imagenEscalada);
         }
+    }
+
+    private ImageIcon cargarTaza() {
+        URL recurso = VistaEspera.class.getResource("/com/gesco/views/Taza_VistaEspera.png");
+        if (recurso != null) {
+            return new ImageIcon(recurso);
+        }
+
+        File archivo = new File(System.getProperty("user.dir"),
+            "src/main/java/com/gesco/views/Taza_VistaEspera.png");
+        if (archivo.exists()) {
+            return new ImageIcon(archivo.getAbsolutePath());
+        }
+
+        return new ImageIcon();
     }
 
     private void construirCuerpo() {
