@@ -35,7 +35,7 @@ public class Menu {
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         StringBuilder sb = new StringBuilder();
-        sb.append("--- CONFIGURACIÓN DEL MENÚ [").append(fecha.format(formatter)).append("] ---\n");
+        sb.append("--- CONFIGURACION DEL MENU [").append(fecha.format(formatter)).append("] ---\n");
         
         if (platillos.isEmpty()) {
             sb.append("No hay platillos asignados para este día.");
