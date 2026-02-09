@@ -29,7 +29,6 @@ public class RegistroCedulaNegativaTest {
             Files.createFile(usuariosPath);
         }
 
-        // Start each test with a clean usuarios.txt
         Files.write(usuariosPath, new byte[0]);
     }
 

@@ -29,7 +29,6 @@ public class LoginExitosoTest {
             Files.createFile(usuariosPath);
         }
 
-        // Start each test with a clean usuarios.txt
         Files.write(usuariosPath, new byte[0]);
     }
 
