@@ -61,44 +61,44 @@ public class VistaCargaCCB extends PlantillaGesco {
 
         Dimension tamCaja = new Dimension(450, 35);
 
-        formPanel.add(crearEtiquetaForm("Tipo de usuario (Estudiante/Profesor/Empleado)"));
+        formPanel.add(EtiquetasCCB("Tipo de usuario (Estudiante/Profesor/Empleado)"));
         formPanel.add(Box.createVerticalStrut(5));
         usuario = new JTextField();
-        DiseñarCaja(usuario, tamCaja);
+        CajaCCB(usuario, tamCaja);
         formPanel.add(usuario);
         formPanel.add(Box.createVerticalStrut(12));
 
-        formPanel.add(crearEtiquetaForm("NB (Número de bandejas servidas)"));
+        formPanel.add(EtiquetasCCB("NB (Número de bandejas servidas)"));
         formPanel.add(Box.createVerticalStrut(5));
         NB = new JTextField();
-        DiseñarCaja(NB, tamCaja);
+        CajaCCB(NB, tamCaja);
         formPanel.add(NB);
         formPanel.add(Box.createVerticalStrut(12)); 
 
-        formPanel.add(crearEtiquetaForm("MERMA (% de desperdicio)"));
+        formPanel.add(EtiquetasCCB("MERMA (% de desperdicio)"));
         formPanel.add(Box.createVerticalStrut(5));
         MERMA = new JTextField();
-        DiseñarCaja(MERMA, tamCaja);
+        CajaCCB(MERMA, tamCaja);
         formPanel.add(MERMA);
         formPanel.add(Box.createVerticalStrut(12)); 
 
-        formPanel.add(crearEtiquetaForm("CF (Costos Fijos totales)"));
+        formPanel.add(EtiquetasCCB("CF (Costos Fijos totales)"));
         formPanel.add(Box.createVerticalStrut(5));
         CF = new JTextField();
-        DiseñarCaja(CF, tamCaja);
+        CajaCCB(CF, tamCaja);
         formPanel.add(CF);
         formPanel.add(Box.createVerticalStrut(12)); 
 
-        formPanel.add(crearEtiquetaForm("CV (Costos Variables totales)"));
+        formPanel.add(EtiquetasCCB("CV (Costos Variables totales)"));
         formPanel.add(Box.createVerticalStrut(5));
         CV = new JTextField();
-        DiseñarCaja(CV, tamCaja);
+        CajaCCB(CV, tamCaja);
         formPanel.add(CV);
 
         panelFondoBase.add(formPanel);
     }
 
-    private JLabel crearEtiquetaForm(String texto) {
+    private JLabel EtiquetasCCB(String texto) {
         JLabel label = new JLabel(texto);
         label.setFont(new Font("Arial", Font.BOLD, 14));
         label.setForeground(new Color(180, 180, 180));
@@ -106,7 +106,7 @@ public class VistaCargaCCB extends PlantillaGesco {
         return label;
     }
 
-    private void DiseñarCaja(JTextField c, Dimension d) {
+    private void CajaCCB(JTextField c, Dimension d) {
         c.setPreferredSize(d);
         c.setMaximumSize(d);
         c.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -123,7 +123,6 @@ public class VistaCargaCCB extends PlantillaGesco {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 
-                // Dibujamos el panel translúcido
                 int x = 250;
                 int y = 15;
                 int w = getWidth() - 500;
@@ -142,14 +141,12 @@ public class VistaCargaCCB extends PlantillaGesco {
         panelFondo.setOpaque(false); 
         panelFondo.setBorder(BorderFactory.createEmptyBorder(30, 20, 30, 20));
 
-        // Estructura de apilado vertical
         panelFondo.add(Box.createVerticalGlue()); 
         panelFondo.add(Titulo);
         panelFondo.add(Box.createVerticalStrut(15)); 
 
         agregarCampos(panelFondo); 
-        
-        // Ubicamos el resultado DENTRO del flujo, antes del botón
+
         panelFondo.add(Box.createVerticalStrut(20)); 
         panelFondo.add(lblResultado);
         panelFondo.add(Box.createVerticalStrut(15)); 
