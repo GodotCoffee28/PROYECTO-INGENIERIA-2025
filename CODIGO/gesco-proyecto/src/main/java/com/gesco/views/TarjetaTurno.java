@@ -12,7 +12,6 @@ import com.gesco.views.PlantillasViews.TarjetaGeneral;
 
 public class TarjetaTurno extends TarjetaGeneral {
 
-    // Componentes visuales (El esqueleto)
     private JLabel lblTitulo;
     private JLabel lblInicio;
     private JLabel lblFin;

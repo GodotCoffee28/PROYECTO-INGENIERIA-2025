@@ -1,7 +1,17 @@
 package com.gesco.views;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
@@ -42,20 +52,7 @@ public class VistaGestionMenu extends PlantillaGesco {
     }
 
     private void construirCuerpo() {
-        JPanel panelFondo = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                
-                g2.setColor(new Color(255, 255, 255, 25)); 
-                g2.fillRoundRect(250, 10, getWidth() - 500, getHeight() - 20, 50, 50);
-                
-                g2.setColor(new Color(255, 255, 255, 40));
-                g2.drawRoundRect(250, 10, getWidth() - 500, getHeight() - 20, 50, 50);
-                g2.dispose();
-            }
-        };
+        JPanel panelFondo = crearPanel();
         
         panelFondo.setLayout(new BoxLayout(panelFondo, BoxLayout.Y_AXIS));
         panelFondo.setOpaque(false); 
@@ -76,4 +73,8 @@ public class VistaGestionMenu extends PlantillaGesco {
 
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
     }
+
+    public BotonNeon getBtnEditar() { return btnEditar; }
+    public BotonNeon getBtnCrear() { return btnCrear; }
+    public BotonNeon getBtnReiniciar() { return btnReiniciar; }
 }

@@ -24,7 +24,32 @@ public class DataBase {
     private static final String ARCHIVO_USUARIOS = "usuarios.txt";
     private static final String ARCHIVO_ADMINS = "admins.txt";
     private static final String ARCHIVO_MENUS = "menus.txt";
-    private static final String DATA_DIR = "src/main/java/com/gesco/models/data";
+    private static final String ARCHIVO_CFCV = "cfcv.txt";
+    /**
+     * Directorio relativo o absoluto donde se almacenan los archivos de datos.
+     * Por defecto apunta a la carpeta existente dentro del proyecto pero puede
+     * ser sobrescrito mediante la propiedad del sistema `gesco.data.dir` o la
+     * variable de entorno `GESCO_DATA_DIR`.
+     */
+    private static String DATA_DIR = "src/main/java/com/gesco/models/data";
+
+    static {
+        String prop = System.getProperty("gesco.data.dir");
+        String env = System.getenv("GESCO_DATA_DIR");
+        if (prop != null && !prop.isBlank()) {
+            DATA_DIR = prop.trim();
+        } else if (env != null && !env.isBlank()) {
+            DATA_DIR = env.trim();
+        }
+    }
+
+    /** Permite cambiar en tiempo de ejecución la carpeta de datos. */
+    public static void setDataDir(String dataDir) {
+        if (dataDir != null && !dataDir.isBlank()) DATA_DIR = dataDir.trim();
+    }
+
+    /** Obtiene la ruta actualmente configurada para datos. */
+    public static String getDataDir() { return DATA_DIR; }
 
 
 
@@ -33,7 +58,12 @@ public class DataBase {
      */
     private static File obtenerArchivo(String nombreArchivo) {
         Path basePath = obtenerBaseProyecto();
-        return basePath.resolve(DATA_DIR).resolve(nombreArchivo).toFile();
+        Path dataPath = Paths.get(DATA_DIR);
+        if (dataPath.isAbsolute()) {
+            return dataPath.resolve(nombreArchivo).toFile();
+        } else {
+            return basePath.resolve(DATA_DIR).resolve(nombreArchivo).toFile();
+        }
     }
 
     /**
@@ -118,6 +148,7 @@ public class DataBase {
     // USUARIOS 
 
     public static boolean registrarUsuario(String cedula, String clave, String nombre, String correo) {
+        if (!cedulaValida(cedula)) return false;
         if (usuarioExiste(cedula)) return false;
 
         String linea = String.format("%s:%s:%s:%s:0.0;", 
@@ -127,6 +158,7 @@ public class DataBase {
     }
 
     public static boolean validarInicioSesion(String cedula, String clave) {
+        if (!cedulaValida(cedula) || clave == null) return false;
         List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
 
         for (String linea : lineas) {
@@ -139,6 +171,7 @@ public class DataBase {
     }
 
     public static String obtenerNombre(String cedula) {
+        if (!cedulaValida(cedula)) return null;
         List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
         for (String linea : lineas) {
             String[] partes = linea.split(":");
@@ -161,6 +194,7 @@ public class DataBase {
     //  ADMINS 
 
     public static boolean esAdmin(String cedula) {
+        if (!cedulaValida(cedula)) return false;
         List<String> admins = leerLineasGenericas(ARCHIVO_ADMINS);
         for (String linea : admins) {
             if (linea.trim().equals(cedula)) return true;
@@ -171,6 +205,7 @@ public class DataBase {
     // SALDOS
 
     public static double obtenerSaldo(String cedula) {
+        if (!cedulaValida(cedula)) return 0.0;
         List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
         for (String linea : lineas) {
             String[] partes = linea.split(":");
@@ -184,6 +219,7 @@ public class DataBase {
     }
 
     public static boolean actualizarSaldo(String cedula, double nuevoSaldo) {
+        if (!cedulaValida(cedula)) return false;
         List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
         List<String> lineasActualizadas = new ArrayList<>();
         boolean encontrado = false;
@@ -225,13 +261,96 @@ public class DataBase {
         return escribirLineaGenerica(ARCHIVO_MENUS, sb.toString() + System.lineSeparator());
     }
 
+    private static String menuToLine(Menu menu) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(menu.getFecha().toString()).append("|");
+        for (Platillo p : menu.getPlatillos()) {
+            sb.append(p.getNombre()).append(">");
+            List<Insumo> insumos = p.getInsumos();
+            for (int i = 0; i < insumos.size(); i++) {
+                sb.append(insumos.get(i).getNombre());
+                if (i < insumos.size() - 1) sb.append(",");
+            }
+            sb.append(";");
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Sobrescribe la entrada del menú para la fecha indicada. Si no existe,
+     * añade la línea al final del archivo.
+     */
+    public static boolean actualizarMenu(Menu menu) {
+        try {
+            List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
+            List<String> nuevas = new ArrayList<>();
+            String fecha = menu.getFecha().toString();
+            boolean encontrado = false;
+            String nuevaLinea = menuToLine(menu);
+
+            for (String linea : lineas) {
+                String[] partes = linea.split("\\|");
+                if (partes.length > 0 && partes[0].equals(fecha)) {
+                    nuevas.add(nuevaLinea);
+                    encontrado = true;
+                } else {
+                    nuevas.add(linea);
+                }
+            }
+            if (!encontrado) {
+                nuevas.add(nuevaLinea);
+            }
+            return reescribirArchivoGenerico(ARCHIVO_MENUS, nuevas);
+        } catch (Exception e) {
+            System.err.println("Error actualizando menu: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Reinicia los menús de la semana actual (Lunes-Viernes) a estado por defecto.
+     * Devuelve true si la operación fue exitosa.
+     */
+    public static boolean reiniciarMenusSemana() {
+        try {
+            List<String> actuales = leerLineasGenericas(ARCHIVO_MENUS);
+            java.time.LocalDate hoy = java.time.LocalDate.now();
+            java.time.DayOfWeek d = hoy.getDayOfWeek();
+            java.time.LocalDate lunes = hoy.with(java.time.DayOfWeek.MONDAY);
+
+            java.util.Set<String> fechasSemana = new java.util.HashSet<>();
+            for (int i = 0; i < 5; i++) {
+                fechasSemana.add(lunes.plusDays(i).toString());
+            }
+
+            List<String> nuevas = new ArrayList<>();
+            for (String linea : actuales) {
+                String[] partes = linea.split("\\|");
+                if (partes.length > 0 && fechasSemana.contains(partes[0])) {
+                    continue;
+                }
+                nuevas.add(linea);
+            }
+
+            for (int i = 0; i < 5; i++) {
+                String fecha = lunes.plusDays(i).toString();
+                nuevas.add(fecha + "|");
+            }
+
+            return reescribirArchivoGenerico(ARCHIVO_MENUS, nuevas);
+        } catch (Exception e) {
+            System.err.println("Error reiniciando menus: " + e.getMessage());
+            return false;
+        }
+    }
+
     public static Menu obtenerMenuPorFecha(String fechaStr) {
         List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
 
         for (String linea : lineas) {
             String[] partes = linea.split("\\|");
             if (partes.length > 0 && partes[0].equals(fechaStr)) {
-                return parsearLineaMenu(partes); // Delegamos el parsing a otro método auxiliar
+                return parsearLineaMenu(partes); 
             }
         }
         return new Menu(); // Retorno por defecto
@@ -267,6 +386,21 @@ public class DataBase {
         }
     }
 
+    // CF/CV
+
+    public static boolean guardarCfcv(com.gesco.models.CFCV cfcv) {
+        if (cfcv == null) return false;
+        List<String> lineas = new ArrayList<>();
+        lineas.add(cfcv.toLine());
+        return reescribirArchivoGenerico(ARCHIVO_CFCV, lineas);
+    }
+
+    public static com.gesco.models.CFCV obtenerCfcv() {
+        List<String> lineas = leerLineasGenericas(ARCHIVO_CFCV);
+        if (lineas.isEmpty()) return new com.gesco.models.CFCV();
+        return com.gesco.models.CFCV.fromLine(lineas.get(0));
+    }
+
 
     private static Path obtenerBaseProyecto() {
         try {
@@ -280,5 +414,9 @@ public class DataBase {
 
     private static String valorSeguro(String valor) {
         return valor == null ? "" : valor.trim();
+    }
+
+    private static boolean cedulaValida(String cedula) {
+        return cedula != null && cedula.matches("\\d+");
     }
 }

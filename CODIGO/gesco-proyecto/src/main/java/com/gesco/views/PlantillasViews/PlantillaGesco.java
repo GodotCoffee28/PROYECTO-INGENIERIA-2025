@@ -1,19 +1,11 @@
 package com.gesco.views.PlantillasViews;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
+
+import java.awt.*;
+import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 public class PlantillaGesco extends JFrame {
 
@@ -111,6 +103,46 @@ public class PlantillaGesco extends JFrame {
         etiqueta.setForeground(color);
         etiqueta.setAlignmentX(Component.CENTER_ALIGNMENT);
         return etiqueta;
+    }
+    protected JPanel crearPanel(){
+        JPanel panelFondo = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                g2.setColor(new Color(255, 255, 255, 25)); 
+                g2.fillRoundRect(250, 10, getWidth() - 500, getHeight() - 20, 50, 50);
+                
+                g2.setColor(new Color(255, 255, 255, 40));
+                g2.drawRoundRect(250, 10, getWidth() - 500, getHeight() - 20, 50, 50);
+                g2.dispose();
+            }
+        };
+        return panelFondo;
+    }
+    protected JLabel crearEtiquetaForm(String texto, int size, Color color) {
+        JLabel label = new JLabel(texto);
+        label.setFont(new Font("Arial", Font.BOLD, size));
+        label.setForeground(color);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        return label;
+    }
+
+    protected JLabel crearSeparador() {
+        JLabel sep = new JLabel("/");
+        sep.setForeground(Color.WHITE);
+        sep.setFont(new Font("Arial", Font.BOLD, 18));
+        return sep;
+    }
+
+    protected void diseñarCaja(JTextField c, Dimension d) {
+        c.setPreferredSize(d);
+        c.setMaximumSize(d);
+        c.setAlignmentX(Component.LEFT_ALIGNMENT);
+        c.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        c.setFont(new Font("Arial", Font.PLAIN, 16));
+        c.setBackground(new Color(255, 255, 255, 240));
     }
     public MenuDesplegable getPopupMenu() {
         return menuDesplegableGeneral;

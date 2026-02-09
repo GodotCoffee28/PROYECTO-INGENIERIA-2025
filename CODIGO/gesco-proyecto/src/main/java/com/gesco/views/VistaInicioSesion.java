@@ -6,9 +6,6 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -45,10 +42,8 @@ public class VistaInicioSesion extends PlantillaGesco {
         btnInicioSesion.setMaximumSize(tam);
         btnInicioSesion.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        Saludo = new JLabel("¡Hola de nuevo!");
+        Saludo = crearEtiquetaSimple("¡Hola de nuevo!", 45, new Color(240, 240, 240));
         Saludo.setFont(new Font("Arial", Font.BOLD, 45)); 
-        Saludo.setForeground(new Color(240, 240, 240)); 
-        Saludo.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
     
     private void agregarCampos(JPanel panelFondoBase) {
@@ -59,10 +54,8 @@ public class VistaInicioSesion extends PlantillaGesco {
         formPanel.setAlignmentX(Component.CENTER_ALIGNMENT); 
 
         //Cédula
-        JLabel lblCedula = new JLabel("Cédula de identidad");
-        lblCedula.setFont(new Font("Arial", Font.BOLD, 18));
-        lblCedula.setForeground(Color.WHITE);
-        lblCedula.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JLabel lblCedula = crearEtiquetaForm("Cédula de identidad", 18, Color.WHITE);
+        
         //Caja de texto para la cédula
         cedula = new JTextField();
         Dimension tamanoCaja = new Dimension(450, 40);
@@ -73,10 +66,8 @@ public class VistaInicioSesion extends PlantillaGesco {
         cedula.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
         //Contraseña
-        JLabel lblClave = new JLabel("Contraseña");
-        lblClave.setFont(new Font("Arial", Font.BOLD, 18));
-        lblClave.setForeground(Color.WHITE);
-        lblClave.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JLabel lblClave = crearEtiquetaForm("Contraseña", 18, Color.WHITE);
+
         //Caja de texto contraseña
         clave = new JPasswordField();
         clave.setPreferredSize(tamanoCaja);
@@ -99,20 +90,7 @@ public class VistaInicioSesion extends PlantillaGesco {
     }
 
     private void construirCuerpo() {
-        JPanel panelFondo = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                
-                g2.setColor(new Color(255, 255, 255, 25)); 
-                g2.fillRoundRect(250, 10, getWidth() - 500, getHeight() - 20, 50, 50);
-                
-                g2.setColor(new Color(255, 255, 255, 40));
-                g2.drawRoundRect(250, 10, getWidth() - 500, getHeight() - 20, 50, 50);
-                g2.dispose();
-            }
-        };
+        JPanel panelFondo = crearPanel();
         
         panelFondo.setLayout(new BoxLayout(panelFondo, BoxLayout.Y_AXIS));
         panelFondo.setOpaque(false); 
@@ -133,11 +111,8 @@ public class VistaInicioSesion extends PlantillaGesco {
         
         panelFondo.add(Box.createVerticalStrut(20));
         
-        registroLink = new JLabel("¿Aún no tiene una cuenta? Registrarse");
-        registroLink.setForeground(new Color(220, 220, 220));
-        registroLink.setFont(new Font("Arial", Font.PLAIN, 15));
+        registroLink = crearEtiquetaSimple("¿Aún no tiene una cuenta? Registrarse", 15, new Color(220, 220, 220));
         registroLink.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        registroLink.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelFondo.add(registroLink);
 
         panelFondo.add(Box.createVerticalStrut(30)); 
@@ -148,7 +123,6 @@ public class VistaInicioSesion extends PlantillaGesco {
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
     }
 
-   //Getters (Gabriel/Alejandro)
     public String getCedula(){ return cedula.getText();}
     public String getClave(){ return clave.getText();}
     public BotonNeon getBtnInicioSesion() { return btnInicioSesion; }

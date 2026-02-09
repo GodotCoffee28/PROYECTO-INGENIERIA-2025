@@ -7,15 +7,17 @@ import javax.swing.SwingUtilities;
 import com.gesco.models.Insumo;
 import com.gesco.models.Platillo;
 import com.gesco.views.TarjetaMenu;
-import com.gesco.views.VistaFila;
 
 public class Menu{
 
     public static void main( String[] args ){
         LogicaInterfaz logica = new LogicaInterfaz();
         logica.iniciar();
-        VistaFila vistafila = new VistaFila("Enrique");
-        vistafila.setVisible(true);
+        // La vista `VistaFila` fue eliminada; reemplazado por mensaje informativo.
+        javax.swing.JOptionPane.showMessageDialog(null,
+            "La vista 'Fila' ya no está disponible.",
+            "Info",
+            javax.swing.JOptionPane.INFORMATION_MESSAGE);
         SwingUtilities.invokeLater(() -> {
             
 
@@ -33,16 +35,13 @@ public class Menu{
 
             JFrame frame = new JFrame("Test de Tarjeta de Menú");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(500, 600); // Tamaño similar a tu mockup
-            frame.setLayout(null); // O BorderLayout si quieres que ocupe todo
+            frame.setSize(500, 600); 
+            frame.setLayout(null); 
             
-            // Configuramos la posición de la tarjeta manualmente para la prueba
             tarjeta.setBounds(50, 50, 250, 250);
             
-            // Añadimos la tarjeta al frame
             frame.add(tarjeta);
             
-            // Centrar y mostrar
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
             

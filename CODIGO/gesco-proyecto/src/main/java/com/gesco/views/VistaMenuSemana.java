@@ -20,7 +20,6 @@ import javax.swing.JScrollPane;
 
 import com.gesco.controllers.DataBase;
 import com.gesco.models.Menu;
-import com.gesco.models.Platillo;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaMenuSemana extends PlantillaGesco {
@@ -34,7 +33,7 @@ public class VistaMenuSemana extends PlantillaGesco {
         inicializarComponentes();
         construirCuerpo();
         
-        //cargarDatosPrueba();
+        
         cargarDatosReales();
         revalidate();
         repaint();
@@ -116,52 +115,25 @@ public class VistaMenuSemana extends PlantillaGesco {
 
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
     }
-
-    private void cargarDatosPrueba() {
-        Menu lunes = new Menu(LocalDate.now().with(java.time.DayOfWeek.MONDAY));
-        lunes.agregarPlatillo(new Platillo("Pollo a la brasa"));
-        lunes.agregarPlatillo(new Platillo("Hamburguesa"));
-        lunes.agregarPlatillo(new Platillo("Refresco"));
-        
-        Menu martes = new Menu(LocalDate.now().with(java.time.DayOfWeek.TUESDAY));
-        martes.agregarPlatillo(new Platillo("Queso"));
-        martes.agregarPlatillo(new Platillo("Pan"));
-        
-        Menu miercoles = new Menu(LocalDate.now().with(java.time.DayOfWeek.WEDNESDAY));
-        miercoles.agregarPlatillo(new Platillo("Pasta"));
-        miercoles.agregarPlatillo(new Platillo("Jugo"));
-
-        Menu jueves = new Menu(LocalDate.now().with(java.time.DayOfWeek.THURSDAY));
-        jueves.agregarPlatillo(new Platillo("Cambur"));
-        jueves.agregarPlatillo(new Platillo("Batido"));
-
-        Menu viernes = new Menu(LocalDate.now().with(java.time.DayOfWeek.FRIDAY));
-        viernes.agregarPlatillo(new Platillo("Arroz"));
-        viernes.agregarPlatillo(new Platillo("Caraotas"));
-
-        List<Menu> semana = List.of(lunes, martes, miercoles, jueves, viernes);
-
-        for (Menu m : semana) {
-            TarjetaMenu tarjeta = new TarjetaMenu(m);
-            tarjeta.setPreferredSize(new Dimension(250, 185));
-            tarjetasSemana.add(tarjeta);
-            panelContenedorTarjetas.add(tarjeta);
-        }
-    }
     
     private void cargarDatosReales() {
-        LocalDate fechaInicio= LocalDate.of(2025, 2, 10);
+        LocalDate fechaInicio = LocalDate.now().with(java.time.DayOfWeek.MONDAY);
+
+        tarjetasSemana.clear();
+        panelContenedorTarjetas.removeAll();
 
         for (int i = 0; i < 5; i++) {
             LocalDate fechaDia = fechaInicio.plusDays(i);
             Menu menuDelDia = DataBase.obtenerMenuPorFecha(fechaDia.toString());
-            
 
             TarjetaMenu tarjeta = new TarjetaMenu(menuDelDia);
             tarjeta.setPreferredSize(new Dimension(250, 160));
-            
+
             tarjetasSemana.add(tarjeta);
             panelContenedorTarjetas.add(tarjeta);
         }
+
+        panelContenedorTarjetas.revalidate();
+        panelContenedorTarjetas.repaint();
     }
 }

@@ -43,11 +43,13 @@ public class VistaInicioAdmin extends PlantillaGesco {
         btnGestión = new BotonNeon("Gestión del menú");
         btnGestión.setPreferredSize(tamBoton);
 
-        btnSubirDatos = new BotonNeon("Subir datos CCB");
+        btnSubirDatos = new BotonNeon("Subir datos de CF y CV");
         btnSubirDatos.setPreferredSize(tamBoton);
+        btnSubirDatos.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 20));
 
-        btnVerDatos = new BotonNeon("Ver datos CCB");
+        btnVerDatos = new BotonNeon("Ver datos de CF y CV");
         btnVerDatos.setPreferredSize(tamBoton);
+        btnVerDatos.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 20));
 
         btnCambio = new BotonNeon("Navegar como comensal");
         btnCambio.setPreferredSize(new Dimension(220, 50));
@@ -66,7 +68,8 @@ public class VistaInicioAdmin extends PlantillaGesco {
         gbc.insets = new Insets(0, 15, 20, 15);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
-
+        
+        //Columna izquierda: Gestión del menú
         JPanel cajaMenu = crearTarjeta("Respecto al menú", 420, 280);
         JPanel pnlInternoMenu = new JPanel(new GridBagLayout());
         pnlInternoMenu.setOpaque(false);
@@ -85,7 +88,7 @@ public class VistaInicioAdmin extends PlantillaGesco {
         gbc.gridy = 0;
         panelCentral.add(cajaMenu, gbc);
 
-        // --- COLUMNA DERECHA: CCB ---
+        //Columna derecha: CCB
         JPanel cajaCCB = crearTarjeta("Respecto al CCB", 420, 280);
         JPanel pnlInternoCCB = new JPanel(new GridBagLayout());
         pnlInternoCCB.setOpaque(false);
@@ -124,8 +127,10 @@ public class VistaInicioAdmin extends PlantillaGesco {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
                 g2.setColor(new Color(255, 255, 255, 30)); 
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40);
+                
                 g2.setColor(new Color(255, 255, 255, 50));
                 g2.setStroke(new BasicStroke(1.2f));
                 g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 40, 40);

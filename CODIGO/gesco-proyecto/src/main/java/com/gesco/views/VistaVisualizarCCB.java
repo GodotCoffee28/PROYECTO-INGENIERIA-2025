@@ -19,13 +19,13 @@ import javax.swing.JTextField;
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
-public class VistaCargaCCB extends PlantillaGesco {
+public class VistaVisualizarCCB extends PlantillaGesco {
     private BotonNeon btnSubirDatos;
     private JTextField usuario, NB, MERMA, CF, CV;
-    private JLabel Titulo;
+    private JLabel TituloCcb;
     private JLabel lblResultado;
     
-    public VistaCargaCCB() {
+    public VistaVisualizarCCB() {
         super(); 
         inicializarComponentes();
         construirCuerpo();
@@ -41,14 +41,14 @@ public class VistaCargaCCB extends PlantillaGesco {
         btnSubirDatos.setMaximumSize(tamBoton);
         btnSubirDatos.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        Titulo = new JLabel("Datos para el CCB");
-        Titulo.setFont(new Font("Arial", Font.BOLD, 45)); 
-        Titulo.setForeground(new Color(240, 240, 240)); 
-        Titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        TituloCcb = new JLabel("Datos para el CCB");
+        TituloCcb.setFont(new Font("Arial", Font.BOLD, 45)); 
+        TituloCcb.setForeground(new Color(240, 240, 240)); 
+        TituloCcb.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         lblResultado = new JLabel(" ");
-        lblResultado.setFont(new Font("Arial", Font.BOLD, 26));
-        lblResultado.setForeground(new Color(0, 255, 150)); 
+        lblResultado.setFont(new Font("Arial", Font.BOLD, 22));
+        lblResultado.setForeground(new Color(240, 240, 240));
         lblResultado.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
     
@@ -56,107 +56,84 @@ public class VistaCargaCCB extends PlantillaGesco {
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
         formPanel.setOpaque(false);
-        formPanel.setMaximumSize(new Dimension(450, 420)); 
+
+        formPanel.setMaximumSize(new Dimension(450, 480)); 
         formPanel.setAlignmentX(Component.CENTER_ALIGNMENT); 
 
-        Dimension tamCaja = new Dimension(450, 35);
+        Dimension tamCaja = new Dimension(450, 40);
 
-        formPanel.add(EtiquetasCCB("Tipo de usuario (Estudiante/Profesor/Empleado)"));
-        formPanel.add(Box.createVerticalStrut(5));
+        formPanel.add(crearEtiquetaForm(("Tipo de usuario"), 18, Color.WHITE));
+        formPanel.add(Box.createVerticalStrut(8));
         usuario = new JTextField();
-        CajaCCB(usuario, tamCaja);
+        diseñarCaja(usuario, tamCaja);
         formPanel.add(usuario);
-        formPanel.add(Box.createVerticalStrut(12));
+        formPanel.add(Box.createVerticalStrut(20));
 
-        formPanel.add(EtiquetasCCB("NB (Número de bandejas servidas)"));
-        formPanel.add(Box.createVerticalStrut(5));
+        formPanel.add(crearEtiquetaForm("NB", 18, Color.WHITE));
+        formPanel.add(Box.createVerticalStrut(8));
         NB = new JTextField();
-        CajaCCB(NB, tamCaja);
+        diseñarCaja(NB, tamCaja);
         formPanel.add(NB);
-        formPanel.add(Box.createVerticalStrut(12)); 
+        formPanel.add(Box.createVerticalStrut(20)); 
 
-        formPanel.add(EtiquetasCCB("MERMA (% de desperdicio)"));
-        formPanel.add(Box.createVerticalStrut(5));
+        formPanel.add(crearEtiquetaForm("MERMA", 18, Color.WHITE));
+        formPanel.add(Box.createVerticalStrut(8));
         MERMA = new JTextField();
-        CajaCCB(MERMA, tamCaja);
+        diseñarCaja(MERMA, tamCaja);
         formPanel.add(MERMA);
-        formPanel.add(Box.createVerticalStrut(12)); 
+        formPanel.add(Box.createVerticalStrut(20)); 
 
-        formPanel.add(EtiquetasCCB("CF (Costos Fijos totales)"));
-        formPanel.add(Box.createVerticalStrut(5));
+        formPanel.add(crearEtiquetaForm("CF", 18, Color.WHITE));
+        formPanel.add(Box.createVerticalStrut(8));
         CF = new JTextField();
-        CajaCCB(CF, tamCaja);
+        diseñarCaja(CF, tamCaja);
         formPanel.add(CF);
-        formPanel.add(Box.createVerticalStrut(12)); 
+        formPanel.add(Box.createVerticalStrut(20)); 
 
-        formPanel.add(EtiquetasCCB("CV (Costos Variables totales)"));
-        formPanel.add(Box.createVerticalStrut(5));
+        formPanel.add(crearEtiquetaForm("CV", 18, Color.WHITE));
+        formPanel.add(Box.createVerticalStrut(8));
         CV = new JTextField();
-        CajaCCB(CV, tamCaja);
+        diseñarCaja(CV, tamCaja);
         formPanel.add(CV);
 
         panelFondoBase.add(formPanel);
     }
 
-    private JLabel EtiquetasCCB(String texto) {
-        JLabel label = new JLabel(texto);
-        label.setFont(new Font("Arial", Font.BOLD, 14));
-        label.setForeground(new Color(180, 180, 180));
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        return label;
-    }
-
-    private void CajaCCB(JTextField c, Dimension d) {
-        c.setPreferredSize(d);
-        c.setMaximumSize(d);
-        c.setAlignmentX(Component.LEFT_ALIGNMENT);
-        c.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        c.setFont(new Font("Arial", Font.PLAIN, 15));
-        c.setBackground(new Color(255, 255, 255, 240));
-    }
 
     private void construirCuerpo() {
         JPanel panelFondo = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 
-                int x = 250;
-                int y = 15;
-                int w = getWidth() - 500;
-                int h = getHeight() - 30;
-                
                 g2.setColor(new Color(255, 255, 255, 25)); 
-                g2.fillRoundRect(x, y, w, h, 50, 50);
+                g2.fillRoundRect(250, 10, getWidth() - 500, getHeight() - 20, 50, 50);
                 
                 g2.setColor(new Color(255, 255, 255, 40));
-                g2.drawRoundRect(x, y, w, h, 50, 50);
+                g2.drawRoundRect(250, 10, getWidth() - 500, getHeight() - 20, 50, 50);
                 g2.dispose();
             }
         };
         
         panelFondo.setLayout(new BoxLayout(panelFondo, BoxLayout.Y_AXIS));
         panelFondo.setOpaque(false); 
-        panelFondo.setBorder(BorderFactory.createEmptyBorder(30, 20, 30, 20));
+        panelFondo.setBorder(BorderFactory.createEmptyBorder(40, 20, 40, 20));
 
         panelFondo.add(Box.createVerticalGlue()); 
-        panelFondo.add(Titulo);
-        panelFondo.add(Box.createVerticalStrut(15)); 
+        panelFondo.add(TituloCcb);
+        panelFondo.add(Box.createVerticalStrut(25)); 
 
         agregarCampos(panelFondo); 
-
-        panelFondo.add(Box.createVerticalStrut(20)); 
-        panelFondo.add(lblResultado);
-        panelFondo.add(Box.createVerticalStrut(15)); 
         
+        panelFondo.add(Box.createVerticalStrut(30)); 
         panelFondo.add(btnSubirDatos); 
+        panelFondo.add(Box.createVerticalStrut(20));
+        panelFondo.add(lblResultado);
         panelFondo.add(Box.createVerticalGlue());
 
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
     }
-
     public String getUsuario(){ return usuario.getText();}
     public String getNB(){ return NB.getText();}
     public String getMERMA(){ return MERMA.getText();}
@@ -165,10 +142,6 @@ public class VistaCargaCCB extends PlantillaGesco {
     public BotonNeon getBtnSubirDatos() { return btnSubirDatos; }
 
     public void setResultado(String resultado) {
-        if (resultado == null || resultado.trim().isEmpty()) {
-            lblResultado.setText(" ");
-        } else {
-            lblResultado.setText("VALOR CCB: " + resultado);
-        }
+        lblResultado.setText(resultado);
     }
 }

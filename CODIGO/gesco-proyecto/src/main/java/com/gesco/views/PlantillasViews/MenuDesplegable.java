@@ -33,14 +33,15 @@ public class MenuDesplegable {
         menu.setBackground(new Color(60, 60, 65));
         menu.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
 
+
         String[] etiquetas = {
-            "Ir a Inicio", "Ir a Inicio de sesión", "Ir a Registro", 
-            "Ir a la Fila", "Ver Menu de la semana", "Ver turnos"
+            "Ir a Inicio", "Ir a Inicio de sesión", "Ir a Registro",
+            "Ver Menu de la semana", "Ver turnos"
         };
 
         String[] comandos = {
-            "CMD_INICIO", "CMD_SESION", "CMD_REGISTRO", 
-            "CMD_FILA", "CMD_MENUSEMANA", "CMD_TURNOS"
+            "CMD_INICIO", "CMD_SESION", "CMD_REGISTRO",
+            "CMD_MENUSEMANA", "CMD_TURNOS"
         };
 
         for (int i = 0; i < etiquetas.length; i++) {
