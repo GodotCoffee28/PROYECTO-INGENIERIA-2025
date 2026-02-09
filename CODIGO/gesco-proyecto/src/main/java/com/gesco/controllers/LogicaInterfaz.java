@@ -214,7 +214,7 @@ public class LogicaInterfaz {
         menuGescoController.conectar(vistaGestionMenu, usuarioAdmin);
         new VistaGestionMenuControlador(
             vistaGestionMenu,
-            this::volverAPantallaPrincipal,
+            this::mostrarPanelControl,
             this::mostrarEditarMenu,
             this::mostrarCrearMenu,
             this::reiniciarMenusSemana
