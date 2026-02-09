@@ -118,6 +118,7 @@ public class DataBase {
     // USUARIOS 
 
     public static boolean registrarUsuario(String cedula, String clave, String nombre, String correo) {
+        if (!cedulaValida(cedula)) return false;
         if (usuarioExiste(cedula)) return false;
 
         String linea = String.format("%s:%s:%s:%s:0.0;", 
@@ -127,6 +128,7 @@ public class DataBase {
     }
 
     public static boolean validarInicioSesion(String cedula, String clave) {
+        if (!cedulaValida(cedula) || clave == null) return false;
         List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
 
         for (String linea : lineas) {
@@ -139,6 +141,7 @@ public class DataBase {
     }
 
     public static String obtenerNombre(String cedula) {
+        if (!cedulaValida(cedula)) return null;
         List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
         for (String linea : lineas) {
             String[] partes = linea.split(":");
@@ -161,6 +164,7 @@ public class DataBase {
     //  ADMINS 
 
     public static boolean esAdmin(String cedula) {
+        if (!cedulaValida(cedula)) return false;
         List<String> admins = leerLineasGenericas(ARCHIVO_ADMINS);
         for (String linea : admins) {
             if (linea.trim().equals(cedula)) return true;
@@ -171,6 +175,7 @@ public class DataBase {
     // SALDOS
 
     public static double obtenerSaldo(String cedula) {
+        if (!cedulaValida(cedula)) return 0.0;
         List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
         for (String linea : lineas) {
             String[] partes = linea.split(":");
@@ -184,6 +189,7 @@ public class DataBase {
     }
 
     public static boolean actualizarSaldo(String cedula, double nuevoSaldo) {
+        if (!cedulaValida(cedula)) return false;
         List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
         List<String> lineasActualizadas = new ArrayList<>();
         boolean encontrado = false;
@@ -280,5 +286,9 @@ public class DataBase {
 
     private static String valorSeguro(String valor) {
         return valor == null ? "" : valor.trim();
+    }
+
+    private static boolean cedulaValida(String cedula) {
+        return cedula != null && cedula.matches("\\d+");
     }
 }

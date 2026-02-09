@@ -62,10 +62,18 @@ public class InicioSesionRegistroTest {
     }
 
     @Test
+    public void registrarUsuario_cedulaNegativa_falla() {
+        boolean guardado = DataBase.registrarUsuario("-1", "pass", "Ana", "ana@correo.com");
+
+        assertFalse(guardado);
+    }
+
+    @Test
     public void validarInicioSesion_credencialesInvalidas_devuelveFalse() throws IOException {
         Files.write(usuariosPath, "111:pass:Pedro:pedro@correo.com:0.0;\n".getBytes(StandardCharsets.UTF_8));
 
         assertFalse(DataBase.validarInicioSesion("111", "bad"));
         assertFalse(DataBase.validarInicioSesion("999", "pass"));
+        assertFalse(DataBase.validarInicioSesion("-5", "pass"));
     }
 }
