@@ -47,10 +47,8 @@ public class VistaInicio extends PlantillaGesco {
         btnRegistrarse.setMaximumSize(tam);
         btnRegistrarse.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        Saludo = new JLabel("¡Hola, Ucevista!");
-        Saludo.setFont(new Font("Arial", Font.BOLD, 45)); 
-        Saludo.setForeground(new Color(240, 240, 240)); 
-        Saludo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        Saludo = crearEtiquetaSimple("¡Hola, Ucevista!", 45, new Color(240, 240, 240));
+        Saludo.setFont(new Font("Arial", Font.BOLD, 45));
     }
 
     private void construirCuerpo() {
@@ -72,7 +70,6 @@ public class VistaInicio extends PlantillaGesco {
         panelFondo.setOpaque(false); 
         panelFondo.setBorder(BorderFactory.createEmptyBorder(60, 20, 60, 20));
 
-        //Elementos del panel
         panelFondo.add(Box.createVerticalGlue()); 
         panelFondo.add(Saludo);
         panelFondo.add(Box.createVerticalStrut(30)); 

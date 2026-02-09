@@ -35,7 +35,6 @@ public class VistaEspera extends PlantillaGesco {
         
         taza = cargarTaza();
         if (taza.getIconWidth() > 0) {
-            // Taza gigante
             Image imagenEscalada = taza.getImage().getScaledInstance(280, 280, Image.SCALE_SMOOTH);
             taza = new ImageIcon(imagenEscalada);
         }
@@ -69,12 +68,11 @@ public class VistaEspera extends PlantillaGesco {
             panelContenido.add(lblTaza);
         }
 
-        // --- EL AJUSTE CLAVE ---
-        panelContenido.add(Box.createVerticalStrut(10)); // Reducido a 10 para acercar el texto
+        panelContenido.add(Box.createVerticalStrut(10));
         
         panelContenido.add(anuncio);
         
-        panelContenido.add(Box.createVerticalStrut(80)); // Espacio mayor antes del botón para equilibrar
+        panelContenido.add(Box.createVerticalStrut(80));
         
         panelContenido.add(volver); 
 

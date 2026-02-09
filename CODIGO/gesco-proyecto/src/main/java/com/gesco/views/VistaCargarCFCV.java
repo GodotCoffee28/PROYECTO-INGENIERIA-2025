@@ -61,37 +61,20 @@ public class VistaCargarCFCV extends PlantillaGesco {
 
         Dimension tamCaja = new Dimension(450, 40);
 
-        formPanel.add(crearEtiquetaForm("CF (Costos Fijos)"));
+        formPanel.add(crearEtiquetaForm("CF (Costos Fijos)", 16, Color.WHITE));
         formPanel.add(Box.createVerticalStrut(8));
         CF = new JTextField();
         diseñarCaja(CF, tamCaja);
         formPanel.add(CF);
         formPanel.add(Box.createVerticalStrut(16));
 
-        formPanel.add(crearEtiquetaForm("CV (Costos Variables)"));
+        formPanel.add(crearEtiquetaForm("CV (Costos Variables)", 16, Color.WHITE));
         formPanel.add(Box.createVerticalStrut(8));
         CV = new JTextField();
         diseñarCaja(CV, tamCaja);
         formPanel.add(CV);
 
         panelFondoBase.add(formPanel);
-    }
-
-    private JLabel crearEtiquetaForm(String texto) {
-        JLabel label = new JLabel(texto);
-        label.setFont(new Font("Arial", Font.BOLD, 16));
-        label.setForeground(Color.WHITE);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        return label;
-    }
-
-    private void diseñarCaja(JTextField c, Dimension d) {
-        c.setPreferredSize(d);
-        c.setMaximumSize(d);
-        c.setAlignmentX(Component.LEFT_ALIGNMENT);
-        c.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        c.setFont(new Font("Arial", Font.PLAIN, 16));
-        c.setBackground(new Color(255, 255, 255, 240));
     }
 
     private void construirCuerpo() {

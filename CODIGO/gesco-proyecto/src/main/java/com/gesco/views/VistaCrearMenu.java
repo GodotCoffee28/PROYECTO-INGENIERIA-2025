@@ -6,9 +6,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -42,10 +39,8 @@ public class VistaCrearMenu extends PlantillaGesco {
         btnCrear.setMaximumSize(tamBoton);
         btnCrear.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        Titulo = new JLabel("Crear menú");
+        Titulo = crearEtiquetaSimple("Crear menú", 45, new Color(240, 240, 240));
         Titulo.setFont(new Font("Arial", Font.BOLD, 45)); 
-        Titulo.setForeground(new Color(240, 240, 240)); 
-        Titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
     
     private void agregarCampos(JPanel panelFondoBase) {
@@ -56,7 +51,7 @@ public class VistaCrearMenu extends PlantillaGesco {
         formPanel.setMaximumSize(new Dimension(450, 480)); 
         formPanel.setAlignmentX(Component.CENTER_ALIGNMENT); 
 
-        JLabel lblFecha = crearEtiquetaForm("Fecha (DD/MM/AAAA)");
+        JLabel lblFecha = crearEtiquetaForm("Fecha (DD/MM/AAAA)", 18, Color.WHITE);
         
         diaField = new JTextField(2);
         mesField = new JTextField(2);
@@ -79,68 +74,31 @@ public class VistaCrearMenu extends PlantillaGesco {
 
         Dimension tamCaja = new Dimension(450, 40);
 
-        formPanel.add(crearEtiquetaForm("Platillo 1"));
+        formPanel.add(crearEtiquetaForm("Platillo 1", 18, Color.WHITE));
         formPanel.add(Box.createVerticalStrut(8));
         platillo1 = new JTextField();
-        DiseñarCaja(platillo1, tamCaja);
+        diseñarCaja(platillo1, tamCaja);
         formPanel.add(platillo1);
         formPanel.add(Box.createVerticalStrut(20)); 
         
-        formPanel.add(crearEtiquetaForm("Platillo 2"));
+        formPanel.add(crearEtiquetaForm("Platillo 2", 18, Color.WHITE));
         formPanel.add(Box.createVerticalStrut(8));
         platillo2 = new JTextField();
-        DiseñarCaja(platillo2, tamCaja);
+        diseñarCaja(platillo2, tamCaja);
         formPanel.add(platillo2);
         formPanel.add(Box.createVerticalStrut(20));
 
-        formPanel.add(crearEtiquetaForm("Platillo 3"));
+        formPanel.add(crearEtiquetaForm("Platillo 3", 18, Color.WHITE));
         formPanel.add(Box.createVerticalStrut(8));
         platillo3 = new JTextField();
-        DiseñarCaja(platillo3, tamCaja);
+        diseñarCaja(platillo3, tamCaja);
         formPanel.add(platillo3);
 
         panelFondoBase.add(formPanel);
     }
 
-
-    private JLabel crearEtiquetaForm(String texto) {
-        JLabel label = new JLabel(texto);
-        label.setFont(new Font("Arial", Font.BOLD, 18));
-        label.setForeground(Color.WHITE);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        return label;
-    }
-
-    private JLabel crearSeparador() {
-        JLabel sep = new JLabel("/");
-        sep.setForeground(Color.WHITE);
-        sep.setFont(new Font("Arial", Font.BOLD, 18));
-        return sep;
-    }
-
-    private void DiseñarCaja(JTextField c, Dimension d) {
-        c.setPreferredSize(d);
-        c.setMaximumSize(d);
-        c.setAlignmentX(Component.LEFT_ALIGNMENT);
-        c.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        c.setFont(new Font("Arial", Font.PLAIN, 16));
-    }
-
     private void construirCuerpo() {
-        JPanel panelFondo = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                
-                g2.setColor(new Color(255, 255, 255, 25)); 
-                g2.fillRoundRect(250, 10, getWidth() - 500, getHeight() - 20, 50, 50);
-                
-                g2.setColor(new Color(255, 255, 255, 40));
-                g2.drawRoundRect(250, 10, getWidth() - 500, getHeight() - 20, 50, 50);
-                g2.dispose();
-            }
-        };
+        JPanel panelFondo = crearPanel();
         
         panelFondo.setLayout(new BoxLayout(panelFondo, BoxLayout.Y_AXIS));
         panelFondo.setOpaque(false); 

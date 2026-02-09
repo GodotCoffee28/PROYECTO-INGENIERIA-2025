@@ -15,12 +15,13 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaVerCFCV extends PlantillaGesco {
     private JLabel lblCf;
     private JLabel lblCv;
-    private JButton btnRefrescar;
+    private BotonNeon btnRefrescar;
 
     public VistaVerCFCV() {
         super();
@@ -36,9 +37,13 @@ public class VistaVerCFCV extends PlantillaGesco {
         lblCf.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblCv = crearEtiquetaSimple("CV: -", 18, Color.WHITE);
         lblCv.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnRefrescar = new JButton("Refrescar");
+
+        Dimension tam = new Dimension(400, 60);
+        btnRefrescar = new BotonNeon("Refrescar");
+        btnRefrescar.setPreferredSize(tam);
+        btnRefrescar.setMaximumSize(tam);
         btnRefrescar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnRefrescar.setPreferredSize(new Dimension(160, 40));
+
     }
 
     private void construirCuerpo() {

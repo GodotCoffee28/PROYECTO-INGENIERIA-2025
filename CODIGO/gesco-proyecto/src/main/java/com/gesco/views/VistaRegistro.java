@@ -41,22 +41,16 @@ public class VistaRegistro extends PlantillaGesco {
     private void inicializarComponentes() {
         Dimension tamBotonPrincipal = new Dimension(400, 55);
 
-        // Botón Neon para la acción principal
         btnRegistrarse = new BotonNeon("Registrarse");
         btnRegistrarse.setPreferredSize(tamBotonPrincipal);
         btnRegistrarse.setMaximumSize(tamBotonPrincipal);
         btnRegistrarse.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        loginLink = new JLabel("¿Ya tiene cuenta? Inicie sesión");
-        loginLink.setFont(new Font("Arial", Font.PLAIN, 16));
-        loginLink.setForeground(new Color(220, 220, 220)); // Color gris claro como el de inicio de sesión
-        loginLink.setCursor(new Cursor(Cursor.HAND_CURSOR)); // La "manito"
-        loginLink.setAlignmentX(Component.CENTER_ALIGNMENT);
+        loginLink = crearEtiquetaSimple("¿Ya tiene cuenta? Inicie sesión", 16, new Color(220, 220, 220));
+        loginLink.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        Saludo = new JLabel("¡Únete, Ucevista!");
+        Saludo = crearEtiquetaSimple("¡Únete, Ucevista!", 40, new Color(240, 240, 240));
         Saludo.setFont(new Font("Arial", Font.BOLD, 40)); 
-        Saludo.setForeground(new Color(240, 240, 240)); 
-        Saludo.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
 
     private void agregarCampos(JPanel panelFondoBase) {
@@ -155,12 +149,10 @@ public class VistaRegistro extends PlantillaGesco {
         
         panelFondo.add(Box.createVerticalStrut(30));
         
-        // Texto informativo/link
         panelFondo.add(loginLink);
 
         panelFondo.add(Box.createVerticalStrut(30)); 
         
-        // Botón Final
         panelFondo.add(btnRegistrarse);  
         
         panelFondo.add(Box.createVerticalGlue());
@@ -168,7 +160,6 @@ public class VistaRegistro extends PlantillaGesco {
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
     }
 
-    // Getters para acceso externo
     public String getNombreApellido() { return TxtNombreApellido.getText(); }
     public String getCedula() { return TxtCedula.getText(); }
     public String getCorreo() { return TxtCorreo.getText(); }

@@ -62,58 +62,43 @@ public class VistaVisualizarCCB extends PlantillaGesco {
 
         Dimension tamCaja = new Dimension(450, 40);
 
-        formPanel.add(crearEtiquetaForm("Tipo de usuario"));
+        formPanel.add(crearEtiquetaForm(("Tipo de usuario"), 18, Color.WHITE));
         formPanel.add(Box.createVerticalStrut(8));
         usuario = new JTextField();
-        DiseñarCaja(usuario, tamCaja);
+        diseñarCaja(usuario, tamCaja);
         formPanel.add(usuario);
         formPanel.add(Box.createVerticalStrut(20));
 
-        formPanel.add(crearEtiquetaForm("NB"));
+        formPanel.add(crearEtiquetaForm("NB", 18, Color.WHITE));
         formPanel.add(Box.createVerticalStrut(8));
         NB = new JTextField();
-        DiseñarCaja(NB, tamCaja);
+        diseñarCaja(NB, tamCaja);
         formPanel.add(NB);
         formPanel.add(Box.createVerticalStrut(20)); 
 
-        formPanel.add(crearEtiquetaForm("MERMA"));
+        formPanel.add(crearEtiquetaForm("MERMA", 18, Color.WHITE));
         formPanel.add(Box.createVerticalStrut(8));
         MERMA = new JTextField();
-        DiseñarCaja(MERMA, tamCaja);
+        diseñarCaja(MERMA, tamCaja);
         formPanel.add(MERMA);
         formPanel.add(Box.createVerticalStrut(20)); 
 
-        formPanel.add(crearEtiquetaForm("CF"));
+        formPanel.add(crearEtiquetaForm("CF", 18, Color.WHITE));
         formPanel.add(Box.createVerticalStrut(8));
         CF = new JTextField();
-        DiseñarCaja(CF, tamCaja);
+        diseñarCaja(CF, tamCaja);
         formPanel.add(CF);
         formPanel.add(Box.createVerticalStrut(20)); 
 
-        formPanel.add(crearEtiquetaForm("CV"));
+        formPanel.add(crearEtiquetaForm("CV", 18, Color.WHITE));
         formPanel.add(Box.createVerticalStrut(8));
         CV = new JTextField();
-        DiseñarCaja(CV, tamCaja);
+        diseñarCaja(CV, tamCaja);
         formPanel.add(CV);
 
         panelFondoBase.add(formPanel);
     }
 
-    private JLabel crearEtiquetaForm(String texto) {
-        JLabel label = new JLabel(texto);
-        label.setFont(new Font("Arial", Font.BOLD, 18));
-        label.setForeground(Color.WHITE);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        return label;
-    }
-
-    private void DiseñarCaja(JTextField c, Dimension d) {
-        c.setPreferredSize(d);
-        c.setMaximumSize(d);
-        c.setAlignmentX(Component.LEFT_ALIGNMENT);
-        c.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        c.setFont(new Font("Arial", Font.PLAIN, 16));
-    }
 
     private void construirCuerpo() {
         JPanel panelFondo = new JPanel() {
