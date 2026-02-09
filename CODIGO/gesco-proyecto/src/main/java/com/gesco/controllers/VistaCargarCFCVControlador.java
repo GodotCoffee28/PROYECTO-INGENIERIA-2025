@@ -43,7 +43,6 @@ public class VistaCargarCFCVControlador {
             return;
         }
 
-        // Persistir en la 'base de datos' (archivo).
         com.gesco.models.CFCV modelo = new com.gesco.models.CFCV(cf, cv);
         boolean ok = DataBase.guardarCfcv(modelo);
         if (ok) {

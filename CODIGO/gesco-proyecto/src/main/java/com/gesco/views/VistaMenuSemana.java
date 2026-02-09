@@ -20,7 +20,6 @@ import javax.swing.JScrollPane;
 
 import com.gesco.controllers.DataBase;
 import com.gesco.models.Menu;
-import com.gesco.models.Platillo;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaMenuSemana extends PlantillaGesco {
@@ -34,7 +33,7 @@ public class VistaMenuSemana extends PlantillaGesco {
         inicializarComponentes();
         construirCuerpo();
         
-        //cargarDatosPrueba();
+        
         cargarDatosReales();
         revalidate();
         repaint();
@@ -118,10 +117,8 @@ public class VistaMenuSemana extends PlantillaGesco {
     }
     
     private void cargarDatosReales() {
-        // Obtener el lunes de la semana actual y cargar de lunes a viernes
         LocalDate fechaInicio = LocalDate.now().with(java.time.DayOfWeek.MONDAY);
 
-        // Limpiar cualquier tarjeta previa
         tarjetasSemana.clear();
         panelContenedorTarjetas.removeAll();
 
@@ -136,7 +133,6 @@ public class VistaMenuSemana extends PlantillaGesco {
             panelContenedorTarjetas.add(tarjeta);
         }
 
-        // Fuerza revalidación del contenedor para que se actualice la UI
         panelContenedorTarjetas.revalidate();
         panelContenedorTarjetas.repaint();
     }

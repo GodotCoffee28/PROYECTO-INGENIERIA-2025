@@ -318,7 +318,6 @@ public class DataBase {
             java.time.DayOfWeek d = hoy.getDayOfWeek();
             java.time.LocalDate lunes = hoy.with(java.time.DayOfWeek.MONDAY);
 
-            // Filtrar fuera las líneas correspondientes a la semana actual (lunes-viernes)
             java.util.Set<String> fechasSemana = new java.util.HashSet<>();
             for (int i = 0; i < 5; i++) {
                 fechasSemana.add(lunes.plusDays(i).toString());
@@ -328,13 +327,11 @@ public class DataBase {
             for (String linea : actuales) {
                 String[] partes = linea.split("\\|");
                 if (partes.length > 0 && fechasSemana.contains(partes[0])) {
-                    // omitimos: será reemplazada por estado por defecto
                     continue;
                 }
                 nuevas.add(linea);
             }
 
-            // Añadir líneas por defecto para lunes-viernes (sin platillos)
             for (int i = 0; i < 5; i++) {
                 String fecha = lunes.plusDays(i).toString();
                 nuevas.add(fecha + "|");
@@ -353,7 +350,7 @@ public class DataBase {
         for (String linea : lineas) {
             String[] partes = linea.split("\\|");
             if (partes.length > 0 && partes[0].equals(fechaStr)) {
-                return parsearLineaMenu(partes); // Delegamos el parsing a otro método auxiliar
+                return parsearLineaMenu(partes); 
             }
         }
         return new Menu(); // Retorno por defecto

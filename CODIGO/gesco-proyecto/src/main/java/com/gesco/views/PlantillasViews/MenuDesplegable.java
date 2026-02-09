@@ -33,8 +33,7 @@ public class MenuDesplegable {
         menu.setBackground(new Color(60, 60, 65));
         menu.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
 
-        // Nota: "Ir a la Fila" se mantiene en el código (vista/controlador),
-        // pero se elimina de la interfaz de usuario por ahora.
+
         String[] etiquetas = {
             "Ir a Inicio", "Ir a Inicio de sesión", "Ir a Registro",
             "Ver Menu de la semana", "Ver turnos"
