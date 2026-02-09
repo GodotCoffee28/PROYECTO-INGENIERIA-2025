@@ -26,10 +26,34 @@ public class VistaCargaCCBControlador {
     }
 
     private void calcularCcb() {
+        String tipoUsuario = vista.getUsuario();
         String nbTexto = vista.getNB();
         String mermaTexto = vista.getMERMA();
         String cfTexto = vista.getCF();
         String cvTexto = vista.getCV();
+
+        if (tipoUsuario == null || tipoUsuario.isBlank()) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "Debe especificar el tipo de usuario.",
+                "Datos incompletos",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        String tipoNormalizado = tipoUsuario.trim();
+        if (!tipoNormalizado.equalsIgnoreCase("Estudiante") && 
+            !tipoNormalizado.equalsIgnoreCase("Profesor") && 
+            !tipoNormalizado.equalsIgnoreCase("Empleado")) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "Tipo de usuario invalido. Debe ser: Estudiante, Profesor o Empleado.",
+                "Datos invalidos",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
 
         double nb = parsearNumero(nbTexto, "NB");
         double merma = parsearNumero(mermaTexto, "%merma");
@@ -54,6 +78,26 @@ public class VistaCargaCCBControlador {
             JOptionPane.showMessageDialog(
                 vista,
                 "%merma no puede ser negativo.",
+                "Datos invalidos",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        if (cf < 0) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "CF (Costos Fijos) no puede ser negativo.",
+                "Datos invalidos",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        if (cv < 0) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "CV (Costos Variables) no puede ser negativo.",
                 "Datos invalidos",
                 JOptionPane.WARNING_MESSAGE
             );
