@@ -2,7 +2,12 @@ package com.gesco.controllers;
 
 import javax.swing.SwingUtilities;
 
+import com.gesco.views.VistaCargarCFCV;
+import com.gesco.views.VistaCrearMenu;
+import com.gesco.views.VistaEditarMenu;
 import com.gesco.views.VistaEspera;
+import com.gesco.views.VistaFila;
+import com.gesco.views.VistaGestionMenu;
 import com.gesco.views.VistaInicio;
 import com.gesco.views.VistaInicioAdmin;
 import com.gesco.views.VistaInicioComensal;  
@@ -10,11 +15,7 @@ import com.gesco.views.VistaInicioSesion;
 import com.gesco.views.VistaMenuSemana;
 import com.gesco.views.VistaRegistro;
 import com.gesco.views.VistaTurnos;
-import com.gesco.views.VistaFila;
-import com.gesco.views.VistaCargaCCB;
-import com.gesco.views.VistaCrearMenu;
-import com.gesco.views.VistaEditarMenu;
-import com.gesco.views.VistaGestionMenu;
+import com.gesco.views.VistaVerCFCV;
 
 public class LogicaInterfaz {
 
@@ -27,7 +28,8 @@ public class LogicaInterfaz {
 	private VistaMenuSemana vistaMenuSemana;
 	private VistaTurnos vistaTurnos;
 	private VistaFila vistaFila;
-	private VistaCargaCCB vistaCargaCCB;
+	private VistaCargarCFCV vistaCargaCCB;
+	private VistaVerCFCV vistaVerCfcv;
 	private VistaCrearMenu vistaCrearMenu;
 	private VistaEditarMenu vistaEditarMenu;
 	private VistaGestionMenu vistaGestionMenu;
@@ -127,8 +129,7 @@ public class LogicaInterfaz {
 			this::iniciar,
 			this::mostrarGestionMenu,
 			this::mostrarCargaCCB,
-			() -> {
-			},
+			this::mostrarVerCfcv,
 			() -> mostrarPantallaPrincipal(false, nombreUsuario)
 		).conectar();
 	}
@@ -173,11 +174,21 @@ public class LogicaInterfaz {
 
 	private void mostrarCargaCCB() {
 		cerrarVistas();
-		vistaCargaCCB = new VistaCargaCCB();
+		vistaCargaCCB = new VistaCargarCFCV();
 		menuGescoController.conectar(vistaCargaCCB, usuarioAdmin);
-		new VistaCargaCCBControlador(
+		new VistaCargarCFCVControlador(
 			vistaCargaCCB,
-			this::volverAPantallaPrincipal
+			this::mostrarPanelControl
+		).conectar();
+	}
+
+	private void mostrarVerCfcv() {
+		cerrarVistas();
+		vistaVerCfcv = new VistaVerCFCV();
+		menuGescoController.conectar(vistaVerCfcv, usuarioAdmin);
+		new VistaVerCFCVControlador(
+			vistaVerCfcv,
+			this::mostrarPanelControl
 		).conectar();
 	}
 
@@ -207,8 +218,22 @@ public class LogicaInterfaz {
 		menuGescoController.conectar(vistaGestionMenu, usuarioAdmin);
 		new VistaGestionMenuControlador(
 			vistaGestionMenu,
-			this::volverAPantallaPrincipal
+			this::volverAPantallaPrincipal,
+			this::mostrarEditarMenu,
+			this::mostrarCrearMenu,
+			this::reiniciarMenusSemana
 		).conectar();
+	}
+
+	private void reiniciarMenusSemana() {
+		boolean ok = DataBase.reiniciarMenusSemana();
+		if (ok) {
+			javax.swing.JOptionPane.showMessageDialog(null, "Menús de la semana reiniciados.", "Reiniciado", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			javax.swing.JOptionPane.showMessageDialog(null, "Error al reiniciar menús.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+		}
+		// Volver a mostrar la pantalla de gestión para refrescar
+		mostrarGestionMenu();
 	}
 
 	private void volverAPantallaPrincipal() {
@@ -285,6 +310,13 @@ public class LogicaInterfaz {
 		}
 	}
 
+	private void cerrarVistaVerCfcv() {
+		if (vistaVerCfcv != null) {
+			vistaVerCfcv.dispose();
+			vistaVerCfcv = null;
+		}
+	}
+
 	private void cerrarVistaCrearMenu() {
 		if (vistaCrearMenu != null) {
 			vistaCrearMenu.dispose();
@@ -317,6 +349,7 @@ public class LogicaInterfaz {
 		cerrarVistaTurnos();
 		cerrarVistaFila();
 		cerrarVistaCargaCCB();
+		cerrarVistaVerCfcv();
 		cerrarVistaCrearMenu();
 		cerrarVistaEditarMenu();
 		cerrarVistaGestionMenu();

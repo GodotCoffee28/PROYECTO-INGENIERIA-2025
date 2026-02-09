@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -20,13 +19,13 @@ import javax.swing.JTextField;
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
-public class VistaCrearMenu extends PlantillaGesco {
-    private BotonNeon btnCrear;
-    private JTextField platillo1, platillo2, platillo3;
-    private JTextField diaField, mesField, anioField;
-    private JLabel Titulo;
+public class VistaVisualizarCCB extends PlantillaGesco {
+    private BotonNeon btnSubirDatos;
+    private JTextField usuario, NB, MERMA, CF, CV;
+    private JLabel TituloCcb;
+    private JLabel lblResultado;
     
-    public VistaCrearMenu() {
+    public VistaVisualizarCCB() {
         super(); 
         inicializarComponentes();
         construirCuerpo();
@@ -37,15 +36,20 @@ public class VistaCrearMenu extends PlantillaGesco {
 
     private void inicializarComponentes() {
         Dimension tamBoton = new Dimension(400, 60);
-        btnCrear = new BotonNeon("Crear");
-        btnCrear.setPreferredSize(tamBoton);
-        btnCrear.setMaximumSize(tamBoton);
-        btnCrear.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnSubirDatos = new BotonNeon("Subir datos");
+        btnSubirDatos.setPreferredSize(tamBoton);
+        btnSubirDatos.setMaximumSize(tamBoton);
+        btnSubirDatos.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        Titulo = new JLabel("Crear menú");
-        Titulo.setFont(new Font("Arial", Font.BOLD, 45)); 
-        Titulo.setForeground(new Color(240, 240, 240)); 
-        Titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        TituloCcb = new JLabel("Datos para el CCB");
+        TituloCcb.setFont(new Font("Arial", Font.BOLD, 45)); 
+        TituloCcb.setForeground(new Color(240, 240, 240)); 
+        TituloCcb.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        lblResultado = new JLabel(" ");
+        lblResultado.setFont(new Font("Arial", Font.BOLD, 22));
+        lblResultado.setForeground(new Color(240, 240, 240));
+        lblResultado.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
     
     private void agregarCampos(JPanel panelFondoBase) {
@@ -56,52 +60,44 @@ public class VistaCrearMenu extends PlantillaGesco {
         formPanel.setMaximumSize(new Dimension(450, 480)); 
         formPanel.setAlignmentX(Component.CENTER_ALIGNMENT); 
 
-        JLabel lblFecha = crearEtiquetaForm("Fecha (DD/MM/AAAA)");
-        
-        diaField = new JTextField(2);
-        mesField = new JTextField(2);
-        anioField = new JTextField(4);
-        
-        JPanel fechaPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        fechaPanel.setOpaque(false);
-        fechaPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
-        fechaPanel.add(diaField); 
-        fechaPanel.add(crearSeparador());
-        fechaPanel.add(mesField); 
-        fechaPanel.add(crearSeparador());
-        fechaPanel.add(anioField);
-
-        formPanel.add(lblFecha);
-        formPanel.add(Box.createVerticalStrut(8));
-        formPanel.add(fechaPanel);
-        formPanel.add(Box.createVerticalStrut(20));
-
         Dimension tamCaja = new Dimension(450, 40);
 
-        formPanel.add(crearEtiquetaForm("Platillo 1"));
+        formPanel.add(crearEtiquetaForm("Tipo de usuario"));
         formPanel.add(Box.createVerticalStrut(8));
-        platillo1 = new JTextField();
-        DiseñarCaja(platillo1, tamCaja);
-        formPanel.add(platillo1);
-        formPanel.add(Box.createVerticalStrut(20)); 
-        
-        formPanel.add(crearEtiquetaForm("Platillo 2"));
-        formPanel.add(Box.createVerticalStrut(8));
-        platillo2 = new JTextField();
-        DiseñarCaja(platillo2, tamCaja);
-        formPanel.add(platillo2);
+        usuario = new JTextField();
+        DiseñarCaja(usuario, tamCaja);
+        formPanel.add(usuario);
         formPanel.add(Box.createVerticalStrut(20));
 
-        formPanel.add(crearEtiquetaForm("Platillo 3"));
+        formPanel.add(crearEtiquetaForm("NB"));
         formPanel.add(Box.createVerticalStrut(8));
-        platillo3 = new JTextField();
-        DiseñarCaja(platillo3, tamCaja);
-        formPanel.add(platillo3);
+        NB = new JTextField();
+        DiseñarCaja(NB, tamCaja);
+        formPanel.add(NB);
+        formPanel.add(Box.createVerticalStrut(20)); 
+
+        formPanel.add(crearEtiquetaForm("MERMA"));
+        formPanel.add(Box.createVerticalStrut(8));
+        MERMA = new JTextField();
+        DiseñarCaja(MERMA, tamCaja);
+        formPanel.add(MERMA);
+        formPanel.add(Box.createVerticalStrut(20)); 
+
+        formPanel.add(crearEtiquetaForm("CF"));
+        formPanel.add(Box.createVerticalStrut(8));
+        CF = new JTextField();
+        DiseñarCaja(CF, tamCaja);
+        formPanel.add(CF);
+        formPanel.add(Box.createVerticalStrut(20)); 
+
+        formPanel.add(crearEtiquetaForm("CV"));
+        formPanel.add(Box.createVerticalStrut(8));
+        CV = new JTextField();
+        DiseñarCaja(CV, tamCaja);
+        formPanel.add(CV);
 
         panelFondoBase.add(formPanel);
     }
-
 
     private JLabel crearEtiquetaForm(String texto) {
         JLabel label = new JLabel(texto);
@@ -109,13 +105,6 @@ public class VistaCrearMenu extends PlantillaGesco {
         label.setForeground(Color.WHITE);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         return label;
-    }
-
-    private JLabel crearSeparador() {
-        JLabel sep = new JLabel("/");
-        sep.setForeground(Color.WHITE);
-        sep.setFont(new Font("Arial", Font.BOLD, 18));
-        return sep;
     }
 
     private void DiseñarCaja(JTextField c, Dimension d) {
@@ -147,23 +136,27 @@ public class VistaCrearMenu extends PlantillaGesco {
         panelFondo.setBorder(BorderFactory.createEmptyBorder(40, 20, 40, 20));
 
         panelFondo.add(Box.createVerticalGlue()); 
-        panelFondo.add(Titulo);
+        panelFondo.add(TituloCcb);
         panelFondo.add(Box.createVerticalStrut(25)); 
 
         agregarCampos(panelFondo); 
         
         panelFondo.add(Box.createVerticalStrut(30)); 
-        panelFondo.add(btnCrear); 
+        panelFondo.add(btnSubirDatos); 
+        panelFondo.add(Box.createVerticalStrut(20));
+        panelFondo.add(lblResultado);
         panelFondo.add(Box.createVerticalGlue());
 
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
     }
+    public String getUsuario(){ return usuario.getText();}
+    public String getNB(){ return NB.getText();}
+    public String getMERMA(){ return MERMA.getText();}
+    public String getCF(){ return CF.getText();}
+    public String getCV(){ return CV.getText();}
+    public BotonNeon getBtnSubirDatos() { return btnSubirDatos; }
 
-    public String getPlatillo1(){ return platillo1.getText();}
-    public String getPlatillo2(){ return platillo2.getText();}
-    public String getPlatillo3(){ return platillo3.getText();}
-    public BotonNeon getBtnCrear() { return btnCrear; }
-    public String getDia(){ return diaField.getText();}
-    public String getMes(){ return mesField.getText();}
-    public String getAnio(){ return anioField.getText();}
+    public void setResultado(String resultado) {
+        lblResultado.setText(resultado);
+    }
 }

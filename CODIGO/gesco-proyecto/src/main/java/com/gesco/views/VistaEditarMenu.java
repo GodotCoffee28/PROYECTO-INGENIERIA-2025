@@ -1,7 +1,21 @@
 package com.gesco.views;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
@@ -143,4 +157,11 @@ public class VistaEditarMenu extends PlantillaGesco {
 
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
     }
+    public BotonNeon getBtnEditar() { return btnEditar; }
+    public String getPlatillo1(){ return platillo1.getText(); }
+    public String getPlatillo2(){ return platillo2.getText(); }
+    public String getPlatillo3(){ return platillo3.getText(); }
+    public String getDia(){ return diaField.getText(); }
+    public String getMes(){ return mesField.getText(); }
+    public String getAnio(){ return anioField.getText(); }
 }

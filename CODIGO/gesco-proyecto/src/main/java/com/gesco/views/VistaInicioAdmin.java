@@ -43,11 +43,13 @@ public class VistaInicioAdmin extends PlantillaGesco {
         btnGestión = new BotonNeon("Gestión del menú");
         btnGestión.setPreferredSize(tamBoton);
 
-        btnSubirDatos = new BotonNeon("Subir datos CCB");
+        btnSubirDatos = new BotonNeon("Subir datos de CF y CV");
         btnSubirDatos.setPreferredSize(tamBoton);
+        btnSubirDatos.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 20));
 
-        btnVerDatos = new BotonNeon("Ver datos CCB");
+        btnVerDatos = new BotonNeon("Ver datos de CF y CV");
         btnVerDatos.setPreferredSize(tamBoton);
+        btnVerDatos.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 20));
 
         btnCambio = new BotonNeon("Navegar como comensal");
         btnCambio.setPreferredSize(new Dimension(220, 50));
