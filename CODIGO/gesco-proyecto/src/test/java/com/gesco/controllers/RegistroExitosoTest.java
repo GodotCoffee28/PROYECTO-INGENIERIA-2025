@@ -1,14 +1,47 @@
 package com.gesco.controllers;
 
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertTrue;
 
-class RegistroExitosoTest {
-    
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class RegistroExitosoTest {
+
+    private Path usuariosPath;
+    private byte[] usuariosBackup;
+
+    @Before
+    public void setUp() throws IOException {
+        usuariosPath = Paths.get(System.getProperty("user.dir"))
+            .resolve("src/main/java/com/gesco/models/data/usuarios.txt");
+
+        Files.createDirectories(usuariosPath.getParent());
+        if (Files.exists(usuariosPath)) {
+            usuariosBackup = Files.readAllBytes(usuariosPath);
+        } else {
+            usuariosBackup = new byte[0];
+            Files.createFile(usuariosPath);
+        }
+
+        // Start each test with a clean usuarios.txt
+        Files.write(usuariosPath, new byte[0]);
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        if (usuariosPath != null && usuariosBackup != null) {
+            Files.write(usuariosPath, usuariosBackup);
+        }
+    }
+
     @Test
-    void testRegistrarUsuarioExitoso() {
-        boolean resultado = DataBase.registrarUsuario("87654321", "clave456", "Ana Garcia", "ana@email.com");
-        
-        assertTrue(resultado, "El registro con datos validos debe ser exitoso");
+    public void registrarUsuario_datosValidos_devuelveTrue() {
+        assertTrue(DataBase.registrarUsuario("87654321", "clave456", "Ana Garcia", "ana@email.com"));
     }
 }
