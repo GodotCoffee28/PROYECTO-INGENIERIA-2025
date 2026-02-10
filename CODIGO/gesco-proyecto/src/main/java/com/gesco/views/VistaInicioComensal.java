@@ -1,24 +1,7 @@
 package com.gesco.views;
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Image;
-import java.awt.Insets;
-import java.awt.RenderingHints;
-
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
+import java.awt.*;
+import javax.swing.*;
+import java.net.URL;
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
@@ -100,11 +83,10 @@ public class VistaInicioComensal extends PlantillaGesco {
         tarjetaSaldo.setLayout(new BorderLayout(40, 0));
         tarjetaSaldo.setBorder(BorderFactory.createEmptyBorder(20, 45, 20, 45));
         
-
         JLabel billeteraIcono = new JLabel();
-        ImageIcon icono = new ImageIcon("src\\main\\resources\\Billetera.png");
-        Image scaled = icono.getImage().getScaledInstance(75, 75, Image.SCALE_SMOOTH);
-        billeteraIcono.setIcon(new ImageIcon(scaled));
+        ImageIcon icono = cargarMonedero();
+        Image escala = icono.getImage().getScaledInstance(75, 75, Image.SCALE_SMOOTH);
+        billeteraIcono.setIcon(new ImageIcon(escala));
         
         
         tarjetaSaldo.add(billeteraIcono, BorderLayout.WEST);
@@ -121,6 +103,18 @@ public class VistaInicioComensal extends PlantillaGesco {
         contenedorPrincipal.add(panelCuerpo, BorderLayout.CENTER);
     }
 
+    private ImageIcon cargarMonedero() {
+        URL recurso = getClass().getResource("/Billetera.png");
+        
+        if (recurso != null) {
+            return new ImageIcon(recurso);
+        } 
+        else {
+            System.err.println("No se pudo cargar la imagen de la billetera para VistaInicioComensal.");
+        }
+
+        return new ImageIcon();
+    }
     private JPanel crearContenedorInterno(JLabel texto, JButton boton) {
         JPanel p = new JPanel(new GridBagLayout());
         p.setOpaque(false);

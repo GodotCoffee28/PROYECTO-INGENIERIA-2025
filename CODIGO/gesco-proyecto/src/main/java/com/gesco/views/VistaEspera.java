@@ -6,7 +6,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
-import java.io.File;
 import java.net.URL;
 
 import javax.swing.Box;
@@ -51,15 +50,13 @@ public class VistaEspera extends PlantillaGesco {
     }
 
     private ImageIcon cargarTaza() {
-        URL recurso = VistaEspera.class.getResource("src\\main\\resources\\Taza_VistaEspera.png");
+        URL recurso = getClass().getResource("/Taza_VistaEspera.png");
+        
         if (recurso != null) {
             return new ImageIcon(recurso);
-        }
-
-        File archivo = new File(System.getProperty("user.dir"),
-            "src\\\\main\\\\resources\\\\Taza_VistaEspera.png");
-        if (archivo.exists()) {
-            return new ImageIcon(archivo.getAbsolutePath());
+        } 
+        else {
+            System.err.println("No se pudo cargar la imagen de la taza para VistaEspera.");
         }
 
         return new ImageIcon();
