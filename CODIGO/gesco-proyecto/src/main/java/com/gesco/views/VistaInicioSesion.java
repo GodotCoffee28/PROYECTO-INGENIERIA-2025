@@ -53,10 +53,9 @@ public class VistaInicioSesion extends PlantillaGesco {
         formPanel.setMaximumSize(new Dimension(450, 200)); 
         formPanel.setAlignmentX(Component.CENTER_ALIGNMENT); 
 
-        //Cédula
+        //Cédula de pepe xd
         JLabel lblCedula = crearEtiquetaForm("Cédula de identidad", 18, Color.WHITE);
-        
-        //Caja de texto para la cédula
+
         cedula = new JTextField();
         Dimension tamanoCaja = new Dimension(450, 40);
         cedula.setPreferredSize(tamanoCaja);
@@ -65,10 +64,8 @@ public class VistaInicioSesion extends PlantillaGesco {
         cedula.setAlignmentX(Component.LEFT_ALIGNMENT);
         cedula.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
-        //Contraseña
         JLabel lblClave = crearEtiquetaForm("Contraseña", 18, Color.WHITE);
 
-        //Caja de texto contraseña
         clave = new JPasswordField();
         clave.setPreferredSize(tamanoCaja);
         clave.setMaximumSize(tamanoCaja);

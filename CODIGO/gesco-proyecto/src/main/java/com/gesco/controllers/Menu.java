@@ -13,7 +13,7 @@ public class Menu{
     public static void main( String[] args ){
         LogicaInterfaz logica = new LogicaInterfaz();
         logica.iniciar();
-        // La vista `VistaFila` fue eliminada; reemplazado por mensaje informativo.
+        
         javax.swing.JOptionPane.showMessageDialog(null,
             "La vista 'Fila' ya no está disponible.",
             "Info",

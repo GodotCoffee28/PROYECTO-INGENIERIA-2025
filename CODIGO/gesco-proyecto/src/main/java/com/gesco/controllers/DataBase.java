@@ -20,17 +20,11 @@ import com.gesco.models.Platillo;
 
 public class DataBase {
 
-    // --- CONSTANTES ---
     private static final String ARCHIVO_USUARIOS = "usuarios.txt";
     private static final String ARCHIVO_ADMINS = "admins.txt";
     private static final String ARCHIVO_MENUS = "menus.txt";
     private static final String ARCHIVO_CFCV = "cfcv.txt";
-    /**
-     * Directorio relativo o absoluto donde se almacenan los archivos de datos.
-     * Por defecto apunta a la carpeta existente dentro del proyecto pero puede
-     * ser sobrescrito mediante la propiedad del sistema `gesco.data.dir` o la
-     * variable de entorno `GESCO_DATA_DIR`.
-     */
+
     private static String DATA_DIR = "src/main/java/com/gesco/models/data";
 
     static {
@@ -43,19 +37,17 @@ public class DataBase {
         }
     }
 
-    /** Permite cambiar en tiempo de ejecución la carpeta de datos. */
+    
     public static void setDataDir(String dataDir) {
         if (dataDir != null && !dataDir.isBlank()) DATA_DIR = dataDir.trim();
     }
 
-    /** Obtiene la ruta actualmente configurada para datos. */
+    // Obtiene la ruta actual 
     public static String getDataDir() { return DATA_DIR; }
 
 
 
-    /**
-     * Obtiene el objeto File para cualquier nombre de archivo dentro de DATA_DIR.
-     */
+
     private static File obtenerArchivo(String nombreArchivo) {
         Path basePath = obtenerBaseProyecto();
         Path dataPath = Paths.get(DATA_DIR);
@@ -66,9 +58,6 @@ public class DataBase {
         }
     }
 
-    /**
-     * Asegura que el archivo y sus carpetas existan.
-     */
     private static void asegurarArchivoGenerico(String nombreArchivo) {
         File file = obtenerArchivo(nombreArchivo);
         if (!file.exists()) {
@@ -84,10 +73,6 @@ public class DataBase {
         }
     }
 
-    /**
-     * Escribe contenido al final de un archivo (Append).
-     * Maneja automáticamente la creación del archivo y los errores.
-     */
     private static boolean escribirLineaGenerica(String nombreArchivo, String contenido) {
         asegurarArchivoGenerico(nombreArchivo);
         File archivo = obtenerArchivo(nombreArchivo);
@@ -101,10 +86,6 @@ public class DataBase {
         }
     }
 
-    /**
-     * Lee todo el contenido de un archivo y lo devuelve como una lista de líneas.
-     * Filtra líneas vacías automáticamente.
-     */
     private static List<String> leerLineasGenericas(String nombreArchivo) {
         List<String> lineas = new ArrayList<>();
         File archivo = obtenerArchivo(nombreArchivo);
@@ -124,10 +105,6 @@ public class DataBase {
         return lineas;
     }
 
-    /**
-     * Sobrescribe un archivo completo con una nueva lista de líneas.
-     * Útil para actualizaciones (Update/Delete).
-     */
     private static boolean reescribirArchivoGenerico(String nombreArchivo, List<String> nuevasLineas) {
         asegurarArchivoGenerico(nombreArchivo);
         File archivo = obtenerArchivo(nombreArchivo);
@@ -145,7 +122,7 @@ public class DataBase {
     }
 
 
-    // USUARIOS 
+    //usuaros
 
     public static boolean registrarUsuario(String cedula, String clave, String nombre, String correo) {
         if (!cedulaValida(cedula)) return false;
@@ -191,7 +168,7 @@ public class DataBase {
         return false;
     }
 
-    //  ADMINS 
+    //admin
 
     public static boolean esAdmin(String cedula) {
         if (!cedulaValida(cedula)) return false;
@@ -202,7 +179,7 @@ public class DataBase {
         return false;
     }
 
-    // SALDOS
+    //saldo
 
     public static double obtenerSaldo(String cedula) {
         if (!cedulaValida(cedula)) return 0.0;
@@ -242,7 +219,7 @@ public class DataBase {
         return false;
     }
 
-    //  MENÚS 
+    //menu 
 
     public static boolean guardarMenu(Menu menu) {
         StringBuilder sb = new StringBuilder();
@@ -276,10 +253,6 @@ public class DataBase {
         return sb.toString();
     }
 
-    /**
-     * Sobrescribe la entrada del menú para la fecha indicada. Si no existe,
-     * añade la línea al final del archivo.
-     */
     public static boolean actualizarMenu(Menu menu) {
         try {
             List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
@@ -307,10 +280,6 @@ public class DataBase {
         }
     }
 
-    /**
-     * Reinicia los menús de la semana actual (Lunes-Viernes) a estado por defecto.
-     * Devuelve true si la operación fue exitosa.
-     */
     public static boolean reiniciarMenusSemana() {
         try {
             List<String> actuales = leerLineasGenericas(ARCHIVO_MENUS);
@@ -353,7 +322,7 @@ public class DataBase {
                 return parsearLineaMenu(partes); 
             }
         }
-        return new Menu(); // Retorno por defecto
+        return new Menu(); 
     }
 
     private static Menu parsearLineaMenu(String[] partesPrincipales) {

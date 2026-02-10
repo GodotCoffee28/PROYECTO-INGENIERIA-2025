@@ -63,25 +63,21 @@ public class VistaRegistro extends PlantillaGesco {
         Dimension tamanoCaja = new Dimension(450, 35); 
         Font labelFont = new Font("Arial", Font.BOLD, 14);
 
-        // Campo: Nombre y apellido
         formPanel.add(crearLabelForm("Nombre y apellido", labelFont));
         TxtNombreApellido = crearTextField(tamanoCaja);
         formPanel.add(TxtNombreApellido);
         formPanel.add(Box.createVerticalStrut(8)); 
 
-        // Campo: Cédula
         formPanel.add(crearLabelForm("Cédula de identidad", labelFont));
         TxtCedula = crearTextField(tamanoCaja);
         formPanel.add(TxtCedula);
         formPanel.add(Box.createVerticalStrut(8));
 
-        // Campo: Correo
         formPanel.add(crearLabelForm("Correo electrónico", labelFont));
         TxtCorreo = crearTextField(tamanoCaja);
         formPanel.add(TxtCorreo);
         formPanel.add(Box.createVerticalStrut(8));
 
-        // Campo: Contraseña
         formPanel.add(crearLabelForm("Contraseña", labelFont));
         TxtContra = new JPasswordField();
         estilizarComponente(TxtContra, tamanoCaja);

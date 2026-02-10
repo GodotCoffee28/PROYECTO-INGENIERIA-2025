@@ -1,5 +1,3 @@
-
-
 package  com.gesco.models;
 
 class Empleado extends Usuario {

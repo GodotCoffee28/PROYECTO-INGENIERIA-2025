@@ -159,8 +159,6 @@ public class LogicaInterfaz {
     }
 
     private void mostrarFila() {
-        // La vista "Fila" fue eliminada del paquete `views`.
-        // Mostrar información y volver a la pantalla principal.
         javax.swing.JOptionPane.showMessageDialog(null,
             "La funcionalidad de fila ha sido deshabilitada.",
             "Funcionalidad deshabilitada",
@@ -228,7 +226,6 @@ public class LogicaInterfaz {
         } else {
             javax.swing.JOptionPane.showMessageDialog(null, "Error al reiniciar menús.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
         }
-        // Volver a mostrar la pantalla de gestión para refrescar
         mostrarGestionMenu();
     }
 
