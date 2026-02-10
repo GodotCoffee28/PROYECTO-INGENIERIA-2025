@@ -192,7 +192,7 @@ public class LogicaInterfaz {
         menuGescoController.conectar(vistaCrearMenu, usuarioAdmin);
         new VistaCrearMenuControlador(
             vistaCrearMenu,
-            this::volverAPantallaPrincipal
+            this::mostrarGestionMenu
         ).conectar();
     }
 
@@ -202,7 +202,7 @@ public class LogicaInterfaz {
         menuGescoController.conectar(vistaEditarMenu, usuarioAdmin);
         new VistaEditarMenuControlador(
             vistaEditarMenu,
-            this::volverAPantallaPrincipal
+            this::mostrarGestionMenu
         ).conectar();
     }
 
