@@ -1,9 +1,19 @@
 package com.gesco.views;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Image;
 import java.io.File;
 import java.net.URL;
-import javax.swing.*;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
@@ -41,13 +51,13 @@ public class VistaEspera extends PlantillaGesco {
     }
 
     private ImageIcon cargarTaza() {
-        URL recurso = VistaEspera.class.getResource("/com/gesco/views/Taza_VistaEspera.png");
+        URL recurso = VistaEspera.class.getResource("src\\main\\resources\\Taza_VistaEspera.png");
         if (recurso != null) {
             return new ImageIcon(recurso);
         }
 
         File archivo = new File(System.getProperty("user.dir"),
-            "src/main/java/com/gesco/views/Taza_VistaEspera.png");
+            "src\\\\main\\\\resources\\\\Taza_VistaEspera.png");
         if (archivo.exists()) {
             return new ImageIcon(archivo.getAbsolutePath());
         }

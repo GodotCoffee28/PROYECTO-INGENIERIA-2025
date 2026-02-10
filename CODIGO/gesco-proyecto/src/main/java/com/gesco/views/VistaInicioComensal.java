@@ -1,6 +1,24 @@
 package com.gesco.views;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.RenderingHints;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
@@ -84,7 +102,7 @@ public class VistaInicioComensal extends PlantillaGesco {
         
 
         JLabel billeteraIcono = new JLabel();
-        ImageIcon icono = new ImageIcon("Billetera.png");
+        ImageIcon icono = new ImageIcon("src\\main\\resources\\Billetera.png");
         Image scaled = icono.getImage().getScaledInstance(75, 75, Image.SCALE_SMOOTH);
         billeteraIcono.setIcon(new ImageIcon(scaled));
         
