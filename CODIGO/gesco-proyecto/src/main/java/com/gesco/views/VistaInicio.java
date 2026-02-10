@@ -57,7 +57,6 @@ public class VistaInicio extends PlantillaGesco {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                // Color translúcido
                 g2.setColor(new Color(255, 255, 255, 10)); 
                 g2.fillRoundRect(100, 10, getWidth() - 200, getHeight() - 20, 50, 50);
                 g2.setColor(new Color(255, 255, 255, 25));
