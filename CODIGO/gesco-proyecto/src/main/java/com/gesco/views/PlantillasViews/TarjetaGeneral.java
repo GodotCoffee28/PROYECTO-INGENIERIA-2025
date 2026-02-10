@@ -33,7 +33,6 @@ public abstract class TarjetaGeneral extends JPanel{
         containerCuerpo.setBackground(colorFondo);
         containerCuerpo.setOpaque(true);
 
-        // Añadir al layout principal
         add(containerCabecera, BorderLayout.NORTH);
         add(containerCuerpo, BorderLayout.CENTER);
         

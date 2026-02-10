@@ -62,11 +62,9 @@ public class BotonNeon extends JButton {
             g2.fillRoundRect(i/2, i/2, getWidth() - i, getHeight() - i, radioEsquinas, radioEsquinas);
         }
 
-        //Fondo del botón
         g2.setColor(new Color(50, 50, 55)); 
         g2.fillRoundRect(6, 6, getWidth() - 12, getHeight() - 12, radioEsquinas, radioEsquinas);
 
-        //Borde
         g2.setStroke(new BasicStroke(grosorBorde));
         g2.setColor(colorActual);
         g2.drawRoundRect(6, 6, getWidth() - 12, getHeight() - 12, radioEsquinas, radioEsquinas);

@@ -31,12 +31,6 @@ public class Platillo {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(nombre);
-        /*.append(" (Insumos: ");
-        for (int i = 0; i < insumos.size(); i++) {
-            sb.append(insumos.get(i).getNombre());
-            if (i < insumos.size() - 1) sb.append(", ");
-        }
-        sb.append(")"); */
         return sb.toString();
     }
 }

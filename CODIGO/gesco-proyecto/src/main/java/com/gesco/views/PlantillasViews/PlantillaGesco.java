@@ -14,14 +14,14 @@ public class PlantillaGesco extends JFrame {
     private JLabel menuIcon;
     private final MenuDesplegable menuDesplegableGeneral;
     public PlantillaGesco() {
-        //Configuración de la ventana
+
         setTitle("Comedor estudiantil UCV");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1100, 750); 
         setLocationRelativeTo(null);
         setResizable(false);
         menuDesplegableGeneral = new MenuDesplegable();
-        //Fondo con degradado
+
         contenedorPrincipal = new JPanel(new BorderLayout());
         contenedorPrincipal.setBackground(new Color(33, 33, 39));
 

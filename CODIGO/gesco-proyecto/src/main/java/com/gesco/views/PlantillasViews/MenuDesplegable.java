@@ -92,7 +92,7 @@ public class MenuDesplegable {
     }
 
     private void ponerItemSalir(JPopupMenu jp) {
-        jp.addSeparator(); // Separador visual
+        jp.addSeparator(); 
         JMenuItem itemSalir = new JMenuItem("Salir");
         itemSalir.setActionCommand("CMD_SALIR");
         diseñarItem(itemSalir);
