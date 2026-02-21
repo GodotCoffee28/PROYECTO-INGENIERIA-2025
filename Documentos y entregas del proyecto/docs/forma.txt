@@ -1,0 +1,35 @@
+/gesco-proyecto
+├── /data                <-- Almacenamiento físico de los datos (.txt)
+│   ├── usuarios.txt     (Datos: cedula;nombre;password;rol)
+│   ├── menus.txt        (Datos: dia;plato_principal;acompañante)
+│   └── costos.txt       (Datos: id_periodo;monto;tipo)
+│
+├── /src/main/java/com/gesco
+│   ├── /models          <-- EL CORAZÓN: Clases del Modelo de Dominio
+│   │   ├── Usuario.java  (Atributos y métodos básicos)
+│   │   ├── Comensal.java (Hereda de Usuario, añade saldo/monedero)
+│   │   ├── Admin.java    (Hereda de Usuario, añade permisos)
+│   │   ├── Menu.java     (Atributos del menú semanal)
+│   │   └── Costo.java    (Atributos de costos fijos/variables)
+│   │
+│   ├── /views           <-- LA INTERFAZ: Todo lo visual (Swing)
+│   │   ├── LoginView.java      (JFrame del inicio de sesión)
+│   │   ├── RegistroView.java   (JFrame de registro)
+│   │   └── DashboardView.java  (Panel principal según rol)
+│   │
+│   ├── /controllers     <-- EL CEREBRO: Une el Modelo con la Vista
+│   │   ├── AuthController.java (Valida login y gestiona sesiones)
+│   │   ├── MenuController.java (Carga el menú de los .txt a la Vista)
+│   │   └── CostoController.java (Gestiona la entrada de costos del Admin)
+│   │
+│   ├── /persistence     <-- EL ENLACE: Lógica de lectura/escritura
+│   │   └── FileHandler.java (Código que lee/escribe en la carpeta /data)
+│   │
+│   └── Main.java        <-- EL ARRANQUE: Punto de entrada del programa
+│
+├── /src/test/java/com/gesco
+│   └── /unitTests       <-- LAS PRUEBAS: Requisito de los preparadores
+│       ├── AuthTest.java (Prueba unitaria de login)
+│       └── DataTest.java (Prueba que los .txt se lean bien)
+│
+└── pom.xml              <-- LA CONFIGURACIÓN: Dependencias de Maven (JUnit)

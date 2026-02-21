@@ -1,0 +1,11 @@
+2025-02-10|Salmon a la barbacoa>;Fritanga>;milanesa>;
+2025-02-11|Pabell?n Criollo>Arroz blanco,Caraotas negras,Carne mechada,Tajadas;Sopa de Res>Verduras,Costilla,Cilantro;
+2025-02-12|Pasta a la Bolo?esa>Pasta larga,Carne molida,Salsa napolitana,Queso parmesano;Refresco>Vaso de cola;
+2025-02-13|Milanesa de Pollo>Pechuga de pollo,Pan rallado,Pur? de papas;Ensalada C?sar>Lechuga,Crutones,Aderezo,Queso;
+2025-02-14|Pescado Frito>Pargo rojo,Tostones,Ensalada mixta;Jugo de Papel?n>Papel?n,Lim?n,Hielo;
+2026-02-09|Arepa de pollo>;Arepa de queso>;Arepa de arepa>;
+2026-02-10|Fororo>;Sopa>;Caraota>;
+2026-02-11|Mandarina>;Cebolla>;Cilantro>;
+2026-02-12|Carne de Res>;Licuado de zanahoria>;Pollo con papas>;
+2026-02-13|Ensalada de remolacha>;Arroz>;Agua>;
+2026-02-14|Pollo frito>;Big mac>;Pasta a la carbonara>;

@@ -1,13 +1,11 @@
 package com.gesco;
 
-/**
- * Hello world!
- *
- */
-public class App 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
+import com.gesco.controllers.LogicaInterfaz;
+
+public class Main {
+
+    public static void main(String[] args) {
+        LogicaInterfaz logica = new LogicaInterfaz();
+        logica.iniciar();
     }
 }
