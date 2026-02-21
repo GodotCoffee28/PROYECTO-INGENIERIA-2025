@@ -42,3 +42,8 @@ La vista es la capa de presentación para los distintos usuarios del sistema com
 
 El controlador es el intermediario entre la vista y el modelo para la muestra de datos, la actualizacion de datos mediante acciones del usuario en la interfaz y almacenamiento de los datos por el modelo.
 
+# Dashboard
+
+Para la implementación de estos apartados del sistema debemos organizarnos como equipo para superar las actividades planteadas, para ello se esta usando la herramienta Trello para la organización de las actividades en el proyecto en un Dashboard.
+
+https://trello.com/invite/b/697c0c6081719cbbc259a0af/ATTIc03601e23a4e4d77c2267fcc02e517057FE02FBA/dashboard-kanban-equipo-13
