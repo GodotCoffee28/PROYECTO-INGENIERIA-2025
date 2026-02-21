@@ -3,9 +3,13 @@
 Proyecto basado en el desarrollo de un software de gestion del comedor universitario de la ucv.
 # Integrantes
 Ramses Cordoba  : aaroncordobarivas@gmail.com   32111454
+
 Gabriel Castillo: gc.gabriel.castillo@gmail.com 33.246.679
+
 Genesis Noriega : genesis.ngo0@gmail.com        32100074
+
 Alejandro Rondón: alejanxuor12.rondo@gmail.com  31.768.764
+
 
 # Planteamiento
 
@@ -15,13 +19,17 @@ El planteamiento es el desarrollo de una aplicación la cual simule una apliaci�
 Para un sistema así, hay cierto grupo selecto de personas las cuales van a hacer uso de este software. 
 
 Como:
+
 **-Estudiantes de la UCV**
+
 **-Empleados del comedor de la UCV**
+
 **-Personal de la UCV**
 
 # Sistema
 
 Se sigue el patrón de diseño MVC (Modelo - Vista - Controlador) con el fin de encontrar una separación del sistema y una forma de distribución de actividades necesaria.
+
 ## Modelo
 
 El modelo es el encargado de la gestión de los datos y la lógica del negocio. Esto es reflejado con las distintas clases (Ej: Menú, usuario, comensal, etc) que se desarrollan para una modelación adecuada de los objetos pertenecientes del sistema.
