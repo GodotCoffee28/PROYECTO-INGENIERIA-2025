@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 
 import com.toedter.calendar.JMonthChooser;
 import com.toedter.calendar.JYearChooser;
-import com.gesco.views.PlantillasViews.PlantillaGesco;
 public class CampoFecha extends JPanel {
     private final JLabel label;
     private final JComboBox<Integer> diaCombo;

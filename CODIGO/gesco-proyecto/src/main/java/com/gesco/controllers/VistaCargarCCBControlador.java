@@ -1,12 +1,8 @@
 package com.gesco.controllers;
 
-import java.io.IOException;
-import java.time.LocalDate;
-
 import javax.swing.JOptionPane;
 
 import com.gesco.models.CCB;
-import com.gesco.models.data.Calendario.CalendarioSemanal;
 import com.gesco.views.VistaCargaCCB;
 
 public class VistaCargarCCBControlador {
@@ -39,18 +35,12 @@ public class VistaCargarCCBControlador {
             return;
         }
 
-        LocalDate fecha = ccb.getFecha();
-        CalendarioSemanal calendario = new CalendarioSemanal(fecha);
-
-        try {
-            calendario.agregarCCB(fecha, ccb);
-            calendario.guardarEnArchivoPorDefecto();
+        boolean ok = DataBase.guardarCcb(ccb);
+        if (ok) {
             vista.setResultado(String.valueOf(ccb.getCcb()));
-            JOptionPane.showMessageDialog(vista, "CCB guardado en calendario.", "Guardado", JOptionPane.INFORMATION_MESSAGE);
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(vista, "No se pudo guardar calendario.txt", "Error de archivo", JOptionPane.ERROR_MESSAGE);
-        } catch (IllegalArgumentException ex) {
-            JOptionPane.showMessageDialog(vista, ex.getMessage(), "Datos invalidos", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(vista, "CCB guardado en ccb.txt.", "Guardado", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(vista, "No se pudo guardar ccb.txt", "Error de archivo", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
