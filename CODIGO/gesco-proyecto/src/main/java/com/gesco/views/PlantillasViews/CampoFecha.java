@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.time.YearMonth;
-
+import java.awt.Font;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
@@ -13,22 +13,24 @@ import javax.swing.JPanel;
 
 import com.toedter.calendar.JMonthChooser;
 import com.toedter.calendar.JYearChooser;
-
+import com.gesco.views.PlantillasViews.PlantillaGesco;
 public class CampoFecha extends JPanel {
     private final JLabel label;
     private final JComboBox<Integer> diaCombo;
     private final JMonthChooser mesChooser;
     private final JYearChooser anioChooser;
 
-    public CampoFecha() {
-        this("Fecha (DD/MM/AAAA)");
-    }
 
-    public CampoFecha(String labelText) {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+    
+    public CampoFecha(String labelText, String fuente, int estilo, int tamano, Color color, String alineacion) {
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setOpaque(false);
 
         label = new JLabel(labelText);
+        label.setFont(new Font(fuente, estilo, tamano));
+        label.setForeground(color);
+
         diaCombo = new JComboBox<>();
         mesChooser = new JMonthChooser();
         anioChooser = new JYearChooser();

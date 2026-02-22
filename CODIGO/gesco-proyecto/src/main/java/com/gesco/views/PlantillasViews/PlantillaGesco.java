@@ -109,7 +109,7 @@ public class PlantillaGesco extends JFrame {
 
     protected JLabel crearEtiquetaPersonalizada(String texto, String fuente, int estilo, int size, Color color, String alineacion) {
         JLabel etiqueta = new JLabel(texto);
-    etiqueta.setFont(new Font(fuente, estilo, size)); 
+        etiqueta.setFont(new Font(fuente, estilo, size)); 
         etiqueta.setForeground(color);
         if (alineacion.equals("izquierda")) {
             etiqueta.setAlignmentX(Component.LEFT_ALIGNMENT);

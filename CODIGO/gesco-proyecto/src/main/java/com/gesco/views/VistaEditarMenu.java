@@ -53,7 +53,7 @@ public class VistaEditarMenu extends PlantillaGesco {
         formPanel.setMaximumSize(new Dimension(450, 480)); 
         formPanel.setAlignmentX(Component.CENTER_ALIGNMENT); 
 
-        campoFecha = new CampoFecha("Fecha (DD/MM/AAAA)");
+        campoFecha = new CampoFecha("Fecha (DD/MM/AAAA)", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda");
         campoFecha.setLabelColor(Color.WHITE);
         campoFecha.setAlignmentX(Component.LEFT_ALIGNMENT);
         formPanel.add(campoFecha);
