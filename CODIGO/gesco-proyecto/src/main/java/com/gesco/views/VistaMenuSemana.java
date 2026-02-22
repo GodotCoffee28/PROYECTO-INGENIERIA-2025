@@ -2,7 +2,6 @@ package com.gesco.views;
 
 import java.awt.*;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -114,11 +113,10 @@ public class VistaMenuSemana extends PlantillaGesco {
         tarjetasSemana.clear();
         panelContenedorTarjetas.removeAll();
 
-        List<LocalDate> fechas = DataBase.obtenerUltimosCincoDiasHabiles(LocalDate.now());
+        List<Menu> menus = DataBase.obtenerUltimos5Menus();
 
-        for (LocalDate fechaDia : fechas) {
-            Menu menuDelDia = DataBase.obtenerMenuPorFecha(fechaDia.toString());
-            TarjetaMenu tarjeta = new TarjetaMenu(menuDelDia);
+        for (Menu menu : menus) {
+            TarjetaMenu tarjeta = new TarjetaMenu(menu);
             tarjeta.setPreferredSize(new Dimension(250, 160));
             tarjetasSemana.add(tarjeta);
             panelContenedorTarjetas.add(tarjeta);

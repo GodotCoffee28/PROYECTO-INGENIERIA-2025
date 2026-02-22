@@ -40,14 +40,6 @@ public class VistaEditarMenuControlador {
                 return;
             }
 
-            if (!DataBase.prepararSemanaConEstados(fecha)) {
-                javax.swing.JOptionPane.showMessageDialog(vista,
-                    "No se pudo preparar la semana para registrar estados por día.",
-                    "Error de semana",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
             boolean noDisponible = vista.isMenuNoDisponibleSeleccionado();
             Menu menu = new Menu(fecha, noDisponible ? Menu.EstadoMenu.NO_DISPONIBLE : Menu.EstadoMenu.CON_MENU);
 

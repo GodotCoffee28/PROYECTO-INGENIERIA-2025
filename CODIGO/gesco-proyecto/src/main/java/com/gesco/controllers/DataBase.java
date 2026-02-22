@@ -32,13 +32,11 @@ public class DataBase {
     private static final String ARCHIVO_MENUS = "menus.txt";
     private static final String ARCHIVO_CFCV = "cfcv.txt";
     private static final String ARCHIVO_FERIADOS = "feriados.txt";
-    private static final String ARCHIVO_FESTIVOS = "dias_festivos_2026.txt";
     private static final String ARCHIVO_NO_LABORABLES = "sabados_domingos_2026.txt";
 
     private static final long CEDULA_MINIMA = 8_000_000L;
-    private static final Set<String> FERIADOS_FIJOS_MM_DD = Set.of(
-        "01-01", "05-01", "12-24", "12-25", "12-31"
-    );
+    // Los feriados venezolanos se gestionan únicamente en feriados.txt
+    private static final Set<String> FERIADOS_FIJOS_MM_DD = Set.of();
 
     private static String DATA_DIR = "src/main/java/com/gesco/models/data";
 
@@ -371,6 +369,28 @@ public class DataBase {
         }
     }
 
+    public static List<LocalDate> calcularFechasParaReiniciar() {
+        try {
+            List<String> actuales = leerLineasGenericas(ARCHIVO_MENUS);
+            LocalDate hoy = LocalDate.now();
+            LocalDate ultimaFecha = fechaMaximaEnMenus(actuales);
+            LocalDate base = (ultimaFecha != null && ultimaFecha.isAfter(hoy))
+                    ? ultimaFecha : hoy.minusDays(1);
+
+            List<LocalDate> candidatas = obtenerSiguientesCincoDiasHabiles(base);
+            List<LocalDate> nuevas = new ArrayList<>();
+            for (LocalDate fecha : candidatas) {
+                if (!existeMenuParaFecha(actuales, fecha)) {
+                    nuevas.add(fecha);
+                }
+            }
+            return nuevas;
+        } catch (Exception e) {
+            System.err.println("Error calculando fechas para reiniciar: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
     public static boolean reiniciarMenusSemana() {
         try {
             List<String> actuales = leerLineasGenericas(ARCHIVO_MENUS);
@@ -526,11 +546,6 @@ public class DataBase {
                 }
             } catch (Exception ignored) {
             }
-        }
-
-        List<String> festivos = leerLineasGenericas(ARCHIVO_FESTIVOS);
-        for (String linea : festivos) {
-            if (linea.trim().equals(fecha.toString())) return true;
         }
 
         List<String> noLaborables = leerLineasGenericas(ARCHIVO_NO_LABORABLES);
