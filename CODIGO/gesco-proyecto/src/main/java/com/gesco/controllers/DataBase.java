@@ -10,8 +10,8 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
@@ -397,9 +397,6 @@ public class DataBase {
     public static boolean reiniciarMenusSemana() {
         try {
             List<String> actuales = leerLineasGenericas(ARCHIVO_MENUS);
-            java.time.LocalDate hoy = java.time.LocalDate.now();
-            //java.time.DayOfWeek d = hoy.getDayOfWeek();
-            java.time.LocalDate lunes = hoy.with(java.time.DayOfWeek.MONDAY);
             LocalDate hoy = LocalDate.now();
             LocalDate ultimaFecha = fechaMaximaEnMenus(actuales);
             LocalDate base = (ultimaFecha != null && ultimaFecha.isAfter(hoy)) ? ultimaFecha : hoy.minusDays(1);
@@ -641,6 +638,15 @@ public class DataBase {
         return escribirLineaGenerica(ARCHIVO_CCB, linea + System.lineSeparator());
     }
 
+    public static CCB obtenerUltimoCcb() {
+        List<String> lineas = leerLineasGenericas(ARCHIVO_CCB);
+        if (lineas.isEmpty()) {
+            return null;
+        }
+        String ultima = lineas.get(lineas.size() - 1);
+        return parsearLineaCcb(ultima);
+    }
+
 
     public static List<Menu> obtenerUltimos5Menus() {
         List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
@@ -651,6 +657,38 @@ public class DataBase {
             resultado.add(parsearLineaMenu(partes));
         }
         return resultado;
+    }
+
+    private static CCB parsearLineaCcb(String linea) {
+        if (linea == null || linea.isBlank()) {
+            return null;
+        }
+        String[] partes = linea.split("\\|");
+        if (partes.length < 6) {
+            return null;
+        }
+        try {
+            LocalDate fecha = LocalDate.parse(partes[0].trim());
+            String tipoUsuario = partes[1].trim();
+            double cf = parseDoubleSeguro(partes[2]);
+            double cv = parseDoubleSeguro(partes[3]);
+            double nb = parseDoubleSeguro(partes[4]);
+            double merma = parseDoubleSeguro(partes[5]);
+            return new CCB(fecha, tipoUsuario, cf, cv, nb, merma);
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    private static double parseDoubleSeguro(String valor) {
+        if (valor == null) {
+            return 0.0;
+        }
+        try {
+            return Double.parseDouble(valor.trim().replace(',', '.'));
+        } catch (NumberFormatException ex) {
+            return 0.0;
+        }
     }
 
     public static boolean esDiaNoDisponible(String fechaStr) {

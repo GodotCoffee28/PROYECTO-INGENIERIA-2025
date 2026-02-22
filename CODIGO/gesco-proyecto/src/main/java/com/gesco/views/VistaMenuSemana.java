@@ -1,11 +1,22 @@
 package com.gesco.views;
 
-import java.awt.*;
-
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import com.gesco.controllers.DataBase;
 import com.gesco.models.Menu;
@@ -37,8 +48,6 @@ public class VistaMenuSemana extends PlantillaGesco {
     }
 
     private void construirCuerpo() {
-        JPanel panelFondo = crearPanel(100,20,200,40,50,50);
-
         JPanel panelFondo = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {

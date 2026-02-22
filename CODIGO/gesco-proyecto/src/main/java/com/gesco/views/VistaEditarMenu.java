@@ -23,7 +23,6 @@ public class VistaEditarMenu extends PlantillaGesco {
     private BotonNeon btnEditar;
     private JTextField platillo1, platillo2, platillo3;
     private CampoFecha campoFecha;
-    private JTextField diaField, mesField, anioField;
     private JCheckBox chkNoDisponible;
     private JLabel Titulo;
     
@@ -122,8 +121,5 @@ public class VistaEditarMenu extends PlantillaGesco {
     public String getMes(){ return campoFecha.getMes(); }
     public String getAnio(){ return campoFecha.getAnio(); }
     public String getFechaTexto(){ return campoFecha.getFechaTexto(); }
-    public String getDia(){ return diaField.getText(); }
-    public String getMes(){ return mesField.getText(); }
-    public String getAnio(){ return anioField.getText(); }
     public boolean isMenuNoDisponibleSeleccionado() { return chkNoDisponible.isSelected(); }
 }

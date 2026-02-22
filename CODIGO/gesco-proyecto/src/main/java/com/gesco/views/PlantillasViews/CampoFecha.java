@@ -3,8 +3,9 @@ package com.gesco.views.PlantillasViews;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.time.YearMonth;
 import java.awt.Font;
+import java.time.YearMonth;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
@@ -76,6 +77,28 @@ public class CampoFecha extends JPanel {
         return diaText + "/" + mesText + "/" + anioText;
     }
 
+    public void setFecha(String dia, String mes, String anio) {
+        int diaValor = parseEnteroSeguro(dia);
+        int mesValor = parseEnteroSeguro(mes);
+        int anioValor = parseEnteroSeguro(anio);
+        if (mesValor > 0) {
+            mesChooser.setMonth(Math.max(1, Math.min(12, mesValor)) - 1);
+        }
+        if (anioValor > 0) {
+            anioChooser.setYear(anioValor);
+        }
+        updateDays();
+        if (diaValor > 0) {
+            diaCombo.setSelectedItem(diaValor);
+        }
+    }
+
+    public void setEditable(boolean editable) {
+        diaCombo.setEnabled(editable);
+        mesChooser.setEnabled(editable);
+        anioChooser.setEnabled(editable);
+    }
+
     private void updateDays() {
         int selectedDay = getSelectedDay();
         int year = anioChooser.getYear();
@@ -95,12 +118,12 @@ public class CampoFecha extends JPanel {
 
     private int getSelectedDay() {
         Object selected = diaCombo.getSelectedItem();
-        if (selected instanceof Integer) {
-            return (Integer) selected;
+        if (selected instanceof Integer selectedInt) {
+            return selectedInt;
         }
-        if (selected instanceof String) {
+        if (selected instanceof String selectedStr) {
             try {
-                return Integer.parseInt((String) selected);
+                return Integer.parseInt(selectedStr);
             } catch (NumberFormatException ex) {
                 return 0;
             }
@@ -114,5 +137,16 @@ public class CampoFecha extends JPanel {
 
     public void setLabelColor(Color color) {
         label.setForeground(color);
+    }
+
+    private int parseEnteroSeguro(String valor) {
+        if (valor == null) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(valor.trim());
+        } catch (NumberFormatException ex) {
+            return 0;
+        }
     }
 }

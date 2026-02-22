@@ -14,6 +14,7 @@ import com.gesco.views.VistaInicioSesion;
 import com.gesco.views.VistaMenuSemana;
 import com.gesco.views.VistaRegistro;
 import com.gesco.views.VistaTurnos;
+import com.gesco.views.VistaVerCCB;
 import com.gesco.views.VistaVerCFCV;
 
 public class LogicaInterfaz {
@@ -27,6 +28,7 @@ public class LogicaInterfaz {
     private VistaMenuSemana vistaMenuSemana;
     private VistaTurnos vistaTurnos;
     private VistaCargaCCB vistaCargaCCB;
+    private VistaVerCCB vistaVerCcb;
     private VistaVerCFCV vistaVerCfcv;
     private VistaCrearMenu vistaCrearMenu;
     private VistaEditarMenu vistaEditarMenu;
@@ -131,7 +133,7 @@ public class LogicaInterfaz {
             this::iniciar,
             this::mostrarGestionMenu,
             this::mostrarCargaCCB,
-            this::mostrarVerCfcv,
+            this::mostrarVerCcb,
             this::swapInteraccion
         ).conectar();
     }
@@ -174,13 +176,11 @@ public class LogicaInterfaz {
         cerrarVistas();
         vistaCargaCCB = new VistaCargaCCB();
         menuGescoController.conectar(vistaCargaCCB, usuarioAdmin);
-        new VistaCargarCCBControlador(
-        vistaCargaCCB = new VistaCargarCFCV();
-        menuGescoController.conectar(vistaCargaCCB, sesionAdmin);
-        new VistaCargarCFCVControlador(
+        VistaCargarCCBControlador controlador = new VistaCargarCCBControlador(
             vistaCargaCCB,
             this::mostrarPanelControl
-        ).conectar();
+        );
+        controlador.conectar();
     }
 
     private void mostrarVerCfcv() {
@@ -189,6 +189,16 @@ public class LogicaInterfaz {
         menuGescoController.conectar(vistaVerCfcv, sesionAdmin);
         new VistaVerCFCVControlador(
             vistaVerCfcv,
+            this::mostrarPanelControl
+        ).conectar();
+    }
+
+    private void mostrarVerCcb() {
+        cerrarVistas();
+        vistaVerCcb = new VistaVerCCB();
+        menuGescoController.conectar(vistaVerCcb, sesionAdmin);
+        new VistaVerCCBControlador(
+            vistaVerCcb,
             this::mostrarPanelControl
         ).conectar();
     }
@@ -389,6 +399,13 @@ public class LogicaInterfaz {
         }
     }
 
+    private void cerrarVistaVerCcb() {
+        if (vistaVerCcb != null) {
+            vistaVerCcb.dispose();
+            vistaVerCcb = null;
+        }
+    }
+
     private void cerrarVistaCrearMenu() {
         if (vistaCrearMenu != null) {
             vistaCrearMenu.dispose();
@@ -420,6 +437,7 @@ public class LogicaInterfaz {
         cerrarVistaMenuSemana();
         cerrarVistaTurnos();
         cerrarVistaCargaCCB();
+        cerrarVistaVerCcb();
         cerrarVistaVerCfcv();
         cerrarVistaCrearMenu();
         cerrarVistaEditarMenu();
