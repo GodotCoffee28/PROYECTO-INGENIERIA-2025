@@ -5,9 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -26,7 +23,8 @@ public class VistaCargaCCB extends PlantillaGesco {
     private JLabel lblResultado;
     
     public VistaCargaCCB() {
-        super(); 
+        super();
+        setImagenFondo("/FondoPrincipal2.png");
         inicializarComponentes();
         construirCuerpo();
         revalidate();
@@ -41,15 +39,9 @@ public class VistaCargaCCB extends PlantillaGesco {
         btnSubirDatos.setMaximumSize(tamBoton);
         btnSubirDatos.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        Titulo = new JLabel("Datos para el CCB");
-        Titulo.setFont(new Font("Arial", Font.BOLD, 45)); 
-        Titulo.setForeground(new Color(240, 240, 240)); 
-        Titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        Titulo = crearEtiquetaPersonalizada("Datos para el CCB", "Arial", Font.BOLD, 45, new Color(240, 240, 240), "centro");
 
-        lblResultado = new JLabel(" ");
-        lblResultado.setFont(new Font("Arial", Font.BOLD, 26));
-        lblResultado.setForeground(new Color(0, 255, 150)); 
-        lblResultado.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblResultado = crearEtiquetaPersonalizada(" ", "Arial", Font.BOLD, 18, new Color(240, 240, 240),"centro");
     }
     
     private void agregarCampos(JPanel panelFondoBase) {
@@ -116,26 +108,7 @@ public class VistaCargaCCB extends PlantillaGesco {
     }
 
     private void construirCuerpo() {
-        JPanel panelFondo = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                
-                int x = 250;
-                int y = 15;
-                int w = getWidth() - 500;
-                int h = getHeight() - 30;
-                
-                g2.setColor(new Color(255, 255, 255, 25)); 
-                g2.fillRoundRect(x, y, w, h, 50, 50);
-                
-                g2.setColor(new Color(255, 255, 255, 40));
-                g2.drawRoundRect(x, y, w, h, 50, 50);
-                g2.dispose();
-            }
-        };
+        JPanel panelFondo = crearPanel(250,15,500,30,50,50);
         
         panelFondo.setLayout(new BoxLayout(panelFondo, BoxLayout.Y_AXIS));
         panelFondo.setOpaque(false); 

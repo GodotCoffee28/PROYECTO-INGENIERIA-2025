@@ -26,7 +26,8 @@ public class VistaVisualizarCCB extends PlantillaGesco {
     private JLabel lblResultado;
     
     public VistaVisualizarCCB() {
-        super(); 
+        super();
+        setImagenFondo("/FondoPrincipal2.png");
         inicializarComponentes();
         construirCuerpo();
         revalidate();
@@ -62,35 +63,35 @@ public class VistaVisualizarCCB extends PlantillaGesco {
 
         Dimension tamCaja = new Dimension(450, 40);
 
-        formPanel.add(crearEtiquetaForm(("Tipo de usuario"), 18, Color.WHITE));
+        formPanel.add(crearEtiquetaPersonalizada(("Tipo de usuario"), "Times New Roman", Font.PLAIN, 18, Color.WHITE,"centro"));
         formPanel.add(Box.createVerticalStrut(8));
         usuario = new JTextField();
         diseñarCaja(usuario, tamCaja);
         formPanel.add(usuario);
         formPanel.add(Box.createVerticalStrut(20));
 
-        formPanel.add(crearEtiquetaForm("NB", 18, Color.WHITE));
+        formPanel.add(crearEtiquetaPersonalizada("NB", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "centro"));
         formPanel.add(Box.createVerticalStrut(8));
         NB = new JTextField();
         diseñarCaja(NB, tamCaja);
         formPanel.add(NB);
         formPanel.add(Box.createVerticalStrut(20)); 
 
-        formPanel.add(crearEtiquetaForm("MERMA", 18, Color.WHITE));
+        formPanel.add(crearEtiquetaPersonalizada("MERMA", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "centro"));
         formPanel.add(Box.createVerticalStrut(8));
         MERMA = new JTextField();
         diseñarCaja(MERMA, tamCaja);
         formPanel.add(MERMA);
         formPanel.add(Box.createVerticalStrut(20)); 
 
-        formPanel.add(crearEtiquetaForm("CF", 18, Color.WHITE));
+        formPanel.add(crearEtiquetaPersonalizada("CF", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "centro"));
         formPanel.add(Box.createVerticalStrut(8));
         CF = new JTextField();
         diseñarCaja(CF, tamCaja);
         formPanel.add(CF);
         formPanel.add(Box.createVerticalStrut(20)); 
 
-        formPanel.add(crearEtiquetaForm("CV", 18, Color.WHITE));
+        formPanel.add(crearEtiquetaPersonalizada("CV", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "centro"));
         formPanel.add(Box.createVerticalStrut(8));
         CV = new JTextField();
         diseñarCaja(CV, tamCaja);
@@ -101,20 +102,7 @@ public class VistaVisualizarCCB extends PlantillaGesco {
 
 
     private void construirCuerpo() {
-        JPanel panelFondo = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                
-                g2.setColor(new Color(255, 255, 255, 25)); 
-                g2.fillRoundRect(250, 10, getWidth() - 500, getHeight() - 20, 50, 50);
-                
-                g2.setColor(new Color(255, 255, 255, 40));
-                g2.drawRoundRect(250, 10, getWidth() - 500, getHeight() - 20, 50, 50);
-                g2.dispose();
-            }
-        };
+        JPanel panelFondo = crearPanel(250,10,500,20,50,50);
         
         panelFondo.setLayout(new BoxLayout(panelFondo, BoxLayout.Y_AXIS));
         panelFondo.setOpaque(false); 

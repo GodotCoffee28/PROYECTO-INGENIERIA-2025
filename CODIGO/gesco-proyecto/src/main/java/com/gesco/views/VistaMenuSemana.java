@@ -1,12 +1,7 @@
 package com.gesco.views;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +24,8 @@ public class VistaMenuSemana extends PlantillaGesco {
     private JPanel panelContenedorTarjetas;
 
     public VistaMenuSemana() {
-        super(); 
+        super();
+        setImagenFondo("/FondoPrincipal.png");
         inicializarComponentes();
         construirCuerpo();
         
@@ -41,7 +37,7 @@ public class VistaMenuSemana extends PlantillaGesco {
     }
 
     private void inicializarComponentes() {
-        titulo = crearEtiquetaSimple("Menú de la semana", 24, Color.WHITE);
+        titulo = crearEtiquetaPersonalizada("Menú de la semana", "Times New Roman", Font.BOLD, 24, Color.WHITE,"centro");
         titulo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         tarjetasSemana = new ArrayList<>();
     }

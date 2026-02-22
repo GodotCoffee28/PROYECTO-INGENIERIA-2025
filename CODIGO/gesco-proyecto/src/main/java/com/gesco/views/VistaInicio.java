@@ -25,6 +25,7 @@ public class VistaInicio extends PlantillaGesco {
 
     public VistaInicio() {
         super(); 
+        setImagenFondo("/VISTAFONDO.png");
         ocultarMenu();
         ocultarBack();
         inicializarComponentes();
@@ -35,7 +36,7 @@ public class VistaInicio extends PlantillaGesco {
     }
 
     private void inicializarComponentes() {
-        Dimension tam = new Dimension(400, 60);
+        Dimension tam = new Dimension(400, 70);
 
         btnInicioSesion = new BotonNeon("Inicio de sesión");
         btnInicioSesion.setPreferredSize(tam);
@@ -47,23 +48,11 @@ public class VistaInicio extends PlantillaGesco {
         btnRegistrarse.setMaximumSize(tam);
         btnRegistrarse.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        Saludo = crearEtiquetaSimple("¡Hola, Ucevista!", 45, new Color(240, 240, 240));
-        Saludo.setFont(new Font("Arial", Font.BOLD, 45));
+        Saludo = crearEtiquetaPersonalizada("¡Hola, Ucevista!", "Times New Roman", Font.BOLD, 60, new Color(240, 240, 240), "centro");
     }
 
     private void construirCuerpo() {
-        JPanel panelFondo = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(255, 255, 255, 10)); 
-                g2.fillRoundRect(100, 10, getWidth() - 200, getHeight() - 20, 50, 50);
-                g2.setColor(new Color(255, 255, 255, 25));
-                g2.drawRoundRect(100, 10, getWidth() - 200, getHeight() - 20, 50, 50);
-                g2.dispose();
-            }
-        };
+        JPanel panelFondo = crearPanel(100,10, 200, 20, 50,50);
         
         panelFondo.setLayout(new BoxLayout(panelFondo, BoxLayout.Y_AXIS));
         panelFondo.setOpaque(false); 
@@ -72,15 +61,15 @@ public class VistaInicio extends PlantillaGesco {
         panelFondo.add(Box.createVerticalGlue()); 
         panelFondo.add(Saludo);
         panelFondo.add(Box.createVerticalStrut(30)); 
-        panelFondo.add(crearEtiquetaSimple("Accede a la plataforma del comedor", 24, new Color(180, 180, 185)));
+        panelFondo.add(crearEtiquetaPersonalizada("Accede a la plataforma del comedor", "Times New Roman", Font.PLAIN, 28, new Color(240, 240, 240), "centro"));
         
-        panelFondo.add(Box.createVerticalStrut(80)); 
-        panelFondo.add(crearEtiquetaSimple("¿Ya posee una cuenta?", 25, new Color(150, 150, 155)));
+        panelFondo.add(Box.createVerticalStrut(40)); 
+        panelFondo.add(crearEtiquetaPersonalizada("¿Ya posee una cuenta?", "Times New Roman", Font.PLAIN, 25, new Color(240, 240, 240), "centro"));
         panelFondo.add(Box.createVerticalStrut(25));
         panelFondo.add(btnInicioSesion); 
 
-        panelFondo.add(Box.createVerticalStrut(70)); 
-        panelFondo.add(crearEtiquetaSimple("¿Primera vez accediendo?", 25, new Color(110, 110, 115)));
+        panelFondo.add(Box.createVerticalStrut(40)); 
+        panelFondo.add(crearEtiquetaPersonalizada("¿Primera vez accediendo?", "Times New Roman", Font.PLAIN, 25, new Color(240, 240, 240), "centro"));
         panelFondo.add(Box.createVerticalStrut(20));
         panelFondo.add(btnRegistrarse); 
         

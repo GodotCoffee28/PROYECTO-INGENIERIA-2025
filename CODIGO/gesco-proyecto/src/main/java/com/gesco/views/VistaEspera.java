@@ -39,8 +39,7 @@ public class VistaEspera extends PlantillaGesco {
         volver.setMaximumSize(tamBoton);
         volver.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        anuncio = crearEtiquetaSimple("Estamos verificando sus datos, intente ingresar en breve.", 32, new Color(240, 240, 240));
-        anuncio.setFont(new Font("Arial", Font.BOLD, 32));
+        anuncio = crearEtiquetaPersonalizada("Estamos verificando sus datos, intente ingresar en breve.", "Times New Roman", Font.BOLD, 32, new Color(240, 240, 240), "centro");
         
         taza = cargarTaza();
         if (taza.getIconWidth() > 0) {
