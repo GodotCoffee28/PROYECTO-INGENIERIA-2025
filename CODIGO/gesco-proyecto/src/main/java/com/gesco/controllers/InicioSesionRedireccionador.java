@@ -2,6 +2,8 @@ package com.gesco.controllers;
 
 import java.util.function.Consumer;
 
+import com.gesco.models.TipoUsuario;
+
 public class InicioSesionRedireccionador {
 
     private final Consumer<String> onAdmin;
@@ -12,8 +14,8 @@ public class InicioSesionRedireccionador {
         this.onComensal = onComensal;
     }
 
-    public void redirigir(boolean esAdmin, String nombre) {
-        if (esAdmin) {
+    public void redirigir(TipoUsuario tipoUsuario, String nombre) {
+        if (tipoUsuario == TipoUsuario.ADMIN || tipoUsuario == TipoUsuario.SUPER_ADMIN) {
             onAdmin.accept(nombre);
             return;
         }

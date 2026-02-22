@@ -13,6 +13,7 @@ public class MenuAccionesControlador implements MenuAcciones {
     private final Runnable onCrearMenu;
     private final Runnable onEditarMenu;
     private final Runnable onGestionMenu;
+    private final Runnable onSwapInteraccion;
     private final Runnable onSalir;
 
     public MenuAccionesControlador(
@@ -27,6 +28,7 @@ public class MenuAccionesControlador implements MenuAcciones {
         Runnable onCrearMenu,
         Runnable onEditarMenu,
         Runnable onGestionMenu,
+        Runnable onSwapInteraccion,
         Runnable onSalir
     ) {
         this.onInicio = onInicio;
@@ -40,6 +42,7 @@ public class MenuAccionesControlador implements MenuAcciones {
         this.onCrearMenu = onCrearMenu;
         this.onEditarMenu = onEditarMenu;
         this.onGestionMenu = onGestionMenu;
+        this.onSwapInteraccion = onSwapInteraccion;
         this.onSalir = onSalir;
     }
 
@@ -96,6 +99,11 @@ public class MenuAccionesControlador implements MenuAcciones {
     @Override
     public void irGestionMenu() {
         onGestionMenu.run();
+    }
+
+    @Override
+    public void swapInteraccion() {
+        onSwapInteraccion.run();
     }
 
     @Override
