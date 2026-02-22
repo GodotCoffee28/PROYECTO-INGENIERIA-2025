@@ -67,49 +67,41 @@ public class VistaCargaCCB extends PlantillaGesco {
         formPanel.add(campoFecha);
         formPanel.add(Box.createVerticalStrut(12));
 
-        formPanel.add(EtiquetasCCB("Tipo de usuario (Estudiante/Profesor/Empleado)"));
+        formPanel.add(crearEtiquetaPersonalizada("Tipo de usuario (Estudiante/Profesor/Empleado)", "Times New Roman", Font.PLAIN, 18, new Color(180, 180, 180), "izquierda"));
         formPanel.add(Box.createVerticalStrut(5));
         usuario = new JTextField();
         CajaCCB(usuario, tamCaja);
         formPanel.add(usuario);
         formPanel.add(Box.createVerticalStrut(12));
 
-        formPanel.add(EtiquetasCCB("NB (Número de bandejas servidas)"));
+        formPanel.add(crearEtiquetaPersonalizada("NB (Número de bandejas servidas)", "Arial", Font.BOLD, 14, new Color(180, 180, 180), "izquierda"));
         formPanel.add(Box.createVerticalStrut(5));
         NB = new JTextField();
         CajaCCB(NB, tamCaja);
         formPanel.add(NB);
         formPanel.add(Box.createVerticalStrut(12)); 
 
-        formPanel.add(EtiquetasCCB("MERMA (% de desperdicio)"));
+        formPanel.add(crearEtiquetaPersonalizada("MERMA (% de desperdicio)", "Arial", Font.BOLD, 14, new Color(180, 180, 180), "izquierda"));
         formPanel.add(Box.createVerticalStrut(5));
         MERMA = new JTextField();
         CajaCCB(MERMA, tamCaja);
         formPanel.add(MERMA);
         formPanel.add(Box.createVerticalStrut(12)); 
 
-        formPanel.add(EtiquetasCCB("CF (Costos Fijos totales)"));
+        formPanel.add(crearEtiquetaPersonalizada("CF (Costos Fijos totales)", "Arial", Font.BOLD, 14, new Color(180, 180, 180), "izquierda"));
         formPanel.add(Box.createVerticalStrut(5));
         CF = new JTextField();
         CajaCCB(CF, tamCaja);
         formPanel.add(CF);
         formPanel.add(Box.createVerticalStrut(12)); 
 
-        formPanel.add(EtiquetasCCB("CV (Costos Variables totales)"));
+        formPanel.add(crearEtiquetaPersonalizada("CV (Costos Variables totales)", "Arial", Font.BOLD, 14, new Color(180, 180, 180), "izquierda"));
         formPanel.add(Box.createVerticalStrut(5));
         CV = new JTextField();
         CajaCCB(CV, tamCaja);
         formPanel.add(CV);
 
         panelFondoBase.add(formPanel);
-    }
-
-    private JLabel EtiquetasCCB(String texto) {
-        JLabel label = new JLabel(texto);
-        label.setFont(new Font("Arial", Font.BOLD, 14));
-        label.setForeground(new Color(180, 180, 180));
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        return label;
     }
 
     private void CajaCCB(JTextField c, Dimension d) {
@@ -175,7 +167,8 @@ public class VistaCargaCCB extends PlantillaGesco {
     public void setResultado(String resultado) {
         if (resultado == null || resultado.trim().isEmpty()) {
             lblResultado.setText(" ");
-        } else {
+        } 
+        else {
             lblResultado.setText("VALOR CCB: " + resultado);
         }
     }
