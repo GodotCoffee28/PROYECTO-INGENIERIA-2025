@@ -54,7 +54,7 @@ public class VistaMenuSemana extends PlantillaGesco {
                 int ancho = getWidth() - (margenX * 2);
                 int alto = getHeight() - 40;
                 
-                g2.setColor(new Color(255, 255, 255, 25)); 
+                g2.setColor(new Color(255, 255, 255, 25));
                 g2.fillRoundRect(margenX, 20, ancho, alto, 50, 50);
                 
                 g2.setColor(new Color(255, 255, 255, 40));
@@ -74,21 +74,19 @@ public class VistaMenuSemana extends PlantillaGesco {
         panelTitulo.add(Box.createVerticalStrut(20));
 
         panelContenedorTarjetas = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20)) {
-            
-
-            @Override 
+            @Override
             public Dimension getPreferredSize() {
                 Dimension d = super.getPreferredSize();
                 if (getParent() != null) {
-                    d.width = getParent().getWidth(); 
+                    d.width = getParent().getWidth();
                     
                     int nComponentes = getComponentCount();
                     if (nComponentes > 0 && d.width > 0) {
-                        int anchoTarjeta = 200 + 20; 
+                        int anchoTarjeta = 200 + 20;
                         int tarjetasPorFila = Math.max(1, (d.width - 20) / anchoTarjeta);
                         int filas = (int) Math.ceil((double) nComponentes / tarjetasPorFila);
-                        int altoTarjeta = 180 + 20; 
-                        d.height = filas * altoTarjeta + 40; 
+                        int altoTarjeta = 180 + 20;
+                        d.height = filas * altoTarjeta + 40;
                     }
                 }
                 return d;

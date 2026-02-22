@@ -12,5 +12,6 @@ public interface MenuAcciones {
     void irCrearMenu();
     void irEditarMenu();
     void irGestionMenu();
+    void swapInteraccion();
     void salir();
 }

@@ -34,7 +34,6 @@ public class TarjetaMenu extends TarjetaGeneral {
 
     private void actualizarInterfaz() {
         if (menu == null) return;
-        JLabel vacio = new JLabel("                 ");
         containerCuerpo.removeAll();
         DayOfWeek dia = menu.getFecha().getDayOfWeek();
         String diaStr = switch(dia){
@@ -48,20 +47,32 @@ public class TarjetaMenu extends TarjetaGeneral {
         };
 
         lblDia.setText(diaStr);
-        containerCuerpo.add(vacio);
 
-        if (menu.getPlatillos().isEmpty()) {
-            JLabel lblNoDisponible = new JLabel(" - MENÚ NO DISPONIBLE");
-            lblNoDisponible.setFont(new Font("Arial", Font.ITALIC, 16));
-            lblNoDisponible.setForeground(new Color(100, 100, 100));
+        if (menu.getEstado() == Menu.EstadoMenu.NO_DISPONIBLE) {
+            JLabel lblNoDisponible = new JLabel("Menú no disponible");
+            lblNoDisponible.setFont(new Font("Arial", Font.BOLD, 16));
+            lblNoDisponible.setForeground(new Color(120, 45, 45));
             containerCuerpo.add(lblNoDisponible);
-        } else {
-            for (Platillo platillo : menu.getPlatillos()) {
-                JLabel lblNombrePlatillo = new JLabel(" - " + platillo.getNombre().toUpperCase());
-                lblNombrePlatillo.setFont(new Font("Arial", Font.PLAIN, 18));
-                lblNombrePlatillo.setForeground(new Color(50, 50, 50));
-                containerCuerpo.add(lblNombrePlatillo);
-            }
+            revalidate();
+            repaint();
+            return;
+        }
+
+        if (!menu.tienePlatillos()) {
+            JLabel lblVacio = new JLabel("Sin menú cargado");
+            lblVacio.setFont(new Font("Arial", Font.BOLD, 16));
+            lblVacio.setForeground(new Color(90, 90, 90));
+            containerCuerpo.add(lblVacio);
+            revalidate();
+            repaint();
+            return;
+        }
+
+        for (Platillo platillo : menu.getPlatillos()) {
+            JLabel lblNombrePlatillo = new JLabel(" - " + platillo.getNombre().toUpperCase());
+            lblNombrePlatillo.setFont(new Font("Arial", Font.PLAIN, 18));
+            lblNombrePlatillo.setForeground(new Color(50, 50, 50));
+            containerCuerpo.add(lblNombrePlatillo);
         }
 
         revalidate();

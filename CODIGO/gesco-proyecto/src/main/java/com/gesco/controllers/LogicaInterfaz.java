@@ -32,6 +32,7 @@ public class LogicaInterfaz {
     private VistaEditarMenu vistaEditarMenu;
     private VistaGestionMenu vistaGestionMenu;
     private boolean usuarioAdmin;
+    private boolean sesionAdmin;
     private String nombreUsuario;
     private final InicioSesionRedireccionador inicioSesionRedireccionador =
         new InicioSesionRedireccionador(this::mostrarPantallaAdmin, nombre -> mostrarPantallaPrincipal(false, nombre));
@@ -48,6 +49,7 @@ public class LogicaInterfaz {
             this::mostrarCrearMenu,
             this::mostrarEditarMenu,
             this::mostrarGestionMenu,
+            this::swapInteraccion,
             () -> System.exit(0)
         )
     );
@@ -71,7 +73,7 @@ public class LogicaInterfaz {
             vistaInicioSesion,
             this::iniciar,  
             this::mostrarRegistro,
-            (esAdmin, nombre) -> inicioSesionRedireccionador.redirigir(esAdmin, nombre)  
+            (tipoUsuario, nombre) -> inicioSesionRedireccionador.redirigir(tipoUsuario, nombre)
         ).conectar();
     }
 
@@ -95,19 +97,20 @@ public class LogicaInterfaz {
         ).conectar();
     }
 
-    private void mostrarPantallaPrincipal(boolean esAdmin, String nombre) {
+    private void mostrarPantallaPrincipal(boolean esSesionAdmin, String nombre) {
         cerrarVistas();
-        usuarioAdmin = esAdmin;
+        usuarioAdmin = false;
+        sesionAdmin = esSesionAdmin;
         nombreUsuario = nombre;
 
         String nombreMostrar = (nombre == null || nombre.isBlank()) ? "Usuario" : nombre;
-        if (esAdmin) {
+        if (sesionAdmin) {
             vistaInicioComensal = new VistaInicioComensal(nombreMostrar, 999999);
         } else {
             vistaInicioComensal = new VistaInicioComensal(nombreMostrar, 50);
         }
 
-        menuGescoController.conectar(vistaInicioComensal, esAdmin);
+        menuGescoController.conectar(vistaInicioComensal, sesionAdmin);
         new VistaInicioComensalControlador(
             vistaInicioComensal,
             this::iniciar,
@@ -119,6 +122,7 @@ public class LogicaInterfaz {
     private void mostrarPantallaAdmin(String nombre) {
         cerrarVistas();
         usuarioAdmin = true;
+        sesionAdmin = true;
         nombreUsuario = nombre;
         vistaInicioAdmin = new VistaInicioAdmin();
         menuGescoController.conectar(vistaInicioAdmin, true);
@@ -128,7 +132,7 @@ public class LogicaInterfaz {
             this::mostrarGestionMenu,
             this::mostrarCargaCCB,
             this::mostrarVerCfcv,
-            () -> mostrarPantallaPrincipal(false, nombreUsuario)
+            this::swapInteraccion
         ).conectar();
     }
 
@@ -140,7 +144,7 @@ public class LogicaInterfaz {
     private void mostrarMenuSemana() {
         cerrarVistas();
         vistaMenuSemana = new VistaMenuSemana();
-        menuGescoController.conectar(vistaMenuSemana, usuarioAdmin);
+        menuGescoController.conectar(vistaMenuSemana, sesionAdmin);
         new VistaMenuSemanaControlador(
             vistaMenuSemana,
             this::volverAPantallaPrincipal
@@ -150,7 +154,7 @@ public class LogicaInterfaz {
     private void mostrarTurnos() {
         cerrarVistas();
         vistaTurnos = new VistaTurnos();
-        menuGescoController.conectar(vistaTurnos, usuarioAdmin);
+        menuGescoController.conectar(vistaTurnos, sesionAdmin);
         new VistaTurnosControlador(
             vistaTurnos,
             this::volverAPantallaPrincipal,
@@ -169,7 +173,7 @@ public class LogicaInterfaz {
     private void mostrarCargaCCB() {
         cerrarVistas();
         vistaCargaCCB = new VistaCargarCFCV();
-        menuGescoController.conectar(vistaCargaCCB, usuarioAdmin);
+        menuGescoController.conectar(vistaCargaCCB, sesionAdmin);
         new VistaCargarCFCVControlador(
             vistaCargaCCB,
             this::mostrarPanelControl
@@ -179,7 +183,7 @@ public class LogicaInterfaz {
     private void mostrarVerCfcv() {
         cerrarVistas();
         vistaVerCfcv = new VistaVerCFCV();
-        menuGescoController.conectar(vistaVerCfcv, usuarioAdmin);
+        menuGescoController.conectar(vistaVerCfcv, sesionAdmin);
         new VistaVerCFCVControlador(
             vistaVerCfcv,
             this::mostrarPanelControl
@@ -189,7 +193,7 @@ public class LogicaInterfaz {
     private void mostrarCrearMenu() {
         cerrarVistas();
         vistaCrearMenu = new VistaCrearMenu();
-        menuGescoController.conectar(vistaCrearMenu, usuarioAdmin);
+        menuGescoController.conectar(vistaCrearMenu, sesionAdmin);
         new VistaCrearMenuControlador(
             vistaCrearMenu,
             this::mostrarGestionMenu
@@ -199,7 +203,7 @@ public class LogicaInterfaz {
     private void mostrarEditarMenu() {
         cerrarVistas();
         vistaEditarMenu = new VistaEditarMenu();
-        menuGescoController.conectar(vistaEditarMenu, usuarioAdmin);
+        menuGescoController.conectar(vistaEditarMenu, sesionAdmin);
         new VistaEditarMenuControlador(
             vistaEditarMenu,
             this::mostrarGestionMenu
@@ -209,7 +213,7 @@ public class LogicaInterfaz {
     private void mostrarGestionMenu() {
         cerrarVistas();
         vistaGestionMenu = new VistaGestionMenu();
-        menuGescoController.conectar(vistaGestionMenu, usuarioAdmin);
+        menuGescoController.conectar(vistaGestionMenu, sesionAdmin);
         new VistaGestionMenuControlador(
             vistaGestionMenu,
             this::mostrarPanelControl,
@@ -282,7 +286,27 @@ public class LogicaInterfaz {
     }
 
     private void volverAPantallaPrincipal() {
-        mostrarPantallaPrincipal(usuarioAdmin, nombreUsuario);
+        if (usuarioAdmin && sesionAdmin) {
+            mostrarPantallaAdmin(nombreUsuario);
+            return;
+        }
+        mostrarPantallaPrincipal(sesionAdmin, nombreUsuario);
+    }
+
+    private void swapInteraccion() {
+        if (!sesionAdmin) {
+            javax.swing.JOptionPane.showMessageDialog(null,
+                "El cambio de interacción (Swap) solo está disponible para sesión de administrador.",
+                "Swap no disponible",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        if (usuarioAdmin) {
+            mostrarPantallaPrincipal(true, nombreUsuario);
+        } else {
+            mostrarPantallaAdmin(nombreUsuario);
+        }
     }
 
     private void cerrarVistaInicio() {

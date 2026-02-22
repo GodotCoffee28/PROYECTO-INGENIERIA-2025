@@ -43,4 +43,9 @@ public class LoginCedulaNegativaTest {
     public void validarInicioSesion_cedulaNegativa_devuelveFalse() {
         assertFalse(DataBase.validarInicioSesion("-12345678", "password123"));
     }
+
+    @Test
+    public void validarInicioSesion_cedulaMenorA8Millones_devuelveFalse() {
+        assertFalse(DataBase.validarInicioSesion("7999999", "password123"));
+    }
 }

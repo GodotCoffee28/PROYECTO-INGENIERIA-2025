@@ -35,6 +35,7 @@ public class MenuComandosControlador {
             case "CMD_CREARMENU"   -> acciones.irCrearMenu();
             case "CMD_EDITARMENU"  -> acciones.irEditarMenu();
             case "CMD_GESTIONMENU" -> acciones.irGestionMenu();
+            case "CMD_SWAP"        -> acciones.swapInteraccion();
             default -> {
             }
         }

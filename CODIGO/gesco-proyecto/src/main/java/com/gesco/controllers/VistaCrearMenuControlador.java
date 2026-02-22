@@ -1,7 +1,8 @@
 package com.gesco.controllers;
 
 import com.gesco.views.VistaCrearMenu;
-import com.gesco.views.VistaEditarMenu;
+import com.gesco.models.Menu;
+import com.gesco.models.Platillo;
 
 public class VistaCrearMenuControlador {
 
@@ -31,37 +32,47 @@ public class VistaCrearMenuControlador {
             String fechaStr = String.format("%s-%s-%s", anio.trim(), mes.trim(), dia.trim());
 
             java.time.LocalDate fecha = java.time.LocalDate.parse(fechaStr);
-
-            if (DataBase.esDiaNoDisponible(fechaStr)) {
-                javax.swing.JOptionPane.showMessageDialog(vista, "El día seleccionado es un día festivo o fin de semana.", "Día no laborable", javax.swing.JOptionPane.WARNING_MESSAGE);
+            if (!DataBase.esFechaValidaParaMenu(fecha)) {
+                javax.swing.JOptionPane.showMessageDialog(vista,
+                    "Solo se permiten días hábiles (lunes a viernes no feriados).",
+                    "Fecha no permitida",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            com.gesco.models.Menu menu = new com.gesco.models.Menu(fecha);
+            if (!DataBase.prepararSemanaConEstados(fecha)) {
+                javax.swing.JOptionPane.showMessageDialog(vista,
+                    "No se pudo preparar la semana para registrar estados por día.",
+                    "Error de semana",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            boolean noDisponible = vista.isMenuNoDisponibleSeleccionado();
+            Menu menu = new Menu(fecha, noDisponible ? Menu.EstadoMenu.NO_DISPONIBLE : Menu.EstadoMenu.CON_MENU);
+
             String p1 = vista.getPlatillo1();
             String p2 = vista.getPlatillo2();
             String p3 = vista.getPlatillo3();
 
-            boolean todosVacios = (p1 == null || p1.isBlank()) && (p2 == null || p2.isBlank()) && (p3 == null || p3.isBlank());
-            if (todosVacios) {
-                int confirmacion = javax.swing.JOptionPane.showConfirmDialog(
-                    vista,
-                    "No ingresó ningún platillo. El día quedará marcado como \"Dia fuera de servicio\". ¿Desea continuar?",
+            if (p1 != null && !p1.isBlank()) menu.agregarPlatillo(new Platillo(p1.trim()));
+            if (p2 != null && !p2.isBlank()) menu.agregarPlatillo(new Platillo(p2.trim()));
+            if (p3 != null && !p3.isBlank()) menu.agregarPlatillo(new Platillo(p3.trim()));
+
+            if (!noDisponible && !menu.tienePlatillos()) {
+                javax.swing.JOptionPane.showMessageDialog(vista,
+                    "Debe cargar al menos un platillo o marcar la opción 'Menu no disponible'.",
                     "Menú vacío",
-                    javax.swing.JOptionPane.YES_NO_OPTION,
-                    javax.swing.JOptionPane.WARNING_MESSAGE
-                );
-                if (confirmacion != javax.swing.JOptionPane.YES_OPTION) return;
-                menu.agregarPlatillo(new com.gesco.models.Platillo("Dia fuera de servicio"));
-            } else {
-                if (p1 != null && !p1.isBlank()) menu.agregarPlatillo(new com.gesco.models.Platillo(p1.trim()));
-                if (p2 != null && !p2.isBlank()) menu.agregarPlatillo(new com.gesco.models.Platillo(p2.trim()));
-                if (p3 != null && !p3.isBlank()) menu.agregarPlatillo(new com.gesco.models.Platillo(p3.trim()));
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
             }
 
             boolean ok = DataBase.actualizarMenu(menu);
             if (ok) {
-                javax.swing.JOptionPane.showMessageDialog(vista, "Menú creado.", "OK", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                javax.swing.JOptionPane.showMessageDialog(vista,
+                    noDisponible ? "Día marcado como menú no disponible." : "Menú creado.",
+                    "OK",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
                 onBack.run();
             } else {
                 javax.swing.JOptionPane.showMessageDialog(vista, "Error al crear menú.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);

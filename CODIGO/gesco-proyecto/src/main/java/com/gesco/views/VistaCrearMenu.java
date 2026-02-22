@@ -56,8 +56,8 @@ public class VistaCrearMenu extends PlantillaGesco {
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
         formPanel.setOpaque(false);
 
-        formPanel.setMaximumSize(new Dimension(450, 480)); 
-        formPanel.setAlignmentX(Component.CENTER_ALIGNMENT); 
+        formPanel.setMaximumSize(new Dimension(450, 480));
+        formPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel lblFecha = crearEtiquetaPersonalizada("Fecha (DD/MM/AAAA)", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda");
         
@@ -69,9 +69,9 @@ public class VistaCrearMenu extends PlantillaGesco {
         fechaPanel.setOpaque(false);
         fechaPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         
-        fechaPanel.add(diaField); 
+        fechaPanel.add(diaField);
         fechaPanel.add(crearSeparador());
-        fechaPanel.add(mesField); 
+        fechaPanel.add(mesField);
         fechaPanel.add(crearSeparador());
         fechaPanel.add(anioField);
 
@@ -98,7 +98,7 @@ public class VistaCrearMenu extends PlantillaGesco {
         platillo1 = new JTextField();
         diseñarCaja(platillo1, tamCaja);
         formPanel.add(platillo1);
-        formPanel.add(Box.createVerticalStrut(20)); 
+        formPanel.add(Box.createVerticalStrut(20));
         
         formPanel.add(crearEtiquetaPersonalizada("Platillo 2", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
         formPanel.add(Box.createVerticalStrut(8));
@@ -128,17 +128,17 @@ public class VistaCrearMenu extends PlantillaGesco {
         JPanel panelFondo = crearPanel(250, 10, 500, 20, 50, 50);
         
         panelFondo.setLayout(new BoxLayout(panelFondo, BoxLayout.Y_AXIS));
-        panelFondo.setOpaque(false); 
+        panelFondo.setOpaque(false);
         panelFondo.setBorder(BorderFactory.createEmptyBorder(40, 20, 40, 20));
 
-        panelFondo.add(Box.createVerticalGlue()); 
+        panelFondo.add(Box.createVerticalGlue());
         panelFondo.add(Titulo);
-        panelFondo.add(Box.createVerticalStrut(25)); 
+        panelFondo.add(Box.createVerticalStrut(25));
 
-        agregarCampos(panelFondo); 
+        agregarCampos(panelFondo);
         
-        panelFondo.add(Box.createVerticalStrut(30)); 
-        panelFondo.add(btnCrear); 
+        panelFondo.add(Box.createVerticalStrut(30));
+        panelFondo.add(btnCrear);
         panelFondo.add(Box.createVerticalGlue());
 
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
