@@ -4,9 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.Font;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -25,6 +23,7 @@ public class VistaVerCFCV extends PlantillaGesco {
 
     public VistaVerCFCV() {
         super();
+        setImagenFondo("/FondoPrincipal2.png");
         inicializar();
         construirCuerpo();
         revalidate();
@@ -33,9 +32,9 @@ public class VistaVerCFCV extends PlantillaGesco {
     }
 
     private void inicializar() {
-        lblCf = crearEtiquetaSimple("CF: -", 18, Color.WHITE);
+        lblCf = crearEtiquetaPersonalizada("CF: -", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "centro");
         lblCf.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblCv = crearEtiquetaSimple("CV: -", 18, Color.WHITE);
+        lblCv = crearEtiquetaPersonalizada("CV: -", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "centro");
         lblCv.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         Dimension tam = new Dimension(400, 60);
@@ -47,25 +46,14 @@ public class VistaVerCFCV extends PlantillaGesco {
     }
 
     private void construirCuerpo() {
-        JPanel panelFondo = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(255, 255, 255, 25));
-                g2.fillRoundRect(250, 10, getWidth() - 500, getHeight() - 20, 50, 50);
-                g2.setColor(new Color(255, 255, 255, 40));
-                g2.drawRoundRect(250, 10, getWidth() - 500, getHeight() - 20, 50, 50);
-                g2.dispose();
-            }
-        };
+        JPanel panelFondo = crearPanel(250,10,500,20,50,50);
+
         panelFondo.setLayout(new BoxLayout(panelFondo, BoxLayout.Y_AXIS));
         panelFondo.setOpaque(false);
         panelFondo.setBorder(BorderFactory.createEmptyBorder(40, 20, 40, 20));
 
         panelFondo.add(Box.createVerticalGlue());
-        panelFondo.add(crearEtiquetaSimple("Datos actuales de CF y CV", 22, Color.WHITE));
+        panelFondo.add(crearEtiquetaPersonalizada("Datos actuales de CF y CV", "Times New Roman", Font.BOLD, 22, Color.WHITE, "centro"));
         panelFondo.add(Box.createVerticalStrut(20));
         panelFondo.add(lblCf);
         panelFondo.add(Box.createVerticalStrut(10));

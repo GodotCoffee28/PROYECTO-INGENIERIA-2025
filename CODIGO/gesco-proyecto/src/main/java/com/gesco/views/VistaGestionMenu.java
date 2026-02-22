@@ -20,7 +20,8 @@ public class VistaGestionMenu extends PlantillaGesco {
     private JLabel Titulo;
 
     public VistaGestionMenu() {
-        super(); 
+        super();
+        setImagenFondo("/FondoPrincipal2.png");
         inicializarComponentes();
         construirCuerpo();
         revalidate();
@@ -46,13 +47,12 @@ public class VistaGestionMenu extends PlantillaGesco {
         btnReiniciar.setMaximumSize(tam);
         btnReiniciar.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        Titulo = crearEtiquetaSimple("Gestión del menú", 32, new Color(240, 240, 240));
-        Titulo.setFont(new Font("Arial", Font.BOLD, 32));
+        Titulo = crearEtiquetaPersonalizada("Gestión del menú", "Times New Roman", Font.BOLD, 32, new Color(240, 240, 240),"centro");
         
     }
 
     private void construirCuerpo() {
-        JPanel panelFondo = crearPanel();
+        JPanel panelFondo = crearPanel(250, 10, 500, 20, 50, 50);
         
         panelFondo.setLayout(new BoxLayout(panelFondo, BoxLayout.Y_AXIS));
         panelFondo.setOpaque(false); 
