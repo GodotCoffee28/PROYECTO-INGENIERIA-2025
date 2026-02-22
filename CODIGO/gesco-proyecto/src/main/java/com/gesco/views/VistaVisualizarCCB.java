@@ -5,9 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -16,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.gesco.models.CCB;
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
@@ -128,6 +127,18 @@ public class VistaVisualizarCCB extends PlantillaGesco {
     public String getCF(){ return CF.getText();}
     public String getCV(){ return CV.getText();}
     public BotonNeon getBtnSubirDatos() { return btnSubirDatos; }
+
+    public void setCCB(CCB ccb) {
+        if (ccb == null) {
+            return;
+        }
+        usuario.setText(ccb.getTipoUsuario());
+        NB.setText(String.valueOf(ccb.getNb()));
+        MERMA.setText(String.valueOf(ccb.getMerma()));
+        CF.setText(String.valueOf(ccb.getCf()));
+        CV.setText(String.valueOf(ccb.getCv()));
+        setResultado("VALOR CCB: " + ccb.getCcb());
+    }
 
     public void setResultado(String resultado) {
         lblResultado.setText(resultado);

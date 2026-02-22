@@ -16,7 +16,9 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.Locale;
 
+import com.gesco.models.CCB;
 import com.gesco.models.Insumo;
 import com.gesco.models.Menu;
 import com.gesco.models.Menu.EstadoMenu;
@@ -31,14 +33,7 @@ public class DataBase {
     private static final String ARCHIVO_ADMINS_AUTORIZADOS = "admins_autorizados.txt";
     private static final String ARCHIVO_MENUS = "menus.txt";
     private static final String ARCHIVO_CFCV = "cfcv.txt";
-    private static final String ARCHIVO_FERIADOS = "feriados.txt";
-    private static final String ARCHIVO_FESTIVOS = "dias_festivos_2026.txt";
-    private static final String ARCHIVO_NO_LABORABLES = "sabados_domingos_2026.txt";
-
-    private static final long CEDULA_MINIMA = 8_000_000L;
-    private static final Set<String> FERIADOS_FIJOS_MM_DD = Set.of(
-        "01-01", "05-01", "12-24", "12-25", "12-31"
-    );
+    private static final String ARCHIVO_CCB = "ccb.txt";
 
     private static String DATA_DIR = "src/main/java/com/gesco/models/data";
 
@@ -374,9 +369,9 @@ public class DataBase {
     public static boolean reiniciarMenusSemana() {
         try {
             List<String> actuales = leerLineasGenericas(ARCHIVO_MENUS);
-            LocalDate hoy = LocalDate.now();
-            LocalDate ultimaFecha = fechaMaximaEnMenus(actuales);
-            LocalDate base = (ultimaFecha != null && ultimaFecha.isAfter(hoy)) ? ultimaFecha : hoy.minusDays(1);
+            java.time.LocalDate hoy = java.time.LocalDate.now();
+            //java.time.DayOfWeek d = hoy.getDayOfWeek();
+            java.time.LocalDate lunes = hoy.with(java.time.DayOfWeek.MONDAY);
 
             List<LocalDate> nuevasFechas = obtenerSiguientesCincoDiasHabiles(base);
 
@@ -600,6 +595,24 @@ public class DataBase {
         List<String> lineas = leerLineasGenericas(ARCHIVO_CFCV);
         if (lineas.isEmpty()) return new com.gesco.models.CFCV();
         return com.gesco.models.CFCV.fromLine(lineas.get(0));
+    }
+
+    // CCB
+
+    public static boolean guardarCcb(CCB ccb) {
+        if (ccb == null) return false;
+        String linea = String.format(
+                Locale.US,
+                "%s|%s|%.2f|%.2f|%.2f|%.4f|%.4f",
+                ccb.getFecha().toString(),
+                valorSeguro(ccb.getTipoUsuario()),
+                ccb.getCf(),
+                ccb.getCv(),
+                ccb.getNb(),
+                ccb.getMerma(),
+                ccb.getCcb()
+        );
+        return escribirLineaGenerica(ARCHIVO_CCB, linea + System.lineSeparator());
     }
 
 

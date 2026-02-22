@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 
 import javax.swing.BorderFactory;
@@ -16,14 +15,14 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.gesco.views.PlantillasViews.BotonNeon;
+import com.gesco.views.PlantillasViews.CampoFecha;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaEditarMenu extends PlantillaGesco {
 
     private BotonNeon btnEditar;
     private JTextField platillo1, platillo2, platillo3;
-    private JTextField diaField, mesField, anioField;
-    private JCheckBox chkNoDisponible;
+    private CampoFecha campoFecha;
     private JLabel Titulo;
     
     public VistaEditarMenu() {
@@ -55,24 +54,10 @@ public class VistaEditarMenu extends PlantillaGesco {
         formPanel.setMaximumSize(new Dimension(450, 480)); 
         formPanel.setAlignmentX(Component.CENTER_ALIGNMENT); 
 
-        JLabel lblFecha = crearEtiquetaPersonalizada("Fecha (DD/MM/AAAA)", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda");
-        diaField = new JTextField(2);
-        mesField = new JTextField(2);
-        anioField = new JTextField(4);
-        
-        JPanel fechaPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        fechaPanel.setOpaque(false);
-        fechaPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
-        fechaPanel.add(diaField); 
-        fechaPanel.add(crearSeparador());
-        fechaPanel.add(mesField); 
-        fechaPanel.add(crearSeparador());
-        fechaPanel.add(anioField);
-
-        formPanel.add(lblFecha);
-        formPanel.add(Box.createVerticalStrut(8));
-        formPanel.add(fechaPanel);
+        campoFecha = new CampoFecha("Fecha (DD/MM/AAAA)", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda");
+        campoFecha.setLabelColor(Color.WHITE);
+        campoFecha.setAlignmentX(Component.LEFT_ALIGNMENT);
+        formPanel.add(campoFecha);
         formPanel.add(Box.createVerticalStrut(20));
 
         Dimension tamCaja = new Dimension(450, 40);
@@ -131,8 +116,8 @@ public class VistaEditarMenu extends PlantillaGesco {
     public String getPlatillo1(){ return platillo1.getText(); }
     public String getPlatillo2(){ return platillo2.getText(); }
     public String getPlatillo3(){ return platillo3.getText(); }
-    public String getDia(){ return diaField.getText(); }
-    public String getMes(){ return mesField.getText(); }
-    public String getAnio(){ return anioField.getText(); }
-    public boolean isMenuNoDisponibleSeleccionado() { return chkNoDisponible.isSelected(); }
+    public String getDia(){ return campoFecha.getDia(); }
+    public String getMes(){ return campoFecha.getMes(); }
+    public String getAnio(){ return campoFecha.getAnio(); }
+    public String getFechaTexto(){ return campoFecha.getFechaTexto(); }
 }
