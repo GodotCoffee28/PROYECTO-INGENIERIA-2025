@@ -8,4 +8,4 @@ public class Main {
         LogicaInterfaz logica = new LogicaInterfaz();
         logica.iniciar();
     }
-}
+} 
