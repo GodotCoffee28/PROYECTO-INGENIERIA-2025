@@ -9,6 +9,7 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -22,6 +23,8 @@ public class VistaEditarMenu extends PlantillaGesco {
     private BotonNeon btnEditar;
     private JTextField platillo1, platillo2, platillo3;
     private CampoFecha campoFecha;
+    private JTextField diaField, mesField, anioField;
+    private JCheckBox chkNoDisponible;
     private JLabel Titulo;
     
     public VistaEditarMenu() {
@@ -80,6 +83,14 @@ public class VistaEditarMenu extends PlantillaGesco {
         platillo3 = new JTextField();
         diseñarCaja(platillo3, tamCaja);
         formPanel.add(platillo3);
+        formPanel.add(Box.createVerticalStrut(14));
+
+        chkNoDisponible = new JCheckBox("Menu no disponible para este día");
+        chkNoDisponible.setOpaque(false);
+        chkNoDisponible.setForeground(Color.WHITE);
+        chkNoDisponible.setFont(new Font("Arial", Font.BOLD, 14));
+        chkNoDisponible.setAlignmentX(Component.LEFT_ALIGNMENT);
+        formPanel.add(chkNoDisponible);
 
         panelFondoBase.add(formPanel);
     }
@@ -111,4 +122,8 @@ public class VistaEditarMenu extends PlantillaGesco {
     public String getMes(){ return campoFecha.getMes(); }
     public String getAnio(){ return campoFecha.getAnio(); }
     public String getFechaTexto(){ return campoFecha.getFechaTexto(); }
+    public String getDia(){ return diaField.getText(); }
+    public String getMes(){ return mesField.getText(); }
+    public String getAnio(){ return anioField.getText(); }
+    public boolean isMenuNoDisponibleSeleccionado() { return chkNoDisponible.isSelected(); }
 }

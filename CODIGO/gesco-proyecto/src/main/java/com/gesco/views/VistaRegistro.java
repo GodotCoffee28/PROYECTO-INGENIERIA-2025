@@ -10,6 +10,7 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,7 +22,9 @@ import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaRegistro extends PlantillaGesco {
     private JTextField TxtNombreApellido, TxtCedula, TxtCorreo;
+    private JTextField TxtCodigoAdmin;
     private JPasswordField TxtContra;
+    private JComboBox<String> cmbTipoUsuario;
     private BotonNeon btnRegistrarse;
     private JLabel Saludo, loginLink;
 
@@ -79,6 +82,17 @@ public class VistaRegistro extends PlantillaGesco {
         TxtContra = new JPasswordField();
         estilizarComponente(TxtContra, tamanoCaja);
         formPanel.add(TxtContra);
+        formPanel.add(Box.createVerticalStrut(8));
+
+        formPanel.add(crearLabelForm("Tipo de usuario", labelFont));
+        cmbTipoUsuario = new JComboBox<>(new String[] {"Comensal", "Administrador"});
+        estilizarComponente(cmbTipoUsuario, tamanoCaja);
+        formPanel.add(cmbTipoUsuario);
+        formPanel.add(Box.createVerticalStrut(8));
+
+        formPanel.add(crearLabelForm("Código admin (si aplica)", labelFont));
+        TxtCodigoAdmin = crearTextField(tamanoCaja);
+        formPanel.add(TxtCodigoAdmin);
 
         panelFondoBase.add(formPanel);
     }
@@ -142,6 +156,11 @@ public class VistaRegistro extends PlantillaGesco {
     public String getCedula() { return TxtCedula.getText(); }
     public String getCorreo() { return TxtCorreo.getText(); }
     public String getContra() { return new String(TxtContra.getPassword()); }
+    public String getTipoUsuarioSeleccionado() {
+        Object seleccion = cmbTipoUsuario.getSelectedItem();
+        return seleccion == null ? "Comensal" : seleccion.toString();
+    }
+    public String getCodigoAdmin() { return TxtCodigoAdmin.getText(); }
     public JLabel getLoginLink() { return loginLink; }
     public BotonNeon getBtnRegistrarse() { return btnRegistrarse; }
 }

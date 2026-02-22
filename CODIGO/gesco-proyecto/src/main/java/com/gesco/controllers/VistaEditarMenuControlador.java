@@ -1,6 +1,8 @@
 package com.gesco.controllers;
 
 import com.gesco.views.VistaEditarMenu;
+import com.gesco.models.Menu;
+import com.gesco.models.Platillo;
 
 public class VistaEditarMenuControlador {
 
@@ -30,18 +32,39 @@ public class VistaEditarMenuControlador {
             String fechaStr = String.format("%s-%s-%s", anio.trim(), mes.trim(), dia.trim());
 
             java.time.LocalDate fecha = java.time.LocalDate.parse(fechaStr);
+            if (!DataBase.esFechaValidaParaMenu(fecha)) {
+                javax.swing.JOptionPane.showMessageDialog(vista,
+                    "Solo se permiten días hábiles (lunes a viernes no feriados).",
+                    "Fecha no permitida",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
-            com.gesco.models.Menu menu = new com.gesco.models.Menu(fecha);
+            boolean noDisponible = vista.isMenuNoDisponibleSeleccionado();
+            Menu menu = new Menu(fecha, noDisponible ? Menu.EstadoMenu.NO_DISPONIBLE : Menu.EstadoMenu.CON_MENU);
+
             String p1 = vista.getPlatillo1();
             String p2 = vista.getPlatillo2();
             String p3 = vista.getPlatillo3();
-            if (p1 != null && !p1.isBlank()) menu.agregarPlatillo(new com.gesco.models.Platillo(p1.trim()));
-            if (p2 != null && !p2.isBlank()) menu.agregarPlatillo(new com.gesco.models.Platillo(p2.trim()));
-            if (p3 != null && !p3.isBlank()) menu.agregarPlatillo(new com.gesco.models.Platillo(p3.trim()));
+
+            if (p1 != null && !p1.isBlank()) menu.agregarPlatillo(new Platillo(p1.trim()));
+            if (p2 != null && !p2.isBlank()) menu.agregarPlatillo(new Platillo(p2.trim()));
+            if (p3 != null && !p3.isBlank()) menu.agregarPlatillo(new Platillo(p3.trim()));
+
+            if (!noDisponible && !menu.tienePlatillos()) {
+                javax.swing.JOptionPane.showMessageDialog(vista,
+                    "No se puede actualizar a menú vacío. Agregue un platillo o marque 'Menu no disponible'.",
+                    "Menú inválido",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
             boolean ok = DataBase.actualizarMenu(menu);
             if (ok) {
-                javax.swing.JOptionPane.showMessageDialog(vista, "Menú actualizado.", "OK", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                javax.swing.JOptionPane.showMessageDialog(vista,
+                    noDisponible ? "Día actualizado a menú no disponible." : "Menú actualizado.",
+                    "OK",
+                    javax.swing.JOptionPane.INFORMATION_MESSAGE);
                 onBack.run();
             } else {
                 javax.swing.JOptionPane.showMessageDialog(vista, "Error al actualizar menú.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
