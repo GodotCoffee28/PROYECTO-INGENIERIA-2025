@@ -117,18 +117,14 @@ public class VistaMenuSemana extends PlantillaGesco {
     }
     
     private void cargarDatosReales() {
-        LocalDate fechaInicio = LocalDate.now().with(java.time.DayOfWeek.MONDAY);
-
         tarjetasSemana.clear();
         panelContenedorTarjetas.removeAll();
 
-        for (int i = 0; i < 5; i++) {
-            LocalDate fechaDia = fechaInicio.plusDays(i);
-            Menu menuDelDia = DataBase.obtenerMenuPorFecha(fechaDia.toString());
+        java.util.List<com.gesco.models.Menu> menus = DataBase.obtenerUltimos5Menus();
 
+        for (com.gesco.models.Menu menuDelDia : menus) {
             TarjetaMenu tarjeta = new TarjetaMenu(menuDelDia);
-            tarjeta.setPreferredSize(new Dimension(250, 160));
-
+            tarjeta.setPreferredSize(new java.awt.Dimension(250, 160));
             tarjetasSemana.add(tarjeta);
             panelContenedorTarjetas.add(tarjeta);
         }

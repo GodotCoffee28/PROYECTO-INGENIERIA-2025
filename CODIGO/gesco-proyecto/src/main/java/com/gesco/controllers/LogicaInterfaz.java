@@ -220,13 +220,65 @@ public class LogicaInterfaz {
     }
 
     private void reiniciarMenusSemana() {
-        boolean ok = DataBase.reiniciarMenusSemana();
-        if (ok) {
-            javax.swing.JOptionPane.showMessageDialog(null, "Menús de la semana reiniciados.", "Reiniciado", javax.swing.JOptionPane.INFORMATION_MESSAGE);
-        } else {
+        java.util.List<java.time.LocalDate> fechasNuevas = DataBase.reiniciarMenusSemana();
+
+        if (fechasNuevas == null) {
             javax.swing.JOptionPane.showMessageDialog(null, "Error al reiniciar menús.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            mostrarGestionMenu();
+            return;
         }
-        mostrarGestionMenu();
+
+        if (fechasNuevas.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(null,
+                "Todos los días de esta semana ya tienen menú asignado.",
+                "Sin cambios", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            mostrarGestionMenu();
+            return;
+        }
+
+        javax.swing.JOptionPane.showMessageDialog(null,
+            "Se agregaron " + fechasNuevas.size() + " día(s) nuevos. A continuación, crea el menú para cada uno.","Menús reiniciados", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+
+        java.util.Queue<java.time.LocalDate> cola = new java.util.LinkedList<>(fechasNuevas);
+        mostrarCrearMenuParaFecha(cola);
+    }
+
+    private void mostrarCrearMenuParaFecha(java.util.Queue<java.time.LocalDate> cola) {
+        if (cola.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(null,
+                "¡Todos los menús han sido configurados!",
+                "Listo", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            mostrarGestionMenu();
+            return;
+        }
+
+        java.time.LocalDate fecha = cola.poll();
+        int restantes = cola.size();
+
+        cerrarVistas();
+        vistaCrearMenu = new VistaCrearMenu();
+
+        String dia  = String.format("%02d", fecha.getDayOfMonth());
+        String mes  = String.format("%02d", fecha.getMonthValue());
+        String anio = String.valueOf(fecha.getYear());
+        vistaCrearMenu.setFecha(dia, mes, anio);
+
+        String nombreDia = switch (fecha.getDayOfWeek()) {
+            case MONDAY    -> "Lunes";
+            case TUESDAY   -> "Martes";
+            case WEDNESDAY -> "Miércoles";
+            case THURSDAY  -> "Jueves";
+            case FRIDAY    -> "Viernes";
+            default        -> fecha.getDayOfWeek().toString();
+        };
+        vistaCrearMenu.setTitle("Crear menú — " + nombreDia + " (" + (5 - restantes) + "/5)");
+
+        menuGescoController.conectar(vistaCrearMenu, usuarioAdmin);
+
+        new VistaCrearMenuControlador(
+            vistaCrearMenu,
+            () -> mostrarCrearMenuParaFecha(cola)
+        ).conectar();
     }
 
     private void volverAPantallaPrincipal() {

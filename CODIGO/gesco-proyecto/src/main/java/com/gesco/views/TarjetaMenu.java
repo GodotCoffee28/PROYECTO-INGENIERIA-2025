@@ -49,11 +49,19 @@ public class TarjetaMenu extends TarjetaGeneral {
 
         lblDia.setText(diaStr);
         containerCuerpo.add(vacio);
-        for (Platillo platillo : menu.getPlatillos()) {
-            JLabel lblNombrePlatillo = new JLabel(" - " + platillo.getNombre().toUpperCase());
-            lblNombrePlatillo.setFont(new Font("Arial", Font.PLAIN, 18));
-            lblNombrePlatillo.setForeground(new Color(50, 50, 50));
-            containerCuerpo.add(lblNombrePlatillo);
+
+        if (menu.getPlatillos().isEmpty()) {
+            JLabel lblNoDisponible = new JLabel(" - MENÚ NO DISPONIBLE");
+            lblNoDisponible.setFont(new Font("Arial", Font.ITALIC, 16));
+            lblNoDisponible.setForeground(new Color(100, 100, 100));
+            containerCuerpo.add(lblNoDisponible);
+        } else {
+            for (Platillo platillo : menu.getPlatillos()) {
+                JLabel lblNombrePlatillo = new JLabel(" - " + platillo.getNombre().toUpperCase());
+                lblNombrePlatillo.setFont(new Font("Arial", Font.PLAIN, 18));
+                lblNombrePlatillo.setForeground(new Color(50, 50, 50));
+                containerCuerpo.add(lblNombrePlatillo);
+            }
         }
 
         revalidate();
