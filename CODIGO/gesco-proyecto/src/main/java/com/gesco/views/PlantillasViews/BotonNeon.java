@@ -50,23 +50,28 @@ public class BotonNeon extends JButton {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        Color colorActual = mouseEncima ? colorBrillo : colorBase;
-        float grosorBorde = mouseEncima ? 5f : 3f;
+        Color colorEfecto = mouseEncima ? colorBrillo : colorBase;
 
         int capasGlow = mouseEncima ? 15 : 8; 
         int opacidadMax = mouseEncima ? 80 : 40;
 
         for (int i = 0; i < capasGlow; i++) {
             int alpha = opacidadMax - (i * (opacidadMax / capasGlow));
-            g2.setColor(new Color(colorActual.getRed(), colorActual.getGreen(), colorActual.getBlue(), Math.max(0, alpha)));
+            g2.setColor(new Color(colorEfecto.getRed(), colorEfecto.getGreen(), colorEfecto.getBlue(), Math.max(0, alpha)));
             g2.fillRoundRect(i/2, i/2, getWidth() - i, getHeight() - i, radioEsquinas, radioEsquinas);
         }
 
+        if (mouseEncima) {
+            g2.setColor(new Color(0, 180, 255)); 
+        } 
+        else {
         g2.setColor(new Color(50, 50, 55)); 
+        }
         g2.fillRoundRect(6, 6, getWidth() - 12, getHeight() - 12, radioEsquinas, radioEsquinas);
 
+        float grosorBorde = mouseEncima ? 4f : 2f;
         g2.setStroke(new BasicStroke(grosorBorde));
-        g2.setColor(colorActual);
+        g2.setColor(colorEfecto);
         g2.drawRoundRect(6, 6, getWidth() - 12, getHeight() - 12, radioEsquinas, radioEsquinas);
 
         super.paintComponent(g2);
