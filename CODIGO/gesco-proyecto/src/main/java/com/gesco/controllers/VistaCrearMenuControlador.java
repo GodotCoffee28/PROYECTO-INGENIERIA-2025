@@ -32,13 +32,32 @@ public class VistaCrearMenuControlador {
 
             java.time.LocalDate fecha = java.time.LocalDate.parse(fechaStr);
 
+            if (DataBase.esDiaNoDisponible(fechaStr)) {
+                javax.swing.JOptionPane.showMessageDialog(vista, "El día seleccionado es un día festivo o fin de semana.", "Día no laborable", javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             com.gesco.models.Menu menu = new com.gesco.models.Menu(fecha);
             String p1 = vista.getPlatillo1();
             String p2 = vista.getPlatillo2();
             String p3 = vista.getPlatillo3();
-            if (p1 != null && !p1.isBlank()) menu.agregarPlatillo(new com.gesco.models.Platillo(p1.trim()));
-            if (p2 != null && !p2.isBlank()) menu.agregarPlatillo(new com.gesco.models.Platillo(p2.trim()));
-            if (p3 != null && !p3.isBlank()) menu.agregarPlatillo(new com.gesco.models.Platillo(p3.trim()));
+
+            boolean todosVacios = (p1 == null || p1.isBlank()) && (p2 == null || p2.isBlank()) && (p3 == null || p3.isBlank());
+            if (todosVacios) {
+                int confirmacion = javax.swing.JOptionPane.showConfirmDialog(
+                    vista,
+                    "No ingresó ningún platillo. El día quedará marcado como \"Dia fuera de servicio\". ¿Desea continuar?",
+                    "Menú vacío",
+                    javax.swing.JOptionPane.YES_NO_OPTION,
+                    javax.swing.JOptionPane.WARNING_MESSAGE
+                );
+                if (confirmacion != javax.swing.JOptionPane.YES_OPTION) return;
+                menu.agregarPlatillo(new com.gesco.models.Platillo("Dia fuera de servicio"));
+            } else {
+                if (p1 != null && !p1.isBlank()) menu.agregarPlatillo(new com.gesco.models.Platillo(p1.trim()));
+                if (p2 != null && !p2.isBlank()) menu.agregarPlatillo(new com.gesco.models.Platillo(p2.trim()));
+                if (p3 != null && !p3.isBlank()) menu.agregarPlatillo(new com.gesco.models.Platillo(p3.trim()));
+            }
 
             boolean ok = DataBase.actualizarMenu(menu);
             if (ok) {

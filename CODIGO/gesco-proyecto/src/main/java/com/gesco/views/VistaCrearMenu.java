@@ -10,6 +10,7 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -22,6 +23,8 @@ public class VistaCrearMenu extends PlantillaGesco {
     private JTextField platillo1, platillo2, platillo3;
     private JTextField diaField, mesField, anioField;
     private JLabel Titulo;
+    private JLabel lblDiaSemana;
+    private JCheckBox chkNoDisponible;
     
     public VistaCrearMenu() {
         super();
@@ -40,7 +43,12 @@ public class VistaCrearMenu extends PlantillaGesco {
         btnCrear.setMaximumSize(tamBoton);
         btnCrear.setAlignmentX(Component.CENTER_ALIGNMENT);
         Titulo = crearEtiquetaPersonalizada("Crear menú", "Times New Roman", Font.BOLD, 45, new Color(240, 240, 240), "centro");
-        Titulo.setFont(new Font("Arial", Font.BOLD, 45)); 
+        Titulo.setFont(new Font("Arial", Font.BOLD, 45));
+
+        lblDiaSemana = new JLabel(" ");
+        lblDiaSemana.setFont(new Font("Arial", Font.BOLD, 22));
+        lblDiaSemana.setForeground(new java.awt.Color(180, 220, 255));
+        lblDiaSemana.setAlignmentX(Component.LEFT_ALIGNMENT);
     }
     
     private void agregarCampos(JPanel panelFondoBase) {
@@ -70,7 +78,18 @@ public class VistaCrearMenu extends PlantillaGesco {
         formPanel.add(lblFecha);
         formPanel.add(Box.createVerticalStrut(8));
         formPanel.add(fechaPanel);
-        formPanel.add(Box.createVerticalStrut(20));
+        formPanel.add(Box.createVerticalStrut(6));
+        formPanel.add(lblDiaSemana);
+        formPanel.add(Box.createVerticalStrut(14));
+
+        javax.swing.event.DocumentListener actualizarDia = new javax.swing.event.DocumentListener() {
+            @Override public void insertUpdate(javax.swing.event.DocumentEvent e) { actualizarNombreDia(); }
+            @Override public void removeUpdate(javax.swing.event.DocumentEvent e) { actualizarNombreDia(); }
+            @Override public void changedUpdate(javax.swing.event.DocumentEvent e) { actualizarNombreDia(); }
+        };
+        diaField.getDocument().addDocumentListener(actualizarDia);
+        mesField.getDocument().addDocumentListener(actualizarDia);
+        anioField.getDocument().addDocumentListener(actualizarDia);
 
         Dimension tamCaja = new Dimension(450, 40);
 
@@ -93,6 +112,14 @@ public class VistaCrearMenu extends PlantillaGesco {
         platillo3 = new JTextField();
         diseñarCaja(platillo3, tamCaja);
         formPanel.add(platillo3);
+        formPanel.add(Box.createVerticalStrut(14));
+
+        chkNoDisponible = new JCheckBox("Menu no disponible para este día");
+        chkNoDisponible.setOpaque(false);
+        chkNoDisponible.setForeground(Color.WHITE);
+        chkNoDisponible.setFont(new Font("Arial", Font.BOLD, 14));
+        chkNoDisponible.setAlignmentX(Component.LEFT_ALIGNMENT);
+        formPanel.add(chkNoDisponible);
 
         panelFondoBase.add(formPanel);
     }
@@ -124,4 +151,45 @@ public class VistaCrearMenu extends PlantillaGesco {
     public String getDia(){ return diaField.getText();}
     public String getMes(){ return mesField.getText();}
     public String getAnio(){ return anioField.getText();}
+    public boolean isMenuNoDisponibleSeleccionado() { return chkNoDisponible.isSelected(); }
+
+    private void actualizarNombreDia() {
+        try {
+            String d = diaField.getText().trim();
+            String m = mesField.getText().trim();
+            String a = anioField.getText().trim();
+            if (d.isEmpty() || m.isEmpty() || a.length() < 4) {
+                lblDiaSemana.setText(" ");
+                return;
+            }
+            String fechaStr = String.format("%s-%02d-%02d",
+                a, Integer.parseInt(m), Integer.parseInt(d));
+            java.time.LocalDate fecha = java.time.LocalDate.parse(fechaStr);
+            String nombre = switch (fecha.getDayOfWeek()) {
+                case MONDAY    -> "Lunes";
+                case TUESDAY   -> "Martes";
+                case WEDNESDAY -> "Miércoles";
+                case THURSDAY  -> "Jueves";
+                case FRIDAY    -> "Viernes";
+                case SATURDAY  -> "Sábado";
+                case SUNDAY    -> "Domingo";
+            };
+            lblDiaSemana.setText(nombre);
+        } catch (Exception ex) {
+            lblDiaSemana.setText(" ");
+        }
+    }
+
+    public void setFecha(String dia, String mes, String anio) {
+        diaField.setText(dia);
+        mesField.setText(mes);
+        anioField.setText(anio);
+        diaField.setEditable(false);
+        mesField.setEditable(false);
+        anioField.setEditable(false);
+        diaField.setBackground(new java.awt.Color(220, 220, 220));
+        mesField.setBackground(new java.awt.Color(220, 220, 220));
+        anioField.setBackground(new java.awt.Color(220, 220, 220));
+        actualizarNombreDia();
+    }
 }

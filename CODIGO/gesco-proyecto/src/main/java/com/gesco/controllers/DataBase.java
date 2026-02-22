@@ -24,6 +24,8 @@ public class DataBase {
     private static final String ARCHIVO_ADMINS = "admins.txt";
     private static final String ARCHIVO_MENUS = "menus.txt";
     private static final String ARCHIVO_CFCV = "cfcv.txt";
+    private static final String ARCHIVO_FESTIVOS = "dias_festivos_2026.txt";
+    private static final String ARCHIVO_NO_LABORABLES = "sabados_domingos_2026.txt";
 
     private static String DATA_DIR = "src/main/java/com/gesco/models/data";
 
@@ -280,36 +282,51 @@ public class DataBase {
         }
     }
 
-    public static boolean reiniciarMenusSemana() {
+    public static List<java.time.LocalDate> reiniciarMenusSemana() {
         try {
             List<String> actuales = leerLineasGenericas(ARCHIVO_MENUS);
-            java.time.LocalDate hoy = java.time.LocalDate.now();
-            java.time.DayOfWeek d = hoy.getDayOfWeek();
-            java.time.LocalDate lunes = hoy.with(java.time.DayOfWeek.MONDAY);
 
-            java.util.Set<String> fechasSemana = new java.util.HashSet<>();
-            for (int i = 0; i < 5; i++) {
-                fechasSemana.add(lunes.plusDays(i).toString());
-            }
-
-            List<String> nuevas = new ArrayList<>();
+            java.time.LocalDate ultimaFecha = null;
             for (String linea : actuales) {
                 String[] partes = linea.split("\\|");
-                if (partes.length > 0 && fechasSemana.contains(partes[0])) {
-                    continue;
+                if (partes.length > 0 && !partes[0].isBlank()) {
+                    try {
+                        java.time.LocalDate f = java.time.LocalDate.parse(partes[0].trim());
+                        if (ultimaFecha == null || f.isAfter(ultimaFecha)) {
+                            ultimaFecha = f;
+                        }
+                    } catch (Exception ignored) {}
                 }
-                nuevas.add(linea);
             }
 
-            for (int i = 0; i < 5; i++) {
-                String fecha = lunes.plusDays(i).toString();
-                nuevas.add(fecha + "|");
+            java.time.LocalDate cursor = (ultimaFecha != null)
+                ? ultimaFecha.plusDays(1)
+                : java.time.LocalDate.now();
+
+            java.util.Set<String> fechasExistentes = new java.util.HashSet<>();
+            for (String linea : actuales) {
+                String[] partes = linea.split("\\|");
+                if (partes.length > 0) fechasExistentes.add(partes[0].trim());
             }
 
-            return reescribirArchivoGenerico(ARCHIVO_MENUS, nuevas);
+            List<String> nuevas = new ArrayList<>(actuales);
+            List<java.time.LocalDate> fechasAgregadas = new ArrayList<>();
+
+            while (fechasAgregadas.size() < 5) {
+                String fechaStr = cursor.toString();
+                if (!fechasExistentes.contains(fechaStr) && !esDiaNoDisponible(fechaStr)) {
+                    nuevas.add(fechaStr + "|");
+                    fechasAgregadas.add(cursor);
+                    fechasExistentes.add(fechaStr);
+                }
+                cursor = cursor.plusDays(1);
+            }
+
+            boolean ok = reescribirArchivoGenerico(ARCHIVO_MENUS, nuevas);
+            return ok ? fechasAgregadas : null;
         } catch (Exception e) {
             System.err.println("Error reiniciando menus: " + e.getMessage());
-            return false;
+            return null;
         }
     }
 
@@ -371,6 +388,35 @@ public class DataBase {
     }
 
 
+    public static List<Menu> obtenerUltimos5Menus() {
+        List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
+        List<Menu> resultado = new ArrayList<>();
+        int inicio = Math.max(0, lineas.size() - 5);
+        for (int i = inicio; i < lineas.size(); i++) {
+            String[] partes = lineas.get(i).split("\\|");
+            resultado.add(parsearLineaMenu(partes));
+        }
+        return resultado;
+    }
+
+    public static boolean esDiaNoDisponible(String fechaStr) {
+        try {
+            java.time.LocalDate fecha = java.time.LocalDate.parse(fechaStr);
+            java.time.DayOfWeek dia = fecha.getDayOfWeek();
+            if (dia == java.time.DayOfWeek.SATURDAY || dia == java.time.DayOfWeek.SUNDAY) return true;
+        } catch (Exception e) {}
+        List<String> festivos = leerLineasGenericas(ARCHIVO_FESTIVOS);
+        for (String linea : festivos) {
+            if (linea.trim().equals(fechaStr)) return true;
+        }
+        List<String> noLaborables = leerLineasGenericas(ARCHIVO_NO_LABORABLES);
+        for (String linea : noLaborables) {
+            if (linea.trim().equals(fechaStr)) return true;
+        }
+        return false;
+    }
+
+
     private static Path obtenerBaseProyecto() {
         try {
             Path ubicacion = Paths.get(DataBase.class.getProtectionDomain().getCodeSource().getLocation().toURI());
@@ -386,6 +432,11 @@ public class DataBase {
     }
 
     private static boolean cedulaValida(String cedula) {
-        return cedula != null && cedula.matches("\\d+");
+        if (cedula == null || !cedula.matches("\\d+")) return false;
+        try {
+            return Long.parseLong(cedula) >= 8_000_000;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }
