@@ -5,12 +5,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 import com.gesco.controllers.DataBase;
 import com.gesco.models.Menu;
@@ -62,6 +57,8 @@ public class VistaMenuSemana extends PlantillaGesco {
             }
         };
         
+        JPanel panelFondo = crearPanel(100,20,200,40,50,50);
+
         panelFondo.setLayout(new BorderLayout());
         panelFondo.setOpaque(false);
         panelFondo.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));

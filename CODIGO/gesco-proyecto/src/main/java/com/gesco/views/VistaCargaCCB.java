@@ -13,11 +13,19 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+import com.gesco.models.CCB;
 import com.gesco.views.PlantillasViews.BotonNeon;
+import com.gesco.views.PlantillasViews.CampoFecha;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaCargaCCB extends PlantillaGesco {
+    private static final DateTimeFormatter FECHA_FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private BotonNeon btnSubirDatos;
+    private CampoFecha campoFecha;
     private JTextField usuario, NB, MERMA, CF, CV;
     private JLabel Titulo;
     private JLabel lblResultado;
@@ -53,49 +61,47 @@ public class VistaCargaCCB extends PlantillaGesco {
 
         Dimension tamCaja = new Dimension(450, 35);
 
-        formPanel.add(EtiquetasCCB("Tipo de usuario (Estudiante/Profesor/Empleado)"));
+        campoFecha = new CampoFecha("Fecha (DD/MM/AAAA)", "Times New Roman", Font.PLAIN, 18, new Color(180, 180, 180), "izquierda");
+        campoFecha.setLabelColor(new Color(180, 180, 180));
+        campoFecha.setAlignmentX(Component.LEFT_ALIGNMENT);
+        formPanel.add(campoFecha);
+        formPanel.add(Box.createVerticalStrut(12));
+
+        formPanel.add(crearEtiquetaPersonalizada("Tipo de usuario (Estudiante/Profesor/Empleado)", "Times New Roman", Font.PLAIN, 18, new Color(180, 180, 180), "izquierda"));
         formPanel.add(Box.createVerticalStrut(5));
         usuario = new JTextField();
         CajaCCB(usuario, tamCaja);
         formPanel.add(usuario);
         formPanel.add(Box.createVerticalStrut(12));
 
-        formPanel.add(EtiquetasCCB("NB (Número de bandejas servidas)"));
+        formPanel.add(crearEtiquetaPersonalizada("NB (Número de bandejas servidas)", "Arial", Font.BOLD, 14, new Color(180, 180, 180), "izquierda"));
         formPanel.add(Box.createVerticalStrut(5));
         NB = new JTextField();
         CajaCCB(NB, tamCaja);
         formPanel.add(NB);
         formPanel.add(Box.createVerticalStrut(12)); 
 
-        formPanel.add(EtiquetasCCB("MERMA (% de desperdicio)"));
+        formPanel.add(crearEtiquetaPersonalizada("MERMA (% de desperdicio)", "Arial", Font.BOLD, 14, new Color(180, 180, 180), "izquierda"));
         formPanel.add(Box.createVerticalStrut(5));
         MERMA = new JTextField();
         CajaCCB(MERMA, tamCaja);
         formPanel.add(MERMA);
         formPanel.add(Box.createVerticalStrut(12)); 
 
-        formPanel.add(EtiquetasCCB("CF (Costos Fijos totales)"));
+        formPanel.add(crearEtiquetaPersonalizada("CF (Costos Fijos totales)", "Arial", Font.BOLD, 14, new Color(180, 180, 180), "izquierda"));
         formPanel.add(Box.createVerticalStrut(5));
         CF = new JTextField();
         CajaCCB(CF, tamCaja);
         formPanel.add(CF);
         formPanel.add(Box.createVerticalStrut(12)); 
 
-        formPanel.add(EtiquetasCCB("CV (Costos Variables totales)"));
+        formPanel.add(crearEtiquetaPersonalizada("CV (Costos Variables totales)", "Arial", Font.BOLD, 14, new Color(180, 180, 180), "izquierda"));
         formPanel.add(Box.createVerticalStrut(5));
         CV = new JTextField();
         CajaCCB(CV, tamCaja);
         formPanel.add(CV);
 
         panelFondoBase.add(formPanel);
-    }
-
-    private JLabel EtiquetasCCB(String texto) {
-        JLabel label = new JLabel(texto);
-        label.setFont(new Font("Arial", Font.BOLD, 14));
-        label.setForeground(new Color(180, 180, 180));
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        return label;
     }
 
     private void CajaCCB(JTextField c, Dimension d) {
@@ -137,11 +143,41 @@ public class VistaCargaCCB extends PlantillaGesco {
     public String getCV(){ return CV.getText();}
     public BotonNeon getBtnSubirDatos() { return btnSubirDatos; }
 
+    public LocalDate getFecha() {
+        String texto = campoFecha.getFechaTexto();
+        if (texto == null || texto.trim().isEmpty()) {
+            throw new IllegalArgumentException("La fecha es obligatoria.");
+        }
+        try {
+            return LocalDate.parse(texto, FECHA_FORMATO);
+        } catch (DateTimeParseException ex) {
+            throw new IllegalArgumentException("Formato de fecha invalido. Use DD/MM/AAAA.");
+        }
+    }
+
+    public CCB crearCCB() {
+        LocalDate fecha = getFecha();
+        double nb = parseDouble(getNB(), "NB");
+        double merma = parseDouble(getMERMA(), "MERMA");
+        double cf = parseDouble(getCF(), "CF");
+        double cv = parseDouble(getCV(), "CV");
+        return new CCB(fecha, getUsuario(), cf, cv, nb, merma);
+    }
+
     public void setResultado(String resultado) {
         if (resultado == null || resultado.trim().isEmpty()) {
             lblResultado.setText(" ");
-        } else {
+        } 
+        else {
             lblResultado.setText("VALOR CCB: " + resultado);
+        }
+    }
+
+    private double parseDouble(String valor, String campo) {
+        try {
+            return Double.parseDouble(valor);
+        } catch (NumberFormatException ex) {
+            throw new IllegalArgumentException("El campo " + campo + " debe ser numerico.");
         }
     }
 }

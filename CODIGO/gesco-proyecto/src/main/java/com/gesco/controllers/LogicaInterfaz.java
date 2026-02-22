@@ -2,7 +2,7 @@ package com.gesco.controllers;
 
 import javax.swing.SwingUtilities;
 
-import com.gesco.views.VistaCargarCFCV;
+import com.gesco.views.VistaCargaCCB;
 import com.gesco.views.VistaCrearMenu;
 import com.gesco.views.VistaEditarMenu;
 import com.gesco.views.VistaEspera;
@@ -26,7 +26,7 @@ public class LogicaInterfaz {
     private VistaInicioComensal vistaInicioComensal;  
     private VistaMenuSemana vistaMenuSemana;
     private VistaTurnos vistaTurnos;
-    private VistaCargarCFCV vistaCargaCCB;
+    private VistaCargaCCB vistaCargaCCB;
     private VistaVerCFCV vistaVerCfcv;
     private VistaCrearMenu vistaCrearMenu;
     private VistaEditarMenu vistaEditarMenu;
@@ -175,6 +175,9 @@ public class LogicaInterfaz {
         vistaCargaCCB = new VistaCargarCFCV();
         menuGescoController.conectar(vistaCargaCCB, sesionAdmin);
         new VistaCargarCFCVControlador(
+        vistaCargaCCB = new VistaCargaCCB();
+        menuGescoController.conectar(vistaCargaCCB, usuarioAdmin);
+        new VistaCargarCCBControlador(
             vistaCargaCCB,
             this::mostrarPanelControl
         ).conectar();

@@ -1,0 +1,79 @@
+package com.gesco.models;
+
+import java.time.*;
+
+/*
+CCB: Valor del Costo Cubierto por bandeja
+CF: Costos Fijos totales del servicio (ej. mano de obra, mantenimiento, alquiler).
+CV: Costos Variables totales por servicio (ej. insumos, materiales). Grupo Docente INGENIERÍA DE SOFTWARE
+2025 1
+NB: Número de bandejas proyectadas o servidas en un periodo
+%_Merma: Porcentaje de desecho o merma de alimentos.
+
+𝐶𝐶𝐵 = [(𝐶𝐹+𝐶𝑉)/𝑁𝐵]*(1+%𝑀𝑒𝑟𝑚𝑎)
+*/
+
+public class CCB {
+    private final LocalDate fecha;
+    private final String tipoUsuario;
+    private final double ccb, cf, cv, nb, merma;
+
+    public CCB(LocalDate fecha, String tipoUsuario, double cf, double cv, double nb, double merma) {
+        if (fecha == null) {
+            throw new IllegalArgumentException("La fecha no puede ser null.");
+        }
+        this.fecha = fecha;
+        this.tipoUsuario = tipoUsuario == null ? "" : tipoUsuario.trim();
+        this.cf = cf;
+        this.cv = cv;
+        this.nb = nb;
+        this.merma = merma;
+        this.ccb = calcularCCB();
+    }
+
+    private double calcularCCB() {
+        if (nb <= 0) {
+            throw new IllegalArgumentException("El número de bandejas debe ser mayor que cero.");
+        }
+        return ((cf + cv) / nb) * (1 + merma);
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public String getTipoUsuario() {
+        return tipoUsuario;
+    }
+
+    public double getCcb() {
+        return ccb;
+    }
+
+    public double getCf() {
+        return cf;
+    }
+
+    public double getCv() {
+        return cv;
+    }
+
+    public double getNb() {
+        return nb;
+    }
+
+    public double getMerma() {
+        return merma;
+    }
+
+    @Override
+    public String toString() {
+        String usuario = tipoUsuario.isEmpty() ? "N/A" : tipoUsuario;
+        return "Tipo: " + usuario
+                + ", NB: " + nb
+                + ", Merma: " + merma
+                + ", CF: " + cf
+                + ", CV: " + cv
+                + ", CCB: " + ccb;
+    }
+}

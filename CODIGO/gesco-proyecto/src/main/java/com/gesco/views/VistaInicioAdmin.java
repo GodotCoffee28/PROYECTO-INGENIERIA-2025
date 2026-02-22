@@ -55,7 +55,7 @@ public class VistaInicioAdmin extends PlantillaGesco {
         panelCuerpo.setOpaque(false);
         panelCuerpo.setBorder(BorderFactory.createEmptyBorder(20, 50, 40, 50));
         
-        JPanel tarjetaTitulo = crearTarjeta("", 600, 70, 20, 0, true); 
+        JPanel tarjetaTitulo = crearTarjeta("", 600, 70, 20, 0, "/Billetera.png"); 
         tarjetaTitulo.setLayout(new BorderLayout());
         tarjetaTitulo.add(titulo, BorderLayout.CENTER);
 
@@ -69,7 +69,7 @@ public class VistaInicioAdmin extends PlantillaGesco {
         gbc.weightx = 1.0;
         
         //Columna izquierda: Gestión del menú
-        JPanel cajaMenu = crearTarjeta("Respecto al menú", 420, 280,40,15,true);
+        JPanel cajaMenu = crearTarjeta("Respecto al menú", 420, 280,40,15,"/Billetera.png");
         JPanel pnlInternoMenu = new JPanel(new GridBagLayout());
         pnlInternoMenu.setOpaque(false);
         
@@ -88,7 +88,7 @@ public class VistaInicioAdmin extends PlantillaGesco {
         panelCentral.add(cajaMenu, gbc);
 
         //Columna derecha: CCB
-        JPanel cajaCCB = crearTarjeta("Respecto al CCB", 420, 280,40,15,true);
+        JPanel cajaCCB = crearTarjeta("Respecto al CCB", 420, 280,40,15,"/Billetera.png");
         JPanel pnlInternoCCB = new JPanel(new GridBagLayout());
         pnlInternoCCB.setOpaque(false);
         
@@ -105,7 +105,7 @@ public class VistaInicioAdmin extends PlantillaGesco {
         gbc.gridx = 1;
         panelCentral.add(cajaCCB, gbc);
 
-        JPanel cajaNavegacion = crearTarjeta("", 880, 120,40,15,true); 
+        JPanel cajaNavegacion = crearTarjeta("", 880, 120,40,15,"/Billetera.png"); 
         cajaNavegacion.setLayout(new BorderLayout());
         cajaNavegacion.setBorder(BorderFactory.createEmptyBorder(35, 80, 35, 80));
         cajaNavegacion.add(btnCambio, BorderLayout.CENTER);

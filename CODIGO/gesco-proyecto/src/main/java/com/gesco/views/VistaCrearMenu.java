@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 
 import javax.swing.BorderFactory;
@@ -16,12 +15,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.gesco.views.PlantillasViews.BotonNeon;
+import com.gesco.views.PlantillasViews.CampoFecha;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaCrearMenu extends PlantillaGesco {
     private BotonNeon btnCrear;
     private JTextField platillo1, platillo2, platillo3;
-    private JTextField diaField, mesField, anioField;
+    private CampoFecha campoFecha;
     private JLabel Titulo;
     private JLabel lblDiaSemana;
     private JCheckBox chkNoDisponible;
@@ -90,6 +90,11 @@ public class VistaCrearMenu extends PlantillaGesco {
         diaField.getDocument().addDocumentListener(actualizarDia);
         mesField.getDocument().addDocumentListener(actualizarDia);
         anioField.getDocument().addDocumentListener(actualizarDia);
+        campoFecha = new CampoFecha("Fecha (DD/MM/AAAA)", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda");
+        campoFecha.setLabelColor(Color.WHITE);
+        campoFecha.setAlignmentX(Component.LEFT_ALIGNMENT);
+        formPanel.add(campoFecha);
+        formPanel.add(Box.createVerticalStrut(20));
 
         Dimension tamCaja = new Dimension(450, 40);
 
@@ -192,4 +197,9 @@ public class VistaCrearMenu extends PlantillaGesco {
         anioField.setBackground(new java.awt.Color(220, 220, 220));
         actualizarNombreDia();
     }
+}
+    public String getDia(){ return campoFecha.getDia();}
+    public String getMes(){ return campoFecha.getMes();}
+    public String getAnio(){ return campoFecha.getAnio();}
+    public String getFechaTexto(){ return campoFecha.getFechaTexto();}
 }

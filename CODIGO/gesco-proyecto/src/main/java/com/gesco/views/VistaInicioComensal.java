@@ -1,14 +1,13 @@
 package com.gesco.views;
 import java.awt.*;
 import javax.swing.*;
-import java.net.URL;
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaInicioComensal extends PlantillaGesco {
 
-    private BotonNeon btnVerMenu, btnHorarios;
-    private JLabel bienvenida, infoTurnos, infoMenu, lblSaldo;
+    private BotonNeon btnVerMenu, btnHorarios, btnAccesoFila, btnRecargar, btnRegistro;
+    private JLabel bienvenida, infoTurnos, infoMenu, lblSaldo, infoFila;
     private String nombreUsuario;
     private int saldoDisponible = 0;
 
@@ -32,9 +31,18 @@ public class VistaInicioComensal extends PlantillaGesco {
 
         btnHorarios = new BotonNeon("Verificar horarios");
         btnHorarios.setPreferredSize(tamBoton);
+        
+        btnAccesoFila = new BotonNeon("Ver estado de la fila");
+        btnAccesoFila.setPreferredSize(tamBoton);
+
+        btnRecargar = new BotonNeon("Recargar saldo");
+        btnRecargar.setPreferredSize(tamBoton);
+
+        btnRegistro = new BotonNeon("Registrar de transacciones");
+        btnRegistro.setPreferredSize(tamBoton);
 
         bienvenida = new JLabel("¡Bienvenido, " + nombreUsuario + "!");
-        bienvenida.setFont(new Font("Arial", Font.BOLD, 36));
+        bienvenida.setFont(new Font("Arial", Font.BOLD, 30));
         bienvenida.setForeground(new Color(240, 240, 240)); 
         bienvenida.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -48,74 +56,96 @@ public class VistaInicioComensal extends PlantillaGesco {
         infoTurnos.setFont(new Font("Arial", Font.PLAIN, 20));
         infoTurnos.setForeground(new Color(230, 230, 230));
 
+        infoFila = new JLabel(estilo + "Asegura tu lugar en el comedor.<br>" + "Consulta los turnos disponibles y gestiona tu posición en la fila de forma eficiente." + "</body></html>");
+        infoFila.setFont(new Font("Arial", Font.PLAIN, 20));
+        infoFila.setForeground(new Color(230, 230, 230));
+
         lblSaldo = new JLabel("Saldo Disponible: " + saldoDisponible + " Bs.");
-        lblSaldo.setFont(new Font("Arial", Font.BOLD, 28));
+        lblSaldo.setFont(new Font("Times New Roman", Font.BOLD, 20));
         lblSaldo.setForeground(Color.WHITE);
     }
-
+        
     private void construirCuerpo() {
-        JPanel panelCuerpo = new JPanel(new BorderLayout(0, 30));
+        JPanel panelCuerpo = new JPanel(new BorderLayout(0, 10));
         panelCuerpo.setOpaque(false);
-        panelCuerpo.setBorder(BorderFactory.createEmptyBorder(30, 50, 50, 50));
+        panelCuerpo.setBorder(BorderFactory.createEmptyBorder(10, 50, 20, 50));
 
-        panelCuerpo.add(bienvenida, BorderLayout.NORTH);
+        JPanel tarjetaBienvenida = crearTarjeta("", 0, 50, 20, 10, null);
+
+        bienvenida.setHorizontalAlignment(SwingConstants.CENTER);
+        bienvenida.setFont(new Font("Segoe UI", Font.ITALIC, 28));
+
+        tarjetaBienvenida.add(bienvenida, BorderLayout.CENTER);
+
+        panelCuerpo.add(tarjetaBienvenida, BorderLayout.NORTH);
 
         JPanel panelCentral = new JPanel(new GridBagLayout()); 
         panelCentral.setOpaque(false);
         GridBagConstraints gbc = new GridBagConstraints();
-        
+
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(10, 15, 10, 15);
+        gbc.weightx = 1.0; 
+        gbc.weighty = 0.5; 
+
         gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.NORTH;
-        gbc.insets = new Insets(0, 20, 30, 20);
 
-        // Tarjeta Izquierda (Menú)
-        JPanel cajaMenu = crearTarjeta("Menú del Día", 420, 300, 50,20, false);
-        cajaMenu.add(crearContenedorInterno(infoMenu, btnVerMenu), BorderLayout.CENTER);
-        gbc.gridx = 0;
-        panelCentral.add(cajaMenu, gbc);
+        JPanel tarjetaSaldo = crearTarjeta("Tu saldo actual:", 400, 300, 40, 10, "/Billetera.png"); 
+        
+        JPanel contenedorSaldo = new JPanel(new GridBagLayout());
+        contenedorSaldo.setOpaque(false); 
+        GridBagConstraints gInt = new GridBagConstraints();
+        gInt.gridx = 0;
+        gInt.weightx = 1.0;
 
-        // Tarjeta Derecha (Horarios)
-        JPanel cajaHorarios = crearTarjeta("Horarios de Servicio", 420, 300, 50, 20, false);
-        cajaHorarios.add(crearContenedorInterno(infoTurnos, btnHorarios), BorderLayout.CENTER);
-        gbc.gridx = 1;
-        panelCentral.add(cajaHorarios, gbc);
+        gInt.gridy = 0;
+        gInt.fill = GridBagConstraints.HORIZONTAL;
+        gInt.insets = new Insets(0, 20, 5, 20);
+        contenedorSaldo.add(lblSaldo, gInt);
 
-        JPanel tarjetaSaldo = crearTarjeta("", 880, 130, 50, 20, false); 
-        tarjetaSaldo.setLayout(new BorderLayout(40, 0));
-        tarjetaSaldo.setBorder(BorderFactory.createEmptyBorder(20, 45, 20, 45));
+        JSeparator sep = new JSeparator();
+        sep.setForeground(new Color(250, 250, 255, 50));
+        gInt.gridy = 1;
+        gInt.insets = new Insets(2, 20, 10, 20);
+        contenedorSaldo.add(sep, gInt);
+
+        gInt.fill = GridBagConstraints.HORIZONTAL;
         
-        JLabel billeteraIcono = new JLabel();
-        ImageIcon icono = cargarMonedero();
-        Image escala = icono.getImage().getScaledInstance(75, 75, Image.SCALE_SMOOTH);
-        billeteraIcono.setIcon(new ImageIcon(escala));
-        
-        
-        tarjetaSaldo.add(billeteraIcono, BorderLayout.WEST);
-        tarjetaSaldo.add(lblSaldo, BorderLayout.CENTER); 
+        btnRecargar.setText("Recargar saldo");
+        gInt.gridy = 2;
+        gInt.insets = new Insets(0, 40, 8, 40); 
+        contenedorSaldo.add(btnRecargar, gInt);
+
+        btnRegistro.setText("Ver movimientos"); 
+        gInt.gridy = 3;
+        gInt.insets = new Insets(0, 40, 5, 40);
+        contenedorSaldo.add(btnRegistro, gInt);
+
+        tarjetaSaldo.add(contenedorSaldo, BorderLayout.CENTER);
+        gbc.gridx = 0; 
+        panelCentral.add(tarjetaSaldo, gbc);
+
+        JPanel menuTurnos = crearTarjeta("Turnos", 400, 300, 40, 10, "/Reloj.png");
+        menuTurnos.add(crearContenedorInterno(infoFila, btnAccesoFila), BorderLayout.CENTER);
+        gbc.gridx = 1; 
+        panelCentral.add(menuTurnos, gbc);
 
         gbc.gridy = 1;
-        gbc.gridx = 0;
-        gbc.gridwidth = 2; 
-        gbc.weighty = 1.0;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        panelCentral.add(tarjetaSaldo, gbc);
+
+        JPanel cajaMenu = crearTarjeta("Menú del Día", 400, 300, 40, 10, "/Platos.png");
+        cajaMenu.add(crearContenedorInterno(infoMenu, btnVerMenu), BorderLayout.CENTER);
+        gbc.gridx = 0; 
+        panelCentral.add(cajaMenu, gbc);
+
+        JPanel cajaHorarios = crearTarjeta("Horarios de Servicio", 400, 300, 40, 10, "/personas.png");
+        cajaHorarios.add(crearContenedorInterno(infoTurnos, btnHorarios), BorderLayout.CENTER);
+        gbc.gridx = 1; 
+        panelCentral.add(cajaHorarios, gbc);
 
         panelCuerpo.add(panelCentral, BorderLayout.CENTER);
         contenedorPrincipal.add(panelCuerpo, BorderLayout.CENTER);
     }
 
-    private ImageIcon cargarMonedero() {
-        URL recurso = getClass().getResource("/Billetera.png");
-        
-        if (recurso != null) {
-            return new ImageIcon(recurso);
-        } 
-        else {
-            System.err.println("No se pudo cargar la imagen de la billetera para VistaInicioComensal.");
-        }
-
-        return new ImageIcon();
-    }
     private JPanel crearContenedorInterno(JLabel texto, JButton boton) {
         JPanel p = new JPanel(new GridBagLayout());
         p.setOpaque(false);

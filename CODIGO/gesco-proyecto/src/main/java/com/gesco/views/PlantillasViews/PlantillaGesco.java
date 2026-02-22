@@ -109,11 +109,12 @@ public class PlantillaGesco extends JFrame {
 
     protected JLabel crearEtiquetaPersonalizada(String texto, String fuente, int estilo, int size, Color color, String alineacion) {
         JLabel etiqueta = new JLabel(texto);
-    etiqueta.setFont(new Font(fuente, estilo, size)); 
+        etiqueta.setFont(new Font(fuente, estilo, size)); 
         etiqueta.setForeground(color);
         if (alineacion.equals("izquierda")) {
             etiqueta.setAlignmentX(Component.LEFT_ALIGNMENT);
-        } else if (alineacion.equals("derecha")) {
+        } 
+        else if (alineacion.equals("derecha")) {
             etiqueta.setAlignmentX(Component.RIGHT_ALIGNMENT);
         } 
         else {
@@ -155,47 +156,69 @@ public class PlantillaGesco extends JFrame {
         c.setFont(new Font("Arial", Font.PLAIN, 16));
         c.setBackground(new Color(255, 255, 255, 240));
     }
+protected JPanel crearTarjeta(String titulo, int ancho, int alto, int radio, int margen, String rutaIcono) {
 
-    protected JPanel crearTarjeta(String titulo, int ancho, int alto, int radio, int margen, boolean margenTitulo) {
-
-    JPanel tarjeta = new JPanel(new BorderLayout(15, 15)) {
+    JPanel tarjeta = new JPanel(new BorderLayout(0, 10)) { 
         @Override
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-            g2.setColor(new Color(30, 30, 35, 200)); 
+            g2.setColor(new Color(30, 30, 35, 215)); 
             g2.fillRoundRect(0, 0, getWidth(), getHeight(), radio, radio);
-            
-            g2.setColor(new Color(30, 30, 35, 200));
+            g2.setColor(new Color(250, 250, 255)); 
             g2.setStroke(new BasicStroke(1.5f));
             g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, radio, radio);
             g2.dispose();
         }
     };
 
+    tarjeta.setPreferredSize(new Dimension(ancho, alto));
     tarjeta.setOpaque(false);
     tarjeta.setBorder(BorderFactory.createEmptyBorder(margen, margen, margen, margen));
 
-    JLabel lblTitulo = new JLabel(titulo);
-    lblTitulo.setFont(new Font("Times New Roman", Font.BOLD, 24));
-    lblTitulo.setForeground(Color.WHITE);
-    lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-    if(margenTitulo){
-        lblTitulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+    if (titulo != null && !titulo.isEmpty()) {
+        JPanel cabeceraCompleta = new JPanel(new BorderLayout(0, 5));
+        cabeceraCompleta.setOpaque(false);
+
+        JPanel panelIconoTexto = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 0));
+        panelIconoTexto.setOpaque(false);
+
+        if (rutaIcono != null) {
+            JLabel lblIcono = new JLabel(obtenerIcono(rutaIcono, 35)); 
+            panelIconoTexto.add(lblIcono);
+        }
+
+        JLabel lblTitulo = new JLabel(titulo);
+        lblTitulo.setFont(new Font("Times New Roman", Font.BOLD, 30)); 
+        lblTitulo.setForeground(new Color(230, 230, 230));
+        panelIconoTexto.add(lblTitulo);
+        JSeparator linea = new JSeparator();
+        linea.setForeground(new Color(250, 250, 255, 180)); 
+        linea.setBackground(new Color(0, 0, 0, 0));
+
+        JPanel contenedorLinea = new JPanel(new BorderLayout());
+        contenedorLinea.setOpaque(false);
+        contenedorLinea.setBorder(BorderFactory.createEmptyBorder(5, 40, 10, 40)); 
+        contenedorLinea.add(linea, BorderLayout.CENTER);
+
+        cabeceraCompleta.add(panelIconoTexto, BorderLayout.CENTER);
+        cabeceraCompleta.add(contenedorLinea, BorderLayout.SOUTH);
+        
+        tarjeta.add(cabeceraCompleta, BorderLayout.NORTH);
     }
-    tarjeta.add(lblTitulo, BorderLayout.NORTH);
 
-    JPanel cuerpo = new JPanel();
-    cuerpo.setOpaque(false); 
-    cuerpo.setName("cuerpo");
-    tarjeta.add(cuerpo, BorderLayout.CENTER);
-
-    Dimension dim = new Dimension(ancho, alto);
-    tarjeta.setPreferredSize(dim);
-    tarjeta.setMaximumSize(dim);
-    
     return tarjeta;
+}
+
+    protected ImageIcon obtenerIcono(String ruta, int size) {
+    URL recurso = getClass().getResource(ruta);
+    if (recurso != null) {
+        ImageIcon original = new ImageIcon(recurso);
+        Image escalada = original.getImage().getScaledInstance(size, size, Image.SCALE_SMOOTH);
+        return new ImageIcon(escalada);
+    }
+    System.err.println("Error: No se encontró la imagen en " + ruta);
+    return new ImageIcon();
 }
 
     public void setImagenFondo(String ruta) {
