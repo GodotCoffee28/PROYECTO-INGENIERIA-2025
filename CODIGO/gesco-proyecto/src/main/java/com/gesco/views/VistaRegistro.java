@@ -6,13 +6,11 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,12 +22,15 @@ import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaRegistro extends PlantillaGesco {
     private JTextField TxtNombreApellido, TxtCedula, TxtCorreo;
+    private JTextField TxtCodigoAdmin;
     private JPasswordField TxtContra;
+    private JComboBox<String> cmbTipoUsuario;
     private BotonNeon btnRegistrarse;
     private JLabel Saludo, loginLink;
 
     public VistaRegistro() {
         super(); 
+        setImagenFondo("/VISTAFONDO.png");
         ocultarMenu();
         inicializarComponentes();
         construirCuerpo();
@@ -46,11 +47,10 @@ public class VistaRegistro extends PlantillaGesco {
         btnRegistrarse.setMaximumSize(tamBotonPrincipal);
         btnRegistrarse.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        loginLink = crearEtiquetaSimple("¿Ya tiene cuenta? Inicie sesión", 16, new Color(220, 220, 220));
+        loginLink = crearEtiquetaPersonalizada("¿Ya tiene cuenta? Inicie sesión", "Times New Roman", Font.PLAIN, 16, new Color(220, 220, 220), "centro");
         loginLink.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        Saludo = crearEtiquetaSimple("¡Únete, Ucevista!", 40, new Color(240, 240, 240));
-        Saludo.setFont(new Font("Arial", Font.BOLD, 40)); 
+        Saludo = crearEtiquetaPersonalizada("¡Únete, Ucevista!", "Times New Roman", Font.BOLD, 40, new Color(240, 240, 240),"centro");
     }
 
     private void agregarCampos(JPanel panelFondoBase) {
@@ -82,6 +82,17 @@ public class VistaRegistro extends PlantillaGesco {
         TxtContra = new JPasswordField();
         estilizarComponente(TxtContra, tamanoCaja);
         formPanel.add(TxtContra);
+        formPanel.add(Box.createVerticalStrut(8));
+
+        formPanel.add(crearLabelForm("Tipo de usuario", labelFont));
+        cmbTipoUsuario = new JComboBox<>(new String[] {"Comensal", "Administrador"});
+        estilizarComponente(cmbTipoUsuario, tamanoCaja);
+        formPanel.add(cmbTipoUsuario);
+        formPanel.add(Box.createVerticalStrut(8));
+
+        formPanel.add(crearLabelForm("Código admin (si aplica)", labelFont));
+        TxtCodigoAdmin = crearTextField(tamanoCaja);
+        formPanel.add(TxtCodigoAdmin);
 
         panelFondoBase.add(formPanel);
     }
@@ -110,22 +121,7 @@ public class VistaRegistro extends PlantillaGesco {
     }
 
     private void construirCuerpo() {
-        JPanel panelFondo = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                
-                int x = 200;
-                int w = getWidth() - 400;
-                g2.setColor(new Color(255, 255, 255, 15)); 
-                g2.fillRoundRect(x, 10, w, getHeight() - 25, 50, 50);
-                
-                g2.setColor(new Color(255, 255, 255, 30));
-                g2.drawRoundRect(x, 10, w, getHeight() - 25, 50, 50);
-                g2.dispose();
-            }
-        };
+        JPanel panelFondo = crearPanel(200,10,400,25,50,50);
         
         panelFondo.setLayout(new BoxLayout(panelFondo, BoxLayout.Y_AXIS));
         panelFondo.setOpaque(false); 
@@ -136,7 +132,7 @@ public class VistaRegistro extends PlantillaGesco {
         panelFondo.add(Saludo);
         panelFondo.add(Box.createVerticalStrut(5));
         
-        JLabel subTitulo = crearEtiquetaSimple("Crea tu cuenta para el comedor", 18, new Color(180, 180, 185));
+        JLabel subTitulo = crearEtiquetaPersonalizada("Crea tu cuenta para el comedor", "Times New Roman", Font.PLAIN, 18, new Color(180, 180, 185),"centro");
         panelFondo.add(subTitulo);
         
         panelFondo.add(Box.createVerticalStrut(20)); 
@@ -160,6 +156,11 @@ public class VistaRegistro extends PlantillaGesco {
     public String getCedula() { return TxtCedula.getText(); }
     public String getCorreo() { return TxtCorreo.getText(); }
     public String getContra() { return new String(TxtContra.getPassword()); }
+    public String getTipoUsuarioSeleccionado() {
+        Object seleccion = cmbTipoUsuario.getSelectedItem();
+        return seleccion == null ? "Comensal" : seleccion.toString();
+    }
+    public String getCodigoAdmin() { return TxtCodigoAdmin.getText(); }
     public JLabel getLoginLink() { return loginLink; }
     public BotonNeon getBtnRegistrarse() { return btnRegistrarse; }
 }

@@ -26,6 +26,7 @@ public class VistaInicioSesion extends PlantillaGesco {
     
     public VistaInicioSesion() {
         super(); 
+        setImagenFondo("/VISTAFONDO.png");
         ocultarMenu();
         inicializarComponentes();
         construirCuerpo();
@@ -42,19 +43,19 @@ public class VistaInicioSesion extends PlantillaGesco {
         btnInicioSesion.setMaximumSize(tam);
         btnInicioSesion.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        Saludo = crearEtiquetaSimple("¡Hola de nuevo!", 45, new Color(240, 240, 240));
-        Saludo.setFont(new Font("Arial", Font.BOLD, 45)); 
+        Saludo = crearEtiquetaPersonalizada("¡Hola de nuevo!", "Times New Roman", Font.BOLD, 45, new Color(240, 240, 240),"centro");
     }
     
     private void agregarCampos(JPanel panelFondoBase) {
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
         formPanel.setOpaque(false);
-        formPanel.setMaximumSize(new Dimension(450, 200)); 
+    
+    formPanel.setMaximumSize(new Dimension(450, 250)); 
         formPanel.setAlignmentX(Component.CENTER_ALIGNMENT); 
 
-        //Cédula de pepe xd
-        JLabel lblCedula = crearEtiquetaForm("Cédula de identidad", 18, Color.WHITE);
+    JLabel lblCedula = crearEtiquetaPersonalizada("Cédula de identidad", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda");
+    lblCedula.setAlignmentX(Component.LEFT_ALIGNMENT); 
 
         cedula = new JTextField();
         Dimension tamanoCaja = new Dimension(450, 40);
@@ -62,16 +63,24 @@ public class VistaInicioSesion extends PlantillaGesco {
         cedula.setMaximumSize(tamanoCaja);
         cedula.setMinimumSize(tamanoCaja);
         cedula.setAlignmentX(Component.LEFT_ALIGNMENT);
-        cedula.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
-        JLabel lblClave = crearEtiquetaForm("Contraseña", 18, Color.WHITE);
+    cedula.setBorder(BorderFactory.createCompoundBorder(
+        cedula.getBorder(), 
+        BorderFactory.createEmptyBorder(0, 10, 0, 10)
+    ));
+
+    JLabel lblClave = crearEtiquetaPersonalizada("Contraseña", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda");
+    lblClave.setAlignmentX(Component.LEFT_ALIGNMENT); 
 
         clave = new JPasswordField();
         clave.setPreferredSize(tamanoCaja);
         clave.setMaximumSize(tamanoCaja);
         clave.setMinimumSize(tamanoCaja);
         clave.setAlignmentX(Component.LEFT_ALIGNMENT);
-        clave.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+    clave.setBorder(BorderFactory.createCompoundBorder(
+        clave.getBorder(), 
+        BorderFactory.createEmptyBorder(0, 10, 0, 10)
+    ));
 
         formPanel.add(lblCedula);
         formPanel.add(Box.createVerticalStrut(8)); 
@@ -87,7 +96,7 @@ public class VistaInicioSesion extends PlantillaGesco {
     }
 
     private void construirCuerpo() {
-        JPanel panelFondo = crearPanel();
+        JPanel panelFondo = crearPanel(250, 10, 500, 20, 50, 50);
         
         panelFondo.setLayout(new BoxLayout(panelFondo, BoxLayout.Y_AXIS));
         panelFondo.setOpaque(false); 
@@ -98,7 +107,7 @@ public class VistaInicioSesion extends PlantillaGesco {
         panelFondo.add(Saludo);
         panelFondo.add(Box.createVerticalStrut(10));
         
-        JLabel subTitulo = crearEtiquetaSimple("Accede a la plataforma", 20, new Color(200, 200, 205));
+        JLabel subTitulo = crearEtiquetaPersonalizada("Accede a la plataforma", "Times New Roman", Font.PLAIN, 20, new Color(200, 200, 205), "centro");
         subTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelFondo.add(subTitulo);
         
@@ -108,7 +117,7 @@ public class VistaInicioSesion extends PlantillaGesco {
         
         panelFondo.add(Box.createVerticalStrut(20));
         
-        registroLink = crearEtiquetaSimple("¿Aún no tiene una cuenta? Registrarse", 15, new Color(220, 220, 220));
+        registroLink = crearEtiquetaPersonalizada("¿Aún no tiene una cuenta? Registrarse", "Times New Roman", Font.PLAIN, 15, new Color(220, 220, 220), "centro");
         registroLink.setCursor(new Cursor(Cursor.HAND_CURSOR));
         panelFondo.add(registroLink);
 

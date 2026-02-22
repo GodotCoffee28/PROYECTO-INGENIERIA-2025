@@ -6,6 +6,7 @@ import java.util.function.BiConsumer;
 import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
 
+import com.gesco.models.TipoUsuario;
 import com.gesco.views.VistaInicioSesion;
 
 public class VistaInicioSesionControlador {
@@ -13,13 +14,13 @@ public class VistaInicioSesionControlador {
     private final VistaInicioSesion vista;
     private final Runnable onBack;
     private final Runnable onRegistro;
-    private final BiConsumer<Boolean, String> onLoginSuccess;
+    private final BiConsumer<TipoUsuario, String> onLoginSuccess;
 
     public VistaInicioSesionControlador(
         VistaInicioSesion vista,
         Runnable onBack,
         Runnable onRegistro,
-        BiConsumer<Boolean, String> onLoginSuccess
+        BiConsumer<TipoUsuario, String> onLoginSuccess
     ) {
         this.vista = vista;
         this.onBack = onBack;
@@ -57,14 +58,44 @@ public class VistaInicioSesionControlador {
             return;
         }
 
+        if (!cedula.matches("\\d+")) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "La cédula debe contener solo números.",
+                "Cédula inválida",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        try {
+            if (Long.parseLong(cedula) < 8_000_000L) {
+                JOptionPane.showMessageDialog(
+                    vista,
+                    "La cédula debe ser mayor o igual a 8.000.000.",
+                    "Cédula inválida",
+                    JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "La cédula ingresada no es válida.",
+                "Cédula inválida",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
         boolean valido = DataBase.validarInicioSesion(cedula, clave);
         if (valido) {
-            boolean esAdmin = DataBase.esAdmin(cedula);
+            TipoUsuario tipoUsuario = DataBase.obtenerTipoUsuario(cedula);
             String nombre = DataBase.obtenerNombre(cedula);
             if (nombre == null || nombre.isBlank()) {
                 nombre = "Usuario";
             }
-            onLoginSuccess.accept(esAdmin, nombre);
+            onLoginSuccess.accept(tipoUsuario, nombre);
         } else {
             JOptionPane.showMessageDialog(
                 vista,

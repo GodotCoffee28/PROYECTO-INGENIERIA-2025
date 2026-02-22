@@ -16,6 +16,7 @@ public class VistaInicioComensal extends PlantillaGesco {
         super();
         this.nombreUsuario = nombre;
         this.saldoDisponible = saldo;
+        setImagenFondo("/FondoPrincipal.png");
         inicializarComponentes();
         construirCuerpo();
         revalidate();
@@ -68,18 +69,18 @@ public class VistaInicioComensal extends PlantillaGesco {
         gbc.insets = new Insets(0, 20, 30, 20);
 
         // Tarjeta Izquierda (Menú)
-        JPanel cajaMenu = crearTarjeta("Menú del Día", 420, 300);
+        JPanel cajaMenu = crearTarjeta("Menú del Día", 420, 300, 50,20, false);
         cajaMenu.add(crearContenedorInterno(infoMenu, btnVerMenu), BorderLayout.CENTER);
         gbc.gridx = 0;
         panelCentral.add(cajaMenu, gbc);
 
         // Tarjeta Derecha (Horarios)
-        JPanel cajaHorarios = crearTarjeta("Horarios de Servicio", 420, 300);
+        JPanel cajaHorarios = crearTarjeta("Horarios de Servicio", 420, 300, 50, 20, false);
         cajaHorarios.add(crearContenedorInterno(infoTurnos, btnHorarios), BorderLayout.CENTER);
         gbc.gridx = 1;
         panelCentral.add(cajaHorarios, gbc);
 
-        JPanel tarjetaSaldo = crearTarjeta("", 880, 130); 
+        JPanel tarjetaSaldo = crearTarjeta("", 880, 130, 50, 20, false); 
         tarjetaSaldo.setLayout(new BorderLayout(40, 0));
         tarjetaSaldo.setBorder(BorderFactory.createEmptyBorder(20, 45, 20, 45));
         
@@ -134,39 +135,6 @@ public class VistaInicioComensal extends PlantillaGesco {
         return p;
     }
 
-    private JPanel crearTarjeta(String titulo, int ancho, int alto) {
-        JPanel tarjeta = new JPanel(new BorderLayout(15, 15)) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                
-                g2.setColor(new Color(255, 255, 255, 30)); 
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 50, 50);
-                
-                g2.setColor(new Color(255, 255, 255, 60));
-                g2.setStroke(new BasicStroke(1.5f));
-                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 50, 50);
-                g2.dispose();
-            }
-        };
-        
-        tarjeta.setOpaque(false); 
-        tarjeta.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-        JLabel lblTitulo = new JLabel(titulo);
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 26));
-        lblTitulo.setForeground(Color.WHITE);
-        lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-        tarjeta.add(lblTitulo, BorderLayout.NORTH);
-
-        Dimension dim = new Dimension(ancho, alto);
-        tarjeta.setPreferredSize(dim);
-        tarjeta.setMinimumSize(dim);
-        tarjeta.setMaximumSize(dim);
-        
-        return tarjeta;
-    }
 
     public BotonNeon getBtnVerMenu() {
         return btnVerMenu;

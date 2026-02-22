@@ -27,6 +27,7 @@ public class VistaCargarCFCV extends PlantillaGesco {
 
     public VistaCargarCFCV() {
         super();
+        setImagenFondo("/FondoPrincipal2.png");
         inicializarComponentes();
         construirCuerpo();
         revalidate();
@@ -41,14 +42,10 @@ public class VistaCargarCFCV extends PlantillaGesco {
         btnGuardar.setMaximumSize(tamBoton);
         btnGuardar.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        titulo = new JLabel("Cargar Costos: Fijo y Variable");
-        titulo.setFont(new Font("Arial", Font.BOLD, 36));
-        titulo.setForeground(new Color(240, 240, 240));
+        titulo = crearEtiquetaPersonalizada("Cargar Costos: Fijo y Variable", "Times New Roman", Font.BOLD, 36, new Color(240, 240, 240), "centro");
         titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        lblResultado = new JLabel(" ");
-        lblResultado.setFont(new Font("Arial", Font.BOLD, 18));
-        lblResultado.setForeground(new Color(240, 240, 240));
+        lblResultado = crearEtiquetaPersonalizada(" ", "Arial", Font.BOLD, 18, new Color(240, 240, 240), "centro");
         lblResultado.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
 
@@ -61,14 +58,14 @@ public class VistaCargarCFCV extends PlantillaGesco {
 
         Dimension tamCaja = new Dimension(450, 40);
 
-        formPanel.add(crearEtiquetaForm("CF (Costos Fijos)", 16, Color.WHITE));
+        formPanel.add(crearEtiquetaPersonalizada("CF (Costos Fijos)", "Times New Roman", Font.PLAIN, 19, Color.WHITE, "izquierda"));
         formPanel.add(Box.createVerticalStrut(8));
         CF = new JTextField();
         diseñarCaja(CF, tamCaja);
         formPanel.add(CF);
         formPanel.add(Box.createVerticalStrut(16));
 
-        formPanel.add(crearEtiquetaForm("CV (Costos Variables)", 16, Color.WHITE));
+        formPanel.add(crearEtiquetaPersonalizada("CV (Costos Variables)", "Times New Roman", Font.PLAIN, 19, Color.WHITE, "izquierda"));
         formPanel.add(Box.createVerticalStrut(8));
         CV = new JTextField();
         diseñarCaja(CV, tamCaja);
@@ -78,23 +75,7 @@ public class VistaCargarCFCV extends PlantillaGesco {
     }
 
     private void construirCuerpo() {
-        JPanel panelFondo = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                int x = 250;
-                int y = 15;
-                int w = getWidth() - 500;
-                int h = getHeight() - 30;
-                g2.setColor(new Color(255, 255, 255, 25));
-                g2.fillRoundRect(x, y, w, h, 50, 50);
-                g2.setColor(new Color(255, 255, 255, 40));
-                g2.drawRoundRect(x, y, w, h, 50, 50);
-                g2.dispose();
-            }
-        };
+        JPanel panelFondo = crearPanel(250,15,500,30,50,50);
 
         panelFondo.setLayout(new BoxLayout(panelFondo, BoxLayout.Y_AXIS));
         panelFondo.setOpaque(false);
