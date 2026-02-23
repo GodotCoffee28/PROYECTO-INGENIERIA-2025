@@ -24,7 +24,7 @@ public class VistaInicioComensal extends PlantillaGesco {
     }
 
     private void inicializarComponentes() {
-         Dimension tamBoton = new Dimension(220, 50);
+        Dimension tamBoton = new Dimension(220, 50);
 
         btnVerMenu = new BotonNeon("Ver menú semanal");
         btnVerMenu.setPreferredSize(tamBoton);
