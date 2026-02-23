@@ -29,7 +29,10 @@ public class VistaEditarMenuControlador {
             String dia = vista.getDia();
             String mes = vista.getMes();
             String anio = vista.getAnio();
-            String fechaStr = String.format("%s-%s-%s", anio.trim(), mes.trim(), dia.trim());
+            String fechaStr = String.format("%s-%02d-%02d",
+                anio.trim(),
+                Integer.parseInt(mes.trim()),
+                Integer.parseInt(dia.trim()));
 
             java.time.LocalDate fecha = java.time.LocalDate.parse(fechaStr);
             if (!DataBase.esFechaValidaParaMenu(fecha)) {

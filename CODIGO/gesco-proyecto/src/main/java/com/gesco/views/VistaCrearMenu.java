@@ -54,9 +54,15 @@ public class VistaCrearMenu extends PlantillaGesco {
         formPanel.setMaximumSize(new Dimension(450, 480));
         formPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        campoFecha = new CampoFecha("Fecha (DD/MM/AAAA)", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda");
+        campoFecha = new CampoFecha("Fecha", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda");
         campoFecha.setLabelColor(Color.WHITE);
         campoFecha.setAlignmentX(Component.LEFT_ALIGNMENT);
+        java.time.LocalDate hoy = java.time.LocalDate.now();
+        campoFecha.setFecha(
+            String.valueOf(hoy.getDayOfMonth()),
+            String.valueOf(hoy.getMonthValue()),
+            String.valueOf(hoy.getYear())
+        );
         formPanel.add(campoFecha);
         formPanel.add(Box.createVerticalStrut(20));
 
