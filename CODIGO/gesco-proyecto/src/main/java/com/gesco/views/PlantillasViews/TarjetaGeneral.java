@@ -1,37 +1,35 @@
 package com.gesco.views.PlantillasViews;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
+import javax.swing.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-public abstract class TarjetaGeneral extends JPanel{
+public abstract class TarjetaGeneral extends JPanel {
     protected JPanel containerCabecera;
     protected JPanel containerCuerpo;
 
+    private final Color colorBlanco = new Color(255, 255, 255); 
 
     public TarjetaGeneral(Color colorFondo, Color colorCabecera) {
         setLayout(new BorderLayout());
-        setBackground(colorFondo);
-        
+ 
+        setOpaque(false); 
+
         setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.GRAY, 1, true),
-            new EmptyBorder(5, 5, 5, 5)
+            BorderFactory.createLineBorder(colorBlanco, 5, true), 
+            BorderFactory.createEmptyBorder(0, 0, 0, 0) 
         ));
 
         containerCabecera = new JPanel(new BorderLayout());
-        containerCabecera.setBackground(colorCabecera);
-        containerCabecera.setOpaque(true);
+        containerCabecera.setOpaque(false);
+        containerCabecera.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(0, 0, 3, 0, colorBlanco),
+            BorderFactory.createEmptyBorder(10, 15, 5, 15)
+        ));
 
         containerCuerpo = new JPanel();
         containerCuerpo.setLayout(new BoxLayout(containerCuerpo, BoxLayout.Y_AXIS));
-        containerCuerpo.setBackground(colorFondo);
-        containerCuerpo.setOpaque(true);
+        containerCuerpo.setOpaque(false);
+        containerCuerpo.setBorder(BorderFactory.createEmptyBorder(20, 25, 20, 25));
 
         add(containerCabecera, BorderLayout.NORTH);
         add(containerCuerpo, BorderLayout.CENTER);
@@ -42,8 +40,14 @@ public abstract class TarjetaGeneral extends JPanel{
     protected abstract void construirContenido();
 
     protected void setTituloEstilo(JLabel label) {
-        label.setFont(new Font("Arial", Font.BOLD, 26));
-        label.setForeground(Color.DARK_GRAY);
-        label.setBorder(new EmptyBorder(5, 10, 5, 10));
+        label.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        label.setForeground(Color.WHITE); 
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+    }
+
+    protected void configurarLabelPlatillo(JLabel label) {
+        label.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        label.setForeground(Color.WHITE); 
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
     }
 }

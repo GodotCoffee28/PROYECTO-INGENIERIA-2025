@@ -45,32 +45,14 @@ public class VistaMenuSemana extends PlantillaGesco {
     }
 
     private void inicializarComponentes() {
-        titulo = crearEtiquetaPersonalizada("Menú de la semana", "Times New Roman", Font.BOLD, 24, Color.WHITE,"centro");
+        titulo = crearEtiquetaPersonalizada("Menú de la semana", "Times New Roman", Font.BOLD, 30, Color.WHITE,"centro");
         titulo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         tarjetasSemana = new ArrayList<>();
     }
 
     private void construirCuerpo() {
-        JPanel panelFondo = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                
-                int margenX = 100;
-                int ancho = getWidth() - (margenX * 2);
-                int alto = getHeight() - 40;
-                
-                g2.setColor(new Color(255, 255, 255, 25));
-                g2.fillRoundRect(margenX, 20, ancho, alto, 50, 50);
-                
-                g2.setColor(new Color(255, 255, 255, 40));
-                g2.drawRoundRect(margenX, 20, ancho, alto, 50, 50);
-                g2.dispose();
-            }
-        };
-        
+        JPanel panelFondo = crearPanel(100, 20, 200, 40, 50, 50); 
+
         panelFondo.setLayout(new BorderLayout());
         panelFondo.setOpaque(false);
         panelFondo.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));

@@ -1,16 +1,15 @@
 package com.gesco.views;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.time.DayOfWeek;
-
-import  javax.swing.JLabel;
+import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 import com.gesco.models.Menu;
 import com.gesco.models.Platillo;
 import com.gesco.views.PlantillasViews.TarjetaGeneral;
-
 
 public class TarjetaMenu extends TarjetaGeneral {
 
@@ -19,7 +18,7 @@ public class TarjetaMenu extends TarjetaGeneral {
     private JLabel lblTipo;
 
     public TarjetaMenu(Menu menu) {
-        super(new Color(230, 230, 230), new Color(180, 180, 185));
+        super(new Color(255, 255, 255), new Color(255, 255, 255));
         this.menu = menu;
         
         actualizarInterfaz();
@@ -28,62 +27,54 @@ public class TarjetaMenu extends TarjetaGeneral {
     @Override
     protected final void construirContenido() {
         lblDia = new JLabel("", SwingConstants.CENTER);
-        lblDia.setFont(new Font("Arial", Font.BOLD, 26));
+        setTituloEstilo(lblDia); 
         containerCabecera.add(lblDia, BorderLayout.CENTER);
         
         lblTipo = new JLabel("", SwingConstants.CENTER);
         lblTipo.setFont(new Font("Arial", Font.PLAIN, 14));
-        lblTipo.setForeground(new Color(70, 70, 70));
+        lblTipo.setForeground(Color.WHITE); 
         containerCabecera.add(lblTipo, BorderLayout.SOUTH);
     }
 
     private void actualizarInterfaz() {
         if (menu == null) return;
         containerCuerpo.removeAll();
+
         DayOfWeek dia = menu.getFecha().getDayOfWeek();
         String diaStr = switch(dia){
-            case MONDAY    -> "Lunes";
-            case TUESDAY   -> "Martes";
-            case WEDNESDAY -> "Miércoles";
-            case THURSDAY  -> "Jueves";
-            case FRIDAY    -> "Viernes";
-            case SATURDAY  -> "Sábado";
-            case SUNDAY    -> "Domingo";
+            case MONDAY    -> "LUNES";
+            case TUESDAY   -> "MARTES";
+            case WEDNESDAY -> "MIÉRCOLES";
+            case THURSDAY  -> "JUEVES";
+            case FRIDAY    -> "VIERNES";
+            case SATURDAY  -> "SÁBADO";
+            case SUNDAY    -> "DOMINGO";
         };
 
         lblDia.setText(diaStr);
         lblTipo.setText(formatearTipoMenu(menu.getTipoMenu()));
 
         if (menu.getEstado() == Menu.EstadoMenu.NO_DISPONIBLE) {
-            JLabel lblNoDisponible = new JLabel("Menú no disponible");
-            lblNoDisponible.setFont(new Font("Arial", Font.BOLD, 16));
-            lblNoDisponible.setForeground(new Color(120, 45, 45));
+            JLabel lblNoDisponible = new JLabel("MENÚ NO DISPONIBLE");
+            configurarLabelPlatillo(lblNoDisponible);
             containerCuerpo.add(lblNoDisponible);
-            revalidate();
-            repaint();
-            return;
-        }
-
-        if (!menu.tienePlatillos()) {
-            JLabel lblVacio = new JLabel("Sin menú cargado");
-            lblVacio.setFont(new Font("Arial", Font.BOLD, 16));
-            lblVacio.setForeground(new Color(90, 90, 90));
+        } 
+        else if (!menu.tienePlatillos()) {
+            JLabel lblVacio = new JLabel("SIN MENÚ CARGADO");
+            configurarLabelPlatillo(lblVacio); 
             containerCuerpo.add(lblVacio);
-            revalidate();
-            repaint();
-            return;
-        }
+        } 
+        else {
+            JLabel lblCosto = new JLabel(String.format("Costo: $%.2f", menu.getCostoMenu()));
+            lblCosto.setFont(new Font("Arial", Font.PLAIN, 16));
+            lblCosto.setForeground(Color.WHITE);
+            containerCuerpo.add(lblCosto);
 
-        JLabel lblCosto = new JLabel(String.format("Costo: $%.2f", menu.getCostoMenu()));
-        lblCosto.setFont(new Font("Arial", Font.PLAIN, 16));
-        lblCosto.setForeground(new Color(60, 60, 60));
-        containerCuerpo.add(lblCosto);
-
-        for (Platillo platillo : menu.getPlatillos()) {
-            JLabel lblNombrePlatillo = new JLabel(" - " + platillo.getNombre().toUpperCase());
-            lblNombrePlatillo.setFont(new Font("Arial", Font.PLAIN, 18));
-            lblNombrePlatillo.setForeground(new Color(50, 50, 50));
-            containerCuerpo.add(lblNombrePlatillo);
+            for (Platillo platillo : menu.getPlatillos()) {
+                JLabel lblNombrePlatillo = new JLabel(" • " + platillo.getNombre().toUpperCase());
+                configurarLabelPlatillo(lblNombrePlatillo); 
+                containerCuerpo.add(lblNombrePlatillo);
+            }
         }
 
         revalidate();

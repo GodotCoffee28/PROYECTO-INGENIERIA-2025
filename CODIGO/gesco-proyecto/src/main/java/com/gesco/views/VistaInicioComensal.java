@@ -86,7 +86,7 @@ public class VistaInicioComensal extends PlantillaGesco {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(10, 15, 10, 15);
         gbc.weightx = 1.0; 
-        gbc.weighty = 0.5; 
+        gbc.weighty = 0.5;
 
         gbc.gridy = 0;
 

@@ -16,7 +16,7 @@ import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 public class VistaInicioAdmin extends PlantillaGesco {
 
-    private BotonNeon btnGestión, btnSubirDatos, btnCambio, btnVerDatos;
+    private BotonNeon btnGestión, btnSubirDatos, btnCambio, btnVerCCB, btnVerMenu;
     private JLabel titulo;
 
     public VistaInicioAdmin() {
@@ -38,13 +38,14 @@ public class VistaInicioAdmin extends PlantillaGesco {
         btnGestión = new BotonNeon("Gestión del menú");
         btnGestión.setPreferredSize(tamBoton);
 
+        btnVerMenu = new BotonNeon("Historial del menú");
+        btnVerMenu.setPreferredSize(tamBoton);
+
         btnSubirDatos = new BotonNeon("Subir datos de CCB");
         btnSubirDatos.setPreferredSize(tamBoton);
-        btnSubirDatos.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 20));
 
-        btnVerDatos = new BotonNeon("Ver datos de CCB");
-        btnVerDatos.setPreferredSize(tamBoton);
-        btnVerDatos.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 20));
+        btnVerCCB = new BotonNeon("Historial datos CCB");
+        btnVerCCB.setPreferredSize(tamBoton);
 
         btnCambio = new BotonNeon("Navegar como comensal");
         btnCambio.setPreferredSize(new Dimension(220, 50));
@@ -67,27 +68,30 @@ public class VistaInicioAdmin extends PlantillaGesco {
         gbc.insets = new Insets(0, 15, 20, 15);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
-        
-        //Columna izquierda: Gestión del menú
-        JPanel cajaMenu = crearTarjeta("Respecto al menú", 420, 280,40,15,"/Billetera.png");
+        JPanel cajaMenu = crearTarjeta("Respecto al menú", 420, 280, 40, 15, "/Billetera.png");
         JPanel pnlInternoMenu = new JPanel(new GridBagLayout());
         pnlInternoMenu.setOpaque(false);
         
         GridBagConstraints gMenu = new GridBagConstraints();
         gMenu.gridx = 0;
-        gMenu.gridy = 0;
         gMenu.fill = GridBagConstraints.HORIZONTAL; 
         gMenu.weightx = 1.0;
-        gMenu.insets = new Insets(0, 50, 0, 50);
+
+        gMenu.insets = new Insets(10, 50, 10, 50); 
         
+        gMenu.gridy = 0; 
         pnlInternoMenu.add(btnGestión, gMenu);
+
+        gMenu.gridy = 1; 
+        pnlInternoMenu.add(btnVerMenu, gMenu);
+        
         cajaMenu.add(pnlInternoMenu, BorderLayout.CENTER);
         
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.gridwidth = 1; 
         panelCentral.add(cajaMenu, gbc);
 
-        //Columna derecha: CCB
         JPanel cajaCCB = crearTarjeta("Respecto al CCB", 420, 280,40,15,"/Billetera.png");
         JPanel pnlInternoCCB = new JPanel(new GridBagLayout());
         pnlInternoCCB.setOpaque(false);
@@ -98,7 +102,7 @@ public class VistaInicioAdmin extends PlantillaGesco {
         gCCB.weightx = 1.0;
         gCCB.insets = new Insets(10, 50, 10, 50);
         gCCB.gridy = 0; pnlInternoCCB.add(btnSubirDatos, gCCB);
-        gCCB.gridy = 1; pnlInternoCCB.add(btnVerDatos, gCCB);
+        gCCB.gridy = 1; pnlInternoCCB.add(btnVerCCB, gCCB);
         
         cajaCCB.add(pnlInternoCCB, BorderLayout.CENTER);
         
@@ -128,8 +132,8 @@ public class VistaInicioAdmin extends PlantillaGesco {
         return btnSubirDatos;
     }
 
-    public BotonNeon getBtnVerDatos() {
-        return btnVerDatos;
+    public BotonNeon getbtnVerCCB() {
+        return btnVerCCB;
     }
 
     public BotonNeon getBtnCambio() {

@@ -27,7 +27,7 @@ public class BotonNeon extends JButton {
         setFocusPainted(false);       
         setOpaque(false);
         
-        setFont(new Font("Arial", Font.BOLD, 30));
+        setFont(new Font("Times New Roman", Font.BOLD, 30));
         setForeground(Color.WHITE); 
         setCursor(new Cursor(Cursor.HAND_CURSOR));
         
