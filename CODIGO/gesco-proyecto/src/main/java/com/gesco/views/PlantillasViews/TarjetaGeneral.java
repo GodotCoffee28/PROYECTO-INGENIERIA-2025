@@ -23,13 +23,13 @@ public abstract class TarjetaGeneral extends JPanel {
         containerCabecera.setOpaque(false);
         containerCabecera.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createMatteBorder(0, 0, 3, 0, colorBlanco),
-            BorderFactory.createEmptyBorder(10, 15, 5, 15)
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)
         ));
 
         containerCuerpo = new JPanel();
         containerCuerpo.setLayout(new BoxLayout(containerCuerpo, BoxLayout.Y_AXIS));
         containerCuerpo.setOpaque(false);
-        containerCuerpo.setBorder(BorderFactory.createEmptyBorder(20, 25, 20, 25));
+        containerCuerpo.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
         add(containerCabecera, BorderLayout.NORTH);
         add(containerCuerpo, BorderLayout.CENTER);
@@ -40,7 +40,7 @@ public abstract class TarjetaGeneral extends JPanel {
     protected abstract void construirContenido();
 
     protected void setTituloEstilo(JLabel label) {
-        label.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        label.setFont(new Font("Segoe UI", Font.BOLD, 17));
         label.setForeground(Color.WHITE); 
         label.setHorizontalAlignment(SwingConstants.CENTER);
     }
