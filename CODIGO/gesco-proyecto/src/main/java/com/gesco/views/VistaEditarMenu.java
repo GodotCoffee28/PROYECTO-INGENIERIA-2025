@@ -10,10 +10,12 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.gesco.models.Menu;
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.CampoFecha;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
@@ -25,6 +27,7 @@ public class VistaEditarMenu extends PlantillaGesco {
     private CampoFecha campoFecha;
     private JCheckBox chkNoDisponible;
     private JLabel Titulo;
+    private JComboBox<Menu.TipoMenu> comboTipoMenu;
     
     public VistaEditarMenu() {
         super();
@@ -68,6 +71,14 @@ public class VistaEditarMenu extends PlantillaGesco {
         formPanel.add(Box.createVerticalStrut(20));
 
         Dimension tamCaja = new Dimension(450, 40);
+
+        formPanel.add(crearEtiquetaPersonalizada("Tipo de menu", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
+        formPanel.add(Box.createVerticalStrut(8));
+        comboTipoMenu = new JComboBox<>(Menu.TipoMenu.values());
+        comboTipoMenu.setMaximumSize(tamCaja);
+        comboTipoMenu.setAlignmentX(Component.LEFT_ALIGNMENT);
+        formPanel.add(comboTipoMenu);
+        formPanel.add(Box.createVerticalStrut(20));
 
         formPanel.add(crearEtiquetaPersonalizada("Platillo 1", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
         formPanel.add(Box.createVerticalStrut(8));
@@ -128,4 +139,6 @@ public class VistaEditarMenu extends PlantillaGesco {
     public String getAnio(){ return campoFecha.getAnio(); }
     public String getFechaTexto(){ return campoFecha.getFechaTexto(); }
     public boolean isMenuNoDisponibleSeleccionado() { return chkNoDisponible.isSelected(); }
+    public Menu.TipoMenu getTipoMenu() { return (Menu.TipoMenu) comboTipoMenu.getSelectedItem(); }
+    public void setTipoMenu(Menu.TipoMenu tipoMenu) { comboTipoMenu.setSelectedItem(tipoMenu); }
 }

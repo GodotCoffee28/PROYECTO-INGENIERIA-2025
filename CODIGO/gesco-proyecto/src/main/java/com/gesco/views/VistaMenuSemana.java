@@ -8,6 +8,9 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,9 +122,12 @@ public class VistaMenuSemana extends PlantillaGesco {
         tarjetasSemana.clear();
         panelContenedorTarjetas.removeAll();
 
-        List<Menu> menus = DataBase.obtenerUltimos5Menus();
+        LocalDate hoy = LocalDate.now();
+        LocalDate lunes = hoy.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 
-        for (Menu menu : menus) {
+        for (int i = 0; i < 5; i++) {
+            LocalDate fecha = lunes.plusDays(i);
+            Menu menu = DataBase.obtenerMenuPorFecha(fecha.toString());
             TarjetaMenu tarjeta = new TarjetaMenu(menu);
             tarjeta.setPreferredSize(new Dimension(250, 160));
             tarjetasSemana.add(tarjeta);

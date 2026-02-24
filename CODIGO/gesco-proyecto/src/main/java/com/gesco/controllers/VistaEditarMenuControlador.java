@@ -45,6 +45,10 @@ public class VistaEditarMenuControlador {
 
             boolean noDisponible = vista.isMenuNoDisponibleSeleccionado();
             Menu menu = new Menu(fecha, noDisponible ? Menu.EstadoMenu.NO_DISPONIBLE : Menu.EstadoMenu.CON_MENU);
+            Menu.TipoMenu tipoMenu = vista.getTipoMenu();
+            if (tipoMenu != null) {
+                menu.setTipoMenu(tipoMenu);
+            }
 
             String p1 = vista.getPlatillo1();
             String p2 = vista.getPlatillo2();

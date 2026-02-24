@@ -302,7 +302,9 @@ public class DataBase {
         if (!menuValidoParaGuardar(menu)) return false;
         StringBuilder sb = new StringBuilder();
         sb.append(menu.getFecha().toString()).append("|")
-          .append(menu.getEstado().name())
+                    .append(menu.getEstado().name())
+                    .append("|")
+                    .append(valorTipoMenu(menu.getTipoMenu()))
           .append("|");
 
         if (menu.getEstado() == EstadoMenu.NO_DISPONIBLE) {
@@ -325,7 +327,9 @@ public class DataBase {
     private static String menuToLine(Menu menu) {
         StringBuilder sb = new StringBuilder();
         sb.append(menu.getFecha().toString()).append("|")
-          .append(menu.getEstado().name())
+                    .append(menu.getEstado().name())
+                    .append("|")
+                    .append(valorTipoMenu(menu.getTipoMenu()))
           .append("|");
 
         if (menu.getEstado() == EstadoMenu.NO_DISPONIBLE) {
@@ -374,20 +378,14 @@ public class DataBase {
 
     public static List<LocalDate> calcularFechasParaReiniciar() {
         try {
-            List<String> actuales = leerLineasGenericas(ARCHIVO_MENUS);
             LocalDate hoy = LocalDate.now();
-            LocalDate ultimaFecha = fechaMaximaEnMenus(actuales);
-            LocalDate base = (ultimaFecha != null && ultimaFecha.isAfter(hoy))
-                    ? ultimaFecha : hoy.minusDays(1);
+            LocalDate lunes = hoy.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 
-            List<LocalDate> candidatas = obtenerSiguientesCincoDiasHabiles(base);
-            List<LocalDate> nuevas = new ArrayList<>();
-            for (LocalDate fecha : candidatas) {
-                if (!existeMenuParaFecha(actuales, fecha)) {
-                    nuevas.add(fecha);
-                }
+            List<LocalDate> semana = new ArrayList<>();
+            for (int i = 0; i < 5; i++) {
+                semana.add(lunes.plusDays(i));
             }
-            return nuevas;
+            return semana;
         } catch (Exception e) {
             System.err.println("Error calculando fechas para reiniciar: " + e.getMessage());
             return new ArrayList<>();
@@ -397,18 +395,28 @@ public class DataBase {
     public static boolean reiniciarMenusSemana() {
         try {
             List<String> actuales = leerLineasGenericas(ARCHIVO_MENUS);
-            LocalDate hoy = LocalDate.now();
-            LocalDate ultimaFecha = fechaMaximaEnMenus(actuales);
-            LocalDate base = (ultimaFecha != null && ultimaFecha.isAfter(hoy)) ? ultimaFecha : hoy.minusDays(1);
+            List<LocalDate> semanaActual = calcularFechasParaReiniciar();
 
-            List<LocalDate> nuevasFechas = obtenerSiguientesCincoDiasHabiles(base);
+            List<String> fechasPendientes = new ArrayList<>();
+            for (LocalDate fecha : semanaActual) {
+                fechasPendientes.add(fecha.toString());
+            }
 
-            List<String> nuevasLineas = new ArrayList<>(actuales);
-            for (LocalDate fecha : nuevasFechas) {
-                if (!existeMenuParaFecha(actuales, fecha)) {
-                    Menu menuNoDisponible = new Menu(fecha, EstadoMenu.NO_DISPONIBLE);
-                    nuevasLineas.add(menuToLine(menuNoDisponible));
+            List<String> nuevasLineas = new ArrayList<>();
+            for (String linea : actuales) {
+                String[] partes = linea.split("\\|");
+                if (partes.length > 0 && fechasPendientes.contains(partes[0])) {
+                    LocalDate fecha = LocalDate.parse(partes[0]);
+                    nuevasLineas.add(menuToLine(new Menu(fecha, EstadoMenu.NO_DISPONIBLE)));
+                    fechasPendientes.remove(partes[0]);
+                } else {
+                    nuevasLineas.add(linea);
                 }
+            }
+
+            for (String fechaStr : fechasPendientes) {
+                LocalDate fecha = LocalDate.parse(fechaStr);
+                nuevasLineas.add(menuToLine(new Menu(fecha, EstadoMenu.NO_DISPONIBLE)));
             }
 
             return reescribirArchivoGenerico(ARCHIVO_MENUS, nuevasLineas);
@@ -461,15 +469,27 @@ public class DataBase {
             LocalDate fecha = LocalDate.parse(partesPrincipales[0]);
             EstadoMenu estado = EstadoMenu.CON_MENU;
             String bloquePlatillos = "";
+            Menu.TipoMenu tipoMenu = Menu.TipoMenu.NO_DEFINIDO;
+
+            if (partesPrincipales.length >= 2) {
+                estado = parsearEstadoMenu(partesPrincipales[1]);
+            }
 
             if (partesPrincipales.length >= 3) {
-                estado = parsearEstadoMenu(partesPrincipales[1]);
-                bloquePlatillos = partesPrincipales[2];
+                if (esTipoMenuValido(partesPrincipales[2])) {
+                    tipoMenu = parsearTipoMenu(partesPrincipales[2]);
+                    if (partesPrincipales.length >= 4) {
+                        bloquePlatillos = partesPrincipales[3];
+                    }
+                } else {
+                    bloquePlatillos = partesPrincipales[2];
+                }
             } else if (partesPrincipales.length == 2) {
                 bloquePlatillos = partesPrincipales[1];
             }
 
             Menu menu = new Menu(fecha, estado);
+            menu.setTipoMenu(tipoMenu);
 
             if (estado == EstadoMenu.NO_DISPONIBLE) {
                 return menu;
@@ -565,6 +585,29 @@ public class DataBase {
         } catch (IllegalArgumentException ex) {
             return EstadoMenu.CON_MENU;
         }
+    }
+
+    private static Menu.TipoMenu parsearTipoMenu(String raw) {
+        if (raw == null || raw.isBlank()) return Menu.TipoMenu.NO_DEFINIDO;
+        try {
+            return Menu.TipoMenu.valueOf(raw.trim());
+        } catch (IllegalArgumentException ex) {
+            return Menu.TipoMenu.NO_DEFINIDO;
+        }
+    }
+
+    private static boolean esTipoMenuValido(String raw) {
+        if (raw == null || raw.isBlank()) return false;
+        try {
+            Menu.TipoMenu.valueOf(raw.trim());
+            return true;
+        } catch (IllegalArgumentException ex) {
+            return false;
+        }
+    }
+
+    private static String valorTipoMenu(Menu.TipoMenu tipoMenu) {
+        return tipoMenu == null ? Menu.TipoMenu.NO_DEFINIDO.name() : tipoMenu.name();
     }
 
     private static boolean menuValidoParaGuardar(Menu menu) {

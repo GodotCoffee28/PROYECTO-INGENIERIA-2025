@@ -16,6 +16,7 @@ public class TarjetaMenu extends TarjetaGeneral {
 
     private final Menu menu;
     private JLabel lblDia;
+    private JLabel lblTipo;
 
     public TarjetaMenu(Menu menu) {
         super(new Color(230, 230, 230), new Color(180, 180, 185));
@@ -30,6 +31,10 @@ public class TarjetaMenu extends TarjetaGeneral {
         lblDia.setFont(new Font("Arial", Font.BOLD, 26));
         containerCabecera.add(lblDia, BorderLayout.CENTER);
         
+        lblTipo = new JLabel("", SwingConstants.CENTER);
+        lblTipo.setFont(new Font("Arial", Font.PLAIN, 14));
+        lblTipo.setForeground(new Color(70, 70, 70));
+        containerCabecera.add(lblTipo, BorderLayout.SOUTH);
     }
 
     private void actualizarInterfaz() {
@@ -47,6 +52,7 @@ public class TarjetaMenu extends TarjetaGeneral {
         };
 
         lblDia.setText(diaStr);
+        lblTipo.setText(formatearTipoMenu(menu.getTipoMenu()));
 
         if (menu.getEstado() == Menu.EstadoMenu.NO_DISPONIBLE) {
             JLabel lblNoDisponible = new JLabel("Menú no disponible");
@@ -68,6 +74,11 @@ public class TarjetaMenu extends TarjetaGeneral {
             return;
         }
 
+        JLabel lblCosto = new JLabel(String.format("Costo: $%.2f", menu.getCostoMenu()));
+        lblCosto.setFont(new Font("Arial", Font.PLAIN, 16));
+        lblCosto.setForeground(new Color(60, 60, 60));
+        containerCuerpo.add(lblCosto);
+
         for (Platillo platillo : menu.getPlatillos()) {
             JLabel lblNombrePlatillo = new JLabel(" - " + platillo.getNombre().toUpperCase());
             lblNombrePlatillo.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -77,5 +88,16 @@ public class TarjetaMenu extends TarjetaGeneral {
 
         revalidate();
         repaint();
+    }
+
+    private String formatearTipoMenu(Menu.TipoMenu tipoMenu) {
+        if (tipoMenu == null || tipoMenu == Menu.TipoMenu.NO_DEFINIDO) {
+            return "";
+        }
+        return switch (tipoMenu) {
+            case DESAYUNO -> "Desayuno";
+            case ALMUERZO -> "Almuerzo";
+            case NO_DEFINIDO -> "";
+        };
     }
 }

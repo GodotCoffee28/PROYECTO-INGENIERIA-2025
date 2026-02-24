@@ -237,7 +237,7 @@ public class LogicaInterfaz {
     }
 
     private void reiniciarMenusSemana() {
-        java.util.List<java.time.LocalDate> fechasNuevas = DataBase.calcularFechasParaReiniciar();
+        java.util.List<java.time.LocalDate> fechasSemana = DataBase.calcularFechasParaReiniciar();
 
         boolean ok = DataBase.reiniciarMenusSemana();
         if (!ok) {
@@ -249,9 +249,9 @@ public class LogicaInterfaz {
             return;
         }
 
-        if (fechasNuevas.isEmpty()) {
+        if (fechasSemana.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(null,
-                "Todos los días de la siguiente semana hábil ya tienen menú asignado.",
+                "No se pudieron calcular los días de la semana actual.",
                 "Sin cambios",
                 javax.swing.JOptionPane.INFORMATION_MESSAGE);
             mostrarGestionMenu();
@@ -259,11 +259,11 @@ public class LogicaInterfaz {
         }
 
         javax.swing.JOptionPane.showMessageDialog(null,
-            "Se agregaron " + fechasNuevas.size() + " día(s) nuevos.\nA continuación, configura el menú para cada uno.",
-            "Menús reiniciados",
+            "Se reinició el menú de la semana actual.\nA continuación, configura el menú para cada uno.",
+            "Menú reiniciado",
             javax.swing.JOptionPane.INFORMATION_MESSAGE);
 
-        java.util.Queue<java.time.LocalDate> cola = new java.util.LinkedList<>(fechasNuevas);
+        java.util.Queue<java.time.LocalDate> cola = new java.util.LinkedList<>(fechasSemana);
         mostrarCrearMenuParaFecha(cola);
     }
 
