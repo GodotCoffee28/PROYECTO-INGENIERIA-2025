@@ -65,13 +65,21 @@ public class VistaCrearMenu extends PlantillaGesco {
 
     }
     
-    private void agregarCampos(JPanel panelFondoBase) {
-        JPanel formPanel = new JPanel();
-        formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
-        formPanel.setOpaque(false);
+    private void agregarCampos(JPanel panelIzqPlatillos, JPanel panelDerInsumos) {
+        int pading = 18;
+        panelIzqPlatillos.setLayout(new BoxLayout(panelIzqPlatillos, BoxLayout.Y_AXIS));
+        panelIzqPlatillos.setOpaque(true);
+        panelIzqPlatillos.setPreferredSize(new Dimension(600, 540));
+        panelIzqPlatillos.setMaximumSize(new Dimension(600, 540));
+        panelIzqPlatillos.setBorder(BorderFactory.createEmptyBorder(pading, pading, pading, pading));
+        panelIzqPlatillos.setAlignmentY(Component.TOP_ALIGNMENT);
 
-        formPanel.setMaximumSize(new Dimension(520, 900));
-        formPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panelDerInsumos.setLayout(new BoxLayout(panelDerInsumos, BoxLayout.Y_AXIS));
+        panelDerInsumos.setOpaque(true);
+        panelDerInsumos.setPreferredSize(new Dimension(600, 540));
+        panelDerInsumos.setMaximumSize(new Dimension(600, 540));
+        panelDerInsumos.setBorder(BorderFactory.createEmptyBorder(pading, pading, pading, pading));
+        panelDerInsumos.setAlignmentY(Component.TOP_ALIGNMENT);
 
         campoFecha = new CampoFecha("Fecha", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda");
         campoFecha.setLabelColor(Color.WHITE);
@@ -82,25 +90,25 @@ public class VistaCrearMenu extends PlantillaGesco {
             String.valueOf(hoy.getMonthValue()),
             String.valueOf(hoy.getYear())
         );
-        formPanel.add(campoFecha);
-        formPanel.add(Box.createVerticalStrut(20));
+        panelIzqPlatillos.add(campoFecha);
+        panelIzqPlatillos.add(Box.createVerticalStrut(20));
 
         Dimension tamCaja = new Dimension(450, 40);
 
-        formPanel.add(crearEtiquetaPersonalizada("Tipo de menu", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
-        formPanel.add(Box.createVerticalStrut(8));
+        panelIzqPlatillos.add(crearEtiquetaPersonalizada("Tipo de menu", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
+        panelIzqPlatillos.add(Box.createVerticalStrut(8));
         comboTipoMenu = new JComboBox<>(Menu.TipoMenu.values());
         comboTipoMenu.setMaximumSize(tamCaja);
         comboTipoMenu.setAlignmentX(Component.LEFT_ALIGNMENT);
-        formPanel.add(comboTipoMenu);
-        formPanel.add(Box.createVerticalStrut(20));
+        panelIzqPlatillos.add(comboTipoMenu);
+        panelIzqPlatillos.add(Box.createVerticalStrut(20));
 
-        formPanel.add(crearEtiquetaPersonalizada("Platillo 1", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
-        formPanel.add(Box.createVerticalStrut(8));
+        panelIzqPlatillos.add(crearEtiquetaPersonalizada("Platillo 1", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
+        panelIzqPlatillos.add(Box.createVerticalStrut(8));
         platillo1 = new JTextField();
         diseñarCaja(platillo1, tamCaja);
-        formPanel.add(platillo1);
-        formPanel.add(Box.createVerticalStrut(10));
+        panelIzqPlatillos.add(platillo1);
+        panelIzqPlatillos.add(Box.createVerticalStrut(10));
 
         modeloInsumos1 = new DefaultListModel<>();
         listaInsumos1 = new JList<>(modeloInsumos1);
@@ -108,15 +116,15 @@ public class VistaCrearMenu extends PlantillaGesco {
         spinnerCantidad1 = new JSpinner();
         btnAgregarInsumo1 = new JButton("Agregar insumo");
         btnQuitarInsumo1 = new JButton("Eliminar insumo");
-        agregarSeccionInsumos(formPanel, "Insumos platillo 1", comboInsumo1, spinnerCantidad1,
+        agregarSeccionInsumos(panelDerInsumos, "Insumos platillo 1", comboInsumo1, spinnerCantidad1,
             btnAgregarInsumo1, btnQuitarInsumo1, listaInsumos1);
-        
-        formPanel.add(crearEtiquetaPersonalizada("Platillo 2", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
-        formPanel.add(Box.createVerticalStrut(8));
+
+        panelIzqPlatillos.add(crearEtiquetaPersonalizada("Platillo 2", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
+        panelIzqPlatillos.add(Box.createVerticalStrut(8));
         platillo2 = new JTextField();
         diseñarCaja(platillo2, tamCaja);
-        formPanel.add(platillo2);
-        formPanel.add(Box.createVerticalStrut(10));
+        panelIzqPlatillos.add(platillo2);
+        panelIzqPlatillos.add(Box.createVerticalStrut(10));
 
         modeloInsumos2 = new DefaultListModel<>();
         listaInsumos2 = new JList<>(modeloInsumos2);
@@ -124,15 +132,15 @@ public class VistaCrearMenu extends PlantillaGesco {
         spinnerCantidad2 = new JSpinner();
         btnAgregarInsumo2 = new JButton("Agregar insumo");
         btnQuitarInsumo2 = new JButton("Eliminar insumo");
-        agregarSeccionInsumos(formPanel, "Insumos platillo 2", comboInsumo2, spinnerCantidad2,
+        agregarSeccionInsumos(panelDerInsumos, "Insumos platillo 2", comboInsumo2, spinnerCantidad2,
             btnAgregarInsumo2, btnQuitarInsumo2, listaInsumos2);
 
-        formPanel.add(crearEtiquetaPersonalizada("Platillo 3", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
-        formPanel.add(Box.createVerticalStrut(8));
+        panelIzqPlatillos.add(crearEtiquetaPersonalizada("Platillo 3", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
+        panelIzqPlatillos.add(Box.createVerticalStrut(8));
         platillo3 = new JTextField();
         diseñarCaja(platillo3, tamCaja);
-        formPanel.add(platillo3);
-        formPanel.add(Box.createVerticalStrut(10));
+        panelIzqPlatillos.add(platillo3);
+        panelIzqPlatillos.add(Box.createVerticalStrut(10));
 
         modeloInsumos3 = new DefaultListModel<>();
         listaInsumos3 = new JList<>(modeloInsumos3);
@@ -140,7 +148,7 @@ public class VistaCrearMenu extends PlantillaGesco {
         spinnerCantidad3 = new JSpinner();
         btnAgregarInsumo3 = new JButton("Agregar insumo");
         btnQuitarInsumo3 = new JButton("Eliminar insumo");
-        agregarSeccionInsumos(formPanel, "Insumos platillo 3", comboInsumo3, spinnerCantidad3,
+        agregarSeccionInsumos(panelDerInsumos, "Insumos platillo 3", comboInsumo3, spinnerCantidad3,
             btnAgregarInsumo3, btnQuitarInsumo3, listaInsumos3);
 
         configurarAccionesInsumos(comboInsumo1, spinnerCantidad1, modeloInsumos1, listaInsumos1,
@@ -155,13 +163,14 @@ public class VistaCrearMenu extends PlantillaGesco {
         chkNoDisponible.setForeground(Color.WHITE);
         chkNoDisponible.setFont(new Font("Arial", Font.BOLD, 14));
         chkNoDisponible.setAlignmentX(Component.LEFT_ALIGNMENT);
-        formPanel.add(chkNoDisponible);
-
-        panelFondoBase.add(formPanel);
+        panelIzqPlatillos.add(chkNoDisponible);
     }
 
     private void construirCuerpo() {
-        JPanel panelFondo = crearPanel(250, 10, 500, 20, 50, 50);
+        JPanel panelFondo = crearPanel(120, 10, 1100, 50, 50, 50);
+        JPanel panelIzqPlatillo = crearPanel(10, 10, 20, 20, 50, 50);
+        JPanel panelDerInsumo = crearPanel(10, 10, 20, 20, 50, 50);
+        JPanel panelContenido = crearPanel(120, 100, 1100, 900, 50, 50);
         
         panelFondo.setLayout(new BoxLayout(panelFondo, BoxLayout.Y_AXIS));
         panelFondo.setOpaque(false);
@@ -171,7 +180,17 @@ public class VistaCrearMenu extends PlantillaGesco {
         panelFondo.add(Titulo);
         panelFondo.add(Box.createVerticalStrut(25));
 
-        agregarCampos(panelFondo);
+        panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.X_AXIS));
+        panelContenido.setOpaque(false);
+        panelContenido.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        agregarCampos(panelIzqPlatillo, panelDerInsumo);
+
+        panelContenido.add(panelIzqPlatillo);
+        panelContenido.add(Box.createHorizontalStrut(30));
+        panelContenido.add(panelDerInsumo);
+
+        panelFondo.add(panelContenido);
         
         panelFondo.add(Box.createVerticalStrut(30));
         panelFondo.add(btnCrear);
@@ -223,7 +242,7 @@ public class VistaCrearMenu extends PlantillaGesco {
         JButton btnQuitar,
         JList<Insumo> lista
     ) {
-        formPanel.add(crearEtiquetaPersonalizada(titulo, "Times New Roman", Font.PLAIN, 16, Color.WHITE, "izquierda"));
+        formPanel.add(crearEtiquetaPersonalizada(titulo, "Times New Roman", Font.PLAIN, 18, Color.WHITE, "centro"));
         formPanel.add(Box.createVerticalStrut(6));
 
         JPanel filaCombo = new JPanel();

@@ -34,8 +34,8 @@ public class Insumo {
     public float getCostoInsumoTotal() { return costoInsumoTotal; }
     public float getCostoUnitario() { return costoInsumoUnitario; }
     public void setCostoInsumoTotal(float costoInsumoTotal) { this.costoInsumoTotal = costoInsumoTotal; }
-	@Override
+    @Override
     public String toString() {
         return nombre + " (" + cantidad + " unidades - " + tipoNutricional + " - $" + costoInsumoTotal + ")";
-    }
+    }	
 }
