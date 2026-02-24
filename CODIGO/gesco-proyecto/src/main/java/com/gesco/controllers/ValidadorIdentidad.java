@@ -1,4 +1,4 @@
-package com.gesco.models;
+package com.gesco.controllers;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
