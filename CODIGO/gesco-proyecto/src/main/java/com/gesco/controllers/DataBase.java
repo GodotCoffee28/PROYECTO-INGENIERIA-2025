@@ -36,9 +36,9 @@ public class DataBase {
     private static final String ARCHIVO_CCB = "ccb.txt";
     private static final String ARCHIVO_FERIADOS = "feriados.txt";
     private static final String ARCHIVO_NO_LABORABLES = "sabados_domingos_2026.txt";
+    private static final String CARPETA_SECRETARIA = "secretaria";
 
     private static final long CEDULA_MINIMA = 8_000_000L;
-    // Los feriados venezolanos se gestionan únicamente en feriados.txt
     private static final Set<String> FERIADOS_FIJOS_MM_DD = Set.of();
 
     private static String DATA_DIR = "src/main/java/com/gesco/models/data";
@@ -53,16 +53,25 @@ public class DataBase {
         }
     }
 
-    
     public static void setDataDir(String dataDir) {
         if (dataDir != null && !dataDir.isBlank()) DATA_DIR = dataDir.trim();
     }
 
-    // Obtiene la ruta actual 
     public static String getDataDir() { return DATA_DIR; }
 
+    public static File obtenerImagenSecretaria(String cedula) {
+        Path basePath = obtenerBaseProyecto();
+        Path dataPath = Paths.get(DATA_DIR);
+        Path secretariaPath;
 
+        if (dataPath.isAbsolute()) {
+            secretariaPath = dataPath.resolve(CARPETA_SECRETARIA);
+        } else {
+            secretariaPath = basePath.resolve(DATA_DIR).resolve(CARPETA_SECRETARIA);
+        }
 
+        return secretariaPath.resolve(valorSeguro(cedula) + ".jpg").toFile();
+    }
 
     private static File obtenerArchivo(String nombreArchivo) {
         Path basePath = obtenerBaseProyecto();
@@ -124,7 +133,7 @@ public class DataBase {
     private static boolean reescribirArchivoGenerico(String nombreArchivo, List<String> nuevasLineas) {
         asegurarArchivoGenerico(nombreArchivo);
         File archivo = obtenerArchivo(nombreArchivo);
-        
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, false))) {
             for (String linea : nuevasLineas) {
                 writer.write(linea);
@@ -137,16 +146,13 @@ public class DataBase {
         }
     }
 
-
-    //usuaros
-
     public static boolean registrarUsuario(String cedula, String clave, String nombre, String correo) {
         if (!cedulaValida(cedula)) return false;
         if (usuarioExiste(cedula)) return false;
 
-        String linea = String.format("%s:%s:%s:%s:0.0;", 
+        String linea = String.format("%s:%s:%s:%s:0.0;",
                 valorSeguro(cedula), valorSeguro(clave), valorSeguro(nombre), valorSeguro(correo));
-        
+
         return escribirLineaGenerica(ARCHIVO_USUARIOS, linea + System.lineSeparator());
     }
 
@@ -201,8 +207,6 @@ public class DataBase {
         return false;
     }
 
-    //admin
-
     public static boolean esAdmin(String cedula) {
         if (!cedulaValida(cedula)) return false;
         if (esSuperAdmin(cedula)) return true;
@@ -227,9 +231,7 @@ public class DataBase {
         List<String> autorizados = leerLineasGenericas(ARCHIVO_ADMINS_AUTORIZADOS);
         String codigo = valorSeguro(codigoAutorizacion);
 
-        if (codigo.isBlank()) {
-            return false;
-        }
+        if (codigo.isBlank()) return false;
 
         for (String linea : autorizados) {
             String[] partes = linea.split(":", 2);
@@ -238,16 +240,13 @@ public class DataBase {
             String cedulaPermitida = partes[0].trim();
             if (!cedula.equals(cedulaPermitida)) continue;
 
-            if (partes.length < 2) {
-                continue;
-            }
+            if (partes.length < 2) continue;
 
             String codigoPermitido = partes[1].trim();
             if (!codigoPermitido.isBlank() && codigoPermitido.equals(codigo)) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -255,8 +254,6 @@ public class DataBase {
         if (esAdmin(cedula)) return true;
         return escribirLineaGenerica(ARCHIVO_ADMINS, cedula + System.lineSeparator());
     }
-
-    //saldo
 
     public static double obtenerSaldo(String cedula) {
         if (!cedulaValida(cedula)) return 0.0;
@@ -286,7 +283,7 @@ public class DataBase {
                 lineasActualizadas.add(nuevaLinea);
                 encontrado = true;
             } else {
-                lineasActualizadas.add(linea); 
+                lineasActualizadas.add(linea);
             }
         }
 
@@ -295,8 +292,6 @@ public class DataBase {
         }
         return false;
     }
-
-    //menu 
 
     public static boolean guardarMenu(Menu menu) {
         if (!menuValidoParaGuardar(menu)) return false;
@@ -320,7 +315,7 @@ public class DataBase {
             }
             sb.append(";");
         }
-        
+
         return escribirLineaGenerica(ARCHIVO_MENUS, sb.toString() + System.lineSeparator());
     }
 
@@ -454,7 +449,7 @@ public class DataBase {
         for (String linea : lineas) {
             String[] partes = linea.split("\\|");
             if (partes.length > 0 && partes[0].equals(fechaStr)) {
-                return parsearLineaMenu(partes); 
+                return parsearLineaMenu(partes);
             }
         }
         try {
@@ -648,8 +643,6 @@ public class DataBase {
         return false;
     }
 
-    // CF/CV
-
     public static boolean guardarCfcv(com.gesco.models.CFCV cfcv) {
         if (cfcv == null) return false;
         List<String> lineas = new ArrayList<>();
@@ -662,8 +655,6 @@ public class DataBase {
         if (lineas.isEmpty()) return new com.gesco.models.CFCV();
         return com.gesco.models.CFCV.fromLine(lineas.get(0));
     }
-
-    // CCB
 
     public static boolean guardarCcb(CCB ccb) {
         if (ccb == null) return false;
@@ -683,13 +674,10 @@ public class DataBase {
 
     public static CCB obtenerUltimoCcb() {
         List<String> lineas = leerLineasGenericas(ARCHIVO_CCB);
-        if (lineas.isEmpty()) {
-            return null;
-        }
+        if (lineas.isEmpty()) return null;
         String ultima = lineas.get(lineas.size() - 1);
         return parsearLineaCcb(ultima);
     }
-
 
     public static List<Menu> obtenerUltimos5Menus() {
         List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
@@ -703,13 +691,9 @@ public class DataBase {
     }
 
     private static CCB parsearLineaCcb(String linea) {
-        if (linea == null || linea.isBlank()) {
-            return null;
-        }
+        if (linea == null || linea.isBlank()) return null;
         String[] partes = linea.split("\\|");
-        if (partes.length < 6) {
-            return null;
-        }
+        if (partes.length < 6) return null;
         try {
             LocalDate fecha = LocalDate.parse(partes[0].trim());
             String tipoUsuario = partes[1].trim();
@@ -724,9 +708,7 @@ public class DataBase {
     }
 
     private static double parseDoubleSeguro(String valor) {
-        if (valor == null) {
-            return 0.0;
-        }
+        if (valor == null) return 0.0;
         try {
             return Double.parseDouble(valor.trim().replace(',', '.'));
         } catch (NumberFormatException ex) {
@@ -742,7 +724,6 @@ public class DataBase {
             return false;
         }
     }
-
 
     private static Path obtenerBaseProyecto() {
         try {
