@@ -1,41 +1,16 @@
-2025-02-10|Salmon a la barbacoa>;Fritanga>;milanesa>;
-2025-02-11|Pabell?n Criollo>Arroz blanco,Caraotas negras,Carne mechada,Tajadas;Sopa de Res>Verduras,Costilla,Cilantro;
-2025-02-12|Pasta a la Bolo?esa>Pasta larga,Carne molida,Salsa napolitana,Queso parmesano;Refresco>Vaso de cola;
-2025-02-13|Milanesa de Pollo>Pechuga de pollo,Pan rallado,Pur? de papas;Ensalada C?sar>Lechuga,Crutones,Aderezo,Queso;
-2025-02-14|Pescado Frito>Pargo rojo,Tostones,Ensalada mixta;Jugo de Papel?n>Papel?n,Lim?n,Hielo;
-2026-02-09|Arepa de pollo>;Arepa de queso>;Arepa de arepa>;
-2026-02-10|Fororo>;Sopa>;Caraota>;
-2026-02-11|Mandarina>;Cebolla>;Cilantro>;
-2026-02-12|Carne de Res>;Licuado de zanahoria>;Pollo con papas>;
-2026-02-13|Ensalada de remolacha>;Arroz>;Agua>;
-2026-02-14|Pollo frito>;Big mac>;Pasta a la carbonara>;
-2026-02-23|CON_MENU|DESAYUNO|a>;b>;c>;
-2026-02-24|CON_MENU|DESAYUNO|a>;b>;c>;
-2026-02-25|CON_MENU|DESAYUNO|Pollo>;mas pollo>;polla>;
-2026-02-26|CON_MENU|DESAYUNO|Pollo>;mas pollo>;polla>;
-2026-02-27|CON_MENU|DESAYUNO|Pollo>;mas pollo>;polla>;
-2026-03-02|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-03|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-04|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-05|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-06|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-09|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-10|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-11|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-12|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-13|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-16|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-17|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-18|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-20|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-23|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-24|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-25|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-26|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-27|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-30|NO_DISPONIBLE|NO_DEFINIDO|
-2026-03-31|NO_DISPONIBLE|NO_DEFINIDO|
-2026-04-01|NO_DISPONIBLE|NO_DEFINIDO|
-2026-04-02|NO_DISPONIBLE|NO_DEFINIDO|
-2026-04-03|NO_DISPONIBLE|NO_DEFINIDO|
-2026-04-06|NO_DISPONIBLE|NO_DEFINIDO|
+2025-02-10|CON_MENU|NO_DEFINIDO|Salmon a la barbacoa>;Fritanga>;milanesa>;
+2025-02-11|CON_MENU|NO_DEFINIDO|Pabell?n Criollo>Arroz blanco~1~0.00,Caraotas negras~1~0.00,Carne mechada~1~0.00,Tajadas~1~0.00;Sopa de Res>Verduras~1~0.00,Costilla~1~0.00,Cilantro~1~0.00;
+2025-02-12|CON_MENU|NO_DEFINIDO|Pasta a la Bolo?esa>Pasta larga~1~0.00,Carne molida~1~0.00,Salsa napolitana~1~0.00,Queso parmesano~1~0.00;Refresco>Vaso de cola~1~0.00;
+2025-02-13|CON_MENU|NO_DEFINIDO|Milanesa de Pollo>Pechuga de pollo~1~0.00,Pan rallado~1~0.00,Pur? de papas~1~0.00;Ensalada C?sar>Lechuga~1~1.10,Crutones~1~0.00,Aderezo~1~0.00,Queso~1~3.40;
+2025-02-14|CON_MENU|NO_DEFINIDO|Pescado Frito>Pargo rojo~1~0.00,Tostones~1~0.00,Ensalada mixta~1~0.00;Jugo de Papel?n>Papel?n~1~0.00,Lim?n~1~0.00,Hielo~1~0.00;
+2026-02-09|CON_MENU|NO_DEFINIDO|Arepa de pollo>;Arepa de queso>;Arepa de arepa>;
+2026-02-10|CON_MENU|NO_DEFINIDO|Fororo>;Sopa>;Caraota>;
+2026-02-11|CON_MENU|NO_DEFINIDO|Mandarina>;Cebolla>;Cilantro>;
+2026-02-12|CON_MENU|NO_DEFINIDO|Carne de Res>;Licuado de zanahoria>;Pollo con papas>;
+2026-02-13|CON_MENU|NO_DEFINIDO|Ensalada de remolacha>;Arroz>;Agua>;
+2026-02-14|CON_MENU|NO_DEFINIDO|Pollo frito>;Big mac>;Pasta a la carbonara>;
+2026-02-23|CON_MENU|DESAYUNO|Arepa con queso>Queso~1~3.40,Sal~1~0.10;Ensalada fresca>Lechuga~2~2.20,Tomate~1~1.30,Aceite~1~2.20;Jugo de manzana>Manzana~2~5.00;
+2026-02-24|CON_MENU|DESAYUNO|Arepa con pollo>Pollo~1~4.75,Sal~1~0.10;Arroz sencillo>Arroz~2~2.40,Aceite~1~2.20;Ensalada verde>Lechuga~1~1.10,Tomate~1~1.30;
+2026-02-25|CON_MENU|DESAYUNO|Tazon de frutas>Manzana~3~7.50;Sandwich>Queso~1~3.40,Tomate~1~1.30;Pollo a la plancha>Pollo~1~4.75,Sal~1~0.10,Aceite~1~2.20;
+2026-02-26|CON_MENU|DESAYUNO|Arroz con pollo>Arroz~2~2.40,Pollo~1~4.75,Sal~1~0.10;Ensalada>Lechuga~2~2.20,Tomate~1~1.30,Aceite~1~2.20;Queso fresco>Queso~1~3.40;
+2026-02-27|CON_MENU|DESAYUNO|Omelet de queso>Queso~1~3.40,Sal~1~0.10;Ensalada de tomate>Tomate~2~2.60,Aceite~1~2.20;Snack de manzana>Manzana~1~2.50;

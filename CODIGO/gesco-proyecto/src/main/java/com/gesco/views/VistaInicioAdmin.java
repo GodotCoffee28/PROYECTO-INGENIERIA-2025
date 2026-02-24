@@ -132,7 +132,11 @@ public class VistaInicioAdmin extends PlantillaGesco {
         return btnSubirDatos;
     }
 
-    public BotonNeon getbtnVerCCB() {
+    public BotonNeon getBtnVerMenu() {
+        return btnVerMenu;
+    }
+
+    public BotonNeon getBtnVerCCB() {
         return btnVerCCB;
     }
 

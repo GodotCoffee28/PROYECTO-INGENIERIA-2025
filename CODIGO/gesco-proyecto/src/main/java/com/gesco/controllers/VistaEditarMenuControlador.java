@@ -1,8 +1,10 @@
 package com.gesco.controllers;
 
 import com.gesco.views.VistaEditarMenu;
+import com.gesco.models.Insumo;
 import com.gesco.models.Menu;
 import com.gesco.models.Platillo;
+import java.util.List;
 
 public class VistaEditarMenuControlador {
 
@@ -14,6 +16,7 @@ public class VistaEditarMenuControlador {
     }
 
     public void conectar() {
+        vista.setInsumos(DataBase.obtenerInsumos());
         vista.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -54,9 +57,49 @@ public class VistaEditarMenuControlador {
             String p2 = vista.getPlatillo2();
             String p3 = vista.getPlatillo3();
 
-            if (p1 != null && !p1.isBlank()) menu.agregarPlatillo(new Platillo(p1.trim()));
-            if (p2 != null && !p2.isBlank()) menu.agregarPlatillo(new Platillo(p2.trim()));
-            if (p3 != null && !p3.isBlank()) menu.agregarPlatillo(new Platillo(p3.trim()));
+            List<Insumo> insumos1 = vista.getInsumosPlatillo1();
+            List<Insumo> insumos2 = vista.getInsumosPlatillo2();
+            List<Insumo> insumos3 = vista.getInsumosPlatillo3();
+
+            if (!noDisponible) {
+                if (p1 != null && !p1.isBlank() && insumos1.isEmpty()) {
+                    javax.swing.JOptionPane.showMessageDialog(vista,
+                        "El platillo 1 debe tener al menos un insumo.",
+                        "Platillo sin insumos",
+                        javax.swing.JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                if (p2 != null && !p2.isBlank() && insumos2.isEmpty()) {
+                    javax.swing.JOptionPane.showMessageDialog(vista,
+                        "El platillo 2 debe tener al menos un insumo.",
+                        "Platillo sin insumos",
+                        javax.swing.JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                if (p3 != null && !p3.isBlank() && insumos3.isEmpty()) {
+                    javax.swing.JOptionPane.showMessageDialog(vista,
+                        "El platillo 3 debe tener al menos un insumo.",
+                        "Platillo sin insumos",
+                        javax.swing.JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            }
+
+            if (p1 != null && !p1.isBlank()) {
+                Platillo platillo = new Platillo(p1.trim());
+                agregarInsumos(platillo, insumos1);
+                menu.agregarPlatillo(platillo);
+            }
+            if (p2 != null && !p2.isBlank()) {
+                Platillo platillo = new Platillo(p2.trim());
+                agregarInsumos(platillo, insumos2);
+                menu.agregarPlatillo(platillo);
+            }
+            if (p3 != null && !p3.isBlank()) {
+                Platillo platillo = new Platillo(p3.trim());
+                agregarInsumos(platillo, insumos3);
+                menu.agregarPlatillo(platillo);
+            }
 
             if (!noDisponible && !menu.tienePlatillos()) {
                 javax.swing.JOptionPane.showMessageDialog(vista,
@@ -78,6 +121,13 @@ public class VistaEditarMenuControlador {
             }
         } catch (Exception ex) {
             javax.swing.JOptionPane.showMessageDialog(vista, "Fecha inválida. Use formato DD MM AAAA.", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private void agregarInsumos(Platillo platillo, List<Insumo> insumos) {
+        if (insumos == null) return;
+        for (Insumo insumo : insumos) {
+            platillo.agregarInsumo(insumo);
         }
     }
 }

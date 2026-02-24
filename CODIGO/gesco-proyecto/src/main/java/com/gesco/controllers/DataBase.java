@@ -34,6 +34,7 @@ public class DataBase {
     private static final String ARCHIVO_MENUS = "menus.txt";
     private static final String ARCHIVO_CFCV = "cfcv.txt";
     private static final String ARCHIVO_CCB = "ccb.txt";
+    private static final String ARCHIVO_INSUMOS = "insumos.txt";
     private static final String ARCHIVO_FERIADOS = "feriados.txt";
     private static final String ARCHIVO_NO_LABORABLES = "sabados_domingos_2026.txt";
     private static final String CARPETA_SECRETARIA = "secretaria";
@@ -310,7 +311,7 @@ public class DataBase {
             sb.append(p.getNombre()).append(">");
             List<Insumo> insumos = p.getInsumos();
             for (int i = 0; i < insumos.size(); i++) {
-                sb.append(insumos.get(i).getNombre());
+                sb.append(formatearInsumoMenu(insumos.get(i)));
                 if (i < insumos.size() - 1) sb.append(",");
             }
             sb.append(";");
@@ -335,7 +336,7 @@ public class DataBase {
             sb.append(p.getNombre()).append(">");
             List<Insumo> insumos = p.getInsumos();
             for (int i = 0; i < insumos.size(); i++) {
-                sb.append(insumos.get(i).getNombre());
+                sb.append(formatearInsumoMenu(insumos.get(i)));
                 if (i < insumos.size() - 1) sb.append(",");
             }
             sb.append(";");
@@ -500,8 +501,10 @@ public class DataBase {
                 Platillo platillo = new Platillo(datosPlato[0]);
 
                 if (datosPlato.length > 1) {
-                    for (String nomInsumo : datosPlato[1].split(",")) {
-                        platillo.agregarInsumo(new Insumo(nomInsumo, 1, "Ingrediente"));
+                    for (String rawInsumo : datosPlato[1].split(",")) {
+                        if (rawInsumo.isBlank()) continue;
+                        Insumo insumo = parsearInsumoMenu(rawInsumo);
+                        platillo.agregarInsumo(insumo);
                     }
                 }
                 menu.agregarPlatillo(platillo);
@@ -656,6 +659,25 @@ public class DataBase {
         return com.gesco.models.CFCV.fromLine(lineas.get(0));
     }
 
+    public static List<Insumo> obtenerInsumos() {
+        List<String> lineas = leerLineasGenericas(ARCHIVO_INSUMOS);
+        List<Insumo> resultado = new ArrayList<>();
+
+        for (String linea : lineas) {
+            if (linea == null) continue;
+            String limpia = linea.trim();
+            if (limpia.isEmpty()) continue;
+            if (limpia.toLowerCase(Locale.ROOT).startsWith("nombre insumo")) continue;
+
+            Insumo insumo = parsearLineaInsumo(limpia);
+            if (insumo != null) {
+                resultado.add(insumo);
+            }
+        }
+
+        return resultado;
+    }
+
     public static boolean guardarCcb(CCB ccb) {
         if (ccb == null) return false;
         String linea = String.format(
@@ -714,6 +736,57 @@ public class DataBase {
         } catch (NumberFormatException ex) {
             return 0.0;
         }
+    }
+
+    private static float parseFloatSeguro(String valor) {
+        if (valor == null) return 0.0f;
+        try {
+            return Float.parseFloat(valor.trim().replace(',', '.'));
+        } catch (NumberFormatException ex) {
+            return 0.0f;
+        }
+    }
+
+    private static String formatearInsumoMenu(Insumo insumo) {
+        if (insumo == null) return "";
+        String nombre = valorSeguro(insumo.getNombre());
+        int cantidad = insumo.getCantidad();
+        float total = insumo.getCostoInsumoTotal();
+        return String.format(Locale.US, "%s~%d~%.2f", nombre, cantidad, total);
+    }
+
+    private static Insumo parsearInsumoMenu(String raw) {
+        String limpio = raw.trim();
+        if (limpio.isEmpty()) {
+            return new Insumo("", 1, "Ingrediente", 0.0f);
+        }
+
+        String[] partes = limpio.split("~");
+        if (partes.length >= 3) {
+            String nombre = partes[0].trim();
+            int cantidad = (int) parseFloatSeguro(partes[1]);
+            float total = parseFloatSeguro(partes[2]);
+            float unitario = (cantidad > 0) ? (total / cantidad) : 0.0f;
+            Insumo insumo = new Insumo(nombre, cantidad, "Ingrediente", unitario);
+            insumo.setCostoInsumoTotal(total);
+            return insumo;
+        }
+
+        return new Insumo(limpio, 1, "Ingrediente", 0.0f);
+    }
+
+    private static Insumo parsearLineaInsumo(String linea) {
+        String sinPuntoYComa = linea.replace(";", "");
+        String[] partes = sinPuntoYComa.split(":");
+        if (partes.length < 4) return null;
+
+        String nombre = partes[0].trim();
+        String tipo = partes[1].trim();
+        int cantidad = (int) parseFloatSeguro(partes[2]);
+        float precioUnitario = parseFloatSeguro(partes[3]);
+
+        if (nombre.isEmpty()) return null;
+        return new Insumo(nombre, cantidad, tipo, precioUnitario);
     }
 
     public static boolean esDiaNoDisponible(String fechaStr) {

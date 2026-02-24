@@ -7,7 +7,7 @@ import java.util.List;
 public class Platillo {
     private final String nombre;
     private final List<Insumo> insumos;
-    private final float costoPlatillo;
+    private float costoPlatillo;
 
     public Platillo(String nombre){
         this.nombre = nombre;
@@ -23,6 +23,7 @@ public class Platillo {
     public void agregarInsumo(Insumo insumo) {
         if (insumo != null) {
             this.insumos.add(insumo);
+            this.costoPlatillo = calcularCostoPlatillo();
         }
     }
     public String getNombre() { return nombre; }
@@ -34,12 +35,13 @@ public class Platillo {
     public final float calcularCostoPlatillo() {
         float costoTotal = 0.0f;
         for (Insumo insumo : insumos) {
-            costoTotal += insumo.getCostoInsumo();
+            costoTotal += insumo.getCostoInsumoTotal();
         }
         return costoTotal;
     }
     public float getCostoPlatillo() {
-        return costoPlatillo;
+        this.costoPlatillo = calcularCostoPlatillo();
+        return this.costoPlatillo;
     }
     @Override
     public String toString() {

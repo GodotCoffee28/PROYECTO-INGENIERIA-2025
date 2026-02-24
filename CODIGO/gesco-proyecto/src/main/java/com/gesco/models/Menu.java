@@ -63,7 +63,10 @@ public class Menu {
     public LocalDate getFecha() { return fecha; }
     public EstadoMenu getEstado() { return estado; }
 
-    public float getCostoMenu() { return costoMenu; }
+    public float getCostoMenu() {
+        this.costoMenu = calcularCostoMenu();
+        return this.costoMenu;
+    }
     public void setEstado(EstadoMenu estado) {
         if (estado != null) {
             this.estado = estado;

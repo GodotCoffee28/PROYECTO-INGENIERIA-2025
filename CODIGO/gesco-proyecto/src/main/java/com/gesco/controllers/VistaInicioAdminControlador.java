@@ -37,7 +37,7 @@ public class VistaInicioAdminControlador {
 
         vista.getBtnGestion().addActionListener(e -> onGestionMenu.run());
         vista.getBtnSubirDatos().addActionListener(e -> onSubirDatos.run());
-        vista.getBtnVerDatos().addActionListener(e -> onVerDatos.run());
+        vista.getBtnVerCCB().addActionListener(e -> onVerDatos.run());
         vista.getBtnCambio().addActionListener(e -> onCambio.run());
     }
 }
