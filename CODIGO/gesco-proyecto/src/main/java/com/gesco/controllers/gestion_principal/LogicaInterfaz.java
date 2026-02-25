@@ -7,7 +7,7 @@ import com.gesco.controllers.auntentificacion.ControladorRegistro;
 import com.gesco.controllers.costos.ControladorCargarCCB;
 import com.gesco.controllers.costos.ControladorRecargarSaldo;
 import com.gesco.controllers.costos.ControladorVerCCB;
-import com.gesco.controllers.costos.ControladorVerCFCV;
+//import com.gesco.controllers.costos.ControladorVerCFCV;
 import com.gesco.controllers.inicio.ControladorInicio;
 import com.gesco.controllers.inicio.ControladorInicioAdmin;
 import com.gesco.controllers.inicio.ControladorInicioComensal;
@@ -216,7 +216,7 @@ public class LogicaInterfaz {
         );
         controlador.conectar();
     }
-
+    /*
     private void mostrarVerCfcv() {
         cerrarVistas();
         vistaVerCfcv = new VistaVerCFCV();
@@ -225,8 +225,7 @@ public class LogicaInterfaz {
             vistaVerCfcv,
             this::mostrarPanelControl
         ).conectar();
-    }
-
+    } */
     private void mostrarVerCcb() {
         cerrarVistas();
         vistaVerCcb = new VistaVerCCB();

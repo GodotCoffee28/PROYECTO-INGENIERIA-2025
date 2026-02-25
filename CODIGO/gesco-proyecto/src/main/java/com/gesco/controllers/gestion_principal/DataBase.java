@@ -580,7 +580,7 @@ public class DataBase {
         }
         return resultado;
     }
-
+/* 
     private static List<LocalDate> obtenerSiguientesCincoDiasHabiles(LocalDate baseExclusiva) {
         List<LocalDate> resultado = new ArrayList<>();
         LocalDate cursor = (baseExclusiva == null ? LocalDate.now() : baseExclusiva).plusDays(1);
@@ -593,7 +593,7 @@ public class DataBase {
         }
         return resultado;
     }
-
+ */
     private static boolean esFeriado(LocalDate fecha) {
         String mmdd = String.format("%02d-%02d", fecha.getMonthValue(), fecha.getDayOfMonth());
         if (FERIADOS_FIJOS_MM_DD.contains(mmdd)) return true;
@@ -657,7 +657,7 @@ public class DataBase {
 
         return menu.tienePlatillos();
     }
-
+/* 
     private static LocalDate fechaMaximaEnMenus(List<String> lineas) {
         LocalDate maxima = null;
         for (String linea : lineas) {
@@ -673,7 +673,7 @@ public class DataBase {
         }
         return maxima;
     }
-
+ */
     private static boolean existeMenuParaFecha(List<String> lineas, LocalDate fecha) {
         String fechaStr = fecha.toString();
         for (String linea : lineas) {
