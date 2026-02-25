@@ -5,12 +5,13 @@ import com.gesco.controllers.gestion_principal.DataBase;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
 
-import com.gesco.models.usuarios.Usuario.TipoUsuario;
 import com.gesco.controllers.gestion_principal.ValidadorIdentidad;
+import com.gesco.models.usuarios.Usuario.TipoUsuario;
 import com.gesco.views.auntentificacion.VistaInicioSesion;
 
 public class ControladorInicioSesion {
@@ -18,17 +19,20 @@ public class ControladorInicioSesion {
     private final VistaInicioSesion vista;
     private final Runnable onBack;
     private final Runnable onRegistro;
+    private final Consumer<String> onCedulaAutenticada;
     private final BiConsumer<TipoUsuario, String> onLoginSuccess;
 
     public ControladorInicioSesion(
         VistaInicioSesion vista,
         Runnable onBack,
         Runnable onRegistro,
+        Consumer<String> onCedulaAutenticada,
         BiConsumer<TipoUsuario, String> onLoginSuccess
     ) {
         this.vista = vista;
         this.onBack = onBack;
         this.onRegistro = onRegistro;
+        this.onCedulaAutenticada = onCedulaAutenticada;
         this.onLoginSuccess = onLoginSuccess;
     }
 
@@ -53,10 +57,6 @@ public class ControladorInicioSesion {
             }
         });
     }
-
-    // ---------------------------------------------------------------
-    // Login normal
-    // ---------------------------------------------------------------
 
     private void procesarInicioSesion() {
         String cedula = DataBase.normalizarCedula(vista.getCedula());
@@ -108,6 +108,7 @@ public class ControladorInicioSesion {
             TipoUsuario tipoUsuario = DataBase.obtenerTipoUsuario(cedula);
             String nombre = DataBase.obtenerNombre(cedula);
             if (nombre == null || nombre.isBlank()) nombre = "Usuario";
+            onCedulaAutenticada.accept(cedula);
             onLoginSuccess.accept(tipoUsuario, nombre);
         } else {
             JOptionPane.showMessageDialog(
@@ -214,6 +215,7 @@ public class ControladorInicioSesion {
                 TipoUsuario tipoUsuario = DataBase.obtenerTipoUsuario(cedula);
                 String nombre = DataBase.obtenerNombre(cedula);
                 if (nombre == null || nombre.isBlank()) nombre = "Usuario";
+                onCedulaAutenticada.accept(cedula);
                 onLoginSuccess.accept(tipoUsuario, nombre);
             } else {
                 JOptionPane.showMessageDialog(

@@ -37,7 +37,7 @@ public class VistaTurnos extends PlantillaGesco {
     }
 
     private void inicializarComponentes() {
-        titulo = crearEtiquetaPersonalizada("Turnos de comida", "Times New Roman", Font.BOLD, 24, Color.WHITE,  "centro");
+        titulo = crearEtiquetaPersonalizada("Turnos de comida", "Times New Roman", Font.BOLD, 30, Color.WHITE,  "centro");
         titulo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         
         listaTurnos = new ArrayList<>();

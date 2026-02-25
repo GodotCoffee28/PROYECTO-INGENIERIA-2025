@@ -9,9 +9,9 @@ public class VistaInicioComensal extends PlantillaGesco {
     private BotonNeon btnVerMenu, btnHorarios, btnAccesoFila, btnRecargar, btnRegistro;
     private JLabel bienvenida, infoTurnos, infoMenu, lblSaldo, infoFila;
     private String nombreUsuario;
-    private int saldoDisponible = 0;
+    private double saldoDisponible = 0.0;
 
-    public VistaInicioComensal(String nombre, int saldo) {
+    public VistaInicioComensal(String nombre, double saldo) {
         super();
         this.nombreUsuario = nombre;
         this.saldoDisponible = saldo;
@@ -60,7 +60,8 @@ public class VistaInicioComensal extends PlantillaGesco {
         infoFila.setFont(new Font("Arial", Font.PLAIN, 20));
         infoFila.setForeground(new Color(230, 230, 230));
 
-        lblSaldo = new JLabel("Saldo Disponible: " + saldoDisponible + " Bs.");
+        lblSaldo = new JLabel();
+        actualizarTextoSaldo();
         lblSaldo.setFont(new Font("Times New Roman", Font.BOLD, 20));
         lblSaldo.setForeground(Color.WHITE);
     }
@@ -172,5 +173,20 @@ public class VistaInicioComensal extends PlantillaGesco {
 
     public BotonNeon getBtnHorarios() {
         return btnHorarios;
+    }
+
+    public BotonNeon getBtnRecargar() {
+        return btnRecargar;
+    }
+
+    public void setSaldoDisponible(double saldoDisponible) {
+        this.saldoDisponible = saldoDisponible;
+        actualizarTextoSaldo();
+    }
+
+    private void actualizarTextoSaldo() {
+        if (lblSaldo != null) {
+            lblSaldo.setText("Saldo Disponible: " + String.format("%.2f", saldoDisponible) + " Bs.");
+        }
     }
 }

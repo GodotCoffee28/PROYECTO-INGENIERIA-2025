@@ -5,6 +5,7 @@ import javax.swing.SwingUtilities;
 import com.gesco.controllers.auntentificacion.ControladorInicioSesion;
 import com.gesco.controllers.auntentificacion.ControladorRegistro;
 import com.gesco.controllers.costos.ControladorCargarCCB;
+import com.gesco.controllers.costos.ControladorRecargarSaldo;
 import com.gesco.controllers.costos.ControladorVerCCB;
 import com.gesco.controllers.costos.ControladorVerCFCV;
 import com.gesco.controllers.inicio.ControladorInicio;
@@ -16,20 +17,21 @@ import com.gesco.controllers.menu.ControladorGestionMenu;
 import com.gesco.controllers.menu.ControladorMenuSemana;
 import com.gesco.controllers.otros.ControladorEspera;
 import com.gesco.controllers.otros.ControladorTurnos;
+import com.gesco.views.auntentificacion.VistaInicioSesion;
+import com.gesco.views.auntentificacion.VistaRegistro;
 import com.gesco.views.costos.VistaCargaCCB;
-import com.gesco.views.menu.VistaCrearMenu;
-import com.gesco.views.menu.VistaEditarMenu;
-import com.gesco.views.otros.VistaEspera;
-import com.gesco.views.menu.VistaGestionMenu;
+import com.gesco.views.costos.VistaRecargarSaldo;
+import com.gesco.views.costos.VistaVerCCB;
+import com.gesco.views.costos.VistaVerCFCV;
 import com.gesco.views.inicio.VistaInicio;
 import com.gesco.views.inicio.VistaInicioAdmin;
 import com.gesco.views.inicio.VistaInicioComensal;  
-import com.gesco.views.auntentificacion.VistaInicioSesion;
+import com.gesco.views.menu.VistaCrearMenu;
+import com.gesco.views.menu.VistaEditarMenu;
+import com.gesco.views.menu.VistaGestionMenu;
 import com.gesco.views.menu.VistaMenuSemana;
-import com.gesco.views.auntentificacion.VistaRegistro;
+import com.gesco.views.otros.VistaEspera;
 import com.gesco.views.otros.VistaTurnos;
-import com.gesco.views.costos.VistaVerCCB;
-import com.gesco.views.costos.VistaVerCFCV;
 
 public class LogicaInterfaz {
 
@@ -39,6 +41,7 @@ public class LogicaInterfaz {
     private VistaEspera vistaEspera;
     private VistaInicioAdmin vistaInicioAdmin;
     private VistaInicioComensal vistaInicioComensal;  
+    private VistaRecargarSaldo vistaRecargarSaldo;
     private VistaMenuSemana vistaMenuSemana;
     private VistaTurnos vistaTurnos;
     private VistaCargaCCB vistaCargaCCB;
@@ -50,6 +53,7 @@ public class LogicaInterfaz {
     private boolean usuarioAdmin;
     private boolean sesionAdmin;
     private String nombreUsuario;
+    private String cedulaSesionActual;
     private final InicioSesionRedireccionador inicioSesionRedireccionador =
         new InicioSesionRedireccionador(this::mostrarPantallaAdmin, nombre -> mostrarPantallaPrincipal(false, nombre));
     private final MenuGescoControlador menuGescoController = new MenuGescoControlador(
@@ -71,6 +75,7 @@ public class LogicaInterfaz {
     );
 
     public void iniciar() {
+        cedulaSesionActual = null;
         SwingUtilities.invokeLater(() -> {
             cerrarVistas();
             vistaInicio = new VistaInicio();
@@ -89,6 +94,7 @@ public class LogicaInterfaz {
             vistaInicioSesion,
             this::iniciar,  
             this::mostrarRegistro,
+            cedula -> this.cedulaSesionActual = cedula,
             (tipoUsuario, nombre) -> inicioSesionRedireccionador.redirigir(tipoUsuario, nombre)
         ).conectar();
     }
@@ -120,18 +126,24 @@ public class LogicaInterfaz {
         nombreUsuario = nombre;
 
         String nombreMostrar = (nombre == null || nombre.isBlank()) ? "Usuario" : nombre;
-        if (sesionAdmin) {
-            vistaInicioComensal = new VistaInicioComensal(nombreMostrar, 999999);
+        double saldo = 0.0;
+        if (cedulaSesionActual != null && !cedulaSesionActual.isBlank()) {
+            saldo = DataBase.obtenerSaldo(cedulaSesionActual);
+        } else if (sesionAdmin) {
+            saldo = 999999;
         } else {
-            vistaInicioComensal = new VistaInicioComensal(nombreMostrar, 50);
+            saldo = 50;
         }
+
+        vistaInicioComensal = new VistaInicioComensal(nombreMostrar, saldo);
 
         menuGescoController.conectar(vistaInicioComensal, sesionAdmin);
         new ControladorInicioComensal(
             vistaInicioComensal,
             this::iniciar,
             this::mostrarMenuSemana,
-            this::mostrarTurnos
+            this::mostrarTurnos,
+            this::mostrarRecargarSaldo
         ).conectar();
     }
 
@@ -456,8 +468,36 @@ public class LogicaInterfaz {
         cerrarVistaCrearMenu();
         cerrarVistaEditarMenu();
         cerrarVistaGestionMenu();
+        cerrarVistaRecargarSaldo();
     }
 
+    private void mostrarRecargarSaldo() {
+        if (cedulaSesionActual == null || cedulaSesionActual.isBlank()) {
+            javax.swing.JOptionPane.showMessageDialog(null,
+                "No hay una cédula de sesión activa para recargar saldo.",
+                "Sesión requerida",
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+            volverAPantallaPrincipal();
+            return;
+        }
+
+        cerrarVistas();
+        vistaRecargarSaldo = new VistaRecargarSaldo();
+        menuGescoController.conectar(vistaRecargarSaldo, sesionAdmin);
+        new ControladorRecargarSaldo(
+            vistaRecargarSaldo,
+            cedulaSesionActual,
+            this::volverAPantallaPrincipal,
+            this::volverAPantallaPrincipal
+        ).conectar();
+    }
+
+    private void cerrarVistaRecargarSaldo() {
+        if (vistaRecargarSaldo != null) {
+            vistaRecargarSaldo.dispose();
+            vistaRecargarSaldo = null;
+        }
+    }
 }
 
 
