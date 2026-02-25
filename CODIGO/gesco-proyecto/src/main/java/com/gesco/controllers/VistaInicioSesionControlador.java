@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
 
 import com.gesco.models.TipoUsuario;
-import com.gesco.models.ValidadorIdentidad;
+import com.gesco.controllers.ValidadorIdentidad;
 import com.gesco.views.VistaInicioSesion;
 
 public class VistaInicioSesionControlador {
