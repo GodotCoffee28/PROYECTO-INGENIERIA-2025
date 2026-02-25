@@ -2,6 +2,7 @@ package com.gesco.controllers;
 
 import javax.swing.JOptionPane;
 
+import com.gesco.models.TipoUsuario;
 import com.gesco.views.VistaRegistro;
 
 public class VistaRegistroControlador {
@@ -41,7 +42,7 @@ public class VistaRegistroControlador {
 
     private void procesarRegistro() {
         String nombre = vista.getNombreApellido();
-        String cedula = vista.getCedula();
+        String cedula = DataBase.normalizarCedula(vista.getCedula());
         String correo = vista.getCorreo();
         String clave = vista.getContra();
         String tipoUsuario = vista.getTipoUsuarioSeleccionado();
@@ -72,10 +73,10 @@ public class VistaRegistroControlador {
 
         try {
             long cedulaNumero = Long.parseLong(cedula);
-            if (cedulaNumero < 8_000_000L) {
+            if (cedulaNumero < 8_000_000L || cedulaNumero > 45_000_000L) {
                 JOptionPane.showMessageDialog(
                     vista,
-                    "La cédula debe ser mayor o igual a 8.000.000.",
+                    "La cédula debe estar entre 8.000.000 y 45.000.000.",
                     "Cédula inválida",
                     JOptionPane.WARNING_MESSAGE
                 );
@@ -114,17 +115,40 @@ public class VistaRegistroControlador {
         }
 
         if (esAdmin) {
+            if (!DataBase.adminAutorizadoPorSuperAdmin(cedula, codigoAdmin)) {
+                JOptionPane.showMessageDialog(
+                    vista,
+                    "No está autorizado para registrarse como administrador con esa cédula/código.",
+                    "Autorización inválida",
+                    JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
             guardado = DataBase.registrarAdministrador(cedula, clave, nombre, correo, codigoAdmin);
         } else {
-            guardado = DataBase.registrarUsuario(cedula, clave, nombre, correo);
+            if (DataBase.cedulaYaRegistrada(cedula)) {
+                JOptionPane.showMessageDialog(
+                    vista,
+                    "La cédula ya está registrada. Inicie sesión o use otra cédula.",
+                    "Cédula duplicada",
+                    JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+            TipoUsuario tipoComensal = switch (tipoUsuario) {
+                case "Profesor" -> TipoUsuario.PROFESOR;
+                case "Empleado" -> TipoUsuario.EMPLEADO;
+                default -> TipoUsuario.ESTUDIANTE;
+            };
+            guardado = DataBase.registrarUsuario(cedula, clave, nombre, correo, tipoComensal);
         }
 
         if (!guardado) {
             JOptionPane.showMessageDialog(
                 vista,
                 esAdmin
-                    ? "No se pudo registrar como administrador. Verifique autorización, cédula o duplicidad."
-                    : "No se pudo guardar el usuario. La cédula ya está registrada o no cumple validación.",
+                    ? "No se pudo registrar como administrador. Revise datos y autorización."
+                    : "No se pudo guardar el usuario por un error de persistencia. Intente nuevamente.",
                 "Registro fallido",
                 JOptionPane.ERROR_MESSAGE
             );

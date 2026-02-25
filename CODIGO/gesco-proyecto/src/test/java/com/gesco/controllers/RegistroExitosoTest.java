@@ -1,5 +1,6 @@
 package com.gesco.controllers;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -10,6 +11,8 @@ import java.nio.file.Paths;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.gesco.models.TipoUsuario;
 
 public class RegistroExitosoTest {
 
@@ -42,5 +45,23 @@ public class RegistroExitosoTest {
     @Test
     public void registrarUsuario_datosValidos_devuelveTrue() {
         assertTrue(DataBase.registrarUsuario("87654321", "clave456", "Ana Garcia", "ana@email.com"));
+    }
+
+    @Test
+    public void registrarUsuario_estudiante_guardaTipoUsuario() {
+        assertTrue(DataBase.registrarUsuario("87654322", "clave456", "Ana Garcia", "ana@email.com", TipoUsuario.ESTUDIANTE));
+        assertEquals(TipoUsuario.ESTUDIANTE, DataBase.obtenerTipoUsuario("87654322"));
+    }
+
+    @Test
+    public void registrarUsuario_profesor_guardaTipoUsuario() {
+        assertTrue(DataBase.registrarUsuario("87654323", "clave456", "Ana Garcia", "ana@email.com", TipoUsuario.PROFESOR));
+        assertEquals(TipoUsuario.PROFESOR, DataBase.obtenerTipoUsuario("87654323"));
+    }
+
+    @Test
+    public void registrarUsuario_empleado_guardaTipoUsuario() {
+        assertTrue(DataBase.registrarUsuario("87654324", "clave456", "Ana Garcia", "ana@email.com", TipoUsuario.EMPLEADO));
+        assertEquals(TipoUsuario.EMPLEADO, DataBase.obtenerTipoUsuario("87654324"));
     }
 }

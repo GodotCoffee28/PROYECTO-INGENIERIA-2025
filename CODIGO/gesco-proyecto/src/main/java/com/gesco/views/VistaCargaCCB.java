@@ -9,6 +9,7 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -26,7 +27,8 @@ public class VistaCargaCCB extends PlantillaGesco {
     private static final DateTimeFormatter FECHA_FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private BotonNeon btnSubirDatos;
     private CampoFecha campoFecha;
-    private JTextField usuario, NB, MERMA, CF, CV;
+    private JComboBox<String> usuario;
+    private JTextField NB, MERMA, CF, CV;
     private JLabel Titulo;
     private JLabel lblResultado;
     
@@ -69,8 +71,12 @@ public class VistaCargaCCB extends PlantillaGesco {
 
         formPanel.add(crearEtiquetaPersonalizada("Tipo de usuario (Estudiante/Profesor/Empleado)", "Times New Roman", Font.PLAIN, 18, new Color(180, 180, 180), "izquierda"));
         formPanel.add(Box.createVerticalStrut(5));
-        usuario = new JTextField();
-        CajaCCB(usuario, tamCaja);
+        usuario = new JComboBox<>(new String[] {"Estudiante", "Profesor", "Empleado"});
+        usuario.setPreferredSize(tamCaja);
+        usuario.setMaximumSize(tamCaja);
+        usuario.setAlignmentX(Component.LEFT_ALIGNMENT);
+        usuario.setFont(new Font("Arial", Font.PLAIN, 15));
+        usuario.setBackground(new Color(255, 255, 255, 240));
         formPanel.add(usuario);
         formPanel.add(Box.createVerticalStrut(12));
 
@@ -136,7 +142,10 @@ public class VistaCargaCCB extends PlantillaGesco {
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
     }
 
-    public String getUsuario(){ return usuario.getText();}
+    public String getUsuario(){
+        Object seleccionado = usuario.getSelectedItem();
+        return seleccionado == null ? "Estudiante" : seleccionado.toString();
+    }
     public String getNB(){ return NB.getText();}
     public String getMERMA(){ return MERMA.getText();}
     public String getCF(){ return CF.getText();}
