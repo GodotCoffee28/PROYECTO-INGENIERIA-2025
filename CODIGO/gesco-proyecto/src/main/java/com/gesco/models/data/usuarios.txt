@@ -1,2 +1,4 @@
+Cedula:Contraseña: Nombre Y apellido: gmail: Tipo de usuario: Saldo;
 12345678:123456789:Jhon:adaad@:Estudiante:0.0;
 33246679:123456789:Gab:adad@:Comensal:100663.70;
+32111454:32111454:Ramses Cordoba:aaroncordobarivas@gmail.com:Comensal:0.0;

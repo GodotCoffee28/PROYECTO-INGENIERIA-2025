@@ -1,4 +1,4 @@
-Nombre Insumo : Tipo Nutricional : Cantidad Insumo : Precio Insumo (Unitario) : Precio Insumo (Total);
+Nombre Insumo : Tipo Nutricional : Cantidad Insumo : Precio Insumo (Unitario) :
 Manzana : Fruta : 10 : 2.5 :
 Arroz : Carbohidrato : 50 : 1.2 :
 Pollo : Proteina : 30 : 4.75 :
