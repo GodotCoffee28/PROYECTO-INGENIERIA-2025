@@ -1,5 +1,7 @@
 package com.gesco.controllers;
 
+
+import com.gesco.controllers.gestion_principal.DataBase;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -14,8 +16,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.gesco.models.CCB;
-import com.gesco.models.TipoUsuario;
+import com.gesco.models.costos.CCB;
+import com.gesco.models.usuarios.Usuario.TipoUsuario;
 
 public class DataBaseCcbDescuentoTest {
 
@@ -99,3 +101,5 @@ public class DataBaseCcbDescuentoTest {
         assertEquals(3.0, monto, 0.0001);
     }
 }
+
+

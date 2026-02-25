@@ -1,5 +1,7 @@
 package com.gesco.controllers;
 
+
+import com.gesco.controllers.gestion_principal.DataBase;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -20,3 +22,5 @@ public class DataBaseDiasHabilesMenuTest {
         assertTrue(DataBase.esDiaHabil(LocalDate.of(2026, 2, 23))); // lunes
     }
 }
+
+

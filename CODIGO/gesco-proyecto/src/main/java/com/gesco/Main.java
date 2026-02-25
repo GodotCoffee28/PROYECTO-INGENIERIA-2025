@@ -1,8 +1,8 @@
 package com.gesco;
 
-import com.gesco.controllers.LogicaInterfaz;
-//import com.gesco.views.VistaMenuSemana;
-//import com.gesco.views.VistaMenuSemana;
+import com.gesco.controllers.gestion_principal.LogicaInterfaz;
+//import com.gesco.views.menu.VistaMenuSemana;
+//import com.gesco.views.menu.VistaMenuSemana;
 
 public class Main {
 
@@ -11,3 +11,5 @@ public class Main {
         logica.iniciar();
     }
 } 
+
+
