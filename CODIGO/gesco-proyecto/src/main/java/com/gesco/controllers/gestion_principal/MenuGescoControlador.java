@@ -1,11 +1,12 @@
 package com.gesco.controllers.gestion_principal;
 
 import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class MenuGescoControlador {
@@ -18,7 +19,7 @@ public class MenuGescoControlador {
         this.comandosControlador = new MenuComandosControlador(acciones);
     }
 
-    public void conectar(PlantillaGesco vista, boolean esAdmin) {
+    public void conectar(PlantillaGesco vista, boolean esAdmin, String cedulaSesion) {
         
         JPopupMenu menu = esAdmin
             ? vista.getPopupMenu().getMenuAdmin()
@@ -43,9 +44,7 @@ public class MenuGescoControlador {
             vista.getIconoUsuario().addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    JPopupMenu menuPerfil = vista.getPopupMenu().generarMenuPerfil(
-                        0
-                    );
+                    JPopupMenu menuPerfil = vista.getPopupMenu().generarMenuPerfil(cedulaSesion);
                     menuPerfil.show(e.getComponent(), 0, e.getComponent().getHeight());
                 }
             });
