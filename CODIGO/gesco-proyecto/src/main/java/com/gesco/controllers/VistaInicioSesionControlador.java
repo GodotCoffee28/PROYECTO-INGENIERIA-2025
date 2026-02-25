@@ -1,14 +1,14 @@
 package com.gesco.controllers;
 
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.util.function.BiConsumer;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
 
+import java.io.File;
+
 import com.gesco.models.TipoUsuario;
-import com.gesco.controllers.ValidadorIdentidad;
 import com.gesco.views.VistaInicioSesion;
 
 public class VistaInicioSesionControlador {
@@ -34,9 +34,6 @@ public class VistaInicioSesionControlador {
         // Login normal con cédula y contraseña
         vista.getBtnInicioSesion().addActionListener(e -> procesarInicioSesion());
 
-        // Acceso facial
-        vista.getBtnAccesoFacial().addActionListener(e -> procesarAccesoFacial());
-
         vista.getRegistroLink().addMouseListener(new MouseInputAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -51,10 +48,6 @@ public class VistaInicioSesionControlador {
             }
         });
     }
-
-    // ---------------------------------------------------------------
-    // Login normal
-    // ---------------------------------------------------------------
 
     private void procesarInicioSesion() {
         String cedula = DataBase.normalizarCedula(vista.getCedula());
