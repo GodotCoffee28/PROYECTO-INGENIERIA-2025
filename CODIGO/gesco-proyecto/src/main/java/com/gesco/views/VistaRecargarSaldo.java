@@ -104,8 +104,14 @@ public class VistaRecargarSaldo extends PlantillaGesco {
     public String getFecha() { return campoFecha.getFechaTexto(); }  
     public String getCedula() { return CeduField.getText();}
     public String getBanco() { return BancoField.getText();}
+    public String getReferencia() { return RefenciaField.getText();}
     public String getMonto() { return MontoField.getText();}
     public BotonNeon getBotonRecargar() {return botonRecargar;}
+
+    public void setCedula(String cedula) {
+        CeduField.setText(cedula == null ? "" : cedula);
+        CeduField.setEditable(false);
+    }
 
 }
 

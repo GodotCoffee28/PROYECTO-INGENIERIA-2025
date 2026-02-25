@@ -2,6 +2,7 @@ package com.gesco.controllers;
 
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.function.Consumer;
 import java.util.function.BiConsumer;
 
 import javax.swing.JOptionPane;
@@ -15,17 +16,20 @@ public class VistaInicioSesionControlador {
     private final VistaInicioSesion vista;
     private final Runnable onBack;
     private final Runnable onRegistro;
+    private final Consumer<String> onCedulaAutenticada;
     private final BiConsumer<TipoUsuario, String> onLoginSuccess;
 
     public VistaInicioSesionControlador(
         VistaInicioSesion vista,
         Runnable onBack,
         Runnable onRegistro,
+        Consumer<String> onCedulaAutenticada,
         BiConsumer<TipoUsuario, String> onLoginSuccess
     ) {
         this.vista = vista;
         this.onBack = onBack;
         this.onRegistro = onRegistro;
+        this.onCedulaAutenticada = onCedulaAutenticada;
         this.onLoginSuccess = onLoginSuccess;
     }
 
@@ -105,6 +109,7 @@ public class VistaInicioSesionControlador {
             TipoUsuario tipoUsuario = DataBase.obtenerTipoUsuario(cedula);
             String nombre = DataBase.obtenerNombre(cedula);
             if (nombre == null || nombre.isBlank()) nombre = "Usuario";
+            onCedulaAutenticada.accept(cedula);
             onLoginSuccess.accept(tipoUsuario, nombre);
         } else {
             JOptionPane.showMessageDialog(
@@ -211,6 +216,7 @@ public class VistaInicioSesionControlador {
                 TipoUsuario tipoUsuario = DataBase.obtenerTipoUsuario(cedula);
                 String nombre = DataBase.obtenerNombre(cedula);
                 if (nombre == null || nombre.isBlank()) nombre = "Usuario";
+                onCedulaAutenticada.accept(cedula);
                 onLoginSuccess.accept(tipoUsuario, nombre);
             } else {
                 JOptionPane.showMessageDialog(
