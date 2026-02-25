@@ -1,0 +1,930 @@
+package com.gesco.controllers.gestion_principal;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+
+import com.gesco.models.costos.CCB;
+import com.gesco.models.menu.Insumo;
+import com.gesco.models.menu.Menu;
+import com.gesco.models.menu.Menu.EstadoMenu;
+import com.gesco.models.menu.Platillo;
+import com.gesco.models.usuarios.Usuario.TipoUsuario;
+
+public class DataBase {
+
+    private static final String ARCHIVO_USUARIOS = "usuarios.txt";
+    private static final String ARCHIVO_ADMINS = "admins.txt";
+    private static final String ARCHIVO_SUPER_ADMINS = "super_admins.txt";
+    private static final String ARCHIVO_ADMINS_AUTORIZADOS = "admins_autorizados.txt";
+    private static final String ARCHIVO_MENUS = "menus.txt";
+    private static final String ARCHIVO_CFCV = "cfcv.txt";
+    private static final String ARCHIVO_CCB = "ccb.txt";
+    private static final String ARCHIVO_INSUMOS = "insumos.txt";
+    private static final String ARCHIVO_FERIADOS = "feriados.txt";
+    private static final String ARCHIVO_NO_LABORABLES = "sabados_domingos_2026.txt";
+    private static final String CARPETA_SECRETARIA = "secretaria";
+
+    private static final long CEDULA_MINIMA = 8_000_000L;
+    private static final long CEDULA_MAXIMA = 45_000_000L;
+    private static final double CCB_ESTUDIANTE_MIN = 0.20;
+    private static final double CCB_ESTUDIANTE_MAX = 0.30;
+    private static final double CCB_PROFESOR_MIN = 0.70;
+    private static final double CCB_PROFESOR_MAX = 0.90;
+    private static final double CCB_EMPLEADO_MIN = 0.90;
+    private static final double CCB_EMPLEADO_MAX = 1.10;
+    private static final Set<String> FERIADOS_FIJOS_MM_DD = Set.of();
+
+    private static String DATA_DIR = "src/main/java/com/gesco/models/data";
+
+    static {
+        String prop = System.getProperty("gesco.data.dir");
+        String env = System.getenv("GESCO_DATA_DIR");
+        if (prop != null && !prop.isBlank()) {
+            DATA_DIR = prop.trim();
+        } else if (env != null && !env.isBlank()) {
+            DATA_DIR = env.trim();
+        }
+    }
+
+    public static void setDataDir(String dataDir) {
+        if (dataDir != null && !dataDir.isBlank()) DATA_DIR = dataDir.trim();
+    }
+
+    public static String getDataDir() { return DATA_DIR; }
+
+    public static File obtenerImagenSecretaria(String cedula) {
+        Path basePath = obtenerBaseProyecto();
+        Path dataPath = Paths.get(DATA_DIR);
+        Path secretariaPath;
+
+        if (dataPath.isAbsolute()) {
+            secretariaPath = dataPath.resolve(CARPETA_SECRETARIA);
+        } else {
+            secretariaPath = basePath.resolve(DATA_DIR).resolve(CARPETA_SECRETARIA);
+        }
+
+        return secretariaPath.resolve(valorSeguro(cedula) + ".jpg").toFile();
+    }
+
+    private static File obtenerArchivo(String nombreArchivo) {
+        Path basePath = obtenerBaseProyecto();
+        Path dataPath = Paths.get(DATA_DIR);
+        if (dataPath.isAbsolute()) {
+            return dataPath.resolve(nombreArchivo).toFile();
+        } else {
+            return basePath.resolve(DATA_DIR).resolve(nombreArchivo).toFile();
+        }
+    }
+
+    private static void asegurarArchivoGenerico(String nombreArchivo) {
+        File file = obtenerArchivo(nombreArchivo);
+        if (!file.exists()) {
+            try {
+                File parent = file.getParentFile();
+                if (parent != null && !parent.exists()) {
+                    parent.mkdirs();
+                }
+                file.createNewFile();
+            } catch (IOException e) {
+                System.err.println("Error creando estructura para: " + nombreArchivo);
+            }
+        }
+    }
+
+    private static boolean escribirLineaGenerica(String nombreArchivo, String contenido) {
+        asegurarArchivoGenerico(nombreArchivo);
+        File archivo = obtenerArchivo(nombreArchivo);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, StandardCharsets.UTF_8, true))) {
+            writer.write(contenido);
+            return true;
+        } catch (IOException e) {
+            System.err.println("Error escribiendo en " + nombreArchivo + ": " + e.getMessage());
+            return false;
+        }
+    }
+
+    private static List<String> leerLineasGenericas(String nombreArchivo) {
+        List<String> lineas = new ArrayList<>();
+        File archivo = obtenerArchivo(nombreArchivo);
+
+        if (!archivo.exists()) return lineas;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(archivo, StandardCharsets.UTF_8))) {
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                if (!linea.trim().isEmpty()) {
+                    lineas.add(linea);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error leyendo " + nombreArchivo + ": " + e.getMessage());
+        }
+        return lineas;
+    }
+
+    private static boolean reescribirArchivoGenerico(String nombreArchivo, List<String> nuevasLineas) {
+        asegurarArchivoGenerico(nombreArchivo);
+        File archivo = obtenerArchivo(nombreArchivo);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, false))) {
+            for (String linea : nuevasLineas) {
+                writer.write(linea);
+                writer.newLine();
+            }
+            return true;
+        } catch (IOException e) {
+            System.err.println("Error reescribiendo " + nombreArchivo);
+            return false;
+        }
+    }
+
+    public static boolean registrarUsuario(String cedula, String clave, String nombre, String correo) {
+        return registrarUsuario(cedula, clave, nombre, correo, TipoUsuario.COMENSAL);
+    }
+
+    public static boolean registrarUsuario(String cedula, String clave, String nombre, String correo, TipoUsuario tipoUsuario) {
+        if (!cedulaValida(cedula)) return false;
+        if (usuarioExiste(cedula)) return false;
+
+        TipoUsuario tipo = tipoUsuario == null ? TipoUsuario.COMENSAL : tipoUsuario;
+        if (tipo.esAdmin()) {
+            return false;
+        }
+
+        String linea = String.format("%s:%s:%s:%s:%s:0.0;",
+                valorSeguro(cedula), valorSeguro(clave), valorSeguro(nombre), valorSeguro(correo), tipo.toEtiqueta());
+
+        return escribirLineaGenerica(ARCHIVO_USUARIOS, linea + System.lineSeparator());
+    }
+
+    public static boolean registrarAdministrador(String cedula, String clave, String nombre, String correo, String codigoAutorizacion) {
+        if (!adminAutorizadoPorSuperAdmin(cedula, codigoAutorizacion)) return false;
+
+        if (usuarioExiste(cedula)) {
+            return agregarAdmin(cedula);
+        }
+
+        if (!registrarUsuario(cedula, clave, nombre, correo)) return false;
+        return agregarAdmin(cedula);
+    }
+
+    public static boolean validarInicioSesion(String cedula, String clave) {
+        if (!cedulaValida(cedula) || clave == null) return false;
+        List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
+
+        for (String linea : lineas) {
+            String[] partes = linea.split(":");
+            if (partes.length >= 2 && partes[0].equals(cedula) && partes[1].equals(clave)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static TipoUsuario obtenerTipoUsuario(String cedula) {
+        if (esSuperAdmin(cedula)) return TipoUsuario.SUPER_ADMIN;
+        if (esAdmin(cedula)) return TipoUsuario.ADMIN;
+
+        List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
+        for (String linea : lineas) {
+            String[] partes = linea.split(":");
+            if (partes.length >= 6 && partes[0].equals(cedula)) {
+                return TipoUsuario.fromEtiqueta(partes[4]);
+            }
+        }
+        return TipoUsuario.COMENSAL;
+    }
+
+    public static String obtenerNombre(String cedula) {
+        if (!cedulaValida(cedula)) return null;
+        List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
+        for (String linea : lineas) {
+            String[] partes = linea.split(":");
+            if (partes.length >= 3 && partes[0].equals(cedula)) {
+                return partes[2];
+            }
+        }
+        return null;
+    }
+
+    private static boolean usuarioExiste(String cedula) {
+        List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
+        for (String linea : lineas) {
+            String[] partes = linea.split(":");
+            if (partes.length > 0 && partes[0].equals(cedula)) return true;
+        }
+        return false;
+    }
+
+    public static boolean cedulaYaRegistrada(String cedula) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (!cedulaValida(cedulaLimpia)) return false;
+        return usuarioExiste(cedulaLimpia);
+    }
+
+    public static boolean esAdmin(String cedula) {
+        if (!cedulaValida(cedula)) return false;
+        if (esSuperAdmin(cedula)) return true;
+        List<String> admins = leerLineasGenericas(ARCHIVO_ADMINS);
+        for (String linea : admins) {
+            if (linea.trim().equals(cedula)) return true;
+        }
+        return false;
+    }
+
+    public static boolean esSuperAdmin(String cedula) {
+        if (!cedulaValida(cedula)) return false;
+        List<String> supers = leerLineasGenericas(ARCHIVO_SUPER_ADMINS);
+        for (String linea : supers) {
+            if (linea.trim().equals(cedula)) return true;
+        }
+        return false;
+    }
+
+    public static boolean adminAutorizadoPorSuperAdmin(String cedula, String codigoAutorizacion) {
+        if (!cedulaValida(cedula)) return false;
+        List<String> autorizados = leerLineasGenericas(ARCHIVO_ADMINS_AUTORIZADOS);
+        String codigo = valorSeguro(codigoAutorizacion);
+
+        if (codigo.isBlank()) return false;
+
+        for (String linea : autorizados) {
+            String[] partes = linea.split(":", 2);
+            if (partes.length == 0) continue;
+
+            String cedulaPermitida = partes[0].trim();
+            if (!cedula.equals(cedulaPermitida)) continue;
+
+            if (partes.length < 2) continue;
+
+            String codigoPermitido = partes[1].trim();
+            if (!codigoPermitido.isBlank() && codigoPermitido.equals(codigo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean agregarAdmin(String cedula) {
+        if (esAdmin(cedula)) return true;
+        return escribirLineaGenerica(ARCHIVO_ADMINS, cedula + System.lineSeparator());
+    }
+
+    public static double obtenerSaldo(String cedula) {
+        if (!cedulaValida(cedula)) return 0.0;
+        List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
+        for (String linea : lineas) {
+            String[] partes = linea.split(":");
+            if (partes.length >= 5 && partes[0].equals(cedula)) {
+                try {
+                    int indiceSaldo = partes.length >= 6 ? 5 : 4;
+                    return Double.parseDouble(partes[indiceSaldo].replace(";", "").trim());
+                } catch (NumberFormatException e) { return 0.0; }
+            }
+        }
+        return 0.0;
+    }
+
+    public static boolean actualizarSaldo(String cedula, double nuevoSaldo) {
+        if (!cedulaValida(cedula)) return false;
+        List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
+        List<String> lineasActualizadas = new ArrayList<>();
+        boolean encontrado = false;
+
+        for (String linea : lineas) {
+            String[] partes = linea.split(":");
+            if (partes.length >= 4 && partes[0].equals(cedula)) {
+                String nuevaLinea;
+                if (partes.length >= 6) {
+                    String tipo = partes[4].trim();
+                    nuevaLinea = String.format("%s:%s:%s:%s:%s:%.2f;",
+                            partes[0], partes[1], partes[2], partes[3], tipo, nuevoSaldo);
+                } else {
+                    nuevaLinea = String.format("%s:%s:%s:%s:%.2f;",
+                            partes[0], partes[1], partes[2], partes[3], nuevoSaldo);
+                }
+                lineasActualizadas.add(nuevaLinea);
+                encontrado = true;
+            } else {
+                lineasActualizadas.add(linea);
+            }
+        }
+
+        if (encontrado) {
+            return reescribirArchivoGenerico(ARCHIVO_USUARIOS, lineasActualizadas);
+        }
+        return false;
+    }
+
+    public static boolean guardarMenu(Menu menu) {
+        if (!menuValidoParaGuardar(menu)) return false;
+        StringBuilder sb = new StringBuilder();
+        sb.append(menu.getFecha().toString()).append("|")
+                    .append(menu.getEstado().name())
+                    .append("|")
+                    .append(valorTipoMenu(menu.getTipoMenu()))
+          .append("|");
+
+        if (menu.getEstado() == EstadoMenu.NO_DISPONIBLE) {
+            return escribirLineaGenerica(ARCHIVO_MENUS, sb.toString() + System.lineSeparator());
+        }
+
+        for (Platillo p : menu.getPlatillos()) {
+            sb.append(p.getNombre()).append(">");
+            List<Insumo> insumos = p.getInsumos();
+            for (int i = 0; i < insumos.size(); i++) {
+                sb.append(formatearInsumoMenu(insumos.get(i)));
+                if (i < insumos.size() - 1) sb.append(",");
+            }
+            sb.append(";");
+        }
+
+        return escribirLineaGenerica(ARCHIVO_MENUS, sb.toString() + System.lineSeparator());
+    }
+
+    private static String menuToLine(Menu menu) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(menu.getFecha().toString()).append("|")
+                    .append(menu.getEstado().name())
+                    .append("|")
+                    .append(valorTipoMenu(menu.getTipoMenu()))
+          .append("|");
+
+        if (menu.getEstado() == EstadoMenu.NO_DISPONIBLE) {
+            return sb.toString();
+        }
+
+        for (Platillo p : menu.getPlatillos()) {
+            sb.append(p.getNombre()).append(">");
+            List<Insumo> insumos = p.getInsumos();
+            for (int i = 0; i < insumos.size(); i++) {
+                sb.append(formatearInsumoMenu(insumos.get(i)));
+                if (i < insumos.size() - 1) sb.append(",");
+            }
+            sb.append(";");
+        }
+        return sb.toString();
+    }
+
+    public static boolean actualizarMenu(Menu menu) {
+        if (!menuValidoParaGuardar(menu)) return false;
+        try {
+            List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
+            List<String> nuevas = new ArrayList<>();
+            String fecha = menu.getFecha().toString();
+            boolean encontrado = false;
+            String nuevaLinea = menuToLine(menu);
+
+            for (String linea : lineas) {
+                String[] partes = linea.split("\\|");
+                if (partes.length > 0 && partes[0].equals(fecha)) {
+                    nuevas.add(nuevaLinea);
+                    encontrado = true;
+                } else {
+                    nuevas.add(linea);
+                }
+            }
+            if (!encontrado) {
+                nuevas.add(nuevaLinea);
+            }
+            return reescribirArchivoGenerico(ARCHIVO_MENUS, nuevas);
+        } catch (Exception e) {
+            System.err.println("Error actualizando menu: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static List<LocalDate> calcularFechasParaReiniciar() {
+        try {
+            LocalDate hoy = LocalDate.now();
+            LocalDate lunes = hoy.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+
+            List<LocalDate> semana = new ArrayList<>();
+            for (int i = 0; i < 5; i++) {
+                semana.add(lunes.plusDays(i));
+            }
+            return semana;
+        } catch (Exception e) {
+            System.err.println("Error calculando fechas para reiniciar: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    public static boolean reiniciarMenusSemana() {
+        try {
+            List<String> actuales = leerLineasGenericas(ARCHIVO_MENUS);
+            List<LocalDate> semanaActual = calcularFechasParaReiniciar();
+
+            List<String> fechasPendientes = new ArrayList<>();
+            for (LocalDate fecha : semanaActual) {
+                fechasPendientes.add(fecha.toString());
+            }
+
+            List<String> nuevasLineas = new ArrayList<>();
+            for (String linea : actuales) {
+                String[] partes = linea.split("\\|");
+                if (partes.length > 0 && fechasPendientes.contains(partes[0])) {
+                    LocalDate fecha = LocalDate.parse(partes[0]);
+                    nuevasLineas.add(menuToLine(new Menu(fecha, EstadoMenu.NO_DISPONIBLE)));
+                    fechasPendientes.remove(partes[0]);
+                } else {
+                    nuevasLineas.add(linea);
+                }
+            }
+
+            for (String fechaStr : fechasPendientes) {
+                LocalDate fecha = LocalDate.parse(fechaStr);
+                nuevasLineas.add(menuToLine(new Menu(fecha, EstadoMenu.NO_DISPONIBLE)));
+            }
+
+            return reescribirArchivoGenerico(ARCHIVO_MENUS, nuevasLineas);
+        } catch (Exception e) {
+            System.err.println("Error reiniciando menus: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static boolean prepararSemanaConEstados(LocalDate fechaReferencia) {
+        if (fechaReferencia == null) return false;
+
+        try {
+            List<String> actuales = leerLineasGenericas(ARCHIVO_MENUS);
+            List<String> nuevas = new ArrayList<>(actuales);
+            LocalDate lunes = fechaReferencia.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+
+            for (int i = 0; i < 5; i++) {
+                LocalDate fecha = lunes.plusDays(i);
+                if (!existeMenuParaFecha(nuevas, fecha)) {
+                    nuevas.add(menuToLine(new Menu(fecha, EstadoMenu.NO_DISPONIBLE)));
+                }
+            }
+
+            return reescribirArchivoGenerico(ARCHIVO_MENUS, nuevas);
+        } catch (Exception e) {
+            System.err.println("Error preparando semana: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static Menu obtenerMenuPorFecha(String fechaStr) {
+        List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
+
+        for (String linea : lineas) {
+            String[] partes = linea.split("\\|");
+            if (partes.length > 0 && partes[0].equals(fechaStr)) {
+                return parsearLineaMenu(partes);
+            }
+        }
+        try {
+            return new Menu(LocalDate.parse(fechaStr), EstadoMenu.NO_DISPONIBLE);
+        } catch (Exception ex) {
+            return new Menu();
+        }
+    }
+
+    private static Menu parsearLineaMenu(String[] partesPrincipales) {
+        try {
+            LocalDate fecha = LocalDate.parse(partesPrincipales[0]);
+            EstadoMenu estado = EstadoMenu.CON_MENU;
+            String bloquePlatillos = "";
+            Menu.TipoMenu tipoMenu = Menu.TipoMenu.NO_DEFINIDO;
+
+            if (partesPrincipales.length >= 2) {
+                estado = parsearEstadoMenu(partesPrincipales[1]);
+            }
+
+            if (partesPrincipales.length >= 3) {
+                if (esTipoMenuValido(partesPrincipales[2])) {
+                    tipoMenu = parsearTipoMenu(partesPrincipales[2]);
+                    if (partesPrincipales.length >= 4) {
+                        bloquePlatillos = partesPrincipales[3];
+                    }
+                } else {
+                    bloquePlatillos = partesPrincipales[2];
+                }
+            } else if (partesPrincipales.length == 2) {
+                bloquePlatillos = partesPrincipales[1];
+            }
+
+            Menu menu = new Menu(fecha, estado);
+            menu.setTipoMenu(tipoMenu);
+
+            if (estado == EstadoMenu.NO_DISPONIBLE) {
+                return menu;
+            }
+
+            if (bloquePlatillos.isBlank()) return menu;
+
+            String[] partesPlatillos = bloquePlatillos.split(";");
+            for (String parteP : partesPlatillos) {
+                if (parteP.isBlank()) continue;
+
+                String[] datosPlato = parteP.split(">");
+                Platillo platillo = new Platillo(datosPlato[0]);
+
+                if (datosPlato.length > 1) {
+                    for (String rawInsumo : datosPlato[1].split(",")) {
+                        if (rawInsumo.isBlank()) continue;
+                        Insumo insumo = parsearInsumoMenu(rawInsumo);
+                        platillo.agregarInsumo(insumo);
+                    }
+                }
+                menu.agregarPlatillo(platillo);
+            }
+            return menu;
+        } catch (Exception e) {
+            System.err.println("Error parseando menú: " + e.getMessage());
+            return new Menu();
+        }
+    }
+
+    public static boolean esFechaValidaParaMenu(LocalDate fecha) {
+        return fecha != null && esDiaHabil(fecha);
+    }
+
+    public static boolean esDiaHabil(LocalDate fecha) {
+        if (fecha == null) return false;
+        DayOfWeek dia = fecha.getDayOfWeek();
+        if (dia == DayOfWeek.SATURDAY || dia == DayOfWeek.SUNDAY) {
+            return false;
+        }
+        return !esFeriado(fecha);
+    }
+
+    public static List<LocalDate> obtenerUltimosCincoDiasHabiles(LocalDate referencia) {
+        List<LocalDate> resultado = new ArrayList<>();
+        LocalDate cursor = referencia == null ? LocalDate.now() : referencia;
+
+        while (resultado.size() < 5) {
+            if (esDiaHabil(cursor)) {
+                resultado.add(0, cursor);
+            }
+            cursor = cursor.minusDays(1);
+        }
+        return resultado;
+    }
+
+    private static List<LocalDate> obtenerSiguientesCincoDiasHabiles(LocalDate baseExclusiva) {
+        List<LocalDate> resultado = new ArrayList<>();
+        LocalDate cursor = (baseExclusiva == null ? LocalDate.now() : baseExclusiva).plusDays(1);
+
+        while (resultado.size() < 5) {
+            if (esDiaHabil(cursor)) {
+                resultado.add(cursor);
+            }
+            cursor = cursor.plusDays(1);
+        }
+        return resultado;
+    }
+
+    private static boolean esFeriado(LocalDate fecha) {
+        String mmdd = String.format("%02d-%02d", fecha.getMonthValue(), fecha.getDayOfMonth());
+        if (FERIADOS_FIJOS_MM_DD.contains(mmdd)) return true;
+
+        List<String> feriados = leerLineasGenericas(ARCHIVO_FERIADOS);
+        for (String linea : feriados) {
+            try {
+                if (LocalDate.parse(linea.trim()).equals(fecha)) {
+                    return true;
+                }
+            } catch (Exception ignored) {
+            }
+        }
+
+        List<String> noLaborables = leerLineasGenericas(ARCHIVO_NO_LABORABLES);
+        for (String linea : noLaborables) {
+            if (linea.trim().equals(fecha.toString())) return true;
+        }
+        return false;
+    }
+
+    private static EstadoMenu parsearEstadoMenu(String raw) {
+        if (raw == null || raw.isBlank()) return EstadoMenu.CON_MENU;
+        try {
+            return EstadoMenu.valueOf(raw.trim());
+        } catch (IllegalArgumentException ex) {
+            return EstadoMenu.CON_MENU;
+        }
+    }
+
+    private static Menu.TipoMenu parsearTipoMenu(String raw) {
+        if (raw == null || raw.isBlank()) return Menu.TipoMenu.NO_DEFINIDO;
+        try {
+            return Menu.TipoMenu.valueOf(raw.trim());
+        } catch (IllegalArgumentException ex) {
+            return Menu.TipoMenu.NO_DEFINIDO;
+        }
+    }
+
+    private static boolean esTipoMenuValido(String raw) {
+        if (raw == null || raw.isBlank()) return false;
+        try {
+            Menu.TipoMenu.valueOf(raw.trim());
+            return true;
+        } catch (IllegalArgumentException ex) {
+            return false;
+        }
+    }
+
+    private static String valorTipoMenu(Menu.TipoMenu tipoMenu) {
+        return tipoMenu == null ? Menu.TipoMenu.NO_DEFINIDO.name() : tipoMenu.name();
+    }
+
+    private static boolean menuValidoParaGuardar(Menu menu) {
+        if (menu == null || menu.getFecha() == null) return false;
+        if (!esFechaValidaParaMenu(menu.getFecha())) return false;
+
+        if (menu.getEstado() == EstadoMenu.NO_DISPONIBLE) {
+            return true;
+        }
+
+        return menu.tienePlatillos();
+    }
+
+    private static LocalDate fechaMaximaEnMenus(List<String> lineas) {
+        LocalDate maxima = null;
+        for (String linea : lineas) {
+            String[] partes = linea.split("\\|");
+            if (partes.length == 0) continue;
+            try {
+                LocalDate fecha = LocalDate.parse(partes[0]);
+                if (maxima == null || fecha.isAfter(maxima)) {
+                    maxima = fecha;
+                }
+            } catch (Exception ignored) {
+            }
+        }
+        return maxima;
+    }
+
+    private static boolean existeMenuParaFecha(List<String> lineas, LocalDate fecha) {
+        String fechaStr = fecha.toString();
+        for (String linea : lineas) {
+            String[] partes = linea.split("\\|");
+            if (partes.length > 0 && fechaStr.equals(partes[0])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean guardarCfcv(com.gesco.models.costos.CFCV cfcv) {
+        if (cfcv == null) return false;
+        List<String> lineas = new ArrayList<>();
+        lineas.add(cfcv.toLine());
+        return reescribirArchivoGenerico(ARCHIVO_CFCV, lineas);
+    }
+
+    public static com.gesco.models.costos.CFCV obtenerCfcv() {
+        List<String> lineas = leerLineasGenericas(ARCHIVO_CFCV);
+        if (lineas.isEmpty()) return new com.gesco.models.costos.CFCV();
+        return com.gesco.models.costos.CFCV.fromLine(lineas.get(0));
+    }
+
+    public static List<Insumo> obtenerInsumos() {
+        List<String> lineas = leerLineasGenericas(ARCHIVO_INSUMOS);
+        List<Insumo> resultado = new ArrayList<>();
+
+        for (String linea : lineas) {
+            if (linea == null) continue;
+            String limpia = linea.trim();
+            if (limpia.isEmpty()) continue;
+            if (limpia.toLowerCase(Locale.ROOT).startsWith("nombre insumo")) continue;
+
+            Insumo insumo = parsearLineaInsumo(limpia);
+            if (insumo != null) {
+                resultado.add(insumo);
+            }
+        }
+
+        return resultado;
+    }
+
+    public static boolean guardarCcb(CCB ccb) {
+        if (ccb == null) return false;
+        String linea = String.format(
+                Locale.US,
+                "%s|%s|%.2f|%.2f|%.2f|%.4f|%.4f",
+                ccb.getFecha().toString(),
+                valorSeguro(ccb.getTipoUsuario()),
+                ccb.getCf(),
+                ccb.getCv(),
+                ccb.getNb(),
+                ccb.getMerma(),
+                ccb.getCcb()
+        );
+        return escribirLineaGenerica(ARCHIVO_CCB, linea + System.lineSeparator());
+    }
+
+    public static CCB obtenerUltimoCcb() {
+        List<String> lineas = leerLineasGenericas(ARCHIVO_CCB);
+        if (lineas.isEmpty()) return null;
+        String ultima = lineas.get(lineas.size() - 1);
+        return parsearLineaCcb(ultima);
+    }
+
+    public static double calcularMontoCcbPorTipo(double ccbBase, TipoUsuario tipoUsuario) {
+        if (ccbBase < 0) {
+            throw new IllegalArgumentException("El CCB base no puede ser negativo.");
+        }
+
+        double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
+        double porcentaje = rango[0] == rango[1]
+                ? rango[0]
+                : ThreadLocalRandom.current().nextDouble(rango[0], rango[1]);
+        return ccbBase * porcentaje;
+    }
+
+    public static double calcularMontoCcbPorTipo(double ccbBase, TipoUsuario tipoUsuario, double porcentajeCcb) {
+        if (ccbBase < 0) {
+            throw new IllegalArgumentException("El CCB base no puede ser negativo.");
+        }
+
+        double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
+        if (porcentajeCcb < rango[0] || porcentajeCcb > rango[1]) {
+            throw new IllegalArgumentException("El porcentaje no está en el rango permitido para el tipo de usuario.");
+        }
+
+        return ccbBase * porcentajeCcb;
+    }
+
+    public static double calcularMontoCcbParaCedula(String cedula) {
+        CCB ultimoCcb = obtenerUltimoCcb();
+        if (ultimoCcb == null || !cedulaValida(cedula)) {
+            return 0.0;
+        }
+
+        TipoUsuario tipoUsuario = obtenerTipoUsuario(cedula);
+        return calcularMontoCcbPorTipo(ultimoCcb.getCcb(), tipoUsuario);
+    }
+
+    public static double calcularMontoCcbParaCedula(String cedula, double porcentajeCcb) {
+        CCB ultimoCcb = obtenerUltimoCcb();
+        if (ultimoCcb == null || !cedulaValida(cedula)) {
+            return 0.0;
+        }
+
+        TipoUsuario tipoUsuario = obtenerTipoUsuario(cedula);
+        return calcularMontoCcbPorTipo(ultimoCcb.getCcb(), tipoUsuario, porcentajeCcb);
+    }
+
+    public static List<Menu> obtenerUltimos5Menus() {
+        List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
+        List<Menu> resultado = new ArrayList<>();
+        int inicio = Math.max(0, lineas.size() - 5);
+        for (int i = inicio; i < lineas.size(); i++) {
+            String[] partes = lineas.get(i).split("\\|");
+            resultado.add(parsearLineaMenu(partes));
+        }
+        return resultado;
+    }
+
+    private static CCB parsearLineaCcb(String linea) {
+        if (linea == null || linea.isBlank()) return null;
+        String[] partes = linea.split("\\|");
+        if (partes.length < 6) return null;
+        try {
+            LocalDate fecha = LocalDate.parse(partes[0].trim());
+            String tipoUsuario = partes[1].trim();
+            double cf = parseDoubleSeguro(partes[2]);
+            double cv = parseDoubleSeguro(partes[3]);
+            double nb = parseDoubleSeguro(partes[4]);
+            double merma = parseDoubleSeguro(partes[5]);
+            return new CCB(fecha, tipoUsuario, cf, cv, nb, merma);
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    private static double parseDoubleSeguro(String valor) {
+        if (valor == null) return 0.0;
+        try {
+            return Double.parseDouble(valor.trim().replace(',', '.'));
+        } catch (NumberFormatException ex) {
+            return 0.0;
+        }
+    }
+
+    private static double[] obtenerRangoPorTipoUsuario(TipoUsuario tipoUsuario) {
+        if (tipoUsuario == null) {
+            return new double[] { 1.0, 1.0 };
+        }
+
+        return switch (tipoUsuario) {
+            case ESTUDIANTE -> new double[] { CCB_ESTUDIANTE_MIN, CCB_ESTUDIANTE_MAX };
+            case PROFESOR -> new double[] { CCB_PROFESOR_MIN, CCB_PROFESOR_MAX };
+            case EMPLEADO -> new double[] { CCB_EMPLEADO_MIN, CCB_EMPLEADO_MAX };
+            default -> new double[] { 1.0, 1.0 };
+        };
+    }
+
+    private static float parseFloatSeguro(String valor) {
+        if (valor == null) return 0.0f;
+        try {
+            return Float.parseFloat(valor.trim().replace(',', '.'));
+        } catch (NumberFormatException ex) {
+            return 0.0f;
+        }
+    }
+
+    private static String formatearInsumoMenu(Insumo insumo) {
+        if (insumo == null) return "";
+        String nombre = valorSeguro(insumo.getNombre());
+        int cantidad = insumo.getCantidad();
+        float total = insumo.getCostoInsumoTotal();
+        return String.format(Locale.US, "%s~%d~%.2f", nombre, cantidad, total);
+    }
+
+    private static Insumo parsearInsumoMenu(String raw) {
+        String limpio = raw.trim();
+        if (limpio.isEmpty()) {
+            return new Insumo("", 1, "Ingrediente", 0.0f);
+        }
+
+        String[] partes = limpio.split("~");
+        if (partes.length >= 3) {
+            String nombre = partes[0].trim();
+            int cantidad = (int) parseFloatSeguro(partes[1]);
+            float total = parseFloatSeguro(partes[2]);
+            float unitario = (cantidad > 0) ? (total / cantidad) : 0.0f;
+            Insumo insumo = new Insumo(nombre, cantidad, "Ingrediente", unitario);
+            insumo.setCostoInsumoTotal(total);
+            return insumo;
+        }
+
+        return new Insumo(limpio, 1, "Ingrediente", 0.0f);
+    }
+
+    private static Insumo parsearLineaInsumo(String linea) {
+        String sinPuntoYComa = linea.replace(";", "");
+        String[] partes = sinPuntoYComa.split(":");
+        if (partes.length < 4) return null;
+
+        String nombre = partes[0].trim();
+        String tipo = partes[1].trim();
+        int cantidad = (int) parseFloatSeguro(partes[2]);
+        float precioUnitario = parseFloatSeguro(partes[3]);
+
+        if (nombre.isEmpty()) return null;
+        return new Insumo(nombre, cantidad, tipo, precioUnitario);
+    }
+
+    public static boolean esDiaNoDisponible(String fechaStr) {
+        try {
+            LocalDate fecha = LocalDate.parse(fechaStr);
+            return !esDiaHabil(fecha);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private static Path obtenerBaseProyecto() {
+        try {
+            Path ubicacion = Paths.get(DataBase.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            if (ubicacion.endsWith("classes") && ubicacion.getParent() != null && ubicacion.getParent().getParent() != null) {
+                return ubicacion.getParent().getParent();
+            }
+        } catch (URISyntaxException e) { }
+        return Paths.get(System.getProperty("user.dir"));
+    }
+
+    private static String valorSeguro(String valor) {
+        return valor == null ? "" : valor.trim();
+    }
+
+    public static String normalizarCedula(String cedula) {
+        if (cedula == null) return "";
+        return cedula.trim().replaceAll("[.\\-\\s]", "");
+    }
+
+    private static boolean cedulaValida(String cedula) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (cedulaLimpia.isEmpty() || !cedulaLimpia.matches("\\d+")) {
+            return false;
+        }
+        try {
+            long cedulaNumero = Long.parseLong(cedulaLimpia);
+            return cedulaNumero >= CEDULA_MINIMA && cedulaNumero <= CEDULA_MAXIMA;
+        } catch (NumberFormatException ex) {
+            return false;
+        }
+    }
+}
+

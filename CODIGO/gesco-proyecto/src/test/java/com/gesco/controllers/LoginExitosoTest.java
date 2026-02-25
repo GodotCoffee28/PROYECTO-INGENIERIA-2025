@@ -1,5 +1,7 @@
 package com.gesco.controllers;
 
+
+import com.gesco.controllers.gestion_principal.DataBase;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -46,3 +48,5 @@ public class LoginExitosoTest {
         assertTrue(DataBase.validarInicioSesion("12345678", "password123"));
     }
 }
+
+

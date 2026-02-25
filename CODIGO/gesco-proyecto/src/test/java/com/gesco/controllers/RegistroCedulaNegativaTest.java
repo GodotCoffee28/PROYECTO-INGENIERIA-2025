@@ -1,5 +1,7 @@
 package com.gesco.controllers;
 
+
+import com.gesco.controllers.gestion_principal.DataBase;
 import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
@@ -54,3 +56,5 @@ public class RegistroCedulaNegativaTest {
         assertFalse(DataBase.registrarUsuario("45000001", "password123", "Maria Lopez", "maria@email.com"));
     }
 }
+
+

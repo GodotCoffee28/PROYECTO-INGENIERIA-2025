@@ -1,5 +1,7 @@
 package com.gesco.controllers;
 
+
+import com.gesco.controllers.gestion_principal.DataBase;
 import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
@@ -44,3 +46,5 @@ public class RegistroCamposVaciosTest {
         assertFalse(DataBase.registrarUsuario("", "", "", ""));
     }
 }
+
+
