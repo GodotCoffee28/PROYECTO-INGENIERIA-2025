@@ -5,3 +5,7 @@ Cedula:Contrasenia: Nombre Y apellido: gmail: Tipo de usuario: Saldo;
 31768765:pepe:pepe:pepe@:Profesor:0.0;
 31768766:juan:juan:juan@:Empleado:0.0;
 31768764:alex:alex:alex@:Administrador:0.0;
+32111454:32111454:Ramses Cordoba:aaroncordobarivas@gmail.com:Administrador:943,00;
+32111455:Manolo:Manolo Sanches:Manolo@gmail.com:Estudiante:0.0;
+32100074:1234:Tukeke Gonzalez:tukeke@gmail.com:Estudiante:1000.02;
+8523456:123:pepito:pepito@gmail.com:Estudiante:0.0;
