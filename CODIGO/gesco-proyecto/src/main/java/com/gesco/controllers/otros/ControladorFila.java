@@ -207,7 +207,11 @@ public class ControladorFila {
     }
 
     private double obtenerCostoMenuHoy() {
-        Menu menu = DataBase.obtenerMenuPorFecha(LocalDate.now().toString());
+        String fechaHoy = LocalDate.now().toString();
+        Menu menu = DataBase.obtenerMenuPorFechaYTipo(fechaHoy, Menu.TipoMenu.ALMUERZO);
+        if (menu == null || menu.getEstado() == Menu.EstadoMenu.NO_DISPONIBLE || !menu.tienePlatillos()) {
+            menu = DataBase.obtenerMenuPorFechaYTipo(fechaHoy, Menu.TipoMenu.DESAYUNO);
+        }
         if (menu == null || menu.getEstado() == Menu.EstadoMenu.NO_DISPONIBLE || !menu.tienePlatillos()) {
             return 0.0;
         }

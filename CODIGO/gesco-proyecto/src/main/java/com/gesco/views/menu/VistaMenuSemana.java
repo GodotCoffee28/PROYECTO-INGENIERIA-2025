@@ -5,9 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-//import java.awt.Graphics;
-//import java.awt.Graphics2D;
-//import java.awt.RenderingHints;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
@@ -75,7 +72,7 @@ public class VistaMenuSemana extends PlantillaGesco {
                         int anchoTarjeta = 200 + 20;
                         int tarjetasPorFila = Math.max(1, (d.width - 20) / anchoTarjeta);
                         int filas = (int) Math.ceil((double) nComponentes / tarjetasPorFila);
-                        int altoTarjeta = 180 + 20;
+                        int altoTarjeta = 260 + 20;
                         d.height = filas * altoTarjeta + 40;
                     }
                 }
@@ -109,9 +106,11 @@ public class VistaMenuSemana extends PlantillaGesco {
 
         for (int i = 0; i < 5; i++) {
             LocalDate fecha = lunes.plusDays(i);
-            Menu menu = DataBase.obtenerMenuPorFecha(fecha.toString());
-            TarjetaMenu tarjeta = new TarjetaMenu(menu);
-            tarjeta.setPreferredSize(new Dimension(250, 160));
+            String fechaStr = fecha.toString();
+            Menu menuDesayuno = DataBase.obtenerMenuPorFechaYTipo(fechaStr, Menu.TipoMenu.DESAYUNO);
+            Menu menuAlmuerzo = DataBase.obtenerMenuPorFechaYTipo(fechaStr, Menu.TipoMenu.ALMUERZO);
+            TarjetaMenu tarjeta = new TarjetaMenu(menuDesayuno, menuAlmuerzo);
+            tarjeta.setPreferredSize(new Dimension(250, 240));
             tarjetasSemana.add(tarjeta);
             panelContenedorTarjetas.add(tarjeta);
         }

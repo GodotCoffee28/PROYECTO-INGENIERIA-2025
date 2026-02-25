@@ -396,17 +396,26 @@ public class DataBase {
             List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
             List<String> nuevas = new ArrayList<>();
             String fecha = menu.getFecha().toString();
+            Menu.TipoMenu tipoMenu = menu.getTipoMenu() == null ? Menu.TipoMenu.NO_DEFINIDO : menu.getTipoMenu();
             boolean encontrado = false;
             String nuevaLinea = menuToLine(menu);
 
             for (String linea : lineas) {
                 String[] partes = linea.split("\\|");
                 if (partes.length > 0 && partes[0].equals(fecha)) {
-                    nuevas.add(nuevaLinea);
-                    encontrado = true;
-                } else {
-                    nuevas.add(linea);
+                    Menu.TipoMenu tipoLinea = partes.length >= 3
+                            ? parsearTipoMenu(partes[2])
+                            : Menu.TipoMenu.NO_DEFINIDO;
+                    boolean coincideTipo = tipoMenu == Menu.TipoMenu.NO_DEFINIDO
+                            ? tipoLinea == Menu.TipoMenu.NO_DEFINIDO
+                            : tipoLinea == tipoMenu;
+                    if (coincideTipo) {
+                        nuevas.add(nuevaLinea);
+                        encontrado = true;
+                        continue;
+                    }
                 }
+                nuevas.add(linea);
             }
             if (!encontrado) {
                 nuevas.add(nuevaLinea);
@@ -438,27 +447,25 @@ public class DataBase {
         try {
             List<String> actuales = leerLineasGenericas(ARCHIVO_MENUS);
             List<LocalDate> semanaActual = calcularFechasParaReiniciar();
-
-            List<String> fechasPendientes = new ArrayList<>();
+            Set<String> fechasSemana = new java.util.HashSet<>();
             for (LocalDate fecha : semanaActual) {
-                fechasPendientes.add(fecha.toString());
+                fechasSemana.add(fecha.toString());
             }
-
             List<String> nuevasLineas = new ArrayList<>();
             for (String linea : actuales) {
                 String[] partes = linea.split("\\|");
-                if (partes.length > 0 && fechasPendientes.contains(partes[0])) {
-                    LocalDate fecha = LocalDate.parse(partes[0]);
-                    nuevasLineas.add(menuToLine(new Menu(fecha, EstadoMenu.NO_DISPONIBLE)));
-                    fechasPendientes.remove(partes[0]);
+                if (partes.length > 0 && fechasSemana.contains(partes[0])) {
+                    Menu menu = parsearLineaMenu(partes);
+                    menu.setEstado(EstadoMenu.NO_DISPONIBLE);
+                    nuevasLineas.add(menuToLine(menu));
                 } else {
                     nuevasLineas.add(linea);
                 }
             }
 
-            for (String fechaStr : fechasPendientes) {
-                LocalDate fecha = LocalDate.parse(fechaStr);
-                nuevasLineas.add(menuToLine(new Menu(fecha, EstadoMenu.NO_DISPONIBLE)));
+            for (LocalDate fecha : semanaActual) {
+                asegurarMenuNoDisponible(nuevasLineas, fecha, Menu.TipoMenu.DESAYUNO);
+                asegurarMenuNoDisponible(nuevasLineas, fecha, Menu.TipoMenu.ALMUERZO);
             }
 
             return reescribirArchivoGenerico(ARCHIVO_MENUS, nuevasLineas);
@@ -478,9 +485,8 @@ public class DataBase {
 
             for (int i = 0; i < 5; i++) {
                 LocalDate fecha = lunes.plusDays(i);
-                if (!existeMenuParaFecha(nuevas, fecha)) {
-                    nuevas.add(menuToLine(new Menu(fecha, EstadoMenu.NO_DISPONIBLE)));
-                }
+                asegurarMenuNoDisponible(nuevas, fecha, Menu.TipoMenu.DESAYUNO);
+                asegurarMenuNoDisponible(nuevas, fecha, Menu.TipoMenu.ALMUERZO);
             }
 
             return reescribirArchivoGenerico(ARCHIVO_MENUS, nuevas);
@@ -493,14 +499,33 @@ public class DataBase {
     public static Menu obtenerMenuPorFecha(String fechaStr) {
         List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
 
-        for (String linea : lineas) {
-            String[] partes = linea.split("\\|");
-            if (partes.length > 0 && partes[0].equals(fechaStr)) {
-                return parsearLineaMenu(partes);
-            }
-        }
+        Menu exacto = buscarMenuPorFechaYTipo(lineas, fechaStr, Menu.TipoMenu.NO_DEFINIDO);
+        if (exacto != null) return exacto;
+
+        Menu cualquiera = buscarMenuPorFecha(lineas, fechaStr);
+        if (cualquiera != null) return cualquiera;
         try {
             return new Menu(LocalDate.parse(fechaStr), EstadoMenu.NO_DISPONIBLE);
+        } catch (Exception ex) {
+            return new Menu();
+        }
+    }
+
+    public static Menu obtenerMenuPorFechaYTipo(String fechaStr, Menu.TipoMenu tipoMenu) {
+        List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
+        Menu.TipoMenu tipoSeguro = tipoMenu == null ? Menu.TipoMenu.NO_DEFINIDO : tipoMenu;
+        Menu menu = buscarMenuPorFechaYTipo(lineas, fechaStr, tipoSeguro);
+        if (menu != null) return menu;
+
+        if (tipoSeguro == Menu.TipoMenu.NO_DEFINIDO) {
+            Menu cualquiera = buscarMenuPorFecha(lineas, fechaStr);
+            if (cualquiera != null) return cualquiera;
+        }
+
+        try {
+            Menu noDisponible = new Menu(LocalDate.parse(fechaStr), EstadoMenu.NO_DISPONIBLE);
+            noDisponible.setTipoMenu(tipoSeguro);
+            return noDisponible;
         } catch (Exception ex) {
             return new Menu();
         }
@@ -661,6 +686,61 @@ public class DataBase {
             }
         }
         return false;
+    }
+
+    private static boolean existeMenuParaFechaYTipo(List<String> lineas, LocalDate fecha, Menu.TipoMenu tipoMenu) {
+        String fechaStr = fecha.toString();
+        Menu.TipoMenu tipoSeguro = tipoMenu == null ? Menu.TipoMenu.NO_DEFINIDO : tipoMenu;
+        for (String linea : lineas) {
+            String[] partes = linea.split("\\|");
+            if (partes.length > 0 && fechaStr.equals(partes[0])) {
+                Menu.TipoMenu tipoLinea = partes.length >= 3
+                        ? parsearTipoMenu(partes[2])
+                        : Menu.TipoMenu.NO_DEFINIDO;
+                boolean coincideTipo = tipoSeguro == Menu.TipoMenu.NO_DEFINIDO
+                        ? tipoLinea == Menu.TipoMenu.NO_DEFINIDO
+                        : tipoLinea == tipoSeguro;
+                if (coincideTipo) return true;
+            }
+        }
+        return false;
+    }
+
+    private static void asegurarMenuNoDisponible(List<String> lineas, LocalDate fecha, Menu.TipoMenu tipoMenu) {
+        if (!existeMenuParaFechaYTipo(lineas, fecha, tipoMenu)) {
+            Menu menu = new Menu(fecha, EstadoMenu.NO_DISPONIBLE);
+            menu.setTipoMenu(tipoMenu);
+            lineas.add(menuToLine(menu));
+        }
+    }
+
+    private static Menu buscarMenuPorFecha(List<String> lineas, String fechaStr) {
+        for (String linea : lineas) {
+            String[] partes = linea.split("\\|");
+            if (partes.length > 0 && partes[0].equals(fechaStr)) {
+                return parsearLineaMenu(partes);
+            }
+        }
+        return null;
+    }
+
+    private static Menu buscarMenuPorFechaYTipo(List<String> lineas, String fechaStr, Menu.TipoMenu tipoMenu) {
+        Menu.TipoMenu tipoSeguro = tipoMenu == null ? Menu.TipoMenu.NO_DEFINIDO : tipoMenu;
+        for (String linea : lineas) {
+            String[] partes = linea.split("\\|");
+            if (partes.length > 0 && partes[0].equals(fechaStr)) {
+                Menu.TipoMenu tipoLinea = partes.length >= 3
+                        ? parsearTipoMenu(partes[2])
+                        : Menu.TipoMenu.NO_DEFINIDO;
+                boolean coincideTipo = tipoSeguro == Menu.TipoMenu.NO_DEFINIDO
+                        ? tipoLinea == Menu.TipoMenu.NO_DEFINIDO
+                        : tipoLinea == tipoSeguro;
+                if (coincideTipo) {
+                    return parsearLineaMenu(partes);
+                }
+            }
+        }
+        return null;
     }
 
     public static boolean guardarCfcv(com.gesco.models.costos.CFCV cfcv) {
