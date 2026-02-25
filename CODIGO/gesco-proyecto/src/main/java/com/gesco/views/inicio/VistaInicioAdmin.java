@@ -21,6 +21,7 @@ public class VistaInicioAdmin extends PlantillaGesco {
 
     public VistaInicioAdmin() {
         super();
+        ocultarIcono();
         setImagenFondo("/FondoPrincipal2.png");
         inicializarComponentes();
         construirCuerpo();

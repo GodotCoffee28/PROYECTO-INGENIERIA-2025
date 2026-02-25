@@ -32,6 +32,7 @@ public class VistaRegistro extends PlantillaGesco {
         super(); 
         setImagenFondo("/VISTAFONDO.png");
         ocultarMenu();
+        ocultarIcono();
         inicializarComponentes();
         construirCuerpo();
         revalidate();

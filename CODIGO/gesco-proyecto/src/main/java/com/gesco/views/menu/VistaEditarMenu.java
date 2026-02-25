@@ -47,6 +47,7 @@ public class VistaEditarMenu extends PlantillaGesco {
     
     public VistaEditarMenu() {
         super();
+        ocultarIcono();
         setImagenFondo("/FondoPrincipal2.png");
         inicializarComponentes();
         construirCuerpo();
