@@ -8,7 +8,6 @@ import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
 
 import com.gesco.models.TipoUsuario;
-import com.gesco.models.ValidadorIdentidad;
 import com.gesco.views.VistaInicioSesion;
 
 public class VistaInicioSesionControlador {
@@ -57,7 +56,7 @@ public class VistaInicioSesionControlador {
     // ---------------------------------------------------------------
 
     private void procesarInicioSesion() {
-        String cedula = vista.getCedula();
+        String cedula = DataBase.normalizarCedula(vista.getCedula());
         String clave = vista.getClave();
 
         if (cedula == null || cedula.isBlank() || clave == null || clave.isBlank()) {
@@ -81,10 +80,11 @@ public class VistaInicioSesionControlador {
         }
 
         try {
-            if (Long.parseLong(cedula) < 8_000_000L) {
+            long cedulaNumero = Long.parseLong(cedula);
+            if (cedulaNumero < 8_000_000L || cedulaNumero > 45_000_000L) {
                 JOptionPane.showMessageDialog(
                     vista,
-                    "La cédula debe ser mayor o igual a 8.000.000.",
+                    "La cédula debe estar entre 8.000.000 y 45.000.000.",
                     "Cédula inválida",
                     JOptionPane.WARNING_MESSAGE
                 );
@@ -117,7 +117,7 @@ public class VistaInicioSesionControlador {
     }
 
     private void procesarAccesoFacial() {
-        String cedula = vista.getCedula();
+        String cedula = DataBase.normalizarCedula(vista.getCedula());
 
         if (cedula == null || cedula.isBlank()) {
             JOptionPane.showMessageDialog(
@@ -140,10 +140,11 @@ public class VistaInicioSesionControlador {
         }
 
         try {
-            if (Long.parseLong(cedula) < 8_000_000L) {
+            long cedulaNumero = Long.parseLong(cedula);
+            if (cedulaNumero < 8_000_000L || cedulaNumero > 45_000_000L) {
                 JOptionPane.showMessageDialog(
                     vista,
-                    "La cédula debe ser mayor o igual a 8.000.000.",
+                    "La cédula debe estar entre 8.000.000 y 45.000.000.",
                     "Cédula inválida",
                     JOptionPane.WARNING_MESSAGE
                 );

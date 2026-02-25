@@ -85,7 +85,7 @@ public class VistaRegistro extends PlantillaGesco {
         formPanel.add(Box.createVerticalStrut(8));
 
         formPanel.add(crearLabelForm("Tipo de usuario", labelFont));
-        cmbTipoUsuario = new JComboBox<>(new String[] {"Comensal", "Administrador"});
+        cmbTipoUsuario = new JComboBox<>(new String[] {"Estudiante", "Profesor", "Empleado", "Administrador"});
         estilizarComponente(cmbTipoUsuario, tamanoCaja);
         formPanel.add(cmbTipoUsuario);
         formPanel.add(Box.createVerticalStrut(8));
@@ -158,7 +158,7 @@ public class VistaRegistro extends PlantillaGesco {
     public String getContra() { return new String(TxtContra.getPassword()); }
     public String getTipoUsuarioSeleccionado() {
         Object seleccion = cmbTipoUsuario.getSelectedItem();
-        return seleccion == null ? "Comensal" : seleccion.toString();
+        return seleccion == null ? "Estudiante" : seleccion.toString();
     }
     public String getCodigoAdmin() { return TxtCodigoAdmin.getText(); }
     public JLabel getLoginLink() { return loginLink; }

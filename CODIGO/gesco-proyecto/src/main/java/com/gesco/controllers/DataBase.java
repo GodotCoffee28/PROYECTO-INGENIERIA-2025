@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.gesco.models.CCB;
 import com.gesco.models.Insumo;
@@ -40,6 +41,13 @@ public class DataBase {
     private static final String CARPETA_SECRETARIA = "secretaria";
 
     private static final long CEDULA_MINIMA = 8_000_000L;
+    private static final long CEDULA_MAXIMA = 45_000_000L;
+    private static final double CCB_ESTUDIANTE_MIN = 0.20;
+    private static final double CCB_ESTUDIANTE_MAX = 0.30;
+    private static final double CCB_PROFESOR_MIN = 0.70;
+    private static final double CCB_PROFESOR_MAX = 0.90;
+    private static final double CCB_EMPLEADO_MIN = 0.90;
+    private static final double CCB_EMPLEADO_MAX = 1.10;
     private static final Set<String> FERIADOS_FIJOS_MM_DD = Set.of();
 
     private static String DATA_DIR = "src/main/java/com/gesco/models/data";
@@ -148,11 +156,20 @@ public class DataBase {
     }
 
     public static boolean registrarUsuario(String cedula, String clave, String nombre, String correo) {
+        return registrarUsuario(cedula, clave, nombre, correo, TipoUsuario.COMENSAL);
+    }
+
+    public static boolean registrarUsuario(String cedula, String clave, String nombre, String correo, TipoUsuario tipoUsuario) {
         if (!cedulaValida(cedula)) return false;
         if (usuarioExiste(cedula)) return false;
 
-        String linea = String.format("%s:%s:%s:%s:0.0;",
-                valorSeguro(cedula), valorSeguro(clave), valorSeguro(nombre), valorSeguro(correo));
+        TipoUsuario tipo = tipoUsuario == null ? TipoUsuario.COMENSAL : tipoUsuario;
+        if (tipo == TipoUsuario.ADMIN || tipo == TipoUsuario.SUPER_ADMIN) {
+            return false;
+        }
+
+        String linea = String.format("%s:%s:%s:%s:%s:0.0;",
+                valorSeguro(cedula), valorSeguro(clave), valorSeguro(nombre), valorSeguro(correo), valorTipoUsuario(tipo));
 
         return escribirLineaGenerica(ARCHIVO_USUARIOS, linea + System.lineSeparator());
     }
@@ -184,6 +201,14 @@ public class DataBase {
     public static TipoUsuario obtenerTipoUsuario(String cedula) {
         if (esSuperAdmin(cedula)) return TipoUsuario.SUPER_ADMIN;
         if (esAdmin(cedula)) return TipoUsuario.ADMIN;
+
+        List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
+        for (String linea : lineas) {
+            String[] partes = linea.split(":");
+            if (partes.length >= 6 && partes[0].equals(cedula)) {
+                return parsearTipoUsuario(partes[4]);
+            }
+        }
         return TipoUsuario.COMENSAL;
     }
 
@@ -206,6 +231,12 @@ public class DataBase {
             if (partes.length > 0 && partes[0].equals(cedula)) return true;
         }
         return false;
+    }
+
+    public static boolean cedulaYaRegistrada(String cedula) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (!cedulaValida(cedulaLimpia)) return false;
+        return usuarioExiste(cedulaLimpia);
     }
 
     public static boolean esAdmin(String cedula) {
@@ -263,7 +294,8 @@ public class DataBase {
             String[] partes = linea.split(":");
             if (partes.length >= 5 && partes[0].equals(cedula)) {
                 try {
-                    return Double.parseDouble(partes[4].replace(";", "").trim());
+                    int indiceSaldo = partes.length >= 6 ? 5 : 4;
+                    return Double.parseDouble(partes[indiceSaldo].replace(";", "").trim());
                 } catch (NumberFormatException e) { return 0.0; }
             }
         }
@@ -277,10 +309,17 @@ public class DataBase {
         boolean encontrado = false;
 
         for (String linea : lineas) {
-            String[] partes = linea.split(":", 5);
+            String[] partes = linea.split(":");
             if (partes.length >= 4 && partes[0].equals(cedula)) {
-                String nuevaLinea = String.format("%s:%s:%s:%s:%.2f;",
-                        partes[0], partes[1], partes[2], partes[3], nuevoSaldo);
+                String nuevaLinea;
+                if (partes.length >= 6) {
+                    String tipo = partes[4].trim();
+                    nuevaLinea = String.format("%s:%s:%s:%s:%s:%.2f;",
+                            partes[0], partes[1], partes[2], partes[3], tipo, nuevoSaldo);
+                } else {
+                    nuevaLinea = String.format("%s:%s:%s:%s:%.2f;",
+                            partes[0], partes[1], partes[2], partes[3], nuevoSaldo);
+                }
                 lineasActualizadas.add(nuevaLinea);
                 encontrado = true;
             } else {
@@ -701,6 +740,51 @@ public class DataBase {
         return parsearLineaCcb(ultima);
     }
 
+    public static double calcularMontoCcbPorTipo(double ccbBase, TipoUsuario tipoUsuario) {
+        if (ccbBase < 0) {
+            throw new IllegalArgumentException("El CCB base no puede ser negativo.");
+        }
+
+        double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
+        double porcentaje = rango[0] == rango[1]
+                ? rango[0]
+                : ThreadLocalRandom.current().nextDouble(rango[0], rango[1]);
+        return ccbBase * porcentaje;
+    }
+
+    public static double calcularMontoCcbPorTipo(double ccbBase, TipoUsuario tipoUsuario, double porcentajeCcb) {
+        if (ccbBase < 0) {
+            throw new IllegalArgumentException("El CCB base no puede ser negativo.");
+        }
+
+        double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
+        if (porcentajeCcb < rango[0] || porcentajeCcb > rango[1]) {
+            throw new IllegalArgumentException("El porcentaje no está en el rango permitido para el tipo de usuario.");
+        }
+
+        return ccbBase * porcentajeCcb;
+    }
+
+    public static double calcularMontoCcbParaCedula(String cedula) {
+        CCB ultimoCcb = obtenerUltimoCcb();
+        if (ultimoCcb == null || !cedulaValida(cedula)) {
+            return 0.0;
+        }
+
+        TipoUsuario tipoUsuario = obtenerTipoUsuario(cedula);
+        return calcularMontoCcbPorTipo(ultimoCcb.getCcb(), tipoUsuario);
+    }
+
+    public static double calcularMontoCcbParaCedula(String cedula, double porcentajeCcb) {
+        CCB ultimoCcb = obtenerUltimoCcb();
+        if (ultimoCcb == null || !cedulaValida(cedula)) {
+            return 0.0;
+        }
+
+        TipoUsuario tipoUsuario = obtenerTipoUsuario(cedula);
+        return calcularMontoCcbPorTipo(ultimoCcb.getCcb(), tipoUsuario, porcentajeCcb);
+    }
+
     public static List<Menu> obtenerUltimos5Menus() {
         List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
         List<Menu> resultado = new ArrayList<>();
@@ -736,6 +820,19 @@ public class DataBase {
         } catch (NumberFormatException ex) {
             return 0.0;
         }
+    }
+
+    private static double[] obtenerRangoPorTipoUsuario(TipoUsuario tipoUsuario) {
+        if (tipoUsuario == null) {
+            return new double[] { 1.0, 1.0 };
+        }
+
+        return switch (tipoUsuario) {
+            case ESTUDIANTE -> new double[] { CCB_ESTUDIANTE_MIN, CCB_ESTUDIANTE_MAX };
+            case PROFESOR -> new double[] { CCB_PROFESOR_MIN, CCB_PROFESOR_MAX };
+            case EMPLEADO -> new double[] { CCB_EMPLEADO_MIN, CCB_EMPLEADO_MAX };
+            default -> new double[] { 1.0, 1.0 };
+        };
     }
 
     private static float parseFloatSeguro(String valor) {
@@ -812,12 +909,38 @@ public class DataBase {
         return valor == null ? "" : valor.trim();
     }
 
+    public static String normalizarCedula(String cedula) {
+        if (cedula == null) return "";
+        return cedula.trim().replaceAll("[.\\-\\s]", "");
+    }
+
+    private static String valorTipoUsuario(TipoUsuario tipoUsuario) {
+        return switch (tipoUsuario) {
+            case ESTUDIANTE -> "Estudiante";
+            case PROFESOR -> "Profesor";
+            case EMPLEADO -> "Empleado";
+            default -> "Comensal";
+        };
+    }
+
+    private static TipoUsuario parsearTipoUsuario(String tipoUsuario) {
+        String tipoNormalizado = valorSeguro(tipoUsuario).toLowerCase(Locale.ROOT);
+        return switch (tipoNormalizado) {
+            case "estudiante" -> TipoUsuario.ESTUDIANTE;
+            case "profesor" -> TipoUsuario.PROFESOR;
+            case "empleado" -> TipoUsuario.EMPLEADO;
+            default -> TipoUsuario.COMENSAL;
+        };
+    }
+
     private static boolean cedulaValida(String cedula) {
-        if (cedula == null || !cedula.matches("\\d+")) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (cedulaLimpia.isEmpty() || !cedulaLimpia.matches("\\d+")) {
             return false;
         }
         try {
-            return Long.parseLong(cedula) >= CEDULA_MINIMA;
+            long cedulaNumero = Long.parseLong(cedulaLimpia);
+            return cedulaNumero >= CEDULA_MINIMA && cedulaNumero <= CEDULA_MAXIMA;
         } catch (NumberFormatException ex) {
             return false;
         }
