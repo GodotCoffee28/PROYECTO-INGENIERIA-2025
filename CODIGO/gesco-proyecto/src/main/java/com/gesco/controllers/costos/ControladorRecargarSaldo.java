@@ -1,17 +1,18 @@
-package com.gesco.controllers;
+package com.gesco.controllers.costos;
 
 import javax.swing.JOptionPane;
 
-import com.gesco.views.VistaRecargarSaldo;
+import com.gesco.controllers.gestion_principal.DataBase;
+import com.gesco.views.costos.VistaRecargarSaldo;
 
-public class VistaRecargarSaldoControlador {
+public class ControladorRecargarSaldo {
 
     private final VistaRecargarSaldo vista;
     private final String cedulaSesion;
     private final Runnable onBack;
     private final Runnable onRecargaSuccess;
 
-    public VistaRecargarSaldoControlador(
+    public ControladorRecargarSaldo(
         VistaRecargarSaldo vista,
         String cedulaSesion,
         Runnable onBack,
