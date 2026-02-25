@@ -10,6 +10,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.gesco.controllers.gestion_principal.DataBase;
 import com.gesco.controllers.gestion_principal.ValidadorIdentidad;
+import com.gesco.models.costos.CCB;
 import com.gesco.models.menu.Menu;
 import com.gesco.models.usuarios.Usuario.TipoUsuario;
 import com.gesco.views.otros.VistaFila;
@@ -55,6 +56,16 @@ public class ControladorFila {
                 vista,
                 "La fila está llena. Intente más tarde.",
                 "Fila completa",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        if (obtenerCcbBase() <= 0) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "No hay un CCB cargado para calcular el cobro.",
+                "CCB no disponible",
                 JOptionPane.WARNING_MESSAGE
             );
             return;
@@ -110,9 +121,11 @@ public class ControladorFila {
 
     private void actualizarCobro() {
         double costoMenu = obtenerCostoMenuHoy();
+        double ccbBase = obtenerCcbBase();
         TipoUsuario tipoUsuario = obtenerTipoUsuarioSesion();
-        double costoFinal = DataBase.calcularMontoCcbPorTipo(costoMenu, tipoUsuario);
-        double ajuste = costoMenu > 0 ? ((1 - (costoFinal / costoMenu)) * 100.0) : 0.0;
+        double porcentaje = DataBase.calcularMontoCcbPorTipo(1.0, tipoUsuario);
+        double costoFinal = costoMenu + (ccbBase * porcentaje);
+        double ajuste = porcentaje * 100.0;
 
         vista.setCobroInfo(costoMenu, ajuste, costoFinal);
     }
@@ -123,6 +136,16 @@ public class ControladorFila {
                 vista,
                 "Seleccione una imagen antes de cobrar.",
                 "Imagen requerida",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        if (vista.getCostoTotal() <= 0) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "No hay un CCB válido para cobrar.",
+                "CCB no disponible",
                 JOptionPane.WARNING_MESSAGE
             );
             return;
@@ -139,6 +162,15 @@ public class ControladorFila {
         }
         File usuarioImg = vista.getArchivoSeleccionado();
         File usuarioSecretaria = DataBase.obtenerImagenSecretaria(cedulaSesion);
+        if (!usuarioSecretaria.exists() || !usuarioSecretaria.isFile()) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "No se encontró la imagen de secretaria para la cédula " + cedulaSesion + ".",
+                "Imagen de secretaria no disponible",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
         try {
             ValidadorIdentidad validador = new ValidadorIdentidad();
             boolean esValida = validador.compararImagenes(usuarioImg, usuarioSecretaria);
@@ -216,6 +248,14 @@ public class ControladorFila {
             return 0.0;
         }
         return menu.getCostoMenu();
+    }
+
+    private double obtenerCcbBase() {
+        CCB ultimoCcb = DataBase.obtenerUltimoCcb();
+        if (ultimoCcb == null) {
+            return 0.0;
+        }
+        return ultimoCcb.getCcb();
     }
 
     private TipoUsuario obtenerTipoUsuarioSesion() {

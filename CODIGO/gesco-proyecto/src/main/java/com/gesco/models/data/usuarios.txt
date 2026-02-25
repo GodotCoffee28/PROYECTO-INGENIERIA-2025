@@ -8,3 +8,4 @@ Cedula:Contrasenia: Nombre Y apellido: gmail: Tipo de usuario: Saldo;
 32111454:32111454:Ramses Cordoba:aaroncordobarivas@gmail.com:Administrador:943,00;
 32111455:Manolo:Manolo Sanches:Manolo@gmail.com:Estudiante:0.0;
 32111453:a:a:a@a.gmail:Estudiante:0.0;
+12345679:12345:gabbbb:fghfghf@:Estudiante:9933615.73;

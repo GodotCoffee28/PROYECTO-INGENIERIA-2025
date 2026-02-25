@@ -84,7 +84,17 @@ public class DataBase {
 
     public static File obtenerImagenSecretaria(String cedula) {
         Path secretariaPath = obtenerCarpetaSecretaria().toPath();
-        return secretariaPath.resolve(valorSeguro(cedula) + ".jpg").toFile();
+        String base = valorSeguro(cedula);
+        File jpg = secretariaPath.resolve(base + ".jpg").toFile();
+        if (jpg.exists()) return jpg;
+
+        File jpeg = secretariaPath.resolve(base + ".jpeg").toFile();
+        if (jpeg.exists()) return jpeg;
+
+        File png = secretariaPath.resolve(base + ".png").toFile();
+        if (png.exists()) return png;
+
+        return jpg;
     }
 
     private static File obtenerArchivo(String nombreArchivo) {
