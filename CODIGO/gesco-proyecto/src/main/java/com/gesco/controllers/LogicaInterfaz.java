@@ -11,6 +11,7 @@ import com.gesco.views.VistaInicio;
 import com.gesco.views.VistaInicioAdmin;
 import com.gesco.views.VistaInicioComensal;  
 import com.gesco.views.VistaInicioSesion;
+import com.gesco.views.VistaFila;
 import com.gesco.views.VistaMenuSemana;
 import com.gesco.views.VistaRecargarSaldo;
 import com.gesco.views.VistaRegistro;
@@ -27,6 +28,7 @@ public class LogicaInterfaz {
     private VistaInicioAdmin vistaInicioAdmin;
     private VistaInicioComensal vistaInicioComensal;  
     private VistaRecargarSaldo vistaRecargarSaldo;
+    private VistaFila vistaFila;
     private VistaMenuSemana vistaMenuSemana;
     private VistaTurnos vistaTurnos;
     private VistaCargaCCB vistaCargaCCB;
@@ -128,7 +130,8 @@ public class LogicaInterfaz {
             this::iniciar,
             this::mostrarMenuSemana,
             this::mostrarTurnos,
-            this::mostrarRecargarSaldo
+            this::mostrarRecargarSaldo,
+            this::mostrarFila
         ).conectar();
     }
 
@@ -176,11 +179,15 @@ public class LogicaInterfaz {
     }
 
     private void mostrarFila() {
-        javax.swing.JOptionPane.showMessageDialog(null,
-            "La funcionalidad de fila ha sido deshabilitada.",
-            "Funcionalidad deshabilitada",
-            javax.swing.JOptionPane.INFORMATION_MESSAGE);
-        volverAPantallaPrincipal();
+        cerrarVistas();
+        vistaFila = new VistaFila();
+        menuGescoController.conectar(vistaFila, sesionAdmin);
+        new VistaFilaControlador(
+            vistaFila,
+            cedulaSesionActual,
+            this::volverAPantallaPrincipal,
+            this::mostrarMenuSemana
+        ).conectar();
     }
 
     private void mostrarCargaCCB() {
@@ -382,6 +389,13 @@ public class LogicaInterfaz {
         }
     }
 
+    private void cerrarVistaFila() {
+        if (vistaFila != null) {
+            vistaFila.dispose();
+            vistaFila = null;
+        }
+    }
+
     private void cerrarVistaMenuSemana() {
         if (vistaMenuSemana != null) {
             vistaMenuSemana.dispose();
@@ -445,6 +459,7 @@ public class LogicaInterfaz {
         cerrarVistaEspera();
         cerrarVistaInicioAdmin();
         cerrarVistaInicioComensal();  
+        cerrarVistaFila();
         cerrarVistaMenuSemana();
         cerrarVistaTurnos();
         cerrarVistaCargaCCB();

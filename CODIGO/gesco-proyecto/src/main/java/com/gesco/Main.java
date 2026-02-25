@@ -1,11 +1,11 @@
 package com.gesco;
 
-
-import com.gesco.views.VistaFila;
+import com.gesco.controllers.LogicaInterfaz;
 
 public class Main {
 
     public static void main(String[] args) {
-        VistaFila logica = new VistaFila();
+        LogicaInterfaz logica = new LogicaInterfaz();
+        logica.iniciar();
     }
 } 

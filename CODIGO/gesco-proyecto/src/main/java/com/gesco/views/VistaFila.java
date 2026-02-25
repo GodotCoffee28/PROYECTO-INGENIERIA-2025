@@ -14,7 +14,10 @@ import com.gesco.models.Menu;
 public class VistaFila extends PlantillaGesco {
     private BotonNeon btnEntrar, btnSalir, btnVerMenu;
     private JLabel infoFila, infoBienvenida, iconoPersona, lblNombreArchivo;
-    private int enFila = 0, Disponible = 100, costoMenu = 0, descuento = 0, costoTotal = 0;
+    private int enFila = 0, Disponible = 100;
+    private double costoMenu = 0.0;
+    private double descuento = 0.0;
+    private double costoTotal = 0.0;
     private JButton btnCobrar, btnCancelar, btnSeleccionar;
     private File archivoSeleccionado = null;
     private VentanaEmergente ventanaCobro;
@@ -49,7 +52,8 @@ public class VistaFila extends PlantillaGesco {
 
         infoBienvenida = crearEtiquetaPersonalizada("Estado del Comedor Universitario", "Times New Roman", Font.BOLD, 40, new Color(240, 240, 240), "centro");
 
-        infoFila = new JLabel(enFila + " / " + Disponible + " Personas en la fila");
+        infoFila = new JLabel();
+        actualizarInfoFila();
         infoFila.setFont(new Font("Times New Roman", Font.BOLD, 35));
         infoFila.setForeground(new Color(240, 240, 240));
 
@@ -112,7 +116,6 @@ public class VistaFila extends PlantillaGesco {
 
         panelControles.add(btnEntrar);
         panelControles.add(Box.createVerticalStrut(10));
-        btnEntrar.addActionListener(e ->crearVentanaEmergente());
         btnSalir.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelControles.add(btnSalir);
 
@@ -180,9 +183,9 @@ public class VistaFila extends PlantillaGesco {
             Font fuenteLabel = new Font("Segoe UI", Font.BOLD, 14);
             Color colorTexto = new Color(50, 50, 50);
 
-            JLabel lblCosto = new JLabel("Costo del menú: " + costoMenu);
-            JLabel lblDesc = new JLabel("Descuento por ser Estudiante: " + descuento + "%");
-            JLabel lblTotal = new JLabel("Costo final aplicando descuento: " + costoTotal);
+            JLabel lblCosto = new JLabel(String.format("Costo del menú: %.2f Bs.", costoMenu));
+            JLabel lblDesc = new JLabel(String.format("Ajuste aplicado: %.2f%%", descuento));
+            JLabel lblTotal = new JLabel(String.format("Costo final: %.2f Bs.", costoTotal));
 
             for (JLabel lbl : new JLabel[]{lblCosto, lblDesc, lblTotal}) {
                 lbl.setFont(fuenteLabel);
@@ -223,6 +226,10 @@ public class VistaFila extends PlantillaGesco {
     public void setNombreArchivoSeleccionado(String nombre) {
         if(lblNombreArchivo != null) lblNombreArchivo.setText(nombre);
     }
+    public void setArchivoSeleccionado(File archivoSeleccionado) {
+        this.archivoSeleccionado = archivoSeleccionado;
+    }
+    public int getDisponible() { return Disponible; }
     public BotonNeon getBtnEntrar() { return btnEntrar; }
     public BotonNeon getBtnSalir() { return btnSalir; }
     public BotonNeon getBtnVerMenu() { return btnVerMenu; }
@@ -231,11 +238,34 @@ public class VistaFila extends PlantillaGesco {
     public JButton getBtnCancelar() { return btnCancelar; }
     public JButton getBtnSeleccionar(){ return btnSeleccionar;}
     public File getArchivoSeleccionado() { return archivoSeleccionado; }
+    public double getCostoTotal() { return costoTotal; }
     public void cerrarEmergente() {
     if (ventanaCobro != null) {
         ventanaCobro.cerrar();
         }
     }
     public int getEnFila() { return enFila; }
+
+    public void setEnFila(int enFila) {
+        this.enFila = Math.max(0, enFila);
+        actualizarInfoFila();
+    }
+
+    public void setDisponible(int disponible) {
+        this.Disponible = Math.max(0, disponible);
+        actualizarInfoFila();
+    }
+
+    public void setCobroInfo(double costoMenu, double descuento, double costoTotal) {
+        this.costoMenu = Math.max(0.0, costoMenu);
+        this.descuento = descuento;
+        this.costoTotal = Math.max(0.0, costoTotal);
+    }
+
+    private void actualizarInfoFila() {
+        if (infoFila != null) {
+            infoFila.setText(enFila + " / " + Disponible + " Personas en la fila");
+        }
+    }
 
 }

@@ -1,2 +1,2 @@
 12345678:123456789:Jhon:adaad@:Estudiante:0.0;
-33246679:123456789:Gab:adad@:Comensal:100000.00;
+33246679:123456789:Gab:adad@:Comensal:100663.70;
