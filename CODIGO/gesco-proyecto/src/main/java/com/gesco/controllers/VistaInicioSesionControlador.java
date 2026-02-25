@@ -2,8 +2,8 @@ package com.gesco.controllers;
 
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.function.Consumer;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
@@ -54,10 +54,6 @@ public class VistaInicioSesionControlador {
             }
         });
     }
-
-    // ---------------------------------------------------------------
-    // Login normal
-    // ---------------------------------------------------------------
 
     private void procesarInicioSesion() {
         String cedula = DataBase.normalizarCedula(vista.getCedula());
