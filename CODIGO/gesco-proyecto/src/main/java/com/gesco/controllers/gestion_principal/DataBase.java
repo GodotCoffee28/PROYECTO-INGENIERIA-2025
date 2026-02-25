@@ -68,7 +68,7 @@ public class DataBase {
 
     public static String getDataDir() { return DATA_DIR; }
 
-    public static File obtenerImagenSecretaria(String cedula) {
+    public static File obtenerCarpetaSecretaria() {
         Path basePath = obtenerBaseProyecto();
         Path dataPath = Paths.get(DATA_DIR);
         Path secretariaPath;
@@ -79,6 +79,11 @@ public class DataBase {
             secretariaPath = basePath.resolve(DATA_DIR).resolve(CARPETA_SECRETARIA);
         }
 
+        return secretariaPath.toFile();
+    }
+
+    public static File obtenerImagenSecretaria(String cedula) {
+        Path secretariaPath = obtenerCarpetaSecretaria().toPath();
         return secretariaPath.resolve(valorSeguro(cedula) + ".jpg").toFile();
     }
 
@@ -295,8 +300,10 @@ public class DataBase {
             if (partes.length >= 5 && partes[0].equals(cedula)) {
                 try {
                     int indiceSaldo = partes.length >= 6 ? 5 : 4;
-                    return Double.parseDouble(partes[indiceSaldo].replace(";", "").trim());
-                } catch (NumberFormatException e) { return 0.0; }
+                    return Double.parseDouble(partes[indiceSaldo].replace(";", "").replace(",", ".").trim());
+                } catch (NumberFormatException e) {
+                    return 0.0; 
+                }
             }
         }
         return 0.0;
