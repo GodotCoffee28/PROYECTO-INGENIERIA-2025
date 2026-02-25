@@ -11,9 +11,10 @@ public class PlantillaGesco extends JFrame {
 
     protected JPanel contenedorPrincipal; 
     private JLabel backIcon;  
-    private JLabel menuIcon;
+    private JLabel menuIcon, lblIconoUsuario;
     private final MenuDesplegable menuDesplegableGeneral;
     private Image imagenFondo;
+    private int saldo=0;
     
     public PlantillaGesco() {
 
@@ -66,8 +67,33 @@ public class PlantillaGesco extends JFrame {
                 menuIcon.setForeground(new Color(180, 180, 180));
             }
         });
+        JPanel panelIzquierdo = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
+        panelIzquierdo.setOpaque(false);
 
+        panelIzquierdo.setPreferredSize(new Dimension(250, 100)); 
+        panelIzquierdo.add(menuIcon);
         
+        JPanel panelDerecho = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 30));
+        panelDerecho.setOpaque(false);
+        panelDerecho.setPreferredSize(new Dimension(250, 100));
+
+        ImageIcon iconoBlanco = obtenerIcono("/iconoBlanco.png", 35);
+        ImageIcon iconoGris = obtenerIcono("/iconoGris.png", 35);
+
+        lblIconoUsuario = new JLabel(iconoGris);
+        lblIconoUsuario.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        lblIconoUsuario.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                lblIconoUsuario.setIcon(iconoBlanco);
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                lblIconoUsuario.setIcon(iconoGris);
+            }
+        });
+
         JLabel tituloEncabezado = new JLabel("Comedor estudiantil UCV", SwingConstants.CENTER);
         tituloEncabezado.setFont(new Font("Courier New", Font.BOLD, 30));
         tituloEncabezado.setForeground(Color.WHITE);
@@ -75,18 +101,14 @@ public class PlantillaGesco extends JFrame {
         JLabel relleno = new JLabel("☰");
         relleno.setFont(new Font("Dialog", Font.PLAIN, 45));
         relleno.setForeground(new Color(0,0,0,0)); 
-        relleno.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
 
         backIcon = new JLabel("🢀");  
-        backIcon.setFont(new Font("Dialog", Font.PLAIN, 45));
+        backIcon.setFont(new Font("Dialog", Font.PLAIN, 40));
         backIcon.setForeground(new Color(180, 180, 180));
         backIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        backIcon.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
 
-        JLabel rellenoBack = new JLabel("🢀");
-        rellenoBack.setFont(new Font("Dialog", Font.PLAIN, 45));
-        rellenoBack.setForeground(new Color(0,0,0,0)); 
-        rellenoBack.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
+        panelDerecho.add(lblIconoUsuario);
+        panelDerecho.add(backIcon);
         
         backIcon.addMouseListener(new MouseAdapter() {
             @Override
@@ -99,10 +121,9 @@ public class PlantillaGesco extends JFrame {
             }
         });
 
-        topPanel.add(menuIcon, BorderLayout.WEST);
+        topPanel.add(panelIzquierdo, BorderLayout.WEST);
         topPanel.add(tituloEncabezado, BorderLayout.CENTER);
-        topPanel.add(relleno, BorderLayout.EAST);
-        topPanel.add(backIcon, BorderLayout.EAST);
+        topPanel.add(panelDerecho, BorderLayout.EAST); 
 
         return topPanel;
     }
@@ -230,19 +251,26 @@ protected JPanel crearTarjeta(String titulo, int ancho, int alto, int radio, int
             System.err.println("No se pudo cargar el fondo en: " + ruta);
         }
     }
+
     private String urlRuta(String r) {
         return r.startsWith("/") ? r : "/" + r;
     }
 
+
     public MenuDesplegable getPopupMenu() {
         return menuDesplegableGeneral;
     }
+
+
     public JLabel getMenuIcon(){
         return menuIcon;
     }
+
+
     public JLabel getBackIcon() {
         return backIcon;
     }
+
 
     protected void ocultarMenu() {
         if (menuIcon != null) {
@@ -254,6 +282,7 @@ protected JPanel crearTarjeta(String titulo, int ancho, int alto, int radio, int
         }
     }
 
+
     protected void ocultarBack() {
         if (backIcon != null) {
             backIcon.setForeground(new Color(0, 0, 0, 0));
@@ -262,5 +291,19 @@ protected JPanel crearTarjeta(String titulo, int ancho, int alto, int radio, int
                 backIcon.removeMouseListener(ml);
             }
         }
+    }
+
+    protected void ocultarIcono() {
+        if (lblIconoUsuario != null) {
+            lblIconoUsuario.setVisible(false);
+            lblIconoUsuario.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            for (java.awt.event.MouseListener ml : lblIconoUsuario.getMouseListeners()) {
+                lblIconoUsuario.removeMouseListener(ml);
+            }
+        }
+}
+
+    public JLabel getIconoUsuario(){
+        return  lblIconoUsuario;
     }
 }

@@ -25,6 +25,7 @@ public class VistaInicio extends PlantillaGesco {
         setImagenFondo("/VISTAFONDO.png");
         ocultarMenu();
         ocultarBack();
+        ocultarIcono();
         inicializarComponentes();
         construirCuerpo();
         revalidate();

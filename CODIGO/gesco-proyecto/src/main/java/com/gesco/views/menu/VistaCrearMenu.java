@@ -47,6 +47,7 @@ public class VistaCrearMenu extends PlantillaGesco {
     public VistaCrearMenu() {
         super();
         setImagenFondo("/FondoPrincipal2.png");
+        ocultarIcono();
         inicializarComponentes();
         construirCuerpo();
         revalidate();

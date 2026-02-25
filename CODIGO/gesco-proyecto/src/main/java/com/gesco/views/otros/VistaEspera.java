@@ -23,7 +23,10 @@ public class VistaEspera extends PlantillaGesco {
     private ImageIcon taza;
 
     public VistaEspera() {
-        super(); 
+        super();
+        ocultarIcono();
+        ocultarMenu();
+        ocultarBack();
         inicializarComponentes();
         construirCuerpo();
         revalidate();

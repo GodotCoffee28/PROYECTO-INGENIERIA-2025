@@ -12,7 +12,8 @@ public class MenuDesplegable {
     private final JPopupMenu  menuOpciones;
     private final JPopupMenu menuOpcionesUsuario;
     private final JPopupMenu menuOpcionesAdmin;
-
+    private final JPopupMenu menuSaldo;
+    private final String nombre="", tipoUsuario="";
 
     private final Color colorFondo = new Color(30, 30, 35);  
     private final Color colorHover = new Color(50, 50, 55);    
@@ -25,6 +26,7 @@ public class MenuDesplegable {
         menuOpciones = generarMenuBase();
         menuOpcionesUsuario = generarMenuBase();
         menuOpcionesAdmin = generarMenuBase();
+        menuSaldo = generarMenuPerfil(0);
 
         añadirSeparador(menuOpcionesAdmin);
         agregarTituloSeccion(menuOpcionesAdmin, "Administrador");
@@ -120,7 +122,28 @@ public class MenuDesplegable {
         jp.add(itemSalir);
     }
 
+
+    public JPopupMenu generarMenuPerfil(int saldoActual) {
+        JPopupMenu menu = new JPopupMenu();
+        menu.setBackground(colorFondo);
+        menu.setBorder(BorderFactory.createLineBorder(new Color(60, 60, 65), 1));
+
+        agregarTituloSeccion(menu, "Mi Cuenta");
+        
+        JMenuItem itemSaldo = new JMenuItem("Saldo: " + saldoActual + " Bs.");
+        diseñarItem(itemSaldo, colorAdmin); 
+        itemSaldo.setEnabled(false); 
+        menu.add(itemSaldo);
+
+        añadirSeparador(menu);
+
+        agregarTituloSeccion(menu, nombre);
+        agregarTituloSeccion(menu, tipoUsuario);
+
+        return menu;
+    }
     public JPopupMenu getMenu() { return menuOpciones; }
     public JPopupMenu getMenuUsuario() { return menuOpcionesUsuario; }
     public JPopupMenu getMenuAdmin() { return menuOpcionesAdmin; }
+    public JPopupMenu getMenuSaldo() { return menuSaldo; }
 }

@@ -23,6 +23,7 @@ public class VistaVerCFCV extends PlantillaGesco {
 
     public VistaVerCFCV() {
         super();
+        ocultarIcono();
         setImagenFondo("/FondoPrincipal2.png");
         inicializar();
         construirCuerpo();
