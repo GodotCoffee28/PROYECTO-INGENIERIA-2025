@@ -164,7 +164,7 @@ public class DataBase {
         if (usuarioExiste(cedula)) return false;
 
         TipoUsuario tipo = tipoUsuario == null ? TipoUsuario.COMENSAL : tipoUsuario;
-        if (tipo.esAdmin()) {
+        if (tipo == TipoUsuario.SUPER_ADMIN) {
             return false;
         }
 
@@ -181,7 +181,7 @@ public class DataBase {
             return agregarAdmin(cedula);
         }
 
-        if (!registrarUsuario(cedula, clave, nombre, correo)) return false;
+        if (!registrarUsuario(cedula, clave, nombre, correo, TipoUsuario.ADMIN)) return false;
         return agregarAdmin(cedula);
     }
 
@@ -580,20 +580,7 @@ public class DataBase {
         }
         return resultado;
     }
-/* 
-    private static List<LocalDate> obtenerSiguientesCincoDiasHabiles(LocalDate baseExclusiva) {
-        List<LocalDate> resultado = new ArrayList<>();
-        LocalDate cursor = (baseExclusiva == null ? LocalDate.now() : baseExclusiva).plusDays(1);
 
-        while (resultado.size() < 5) {
-            if (esDiaHabil(cursor)) {
-                resultado.add(cursor);
-            }
-            cursor = cursor.plusDays(1);
-        }
-        return resultado;
-    }
- */
     private static boolean esFeriado(LocalDate fecha) {
         String mmdd = String.format("%02d-%02d", fecha.getMonthValue(), fecha.getDayOfMonth());
         if (FERIADOS_FIJOS_MM_DD.contains(mmdd)) return true;
@@ -657,23 +644,7 @@ public class DataBase {
 
         return menu.tienePlatillos();
     }
-/* 
-    private static LocalDate fechaMaximaEnMenus(List<String> lineas) {
-        LocalDate maxima = null;
-        for (String linea : lineas) {
-            String[] partes = linea.split("\\|");
-            if (partes.length == 0) continue;
-            try {
-                LocalDate fecha = LocalDate.parse(partes[0]);
-                if (maxima == null || fecha.isAfter(maxima)) {
-                    maxima = fecha;
-                }
-            } catch (Exception ignored) {
-            }
-        }
-        return maxima;
-    }
- */
+
     private static boolean existeMenuParaFecha(List<String> lineas, LocalDate fecha) {
         String fechaStr = fecha.toString();
         for (String linea : lineas) {

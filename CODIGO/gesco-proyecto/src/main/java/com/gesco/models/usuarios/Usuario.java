@@ -1,5 +1,3 @@
-
-
 package com.gesco.models.usuarios;
 
 import java.util.Locale;
@@ -23,6 +21,7 @@ public class Usuario {
 				case ESTUDIANTE -> "Estudiante";
 				case PROFESOR -> "Profesor";
 				case EMPLEADO -> "Empleado";
+				case ADMIN, SUPER_ADMIN -> "Administrador";
 				default -> "Comensal";
 			};
 		}
@@ -33,6 +32,7 @@ public class Usuario {
 				case "estudiante" -> ESTUDIANTE;
 				case "profesor" -> PROFESOR;
 				case "empleado" -> EMPLEADO;
+				case "administrador" -> ADMIN;
 				default -> COMENSAL;
 			};
 		}
@@ -102,4 +102,3 @@ public class Usuario {
 		System.out.println(nombre + " se registró en el sistema.");
 	}
 }
-

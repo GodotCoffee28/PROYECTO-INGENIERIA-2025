@@ -57,7 +57,6 @@ public class ControladorFila {
             return;
         }
 
-        vista.setEnFila(vista.getEnFila() + 1);
         actualizarCobro();
         vista.crearVentanaEmergente();
     }
@@ -138,6 +137,8 @@ public class ControladorFila {
             );
             return;
         }
+
+        vista.setEnFila(vista.getEnFila() + 1);
 
         JOptionPane.showMessageDialog(
             vista,
