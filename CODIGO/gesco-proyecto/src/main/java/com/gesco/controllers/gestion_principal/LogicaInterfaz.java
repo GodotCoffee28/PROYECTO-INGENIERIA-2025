@@ -7,7 +7,6 @@ import com.gesco.controllers.auntentificacion.ControladorRegistro;
 import com.gesco.controllers.costos.ControladorCargarCCB;
 import com.gesco.controllers.costos.ControladorRecargarSaldo;
 import com.gesco.controllers.costos.ControladorVerCCB;
-//import com.gesco.controllers.costos.ControladorVerCFCV;
 import com.gesco.controllers.inicio.ControladorInicio;
 import com.gesco.controllers.inicio.ControladorInicioAdmin;
 import com.gesco.controllers.inicio.ControladorInicioComensal;
@@ -140,7 +139,7 @@ public class LogicaInterfaz {
 
         vistaInicioComensal = new VistaInicioComensal(nombreMostrar, saldo);
 
-        menuGescoController.conectar(vistaInicioComensal, sesionAdmin);
+        menuGescoController.conectar(vistaInicioComensal, sesionAdmin, cedulaSesionActual);
         new ControladorInicioComensal(
             vistaInicioComensal,
             this::iniciar,
@@ -157,7 +156,7 @@ public class LogicaInterfaz {
         sesionAdmin = true;
         nombreUsuario = nombre;
         vistaInicioAdmin = new VistaInicioAdmin();
-        menuGescoController.conectar(vistaInicioAdmin, true);
+        menuGescoController.conectar(vistaInicioAdmin, true, cedulaSesionActual);
         new ControladorInicioAdmin(
             vistaInicioAdmin,
             this::iniciar,
@@ -176,7 +175,7 @@ public class LogicaInterfaz {
     private void mostrarMenuSemana() {
         cerrarVistas();
         vistaMenuSemana = new VistaMenuSemana();
-        menuGescoController.conectar(vistaMenuSemana, sesionAdmin);
+        menuGescoController.conectar(vistaMenuSemana, sesionAdmin, cedulaSesionActual);
         new ControladorMenuSemana(
             vistaMenuSemana,
             this::volverAPantallaPrincipal
@@ -186,7 +185,7 @@ public class LogicaInterfaz {
     private void mostrarTurnos() {
         cerrarVistas();
         vistaTurnos = new VistaTurnos();
-        menuGescoController.conectar(vistaTurnos, sesionAdmin);
+        menuGescoController.conectar(vistaTurnos, sesionAdmin, cedulaSesionActual);
         new ControladorTurnos(
             vistaTurnos,
             this::volverAPantallaPrincipal,
@@ -197,7 +196,7 @@ public class LogicaInterfaz {
     private void mostrarFila() {
         cerrarVistas();
         vistaFila = new VistaFila();
-        menuGescoController.conectar(vistaFila, sesionAdmin);
+        menuGescoController.conectar(vistaFila, sesionAdmin, cedulaSesionActual);
         new ControladorFila(
             vistaFila,
             cedulaSesionActual,
@@ -209,7 +208,7 @@ public class LogicaInterfaz {
     private void mostrarCargaCCB() {
         cerrarVistas();
         vistaCargaCCB = new VistaCargaCCB();
-        menuGescoController.conectar(vistaCargaCCB, usuarioAdmin);
+        menuGescoController.conectar(vistaCargaCCB, usuarioAdmin, cedulaSesionActual);
         ControladorCargarCCB controlador = new ControladorCargarCCB(
             vistaCargaCCB,
             this::mostrarPanelControl
@@ -220,7 +219,7 @@ public class LogicaInterfaz {
     private void mostrarVerCfcv() {
         cerrarVistas();
         vistaVerCfcv = new VistaVerCFCV();
-        menuGescoController.conectar(vistaVerCfcv, sesionAdmin);
+        menuGescoController.conectar(vistaVerCfcv, sesionAdmin, cedulaSesionActual);
         new ControladorVerCFCV(
             vistaVerCfcv,
             this::mostrarPanelControl
@@ -229,7 +228,7 @@ public class LogicaInterfaz {
     private void mostrarVerCcb() {
         cerrarVistas();
         vistaVerCcb = new VistaVerCCB();
-        menuGescoController.conectar(vistaVerCcb, sesionAdmin);
+        menuGescoController.conectar(vistaVerCcb, sesionAdmin, cedulaSesionActual);
         new ControladorVerCCB(
             vistaVerCcb,
             this::mostrarPanelControl
@@ -239,7 +238,7 @@ public class LogicaInterfaz {
     private void mostrarCrearMenu() {
         cerrarVistas();
         vistaCrearMenu = new VistaCrearMenu();
-        menuGescoController.conectar(vistaCrearMenu, sesionAdmin);
+        menuGescoController.conectar(vistaCrearMenu, sesionAdmin, cedulaSesionActual);
         new ControladorCrearMenu(
             vistaCrearMenu,
             this::mostrarGestionMenu
@@ -249,7 +248,7 @@ public class LogicaInterfaz {
     private void mostrarEditarMenu() {
         cerrarVistas();
         vistaEditarMenu = new VistaEditarMenu();
-        menuGescoController.conectar(vistaEditarMenu, sesionAdmin);
+        menuGescoController.conectar(vistaEditarMenu, sesionAdmin, cedulaSesionActual);
         new ControladorEditarMenu(
             vistaEditarMenu,
             this::mostrarGestionMenu
@@ -259,7 +258,7 @@ public class LogicaInterfaz {
     private void mostrarGestionMenu() {
         cerrarVistas();
         vistaGestionMenu = new VistaGestionMenu();
-        menuGescoController.conectar(vistaGestionMenu, sesionAdmin);
+        menuGescoController.conectar(vistaGestionMenu, sesionAdmin, cedulaSesionActual);
         new ControladorGestionMenu(
             vistaGestionMenu,
             this::mostrarPanelControl,
@@ -330,7 +329,7 @@ public class LogicaInterfaz {
         };
         vistaCrearMenu.setTitle("Crear menú — " + nombreDia + " (" + (5 - restantes) + "/5)");
 
-        menuGescoController.conectar(vistaCrearMenu, usuarioAdmin);
+        menuGescoController.conectar(vistaCrearMenu, usuarioAdmin, cedulaSesionActual);
 
         new ControladorCrearMenu(
             vistaCrearMenu,
@@ -498,7 +497,7 @@ public class LogicaInterfaz {
 
         cerrarVistas();
         vistaRecargarSaldo = new VistaRecargarSaldo();
-        menuGescoController.conectar(vistaRecargarSaldo, sesionAdmin);
+        menuGescoController.conectar(vistaRecargarSaldo, sesionAdmin, cedulaSesionActual);
         new ControladorRecargarSaldo(
             vistaRecargarSaldo,
             cedulaSesionActual,
