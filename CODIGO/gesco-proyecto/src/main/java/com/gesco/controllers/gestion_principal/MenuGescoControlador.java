@@ -9,11 +9,11 @@ import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class MenuGescoControlador {
 
-    private final MenuAcciones acciones;
+    //private final MenuAcciones acciones;
     private final MenuComandosControlador comandosControlador;
 
     public MenuGescoControlador(MenuAcciones acciones) {
-        this.acciones = acciones;
+        //this.acciones = acciones;
         this.comandosControlador = new MenuComandosControlador(acciones);
     }
 
