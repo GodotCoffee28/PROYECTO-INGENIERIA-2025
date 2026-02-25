@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.time.DayOfWeek;
+
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
@@ -13,13 +14,18 @@ import com.gesco.views.PlantillasViews.TarjetaGeneral;
 
 public class TarjetaMenu extends TarjetaGeneral {
 
-    private final Menu menu;
+    private final Menu menuDesayuno;
+    private final Menu menuAlmuerzo;
     private JLabel lblDia;
-    private JLabel lblTipo;
 
     public TarjetaMenu(Menu menu) {
+        this(menu, null);
+    }
+
+    public TarjetaMenu(Menu menuDesayuno, Menu menuAlmuerzo) {
         super(new Color(255, 255, 255), new Color(255, 255, 255));
-        this.menu = menu;
+        this.menuDesayuno = menuDesayuno;
+        this.menuAlmuerzo = menuAlmuerzo;
         
         actualizarInterfaz();
     }
@@ -29,18 +35,15 @@ public class TarjetaMenu extends TarjetaGeneral {
         lblDia = new JLabel("", SwingConstants.CENTER);
         setTituloEstilo(lblDia); 
         containerCabecera.add(lblDia, BorderLayout.CENTER);
-        
-        lblTipo = new JLabel("", SwingConstants.CENTER);
-        lblTipo.setFont(new Font("Arial", Font.PLAIN, 14));
-        lblTipo.setForeground(Color.WHITE); 
-        containerCabecera.add(lblTipo, BorderLayout.SOUTH);
     }
 
     private void actualizarInterfaz() {
-        if (menu == null) return;
         containerCuerpo.removeAll();
 
-        DayOfWeek dia = menu.getFecha().getDayOfWeek();
+        Menu menuBase = menuDesayuno != null ? menuDesayuno : menuAlmuerzo;
+        if (menuBase == null) return;
+
+        DayOfWeek dia = menuBase.getFecha().getDayOfWeek();
         String diaStr = switch(dia){
             case MONDAY    -> "LUNES";
             case TUESDAY   -> "MARTES";
@@ -52,44 +55,44 @@ public class TarjetaMenu extends TarjetaGeneral {
         };
 
         lblDia.setText(diaStr);
-        lblTipo.setText(formatearTipoMenu(menu.getTipoMenu()));
 
-        if (menu.getEstado() == Menu.EstadoMenu.NO_DISPONIBLE) {
-            JLabel lblNoDisponible = new JLabel("MENÚ NO DISPONIBLE");
-            configurarLabelPlatillo(lblNoDisponible);
-            containerCuerpo.add(lblNoDisponible);
-        } 
-        else if (!menu.tienePlatillos()) {
-            JLabel lblVacio = new JLabel("SIN MENÚ CARGADO");
-            configurarLabelPlatillo(lblVacio); 
-            containerCuerpo.add(lblVacio);
-        } 
-        else {
-            JLabel lblCosto = new JLabel(String.format("Costo: $%.2f", menu.getCostoMenu()));
-            lblCosto.setFont(new Font("Arial", Font.PLAIN, 16));
-            lblCosto.setForeground(Color.WHITE);
-            containerCuerpo.add(lblCosto);
-
-            for (Platillo platillo : menu.getPlatillos()) {
-                JLabel lblNombrePlatillo = new JLabel(" • " + platillo.getNombre().toUpperCase());
-                configurarLabelPlatillo(lblNombrePlatillo); 
-                containerCuerpo.add(lblNombrePlatillo);
-            }
-        }
+        renderMenuSection("Desayuno", menuDesayuno);
+        renderMenuSection("Almuerzo", menuAlmuerzo);
 
         revalidate();
         repaint();
     }
 
-    private String formatearTipoMenu(Menu.TipoMenu tipoMenu) {
-        if (tipoMenu == null || tipoMenu == Menu.TipoMenu.NO_DEFINIDO) {
-            return "";
+    private void renderMenuSection(String titulo, Menu menu) {
+        JLabel lblTipo = new JLabel(titulo);
+        lblTipo.setFont(new Font("Arial", Font.BOLD, 14));
+        lblTipo.setForeground(Color.WHITE);
+        containerCuerpo.add(lblTipo);
+
+        if (menu == null || menu.getEstado() == Menu.EstadoMenu.NO_DISPONIBLE) {
+            JLabel lblNoDisponible = new JLabel("MENÚ NO DISPONIBLE");
+            configurarLabelPlatillo(lblNoDisponible);
+            containerCuerpo.add(lblNoDisponible);
+            return;
         }
-        return switch (tipoMenu) {
-            case DESAYUNO -> "Desayuno";
-            case ALMUERZO -> "Almuerzo";
-            case NO_DEFINIDO -> "";
-        };
+
+        if (!menu.tienePlatillos()) {
+            JLabel lblVacio = new JLabel("SIN MENÚ CARGADO");
+            configurarLabelPlatillo(lblVacio);
+            containerCuerpo.add(lblVacio);
+            return;
+        }
+
+        JLabel lblCosto = new JLabel(String.format("Costo: $%.2f", menu.getCostoMenu()));
+        lblCosto.setFont(new Font("Arial", Font.PLAIN, 16));
+        lblCosto.setForeground(Color.WHITE);
+        containerCuerpo.add(lblCosto);
+
+        for (Platillo platillo : menu.getPlatillos()) {
+            JLabel lblNombrePlatillo = new JLabel(" • " + platillo.getNombre().toUpperCase());
+            configurarLabelPlatillo(lblNombrePlatillo);
+            containerCuerpo.add(lblNombrePlatillo);
+        }
     }
 }
 

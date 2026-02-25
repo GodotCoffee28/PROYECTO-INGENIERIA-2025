@@ -1,18 +1,28 @@
 package com.gesco.views.PlantillasViews;
 
-import java.awt.*;
-
-import  java.awt.event.MouseAdapter;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Locale;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
+
+import com.gesco.controllers.gestion_principal.DataBase;
+import com.gesco.models.usuarios.Usuario.TipoUsuario;
 
 
 public class MenuDesplegable {
     private final JPopupMenu  menuOpciones;
     private final JPopupMenu menuOpcionesUsuario;
     private final JPopupMenu menuOpcionesAdmin;
-
+    private final JPopupMenu menuSaldo;
 
     private final Color colorFondo = new Color(30, 30, 35);  
     private final Color colorHover = new Color(50, 50, 55);    
@@ -25,6 +35,7 @@ public class MenuDesplegable {
         menuOpciones = generarMenuBase();
         menuOpcionesUsuario = generarMenuBase();
         menuOpcionesAdmin = generarMenuBase();
+        menuSaldo = generarMenuPerfil(null);
 
         añadirSeparador(menuOpcionesAdmin);
         agregarTituloSeccion(menuOpcionesAdmin, "Administrador");
@@ -120,7 +131,40 @@ public class MenuDesplegable {
         jp.add(itemSalir);
     }
 
+
+    public JPopupMenu generarMenuPerfil(String cedulaSesion) {
+        JPopupMenu menu = new JPopupMenu();
+        menu.setBackground(colorFondo);
+        menu.setBorder(BorderFactory.createLineBorder(new Color(60, 60, 65), 1));
+
+        agregarTituloSeccion(menu, "Mi Cuenta");
+
+        String cedula = DataBase.normalizarCedula(cedulaSesion);
+        boolean sinSesion = cedula == null || cedula.isBlank();
+
+        String nombre = sinSesion ? "Sesion no iniciada" : DataBase.obtenerNombre(cedula);
+        if (nombre == null || nombre.isBlank()) nombre = "Usuario";
+
+        TipoUsuario tipo = sinSesion ? TipoUsuario.COMENSAL : DataBase.obtenerTipoUsuario(cedula);
+        String tipoEtiqueta = tipo == null ? "Comensal" : tipo.toEtiqueta();
+
+        double saldo = sinSesion ? 0.0 : DataBase.obtenerSaldo(cedula);
+        String saldoTexto = String.format(Locale.ROOT, "%.2f", saldo);
+
+        JMenuItem itemSaldo = new JMenuItem("Saldo: " + saldoTexto + " Bs.");
+        diseñarItem(itemSaldo, colorAdmin); 
+        itemSaldo.setEnabled(false); 
+        menu.add(itemSaldo);
+
+        añadirSeparador(menu);
+
+        agregarTituloSeccion(menu, nombre);
+        agregarTituloSeccion(menu, tipoEtiqueta);
+    
+        return menu;
+    }
     public JPopupMenu getMenu() { return menuOpciones; }
     public JPopupMenu getMenuUsuario() { return menuOpcionesUsuario; }
     public JPopupMenu getMenuAdmin() { return menuOpcionesAdmin; }
+    public JPopupMenu getMenuSaldo() { return menuSaldo; }
 }

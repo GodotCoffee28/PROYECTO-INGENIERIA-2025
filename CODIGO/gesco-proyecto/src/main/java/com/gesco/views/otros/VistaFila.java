@@ -1,16 +1,36 @@
 package com.gesco.views.otros;
 
-import javax.swing.*;
-import java.awt.*;
-import java.time.LocalDate;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.io.File;
+import java.time.LocalDate;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
+import com.gesco.controllers.gestion_principal.DataBase;
 import com.gesco.models.menu.Menu;
-import com.gesco.models.menu.Platillo;
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
-import com.gesco.views.menu.TarjetaMenu;
 import com.gesco.views.PlantillasViews.VentanaEmergente;
+import com.gesco.views.menu.TarjetaMenu;
 
 public class VistaFila extends PlantillaGesco {
     private BotonNeon btnEntrar, btnSalir, btnVerMenu;
@@ -99,7 +119,7 @@ public class VistaFila extends PlantillaGesco {
         GridBagConstraints gbc = new GridBagConstraints();
 
         gbc.gridx = 0;
-        gbc.weightx = 0.5;
+        gbc.weightx = 0.0;
         gbc.weighty = 0.0;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(0, 0, 0, 40);
@@ -142,14 +162,11 @@ public class VistaFila extends PlantillaGesco {
         panelTarjetas.setMaximumSize(new Dimension(750, 160));
         panelTarjetas.setBorder(BorderFactory.createEmptyBorder(0, 40, 0, 40));
 
-        Menu menuD = new Menu(LocalDate.now());
-        menuD.agregarPlatillo(new Platillo("Arepa"));
-        panelTarjetas.add(new TarjetaMenu(menuD));
-
-        Menu menuA = new Menu(LocalDate.now());
-        menuA.agregarPlatillo(new Platillo("Pasta"));
-        menuA.agregarPlatillo(new Platillo("Patilla"));
-        panelTarjetas.add(new TarjetaMenu(menuA));
+        String fechaHoy = LocalDate.now().toString();
+        Menu menuDesayuno = DataBase.obtenerMenuPorFechaYTipo(fechaHoy, Menu.TipoMenu.DESAYUNO);
+        Menu menuAlmuerzo = DataBase.obtenerMenuPorFechaYTipo(fechaHoy, Menu.TipoMenu.ALMUERZO);
+        panelTarjetas.add(new TarjetaMenu(menuDesayuno));
+        panelTarjetas.add(new TarjetaMenu(menuAlmuerzo));
 
         panelInferior.add(panelTarjetas);
         panelInferior.add(Box.createVerticalStrut(15));
