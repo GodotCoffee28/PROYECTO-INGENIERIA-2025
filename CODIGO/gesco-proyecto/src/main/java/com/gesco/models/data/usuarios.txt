@@ -5,4 +5,4 @@ Cedula:Contraseña: Nombre Y apellido: gmail: Tipo de usuario: Saldo;
 31768767:ale:Ale:ale@:Estudiante:0.0;
 31768765:pepe:pepe:pepe@:Profesor:0.0;
 31768766:juan:juan:juan@:Empleado:0.0;
-31768764:alex:alex:alex@:Administrador:0.0;
+31768764:alex:alex:alex@:Administrador:780,75;
