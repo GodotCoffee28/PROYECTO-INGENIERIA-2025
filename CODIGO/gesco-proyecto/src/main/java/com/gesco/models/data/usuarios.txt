@@ -1,8 +1,9 @@
-Cedula:Contraseña: Nombre Y apellido: gmail: Tipo de usuario: Saldo;
+Cedula:Contrasenia: Nombre Y apellido: gmail: Tipo de usuario: Saldo;
 12345678:123456789:Jhon:adaad@:Estudiante:0.0;
 33246679:123456789:Gab:adad@:Comensal:100663.70;
-32111454:32111454:Ramses Cordoba:aaroncordobarivas@gmail.com:Comensal:0.0;
 31768767:ale:Ale:ale@:Estudiante:0.0;
 31768765:pepe:pepe:pepe@:Profesor:0.0;
 31768766:juan:juan:juan@:Empleado:0.0;
 31768764:alex:alex:alex@:Administrador:0.0;
+32111454:32111454:Ramses Cordoba:aaroncordobarivas@gmail.com:Administrador:943,00;
+32111455:Manolo:Manolo Sanches:Manolo@gmail.com:Estudiante:0.0;
