@@ -21,6 +21,7 @@ public class ControladorFila {
     private final String cedulaSesion;
     private final Runnable onBack;
     private final Runnable onVerMenu;
+    private boolean usuarioEnFila;
 
     public ControladorFila(
         VistaFila vista,
@@ -32,6 +33,7 @@ public class ControladorFila {
         this.cedulaSesion = DataBase.normalizarCedula(cedulaSesion);
         this.onBack = onBack;
         this.onVerMenu = onVerMenu;
+        this.usuarioEnFila = false;
     }
 
     public void conectar() {
@@ -51,6 +53,16 @@ public class ControladorFila {
     }
 
     private void procesarEntrada() {
+        if (usuarioEnFila) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "Ya te encuentras en la fila. No puedes entrar más de una vez.",
+                "Ingreso no permitido",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
         if (vista.getEnFila() >= vista.getDisponible()) {
             JOptionPane.showMessageDialog(
                 vista,
@@ -76,7 +88,7 @@ public class ControladorFila {
     }
 
     private void procesarSalida() {
-        if (vista.getEnFila() <= 0) {
+        if (!usuarioEnFila) {
             JOptionPane.showMessageDialog(
                 vista,
                 "No está en la fila actualmente.",
@@ -99,6 +111,7 @@ public class ControladorFila {
         }
 
         vista.setEnFila(vista.getEnFila() - 1);
+        usuarioEnFila = false;
     }
 
     private void seleccionarArchivo() {
@@ -228,6 +241,7 @@ public class ControladorFila {
         }
 
         vista.setEnFila(vista.getEnFila() + 1);
+        usuarioEnFila = true;
 
         JOptionPane.showMessageDialog(
             vista,

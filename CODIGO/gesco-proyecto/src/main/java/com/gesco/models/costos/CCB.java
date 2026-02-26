@@ -22,6 +22,12 @@ public class CCB {
         if (fecha == null) {
             throw new IllegalArgumentException("La fecha no puede ser null.");
         }
+        if (Double.isNaN(nb) || Double.isInfinite(nb) || nb <= 0) {
+            throw new IllegalArgumentException("NB debe ser mayor que cero.");
+        }
+        if (Double.isNaN(merma) || Double.isInfinite(merma) || merma < 0 || merma > 100) {
+            throw new IllegalArgumentException("MERMA debe estar entre 0 y 100.");
+        }
         this.fecha = fecha;
         this.tipoUsuario = tipoUsuario == null ? "" : tipoUsuario.trim();
         this.cf = cf;

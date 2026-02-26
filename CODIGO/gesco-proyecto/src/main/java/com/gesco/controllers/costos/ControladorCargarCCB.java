@@ -1,5 +1,6 @@
 package com.gesco.controllers.costos;
 
+import java.time.LocalDate;
 
 import com.gesco.controllers.gestion_principal.DataBase;
 import javax.swing.JOptionPane;
@@ -34,6 +35,16 @@ public class ControladorCargarCCB {
             ccb = vista.crearCCB();
         } catch (IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(vista, ex.getMessage(), "Datos invalidos", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (!ccb.getFecha().equals(LocalDate.now())) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "Para actualizar el CCB debe seleccionar la fecha del día actual.",
+                "Fecha inválida",
+                JOptionPane.WARNING_MESSAGE
+            );
             return;
         }
 
