@@ -62,20 +62,23 @@ public class VistaHistorialMenu extends PlantillaGesco {
         }
     }
 
-    public void agregarMenuALista(String fecha, String p1, String ins1, String p2, String ins2, String p3, String ins3) {
+    public void agregarMenuALista(String fecha, String tipo, String platillo1, String insumo1, String cantidad1, String costo1, String platillo2, String insumo2, String cantidad2, String costo2,String platillo3, String insumo3, String cantidad3, String costo3) {
+        
         JPanel bloqueTexto = new JPanel();
         bloqueTexto.setLayout(new BoxLayout(bloqueTexto, BoxLayout.Y_AXIS));
         bloqueTexto.setOpaque(false);
         bloqueTexto.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel lblFecha = crearEtiquetaPersonalizada("FECHA: " + fecha, "Segoe UI", Font.BOLD, 18, new Color(130, 180, 255), "centro");
-
+        JLabel lblTipo = crearEtiquetaPersonalizada("[" + tipo.toUpperCase() + "]", "Segoe UI", Font.ITALIC, 14, new Color(200, 200, 200), "centro");
+        
         bloqueTexto.add(lblFecha);
+        bloqueTexto.add(lblTipo);
         bloqueTexto.add(Box.createVerticalStrut(15)); 
 
-        bloqueTexto.add(crearSeccion("PLATILLO 1: " + p1, ins1));
-        bloqueTexto.add(crearSeccion("PLATILLO 2: " + p2, ins2));
-        bloqueTexto.add(crearSeccion("PLATILLO 3: " + p3, ins3));
+        bloqueTexto.add(crearSeccion("PLATILLO 1: " + platillo1, formatoInsumo(insumo1, cantidad1, costo1)));
+        bloqueTexto.add(crearSeccion("PLATILLO 2: " + platillo2, formatoInsumo(insumo2, cantidad2, costo2)));
+        bloqueTexto.add(crearSeccion("PLATILLO 3: " + platillo3, formatoInsumo(insumo3, cantidad3, costo3)));
 
         JSeparator separador = new JSeparator();
         separador.setMaximumSize(new Dimension(750, 1));
@@ -91,18 +94,20 @@ public class VistaHistorialMenu extends PlantillaGesco {
         contenedorVertical.repaint();
     }
 
-    private JPanel crearSeccion(String titulo, String lista) {
+    private String formatoInsumo(String ins, String cant, String costo) {
+        return ins + "  |  Cant: " + cant + "  |  Costo Unit: " + costo + "$";
+    }
+
+    private JPanel crearSeccion(String titulo, String infoProcesada) {
         JPanel division = new JPanel(new BorderLayout());
         division.setOpaque(false);
-        division.setMaximumSize(new Dimension(750, 70));
+        division.setMaximumSize(new Dimension(750, 75));
 
         JLabel tituloSeccion = crearEtiquetaPersonalizada(titulo.toUpperCase(), "Segoe UI", Font.BOLD, 13, Color.WHITE, "izquierda");
 
-        JTextArea areaTexto = new JTextArea("Insumos: " + lista);
-        areaTexto.setFont(new Font("Segoe UI", Font.ITALIC, 12));
+        JTextArea areaTexto = new JTextArea(infoProcesada);
+        areaTexto.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         areaTexto.setForeground(new Color(180, 180, 180));
-        areaTexto.setLineWrap(true);
-        areaTexto.setWrapStyleWord(true);
         areaTexto.setEditable(false);
         areaTexto.setOpaque(false);
         areaTexto.setBorder(BorderFactory.createEmptyBorder(2, 20, 10, 0));
