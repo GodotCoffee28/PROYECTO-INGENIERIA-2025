@@ -24,9 +24,16 @@ public class VistaHistorialMenu extends PlantillaGesco {
         contenedorVertical.setOpaque(false);
         contenedorVertical.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
-        JLabel titulo = crearEtiquetaPersonalizada("Historial de Menús", "Times New Roman", Font.BOLD, 35, Color.WHITE, "centro");
-
+        JLabel titulo = crearEtiquetaPersonalizada("Historial de menús", "Times New Roman", Font.BOLD, 35, Color.WHITE, "centro");
         contenedorVertical.add(titulo);
+        contenedorVertical.add(Box.createVerticalStrut(10));
+
+        JSeparator separadorTitulo = new JSeparator();
+        separadorTitulo.setMaximumSize(new Dimension(500, 2));
+        separadorTitulo.setForeground(Color.WHITE);
+        separadorTitulo.setBackground(Color.WHITE); 
+        
+        contenedorVertical.add(separadorTitulo);
         contenedorVertical.add(Box.createVerticalStrut(25)); 
     }
 
@@ -34,7 +41,7 @@ public class VistaHistorialMenu extends PlantillaGesco {
         JPanel panelGris = new JPanel(new BorderLayout());
         panelGris.setBackground(new Color(60, 60, 65));
         panelGris.setOpaque(true);
-        panelGris.setPreferredSize(new Dimension(590, 600));
+        panelGris.setPreferredSize(new Dimension(650, 600));
         
         panelGris.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100), 1));
 
@@ -46,12 +53,12 @@ public class VistaHistorialMenu extends PlantillaGesco {
 
         panelGris.add(scroll, BorderLayout.CENTER);
 
-        JPanel capaCentradora = new JPanel(new GridBagLayout());
-        capaCentradora.setOpaque(false);
-        capaCentradora.add(panelGris); 
+        JPanel capaCentro = new JPanel(new GridBagLayout());
+        capaCentro.setOpaque(false);
+        capaCentro.add(panelGris); 
 
         if (this.contenedorPrincipal != null) {
-            this.contenedorPrincipal.add(capaCentradora, BorderLayout.CENTER);
+            this.contenedorPrincipal.add(capaCentro, BorderLayout.CENTER);
         }
     }
 
@@ -72,14 +79,14 @@ public class VistaHistorialMenu extends PlantillaGesco {
 
         JSeparator separador = new JSeparator();
         separador.setMaximumSize(new Dimension(750, 1));
-        separador.setForeground(new Color(255, 255, 255, 50));
+        separador.setForeground(new Color(150, 150, 150)); 
+        separador.setBackground(new Color(150, 150, 150));
         
         bloqueTexto.add(Box.createVerticalStrut(20));
         bloqueTexto.add(separador);
         bloqueTexto.add(Box.createVerticalStrut(30));
 
         contenedorVertical.add(bloqueTexto);
-
         contenedorVertical.revalidate();
         contenedorVertical.repaint();
     }
@@ -89,7 +96,7 @@ public class VistaHistorialMenu extends PlantillaGesco {
         division.setOpaque(false);
         division.setMaximumSize(new Dimension(750, 70));
 
-       JLabel tituloSeccion = crearEtiquetaPersonalizada(titulo.toUpperCase(), "Segoe UI", Font.BOLD, 13, Color.WHITE, "izquierda");
+        JLabel tituloSeccion = crearEtiquetaPersonalizada(titulo.toUpperCase(), "Segoe UI", Font.BOLD, 13, Color.WHITE, "izquierda");
 
         JTextArea areaTexto = new JTextArea("Insumos: " + lista);
         areaTexto.setFont(new Font("Segoe UI", Font.ITALIC, 12));
@@ -106,13 +113,9 @@ public class VistaHistorialMenu extends PlantillaGesco {
     }
 
     public void limpiarHistorial() {
-    contenedorVertical.removeAll();
-
-    JLabel titulo = crearEtiquetaPersonalizada("Historial de Menús", "Times New Roman", Font.BOLD, 35, Color.WHITE, "centro");
-    contenedorVertical.add(titulo);
-    contenedorVertical.add(Box.createVerticalStrut(25)); 
-
-    contenedorVertical.revalidate();
-    contenedorVertical.repaint();
+        contenedorVertical.removeAll();
+        inicializarComponentes(); 
+        contenedorVertical.revalidate();
+        contenedorVertical.repaint();
     }
 }
