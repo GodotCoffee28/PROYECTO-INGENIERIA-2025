@@ -33,6 +33,7 @@ import com.gesco.views.menu.VistaMenuSemana;
 import com.gesco.views.otros.VistaEspera;
 import com.gesco.views.otros.VistaFila;
 import com.gesco.views.otros.VistaTurnos;
+import com.gesco.views.Registros.VistaHistorialMenu;
 
 public class LogicaInterfaz {
 
@@ -52,6 +53,7 @@ public class LogicaInterfaz {
     private VistaCrearMenu vistaCrearMenu;
     private VistaEditarMenu vistaEditarMenu;
     private VistaGestionMenu vistaGestionMenu;
+    private VistaHistorialMenu vistaHistorialMenu;
     private boolean usuarioAdmin;
     private boolean sesionAdmin;
     private String nombreUsuario;
@@ -163,7 +165,8 @@ public class LogicaInterfaz {
             this::mostrarGestionMenu,
             this::mostrarCargaCCB,
             this::mostrarVerCcb,
-            this::swapInteraccion
+            this::swapInteraccion,
+            this::mostrarHistorialMenu
         ).conectar();
     }
 
@@ -215,16 +218,7 @@ public class LogicaInterfaz {
         );
         controlador.conectar();
     }
-    /*
-    private void mostrarVerCfcv() {
-        cerrarVistas();
-        vistaVerCfcv = new VistaVerCFCV();
-        menuGescoController.conectar(vistaVerCfcv, sesionAdmin, cedulaSesionActual);
-        new ControladorVerCFCV(
-            vistaVerCfcv,
-            this::mostrarPanelControl
-        ).conectar();
-    } */
+
     private void mostrarVerCcb() {
         cerrarVistas();
         vistaVerCcb = new VistaVerCCB();
@@ -266,6 +260,19 @@ public class LogicaInterfaz {
             this::mostrarCrearMenu,
             this::reiniciarMenusSemana
         ).conectar();
+    }
+
+    private void mostrarHistorialMenu() {
+        cerrarVistas();
+        vistaHistorialMenu = new VistaHistorialMenu();
+        menuGescoController.conectar(vistaHistorialMenu, sesionAdmin, cedulaSesionActual);
+    }
+
+    private void cerrarVistaHistorialMenu() {
+        if (vistaHistorialMenu != null) {
+            vistaHistorialMenu.dispose();
+            vistaHistorialMenu = null;
+        }
     }
 
     private void reiniciarMenusSemana() {
@@ -465,6 +472,12 @@ public class LogicaInterfaz {
             vistaGestionMenu = null;
         }
     }
+    private void cerrarVistaRecargarSaldo() {
+        if (vistaRecargarSaldo != null) {
+            vistaRecargarSaldo.dispose();
+            vistaRecargarSaldo = null;
+        }
+    }
 
     private void cerrarVistas() {
         cerrarVistaInicio();
@@ -483,6 +496,7 @@ public class LogicaInterfaz {
         cerrarVistaEditarMenu();
         cerrarVistaGestionMenu();
         cerrarVistaRecargarSaldo();
+        cerrarVistaHistorialMenu();
     }
 
     private void mostrarRecargarSaldo() {
@@ -506,12 +520,6 @@ public class LogicaInterfaz {
         ).conectar();
     }
 
-    private void cerrarVistaRecargarSaldo() {
-        if (vistaRecargarSaldo != null) {
-            vistaRecargarSaldo.dispose();
-            vistaRecargarSaldo = null;
-        }
-    }
 }
 
 
