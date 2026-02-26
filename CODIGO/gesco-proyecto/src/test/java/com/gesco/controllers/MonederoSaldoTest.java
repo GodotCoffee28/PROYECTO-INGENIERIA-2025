@@ -44,22 +44,21 @@ public class MonederoSaldoTest {
     }
 
     @Test
-    public void recargarSaldo_actualizaSaldoCorrectamente() {
+    public void recargarSaldo_actualizaSaldoCorrectamente_cajaNegra() {
         String cedula = "33333333";
 
         assertTrue(DataBase.registrarUsuario(cedula, "clave123", "Usuario Test", "test@email.com", TipoUsuario.ESTUDIANTE));
         assertTrue(DataBase.actualizarSaldo(cedula, 100.00));
 
-        double saldoAntes = DataBase.obtenerSaldo(cedula);
         double montoRecarga = 40.50;
-        double nuevoSaldo = saldoAntes + montoRecarga;
+        double nuevoSaldoEsperado = 140.50;
 
-        assertTrue(DataBase.actualizarSaldo(cedula, nuevoSaldo));
-        assertEquals(140.50, DataBase.obtenerSaldo(cedula), 0.0001);
+        assertTrue(DataBase.actualizarSaldo(cedula, 100.00 + montoRecarga));
+        assertEquals(nuevoSaldoEsperado, DataBase.obtenerSaldo(cedula), 0.0001);
     }
 
     @Test
-    public void entrarFila_cobraSegunMenuMasCcbPorDescuentoTipo() {
+    public void cobroFila_aplicaFormulaMenuMasCcbPorTipo_cajaNegra() {
         String cedula = "33444444";
 
         assertTrue(DataBase.registrarUsuario(cedula, "clave123", "Usuario Fila", "fila@email.com", TipoUsuario.ESTUDIANTE));
@@ -68,13 +67,18 @@ public class MonederoSaldoTest {
         double costoMenu = 50.00;
         double ccbBase = 10.00;
         double porcentajeEstudiante = 0.20;
+        double componenteCcbEsperado = 2.00;
+        double costoFinalEsperado = 52.00;
+        double saldoFinalEsperado = 148.00;
 
         double componenteCcb = DataBase.calcularMontoCcbPorTipo(ccbBase, TipoUsuario.ESTUDIANTE, porcentajeEstudiante);
+        assertEquals(componenteCcbEsperado, componenteCcb, 0.0001);
         double costoFinal = costoMenu + componenteCcb;
+        assertEquals(costoFinalEsperado, costoFinal, 0.0001);
 
         double saldoAntes = DataBase.obtenerSaldo(cedula);
         assertTrue(DataBase.actualizarSaldo(cedula, saldoAntes - costoFinal));
 
-        assertEquals(148.00, DataBase.obtenerSaldo(cedula), 0.0001);
+        assertEquals(saldoFinalEsperado, DataBase.obtenerSaldo(cedula), 0.0001);
     }
 }
