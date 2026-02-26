@@ -86,6 +86,16 @@ public class ControladorRecargarSaldo {
             return;
         }
 
+        if (monto > 10351.0) {
+        JOptionPane.showMessageDialog(
+            vista,
+            "El monto máximo permitido por recarga es 10.351 Bs (25$ BCV).",
+            "Límite de recarga excedido",
+            JOptionPane.WARNING_MESSAGE
+        );
+            return;
+        }
+
         double saldoActual = DataBase.obtenerSaldo(cedulaSesion);
         double nuevoSaldo = saldoActual + monto;
         boolean actualizado = DataBase.actualizarSaldo(cedulaSesion, nuevoSaldo);

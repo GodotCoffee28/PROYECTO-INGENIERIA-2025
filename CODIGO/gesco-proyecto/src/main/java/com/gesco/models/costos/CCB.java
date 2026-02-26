@@ -28,8 +28,9 @@ public class CCB {
         this.cv = cv;
         this.nb = nb;
         this.merma = merma;
-        this.ccb = calcularCCB();
-    }
+        double valorCalculado = calcularCCB();
+        this.ccb = Math.min(valorCalculado, 20702.0);
+}
 
     private double calcularCCB() {
         if (nb <= 0) {
