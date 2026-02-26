@@ -3,6 +3,10 @@ package com.gesco.views.costos;
 import java.awt.*;
 
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.CampoFecha;
@@ -109,6 +113,35 @@ public class VistaRecargarSaldo extends PlantillaGesco {
             formPanel.add(Box.createVerticalStrut(8));
             RefenciaField = new JTextField();
             diseñarCaja(RefenciaField, tamCaja);
+            ((AbstractDocument) RefenciaField.getDocument()).setDocumentFilter(new DocumentFilter() {
+                @Override
+                public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
+                        throws BadLocationException {
+                    if (string == null) return;
+                    String soloDigitos = string.replaceAll("[^0-9]", "");
+                    int longitudActual = fb.getDocument().getLength();
+                    int espacioDisponible = 20 - longitudActual;
+                    if (espacioDisponible <= 0) return;
+                    if (soloDigitos.length() > espacioDisponible) {
+                        soloDigitos = soloDigitos.substring(0, espacioDisponible);
+                    }
+                    super.insertString(fb, offset, soloDigitos, attr);
+                }
+
+                @Override
+                public void replace(FilterBypass fb, int offset, int length, String string, AttributeSet attr)
+                        throws BadLocationException {
+                    if (string == null) return;
+                    String soloDigitos = string.replaceAll("[^0-9]", "");
+                    int longitudActual = fb.getDocument().getLength() - length;
+                    int espacioDisponible = 20 - longitudActual;
+                    if (espacioDisponible <= 0) return;
+                    if (soloDigitos.length() > espacioDisponible) {
+                        soloDigitos = soloDigitos.substring(0, espacioDisponible);
+                    }
+                    super.replace(fb, offset, length, soloDigitos, attr);
+                }
+            });
             formPanel.add(RefenciaField);
 
             formPanel.add(crearEtiquetaPersonalizada("Monto Bs.", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
