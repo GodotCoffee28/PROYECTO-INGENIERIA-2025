@@ -41,6 +41,7 @@ public class VistaRecargarSaldo extends PlantillaGesco {
         Titulo = crearEtiquetaPersonalizada("Recargar saldo","Times New Roman", Font.BOLD, 45, new Color(240, 240, 240), "centro");
         Titulo.setFont(new Font("Arial", Font.BOLD, 45));
         comboBanco = new JComboBox<>(new String[]{
+            "Seleccione un banco",
             "Banesco Banco Universal (0134)",
             "Banco Exterior (0115)",
             "Bancamiga Banco Universal (0172)",

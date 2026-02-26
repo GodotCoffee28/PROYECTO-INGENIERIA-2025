@@ -1,11 +1,17 @@
 package com.gesco.controllers.costos;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 import javax.swing.JOptionPane;
 
 import com.gesco.controllers.gestion_principal.DataBase;
 import com.gesco.views.costos.VistaRecargarSaldo;
 
 public class ControladorRecargarSaldo {
+
+    private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private final VistaRecargarSaldo vista;
     private final String cedulaSesion;
@@ -63,11 +69,41 @@ public class ControladorRecargarSaldo {
             return;
         }
 
+        if ("Seleccione un banco".equals(banco)) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "Debe seleccionar un banco de la lista.",
+                "Banco requerido",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        if (!fechaTransaccionValida(fecha)) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "La fecha de la transacción debe estar dentro de los últimos 2 días.",
+                "Fecha inválida",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
         if (referencia.length() != 20) {
             JOptionPane.showMessageDialog(
                 vista,
                 "El número de referencia debe ser de 20 dígitos.\nVerifique su transacción.",
                 "Referencia inválida",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        if (DataBase.referenciaRecargaExiste(referencia)) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "La referencia ya fue registrada. Verifique e intente con una nueva transacción.",
+                "Referencia duplicada",
                 JOptionPane.WARNING_MESSAGE
             );
             return;
@@ -124,8 +160,8 @@ public class ControladorRecargarSaldo {
         if (!registrado) {
             JOptionPane.showMessageDialog(
                 vista,
-                "Saldo actualizado, pero no se pudo guardar el registro de la transaccion.",
-                "Consultar con su Banco",
+                "Saldo actualizado, pero no se pudo guardar el registro de la transacción.",
+                "Consultar con su banco",
                 JOptionPane.WARNING_MESSAGE
             );
         }
@@ -141,5 +177,16 @@ public class ControladorRecargarSaldo {
 
     private String valor(String texto) {
         return texto == null ? "" : texto.trim();
+    }
+
+    private boolean fechaTransaccionValida(String fechaTexto) {
+        try {
+            LocalDate fechaTransaccion = LocalDate.parse(fechaTexto, FORMATO_FECHA);
+            LocalDate hoy = LocalDate.now();
+            LocalDate limiteInferior = hoy.minusDays(2);
+            return !fechaTransaccion.isAfter(hoy) && !fechaTransaccion.isBefore(limiteInferior);
+        } catch (DateTimeParseException ex) {
+            return false;
+        }
     }
 }

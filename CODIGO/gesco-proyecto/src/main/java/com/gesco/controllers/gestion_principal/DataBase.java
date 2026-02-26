@@ -7,6 +7,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -70,16 +72,36 @@ public class DataBase {
     public static String getDataDir() { return DATA_DIR; }
 
     public static boolean registrarRecarga(String referencia, double monto, String banco, String fecha, String cedula) {
+        String referenciaLimpia = valorSeguro(referencia);
+        if (referenciaLimpia.isBlank() || referenciaRecargaExiste(referenciaLimpia)) {
+            return false;
+        }
+
+        double montoRedondeado = redondearMoneda(monto);
         String linea = String.format(
             Locale.ROOT,
             "%s:%.2f:%s:%s:%s",
-            valorSeguro(referencia),
-            monto,
+            referenciaLimpia,
+            montoRedondeado,
             valorSeguro(banco),
             valorSeguro(fecha),
             valorSeguro(cedula)
         );
         return escribirLineaGenerica(ARCHIVO_REGISTRO_SALDO, linea + System.lineSeparator());
+    }
+
+    public static boolean referenciaRecargaExiste(String referencia) {
+        String referenciaLimpia = valorSeguro(referencia);
+        if (referenciaLimpia.isBlank()) return false;
+
+        List<String> lineas = leerLineasGenericas(ARCHIVO_REGISTRO_SALDO);
+        for (String linea : lineas) {
+            String[] partes = linea.split(":");
+            if (partes.length > 0 && referenciaLimpia.equals(partes[0].trim())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static File obtenerCarpetaSecretaria() {
@@ -324,7 +346,8 @@ public class DataBase {
             if (partes.length >= 5 && partes[0].equals(cedula)) {
                 try {
                     int indiceSaldo = partes.length >= 6 ? 5 : 4;
-                    return Double.parseDouble(partes[indiceSaldo].replace(";", "").replace(",", ".").trim());
+                    double saldo = Double.parseDouble(partes[indiceSaldo].replace(";", "").replace(",", ".").trim());
+                    return redondearMoneda(saldo);
                 } catch (NumberFormatException e) {
                     return 0.0; 
                 }
@@ -335,6 +358,7 @@ public class DataBase {
 
     public static boolean actualizarSaldo(String cedula, double nuevoSaldo) {
         if (!cedulaValida(cedula)) return false;
+        double saldoRedondeado = redondearMoneda(nuevoSaldo);
         List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
         List<String> lineasActualizadas = new ArrayList<>();
         boolean encontrado = false;
@@ -346,10 +370,10 @@ public class DataBase {
                 if (partes.length >= 6) {
                     String tipo = partes[4].trim();
                     nuevaLinea = String.format("%s:%s:%s:%s:%s:%.2f;",
-                            partes[0], partes[1], partes[2], partes[3], tipo, nuevoSaldo);
+                            partes[0], partes[1], partes[2], partes[3], tipo, saldoRedondeado);
                 } else {
                     nuevaLinea = String.format("%s:%s:%s:%s:%.2f;",
-                            partes[0], partes[1], partes[2], partes[3], nuevoSaldo);
+                            partes[0], partes[1], partes[2], partes[3], saldoRedondeado);
                 }
                 lineasActualizadas.add(nuevaLinea);
                 encontrado = true;
@@ -831,7 +855,7 @@ public class DataBase {
         double porcentaje = rango[0] == rango[1]
                 ? rango[0]
                 : ThreadLocalRandom.current().nextDouble(rango[0], rango[1]);
-        return ccbBase * porcentaje;
+        return redondearMoneda(ccbBase * porcentaje);
     }
 
     public static double calcularMontoCcbPorTipo(double ccbBase, TipoUsuario tipoUsuario, double porcentajeCcb) {
@@ -844,7 +868,7 @@ public class DataBase {
             throw new IllegalArgumentException("El porcentaje no está en el rango permitido para el tipo de usuario.");
         }
 
-        return ccbBase * porcentajeCcb;
+        return redondearMoneda(ccbBase * porcentajeCcb);
     }
 
     public static double calcularMontoCcbParaCedula(String cedula) {
@@ -989,6 +1013,10 @@ public class DataBase {
 
     private static String valorSeguro(String valor) {
         return valor == null ? "" : valor.trim();
+    }
+
+    private static double redondearMoneda(double valor) {
+        return BigDecimal.valueOf(valor).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
     public static String normalizarCedula(String cedula) {
