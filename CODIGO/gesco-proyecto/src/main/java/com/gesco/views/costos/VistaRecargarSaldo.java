@@ -12,7 +12,8 @@ public class VistaRecargarSaldo extends PlantillaGesco {
     
     private JLabel Titulo;
     private CampoFecha campoFecha;
-    private JTextField CeduField, BancoField, MontoField, RefenciaField;
+    private JTextField CeduField, MontoField, RefenciaField;
+    private JComboBox<String> comboBanco;
     private BotonNeon botonRecargar;
 
     public VistaRecargarSaldo() {
@@ -27,12 +28,33 @@ public class VistaRecargarSaldo extends PlantillaGesco {
     
     private void inicializarComponentes() {
         Dimension tamBoton = new Dimension(400, 60);
+        Dimension tamCaja = new Dimension(450, 40);
+
         botonRecargar = new BotonNeon("Recargar");
         botonRecargar.setPreferredSize(new Dimension(400, 60));
         botonRecargar.setMaximumSize(tamBoton);
         botonRecargar.setAlignmentX(Component.CENTER_ALIGNMENT);
         Titulo = crearEtiquetaPersonalizada("Recargar saldo","Times New Roman", Font.BOLD, 45, new Color(240, 240, 240), "centro");
         Titulo.setFont(new Font("Arial", Font.BOLD, 45));
+        comboBanco = new JComboBox<>(new String[]{
+            "Banesco Banco Universal (0134)",
+            "Banco Exterior (0115)",
+            "Bancamiga Banco Universal (0172)",
+            "Banco de Venezuela (0102)",
+            "Banco del Tesoro (0163)",
+            "Banco Mercantil (0105)",
+            "Banco Nacional de Crédito (BNC) (0191)",
+            "Banco Plaza (0138)",
+            "Banco Provincial (BBVA) (0108)",
+            "Banplus Banco Universal (0174)"
+        });
+        comboBanco.setPreferredSize(tamCaja);
+        comboBanco.setMaximumSize(tamCaja);
+        comboBanco.setMinimumSize(tamCaja);
+        comboBanco.setAlignmentX(Component.LEFT_ALIGNMENT);
+        comboBanco.setFont(new Font("Arial", Font.PLAIN, 15));
+        comboBanco.setBackground(new Color(255, 255, 255, 240));
+        comboBanco.setSelectedIndex(0);
     }
 
     private void construirCuerpo() {
@@ -79,10 +101,9 @@ public class VistaRecargarSaldo extends PlantillaGesco {
             formPanel.add(Box.createVerticalStrut(20)); 
 
             formPanel.add(crearEtiquetaPersonalizada("Banco", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
+            formPanel.add(Box.createVerticalStrut(8));  
+            formPanel.add(comboBanco);
             formPanel.add(Box.createVerticalStrut(8));
-            BancoField = new JTextField();
-            diseñarCaja(BancoField, tamCaja);
-            formPanel.add(BancoField);
 
             formPanel.add(crearEtiquetaPersonalizada("Referencia", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
             formPanel.add(Box.createVerticalStrut(8));
@@ -103,7 +124,7 @@ public class VistaRecargarSaldo extends PlantillaGesco {
     //Getters para los campos de texto y el botón, para que el controlador pueda acceder a ellos
     public String getFecha() { return campoFecha.getFechaTexto(); }  
     public String getCedula() { return CeduField.getText();}
-    public String getBanco() { return BancoField.getText();}
+    public String getBanco() { return (String) comboBanco.getSelectedItem();}
     public String getReferencia() { return RefenciaField.getText();}
     public String getMonto() { return MontoField.getText();}
     public BotonNeon getBotonRecargar() {return botonRecargar;}
