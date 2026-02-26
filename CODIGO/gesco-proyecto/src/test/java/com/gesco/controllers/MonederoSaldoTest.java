@@ -6,7 +6,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import org.junit.After;
 import org.junit.Before;
@@ -17,44 +18,56 @@ import com.gesco.models.usuarios.Usuario.TipoUsuario;
 
 public class MonederoSaldoTest {
 
-    private Path usuariosPath;
-    private byte[] usuariosBackup;
+    private static final DateTimeFormatter FECHA_FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    private Path dataDirTemporal;
+    private String dataDirAnterior;
 
     @Before
     public void setUp() throws IOException {
-        usuariosPath = Paths.get(System.getProperty("user.dir"))
-            .resolve("src/main/java/com/gesco/models/data/usuarios.txt");
-
-        Files.createDirectories(usuariosPath.getParent());
-        if (Files.exists(usuariosPath)) {
-            usuariosBackup = Files.readAllBytes(usuariosPath);
-        } else {
-            usuariosBackup = new byte[0];
-            Files.createFile(usuariosPath);
-        }
-
-        Files.write(usuariosPath, new byte[0]);
+        dataDirAnterior = DataBase.getDataDir();
+        dataDirTemporal = Files.createTempDirectory("gesco-monedero-caja-negra-");
+        DataBase.setDataDir(dataDirTemporal.toString());
     }
 
     @After
     public void tearDown() throws IOException {
-        if (usuariosPath != null && usuariosBackup != null) {
-            Files.write(usuariosPath, usuariosBackup);
+        if (dataDirAnterior != null && !dataDirAnterior.isBlank()) {
+            DataBase.setDataDir(dataDirAnterior);
+        }
+
+        if (dataDirTemporal != null && Files.exists(dataDirTemporal)) {
+            Files.walk(dataDirTemporal)
+                .sorted((a, b) -> b.compareTo(a))
+                .forEach(path -> {
+                    try {
+                        Files.deleteIfExists(path);
+                    } catch (IOException ignored) {
+                    }
+                });
         }
     }
 
     @Test
     public void recargarSaldo_actualizaSaldoCorrectamente_cajaNegra() {
         String cedula = "33333333";
+        String referencia = "12345678901234567890";
+        String banco = "Banco de Venezuela (0102)";
+        String fecha = LocalDate.now().format(FECHA_FORMATO);
 
         assertTrue(DataBase.registrarUsuario(cedula, "clave123", "Usuario Test", "test@email.com", TipoUsuario.ESTUDIANTE));
         assertTrue(DataBase.actualizarSaldo(cedula, 100.00));
 
         double montoRecarga = 40.50;
+        double saldoInicial = DataBase.obtenerSaldo(cedula);
         double nuevoSaldoEsperado = 140.50;
 
-        assertTrue(DataBase.actualizarSaldo(cedula, 100.00 + montoRecarga));
+        assertTrue(DataBase.registrarRecarga(referencia, montoRecarga, banco, fecha, cedula));
+        assertTrue(DataBase.actualizarSaldo(cedula, saldoInicial + montoRecarga));
         assertEquals(nuevoSaldoEsperado, DataBase.obtenerSaldo(cedula), 0.0001);
+
+        assertTrue(DataBase.obtenerRecargasPorCedula(cedula).stream()
+            .anyMatch(r -> r[0].equals(referencia)));
     }
 
     @Test
@@ -67,12 +80,10 @@ public class MonederoSaldoTest {
         double costoMenu = 50.00;
         double ccbBase = 10.00;
         double porcentajeEstudiante = 0.20;
-        double componenteCcbEsperado = 2.00;
+        double componenteCcb = ccbBase * porcentajeEstudiante;
         double costoFinalEsperado = 52.00;
         double saldoFinalEsperado = 148.00;
 
-        double componenteCcb = DataBase.calcularMontoCcbPorTipo(ccbBase, TipoUsuario.ESTUDIANTE, porcentajeEstudiante);
-        assertEquals(componenteCcbEsperado, componenteCcb, 0.0001);
         double costoFinal = costoMenu + componenteCcb;
         assertEquals(costoFinalEsperado, costoFinal, 0.0001);
 

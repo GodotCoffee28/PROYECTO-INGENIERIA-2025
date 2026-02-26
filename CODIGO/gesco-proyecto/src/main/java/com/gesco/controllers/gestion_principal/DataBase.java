@@ -90,6 +90,37 @@ public class DataBase {
         return escribirLineaGenerica(ARCHIVO_REGISTRO_SALDO, linea + System.lineSeparator());
     }
 
+    public static List<String[]> obtenerRecargasPorCedula(String cedula) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        List<String[]> recargas = new ArrayList<>();
+        if (!cedulaValida(cedulaLimpia)) {
+            return recargas;
+        }
+
+        List<String> lineas = leerLineasGenericas(ARCHIVO_REGISTRO_SALDO);
+        for (String linea : lineas) {
+            String[] partes = linea.split(":");
+            if (partes.length < 5) {
+                continue;
+            }
+
+            String cedulaRegistro = normalizarCedula(partes[4]);
+            if (!cedulaLimpia.equals(cedulaRegistro)) {
+                continue;
+            }
+
+            recargas.add(new String[] {
+                partes[0].trim(),
+                partes[1].trim(),
+                partes[2].trim(),
+                partes[3].trim(),
+                cedulaRegistro
+            });
+        }
+
+        return recargas;
+    }
+
     public static boolean referenciaRecargaExiste(String referencia) {
         String referenciaLimpia = valorSeguro(referencia);
         if (referenciaLimpia.isBlank()) return false;

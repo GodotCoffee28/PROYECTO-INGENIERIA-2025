@@ -183,6 +183,10 @@ public class VistaInicioComensal extends PlantillaGesco {
         return btnAccesoFila;
     }
 
+    public BotonNeon getBtnRegistro() {
+        return btnRegistro;
+    }
+
     public void setSaldoDisponible(double saldoDisponible) {
         this.saldoDisponible = saldoDisponible;
         actualizarTextoSaldo();

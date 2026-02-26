@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.junit.After;
 import org.junit.Before;
@@ -15,29 +14,31 @@ import org.junit.Test;
 
 public class LoginExitosoTest {
 
-    private Path usuariosPath;
-    private byte[] usuariosBackup;
+    private Path dataDirTemporal;
+    private String dataDirAnterior;
 
     @Before
     public void setUp() throws IOException {
-        usuariosPath = Paths.get(System.getProperty("user.dir"))
-            .resolve("src/main/java/com/gesco/models/data/usuarios.txt");
-
-        Files.createDirectories(usuariosPath.getParent());
-        if (Files.exists(usuariosPath)) {
-            usuariosBackup = Files.readAllBytes(usuariosPath);
-        } else {
-            usuariosBackup = new byte[0];
-            Files.createFile(usuariosPath);
-        }
-
-        Files.write(usuariosPath, new byte[0]);
+        dataDirAnterior = DataBase.getDataDir();
+        dataDirTemporal = Files.createTempDirectory("gesco-login-exitoso-");
+        DataBase.setDataDir(dataDirTemporal.toString());
     }
 
     @After
     public void tearDown() throws IOException {
-        if (usuariosPath != null && usuariosBackup != null) {
-            Files.write(usuariosPath, usuariosBackup);
+        if (dataDirAnterior != null && !dataDirAnterior.isBlank()) {
+            DataBase.setDataDir(dataDirAnterior);
+        }
+
+        if (dataDirTemporal != null && Files.exists(dataDirTemporal)) {
+            Files.walk(dataDirTemporal)
+                .sorted((a, b) -> b.compareTo(a))
+                .forEach(path -> {
+                    try {
+                        Files.deleteIfExists(path);
+                    } catch (IOException ignored) {
+                    }
+                });
         }
     }
 

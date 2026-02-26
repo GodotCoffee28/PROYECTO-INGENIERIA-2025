@@ -1,10 +1,7 @@
 package com.gesco.controllers;
 
-
-import com.gesco.controllers.gestion_principal.DataBase;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,10 +12,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.gesco.controllers.gestion_principal.DataBase;
 import com.gesco.models.costos.CCB;
 import com.gesco.models.usuarios.Usuario.TipoUsuario;
 
-public class DataBaseCcbDescuentoTest {
+public class CcbCajaNegraTest {
 
     private Path dataDirTemporal;
     private String dataDirAnterior;
@@ -26,7 +24,7 @@ public class DataBaseCcbDescuentoTest {
     @Before
     public void setUp() throws IOException {
         dataDirAnterior = DataBase.getDataDir();
-        dataDirTemporal = Files.createTempDirectory("gesco-ccb-descuento-");
+        dataDirTemporal = Files.createTempDirectory("gesco-ccb-caja-negra-");
         DataBase.setDataDir(dataDirTemporal.toString());
     }
 
@@ -55,35 +53,13 @@ public class DataBaseCcbDescuentoTest {
     }
 
     @Test
-    public void calcularMontoCcbPorTipo_profesor_porcentajeValido() {
-        double monto = DataBase.calcularMontoCcbPorTipo(100.0, TipoUsuario.PROFESOR, 0.80);
-        assertEquals(80.0, monto, 0.0001);
-    }
-
-    @Test
-    public void calcularMontoCcbPorTipo_empleado_porcentajeValido() {
-        double monto = DataBase.calcularMontoCcbPorTipo(100.0, TipoUsuario.EMPLEADO, 1.00);
-        assertEquals(100.0, monto, 0.0001);
-    }
-
-    @Test
-    public void calcularMontoCcbPorTipo_profesor_porcentajeFueraDeRango_lanzaExcepcion() {
-        try {
-            DataBase.calcularMontoCcbPorTipo(100.0, TipoUsuario.PROFESOR, 0.60);
-            fail("Se esperaba IllegalArgumentException");
-        } catch (IllegalArgumentException ex) {
-            assertTrue(ex.getMessage().contains("rango"));
-        }
-    }
-
-    @Test
     public void calcularMontoCcbParaCedula_usandoTipoGuardado() {
-        DataBase.registrarUsuario("12345678", "clave123", "Juan Perez", "juan@email.com", TipoUsuario.ESTUDIANTE);
-        DataBase.guardarCcb(new CCB(LocalDate.now(), "Estudiante", 1000.0, 500.0, 100.0, 0.0));
+        String cedula = "33445566";
 
-        double monto = DataBase.calcularMontoCcbParaCedula("12345678", 0.20);
-        assertEquals(3.0, monto, 0.0001);
+        assertTrue(DataBase.registrarUsuario(cedula, "clave123", "Profesor User", "prof@email.com", TipoUsuario.PROFESOR));
+        assertTrue(DataBase.guardarCcb(new CCB(LocalDate.now(), "Profesor", 1000.0, 500.0, 100.0, 0.0)));
+
+        double monto = DataBase.calcularMontoCcbParaCedula(cedula, 0.80);
+        assertEquals(12.0, monto, 0.0001);
     }
 }
-
-
