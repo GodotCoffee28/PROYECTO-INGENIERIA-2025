@@ -51,3 +51,6 @@ https://trello.com/invite/b/697c0c6081719cbbc259a0af/ATTIc03601e23a4e4d77c2267fc
 
 # Dependencias agregadas
 Se usó jcalendar-1.4.jar como librería externa para el uso de calendarios y manejo de fechas en java ya que java no posee el manejo de las mismas y esto resulta de utilidad.
+
+# Requerimientos
+Se requiere tener instalado y configurado MAVEN para la compilación de pruebas unitarias.
