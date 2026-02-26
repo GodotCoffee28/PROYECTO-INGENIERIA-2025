@@ -37,6 +37,15 @@ public class ControladorCargarCCB {
             return;
         }
 
+        if (ccb.getCcb() >= 20702.0) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "El valor del CCB no puede superar los 20702 Bs (50$ BCV).\nSe ha limitado automáticamente.",
+                "Límite de CCB excedido",
+                JOptionPane.WARNING_MESSAGE
+            );
+        }
+
         boolean ok = DataBase.guardarCcb(ccb);
         if (ok) {
             vista.setResultado(String.valueOf(ccb.getCcb()));

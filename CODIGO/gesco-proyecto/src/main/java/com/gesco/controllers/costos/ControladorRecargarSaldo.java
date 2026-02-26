@@ -63,6 +63,16 @@ public class ControladorRecargarSaldo {
             return;
         }
 
+        if (referencia.length() != 20) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "El número de referencia debe ser de 20 dígitos.\nVerifique su transacción.",
+                "Referencia inválida",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
         double monto;
         try {
             monto = Double.parseDouble(montoStr.replace(',', '.'));
@@ -86,6 +96,16 @@ public class ControladorRecargarSaldo {
             return;
         }
 
+        if (monto > 10351.0) {
+        JOptionPane.showMessageDialog(
+            vista,
+            "El monto máximo permitido por recarga es 10.351 Bs (25$ BCV).",
+            "Límite de recarga excedido",
+            JOptionPane.WARNING_MESSAGE
+        );
+            return;
+        }
+
         double saldoActual = DataBase.obtenerSaldo(cedulaSesion);
         double nuevoSaldo = saldoActual + monto;
         boolean actualizado = DataBase.actualizarSaldo(cedulaSesion, nuevoSaldo);
@@ -98,6 +118,16 @@ public class ControladorRecargarSaldo {
                 JOptionPane.ERROR_MESSAGE
             );
             return;
+        }
+
+        boolean registrado = DataBase.registrarRecarga(referencia, monto, banco, fecha, cedulaSesion);
+        if (!registrado) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "Saldo actualizado, pero no se pudo guardar el registro de la transaccion.",
+                "Consultar con su Banco",
+                JOptionPane.WARNING_MESSAGE
+            );
         }
 
         JOptionPane.showMessageDialog(

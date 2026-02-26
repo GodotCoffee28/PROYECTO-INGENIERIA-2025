@@ -20,7 +20,6 @@ import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaInicioSesion extends PlantillaGesco {
     private BotonNeon btnInicioSesion;
-    private BotonNeon btnAccesoFacial;
     private JTextField cedula, clave;
     private JLabel Saludo;
     private JLabel registroLink;
@@ -39,18 +38,11 @@ public class VistaInicioSesion extends PlantillaGesco {
 
     private void inicializarComponentes() {
         Dimension tam = new Dimension(400, 60);
-        Dimension tamFacial = new Dimension(400, 50);
 
         btnInicioSesion = new BotonNeon("Iniciar sesión");
         btnInicioSesion.setPreferredSize(tam);
         btnInicioSesion.setMaximumSize(tam);
         btnInicioSesion.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        btnAccesoFacial = new BotonNeon("Acceso Facial");
-        btnAccesoFacial.setPreferredSize(tamFacial);
-        btnAccesoFacial.setMaximumSize(tamFacial);
-        btnAccesoFacial.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnAccesoFacial.setFont(new Font("Arial", Font.BOLD, 22));
 
         Saludo = crearEtiquetaPersonalizada("¡Hola de nuevo!", "Times New Roman", Font.BOLD, 45, new Color(240, 240, 240), "centro");
     }
@@ -131,13 +123,6 @@ public class VistaInicioSesion extends PlantillaGesco {
 
         panelFondo.add(Box.createVerticalStrut(14));
 
-        JLabel lblO = crearEtiquetaPersonalizada("── o también ──", "Times New Roman", Font.ITALIC, 14, new Color(180, 180, 185), "centro");
-        lblO.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panelFondo.add(lblO);
-
-        panelFondo.add(Box.createVerticalStrut(10));
-        panelFondo.add(btnAccesoFacial);
-
         panelFondo.add(Box.createVerticalGlue());
 
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
@@ -146,6 +131,5 @@ public class VistaInicioSesion extends PlantillaGesco {
     public String getCedula(){ return cedula.getText();}
     public String getClave(){ return clave.getText();}
     public BotonNeon getBtnInicioSesion() { return btnInicioSesion; }
-    public BotonNeon getBtnAccesoFacial() { return btnAccesoFacial; }
     public JLabel getRegistroLink() { return registroLink; }
 }

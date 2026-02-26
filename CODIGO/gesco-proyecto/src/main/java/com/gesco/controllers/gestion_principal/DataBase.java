@@ -39,6 +39,7 @@ public class DataBase {
     private static final String ARCHIVO_FERIADOS = "feriados.txt";
     private static final String ARCHIVO_NO_LABORABLES = "sabados_domingos_2026.txt";
     private static final String CARPETA_SECRETARIA = "secretaria";
+    private static final String ARCHIVO_REGISTRO_SALDO = "registroSaldo.txt";
 
     private static final long CEDULA_MINIMA = 8_000_000L;
     private static final long CEDULA_MAXIMA = 45_000_000L;
@@ -67,6 +68,19 @@ public class DataBase {
     }
 
     public static String getDataDir() { return DATA_DIR; }
+
+    public static boolean registrarRecarga(String referencia, double monto, String banco, String fecha, String cedula) {
+        String linea = String.format(
+            Locale.ROOT,
+            "%s:%.2f:%s:%s:%s",
+            valorSeguro(referencia),
+            monto,
+            valorSeguro(banco),
+            valorSeguro(fecha),
+            valorSeguro(cedula)
+        );
+        return escribirLineaGenerica(ARCHIVO_REGISTRO_SALDO, linea + System.lineSeparator());
+    }
 
     public static File obtenerCarpetaSecretaria() {
         Path basePath = obtenerBaseProyecto();
