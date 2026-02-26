@@ -94,11 +94,11 @@ public class ControladorRegistro {
             return;
         }
 
-        if (!correo.contains("@")) {
+        if (!correo.matches("^[^@]+@[^@]+\\.com$")) {
             JOptionPane.showMessageDialog(
                 vista,
-                "El correo debe contener un '@'.",
-                "Correo invalido",
+                "El correo debe tener el formato: ejemplo@dominio.com",
+                "Correo inválido",
                 JOptionPane.WARNING_MESSAGE
             );
             return;
