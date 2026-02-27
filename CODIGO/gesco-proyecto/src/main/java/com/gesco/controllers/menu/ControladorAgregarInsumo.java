@@ -42,6 +42,26 @@ public class ControladorAgregarInsumo {
             return;
         }
 
+        if (!nombre.matches("^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]+$")) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "El nombre del insumo solo debe contener letras.",
+                "Nombre inválido",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        if (!tipo.matches("^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]+$")) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "El tipo nutricional solo debe contener letras.",
+                "Tipo inválido",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
         int cantidad;
         try {
             cantidad = Integer.parseInt(cantStr);
@@ -56,6 +76,16 @@ public class ControladorAgregarInsumo {
             return;
         }
 
+        if (cantidad > DataBase.CANTIDAD_MAXIMA_INSUMO) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "La cantidad no puede ser mayor a " + DataBase.CANTIDAD_MAXIMA_INSUMO + ".",
+                "Cantidad inválida",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
         float precio;
         try {
             precio = Float.parseFloat(precioStr.replace(',', '.'));
@@ -64,6 +94,16 @@ public class ControladorAgregarInsumo {
             JOptionPane.showMessageDialog(
                 vista,
                 "El precio unitario debe ser un número válido y no negativo.",
+                "Precio inválido",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        if (!Float.isFinite(precio) || precio > DataBase.PRECIO_MAXIMO_INSUMO) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "El precio unitario no puede ser mayor a " + DataBase.PRECIO_MAXIMO_INSUMO + ".",
                 "Precio inválido",
                 JOptionPane.WARNING_MESSAGE
             );

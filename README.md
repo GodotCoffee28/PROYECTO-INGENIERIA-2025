@@ -80,3 +80,16 @@ mvn clean test
 ```
 
 - Los resultados se generan en `target/surefire-reports/`, donde se puede validar qué pruebas pasaron o fallaron.
+
+
+- **Estructura de paquetes y nomenclatura de clases**  
+  Se revisó y ajustó la convención de nombres para diferenciar claramente las capas del patrón MVC:  
+  - Las clases de **interfaz gráfica** (vistas) conservan el prefijo `Vista` (ej. `VistaInicioSesion`, `VistaRegistro`, `VistaCargaCCB`, etc.) y se ubican en subpaquetes bajo `views/` según su funcionalidad (autentificacion, costos, inicio, menu, otros, Registros, PlantillasViews).  
+  - Las clases de **control** (controladores) se nombran según el **caso de uso principal** sin incluir "Vista" (ej. `ControladorInicioSesion`, `ControladorRegistro`, `ControladorCargarCCB`, etc.), ubicadas en `controllers/`.  
+
+
+- **Otras mejoras realizadas**  
+  - Mayor consistencia en la validación de datos (especialmente cédulas, montos y fechas)  
+  - Refuerzo de mensajes de error más descriptivos en la interfaz  
+  - Mantenimiento de pruebas unitarias básicas en módulos clave (costos, autenticación, menús)  
+  - Documentación interna mejorada en clases críticas como `DataBase.java`
