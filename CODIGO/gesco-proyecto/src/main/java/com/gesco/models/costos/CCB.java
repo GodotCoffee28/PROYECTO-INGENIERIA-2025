@@ -14,6 +14,8 @@ NB: Número de bandejas proyectadas o servidas en un periodo
 */
 
 public class CCB {
+    private static final double LIMITE_COSTO = 10_000.0;
+
     private final LocalDate fecha;
     private final String tipoUsuario;
     private final double ccb, cf, cv, nb, merma;
@@ -27,6 +29,12 @@ public class CCB {
         }
         if (Double.isNaN(merma) || Double.isInfinite(merma) || merma < 0 || merma > 100) {
             throw new IllegalArgumentException("MERMA debe estar entre 0 y 100.");
+        }
+        if (Double.isNaN(cf) || Double.isInfinite(cf) || cf < 0 || cf > LIMITE_COSTO) {
+            throw new IllegalArgumentException("CF debe estar entre 0 y 10000.");
+        }
+        if (Double.isNaN(cv) || Double.isInfinite(cv) || cv < 0 || cv > LIMITE_COSTO) {
+            throw new IllegalArgumentException("CV debe estar entre 0 y 10000.");
         }
         this.fecha = fecha;
         this.tipoUsuario = tipoUsuario == null ? "" : tipoUsuario.trim();

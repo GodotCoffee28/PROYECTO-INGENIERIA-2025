@@ -142,6 +142,29 @@ public class ControladorRegistro {
                 case "Empleado" -> TipoUsuario.EMPLEADO;
                 default -> TipoUsuario.ESTUDIANTE;
             };
+
+            if (!DataBase.cedulaAutorizadaPorSecretaria(cedula)) {
+                JOptionPane.showMessageDialog(
+                    vista,
+                    "La cédula no está autorizada por Secretaría para registro.",
+                    "Cédula no verificada",
+                    JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+
+            if (!DataBase.tipoUsuarioCoincideConSecretaria(cedula, tipoComensal)) {
+                TipoUsuario tipoCorrecto = DataBase.obtenerTipoUsuarioSecretaria(cedula);
+                String etiqueta = tipoCorrecto == null ? "desconocido" : tipoCorrecto.toEtiqueta();
+                JOptionPane.showMessageDialog(
+                    vista,
+                    "El tipo de usuario seleccionado no coincide con Secretaría.\nDebe registrarse como: " + etiqueta + ".",
+                    "Tipo de usuario inválido",
+                    JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+
             guardado = DataBase.registrarUsuario(cedula, clave, nombre, correo, tipoComensal);
         }
 

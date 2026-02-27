@@ -25,6 +25,21 @@ public class RegistroExitosoTest {
         dataDirAnterior = DataBase.getDataDir();
         dataDirTemporal = Files.createTempDirectory("gesco-registro-exitoso-");
         DataBase.setDataDir(dataDirTemporal.toString());
+
+        Path carpetaSecretaria = dataDirTemporal.resolve("secretaria");
+        Files.createDirectories(carpetaSecretaria);
+        Files.writeString(
+            carpetaSecretaria.resolve("cedulas_ocupaciones.txt"),
+            "32654321:estudiante" + System.lineSeparator()
+                + "32654322:estudiante" + System.lineSeparator()
+                + "32654323:profesor" + System.lineSeparator()
+                + "32654324:trabajador" + System.lineSeparator(),
+            java.nio.charset.StandardCharsets.UTF_8
+        );
+            Files.writeString(carpetaSecretaria.resolve("32654321.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
+            Files.writeString(carpetaSecretaria.resolve("32654322.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
+            Files.writeString(carpetaSecretaria.resolve("32654323.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
+            Files.writeString(carpetaSecretaria.resolve("32654324.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
     }
 
     @After

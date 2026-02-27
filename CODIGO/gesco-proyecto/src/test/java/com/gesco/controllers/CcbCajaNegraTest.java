@@ -26,6 +26,15 @@ public class CcbCajaNegraTest {
         dataDirAnterior = DataBase.getDataDir();
         dataDirTemporal = Files.createTempDirectory("gesco-ccb-caja-negra-");
         DataBase.setDataDir(dataDirTemporal.toString());
+
+        Path carpetaSecretaria = dataDirTemporal.resolve("secretaria");
+        Files.createDirectories(carpetaSecretaria);
+        Files.writeString(
+            carpetaSecretaria.resolve("cedulas_ocupaciones.txt"),
+            "33445566:profesor" + System.lineSeparator(),
+            java.nio.charset.StandardCharsets.UTF_8
+        );
+        Files.writeString(carpetaSecretaria.resolve("33445566.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
     }
 
     @After

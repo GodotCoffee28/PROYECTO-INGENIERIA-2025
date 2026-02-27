@@ -1,0 +1,17 @@
+# Formato: cedula:ocupacion
+# Ocupaciones válidas: estudiante, profesor, empleado, administrador
+
+31768764:administrador
+32111454:administrador
+33246679:administrador
+32654321:estudiante
+32654322:estudiante
+32654323:profesor
+32654324:empleado
+33333333:estudiante
+33444444:estudiante
+33445566:profesor
+35667788:estudiante
+44556677:empleado
+22334455:estudiante
+12345678:administrador
