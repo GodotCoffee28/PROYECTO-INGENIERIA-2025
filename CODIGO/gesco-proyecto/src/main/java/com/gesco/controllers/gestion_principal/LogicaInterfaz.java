@@ -74,11 +74,16 @@ public class LogicaInterfaz {
             this::mostrarFila,
             this::mostrarMenuSemana,
             this::mostrarTurnos,
+            this::mostrarHistorialSaldo,
+            this::mostrarRecargarSaldo,
             this::mostrarPanelControl,
             this::mostrarCargaCCB,
             this::mostrarCrearMenu,
             this::mostrarEditarMenu,
             this::mostrarGestionMenu,
+            this::mostrarAgregarInsumo,
+            this::mostrarHistorialMenu,
+            this::mostrarVerCcb,
             this::swapInteraccion,
             () -> System.exit(0)
         )
