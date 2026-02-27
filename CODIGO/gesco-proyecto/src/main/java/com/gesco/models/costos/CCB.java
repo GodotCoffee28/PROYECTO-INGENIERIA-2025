@@ -50,7 +50,7 @@ public class CCB {
         if (nb <= 0) {
             throw new IllegalArgumentException("El número de bandejas debe ser mayor que cero.");
         }
-        return ((cf + cv) / nb) * (1 + merma);
+        return ((cf + cv) / nb) * (1 + merma / 100.0);
     }
 
     public LocalDate getFecha() {

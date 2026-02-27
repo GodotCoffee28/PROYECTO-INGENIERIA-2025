@@ -1,28 +1,11 @@
 package com.gesco.views.menu;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
+
 
 import com.gesco.models.menu.Insumo;
 import com.gesco.models.menu.Menu;
@@ -168,22 +151,31 @@ public class VistaCrearMenu extends PlantillaGesco {
     }
 
     private void construirCuerpo() {
-        JPanel panelFondo = crearPanel(120, 10, 1100, 50, 50, 50);
-        JPanel panelIzqPlatillo = crearPanel(10, 10, 20, 20, 50, 50);
-        JPanel panelDerInsumo = crearPanel(10, 10, 20, 20, 50, 50);
-        JPanel panelContenido = crearPanel(120, 100, 1100, 900, 50, 50);
-        
+        JPanel panelFondo = crearPanel(5, 5, 10, 10, 50, 50);
         panelFondo.setLayout(new BoxLayout(panelFondo, BoxLayout.Y_AXIS));
-        panelFondo.setOpaque(false);
-        panelFondo.setBorder(BorderFactory.createEmptyBorder(40, 20, 40, 20));
+        panelFondo.setOpaque(false); 
+        panelFondo.setBorder(BorderFactory.createEmptyBorder(10, 25, 20, 25));
 
-        panelFondo.add(Box.createVerticalGlue());
-        panelFondo.add(Titulo);
-        panelFondo.add(Box.createVerticalStrut(25));
+        JPanel contenedorTitulo = crearPanel(0, 0, 5, 5, 30, 30);
+        contenedorTitulo.setLayout(new GridBagLayout());
+        contenedorTitulo.setOpaque(false);
+        
+        Dimension dimTitulo = new Dimension(600, 65);
+        contenedorTitulo.setPreferredSize(dimTitulo);
+        contenedorTitulo.setMaximumSize(dimTitulo);
+        contenedorTitulo.add(Titulo); 
+        contenedorTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        panelFondo.add(contenedorTitulo);
+        panelFondo.add(Box.createVerticalStrut(20));
+
+        JPanel panelContenido = new JPanel();
         panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.X_AXIS));
         panelContenido.setOpaque(false);
         panelContenido.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JPanel panelIzqPlatillo = crearPanel(0, 0, 5, 5, 50, 50);
+        JPanel panelDerInsumo = crearPanel(0, 0, 5, 5, 50, 50);
 
         agregarCampos(panelIzqPlatillo, panelDerInsumo);
 
@@ -192,8 +184,9 @@ public class VistaCrearMenu extends PlantillaGesco {
         panelContenido.add(panelDerInsumo);
 
         panelFondo.add(panelContenido);
-        
-        panelFondo.add(Box.createVerticalStrut(30));
+
+        panelFondo.add(Box.createVerticalStrut(25));
+        btnCrear.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelFondo.add(btnCrear);
         panelFondo.add(Box.createVerticalGlue());
 

@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 public class VistaGestionMenu extends PlantillaGesco {
-     private BotonNeon btnEditar, btnCrear, btnReiniciar;
+     private BotonNeon btnEditar, btnCrear,btnAgregarInsumo ,btnReiniciar;
     private JLabel Titulo;
 
     public VistaGestionMenu() {
@@ -42,6 +42,11 @@ public class VistaGestionMenu extends PlantillaGesco {
         btnCrear.setPreferredSize(tam);
         btnCrear.setMaximumSize(tam);
         btnCrear.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        btnAgregarInsumo = new BotonNeon("Agregar insumo");
+        btnAgregarInsumo.setPreferredSize(tam);
+        btnAgregarInsumo.setMaximumSize(tam);
+        btnAgregarInsumo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         btnReiniciar = new BotonNeon("Reiniciar menú");
         btnReiniciar.setPreferredSize(tam);
@@ -69,6 +74,9 @@ public class VistaGestionMenu extends PlantillaGesco {
         panelFondo.add(btnCrear);
         panelFondo.add(Box.createVerticalStrut(50));
         
+        panelFondo.add(btnAgregarInsumo);
+        panelFondo.add(Box.createVerticalStrut(50));
+        
         panelFondo.add(btnReiniciar);
         panelFondo.add(Box.createVerticalGlue());
 
@@ -77,6 +85,7 @@ public class VistaGestionMenu extends PlantillaGesco {
 
     public BotonNeon getBtnEditar() { return btnEditar; }
     public BotonNeon getBtnCrear() { return btnCrear; }
+    public BotonNeon getBtnAgregarInsumo() { return btnAgregarInsumo; }
     public BotonNeon getBtnReiniciar() { return btnReiniciar; }
 }
 

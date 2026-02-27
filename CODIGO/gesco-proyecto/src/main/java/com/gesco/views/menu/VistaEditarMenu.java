@@ -1,28 +1,12 @@
 package com.gesco.views.menu;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
+
 
 import com.gesco.models.menu.Insumo;
 import com.gesco.models.menu.Menu;
@@ -97,7 +81,7 @@ public class VistaEditarMenu extends PlantillaGesco {
 
         Dimension tamCaja = new Dimension(450, 40);
 
-        panelIzqPlatillos.add(crearEtiquetaPersonalizada("Tipo de menu", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
+        panelIzqPlatillos.add(crearEtiquetaPersonalizada("Tipo de menú", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
         panelIzqPlatillos.add(Box.createVerticalStrut(8));
         comboTipoMenu = new JComboBox<>(Menu.TipoMenu.values());
         comboTipoMenu.setMaximumSize(tamCaja);
@@ -160,7 +144,7 @@ public class VistaEditarMenu extends PlantillaGesco {
         configurarAccionesInsumos(comboInsumo3, spinnerCantidad3, modeloInsumos3, listaInsumos3,
             btnAgregarInsumo3, btnQuitarInsumo3);
 
-        chkNoDisponible = new JCheckBox("Menu no disponible para este día");
+        chkNoDisponible = new JCheckBox("Menú no disponible para este día");
         chkNoDisponible.setOpaque(false);
         chkNoDisponible.setForeground(Color.WHITE);
         chkNoDisponible.setFont(new Font("Arial", Font.BOLD, 14));
@@ -169,37 +153,49 @@ public class VistaEditarMenu extends PlantillaGesco {
     }
 
     private void construirCuerpo() {
-        JPanel panelFondo = crearPanel(120, 10, 1200, 20, 50, 50);
-        JPanel panelIzqPlatillo = crearPanel(10, 10, 20, 20, 50, 50);
-        JPanel panelDerInsumo = crearPanel(10, 10, 20, 20, 50, 50);
-        JPanel panelContenido = new JPanel();
-        
-        panelFondo.setLayout(new BoxLayout(panelFondo, BoxLayout.Y_AXIS));
-        panelFondo.setOpaque(false); 
-        panelFondo.setBorder(BorderFactory.createEmptyBorder(40, 20, 40, 20));
 
-        panelFondo.add(Box.createVerticalGlue()); 
-        panelFondo.add(Titulo);
-        panelFondo.add(Box.createVerticalStrut(25)); 
+    JPanel panelFondo = crearPanel(5, 5, 10, 10, 50, 50);
+    panelFondo.setLayout(new BoxLayout(panelFondo, BoxLayout.Y_AXIS));
+    panelFondo.setOpaque(true); 
+    panelFondo.setBorder(BorderFactory.createEmptyBorder(10, 25, 20, 25));
+    panelFondo.setOpaque(false);
 
-        panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.X_AXIS));
-        panelContenido.setOpaque(false);
-        panelContenido.setAlignmentX(Component.CENTER_ALIGNMENT);
+    JPanel contenedorTitulo = crearPanel(0, 0, 5, 5, 30, 30);
+    contenedorTitulo.setLayout(new GridBagLayout());
+    contenedorTitulo.setOpaque(false);
 
-        agregarCampos(panelIzqPlatillo, panelDerInsumo); 
+    Dimension dimTitulo = new Dimension(600, 65);
+    contenedorTitulo.setPreferredSize(dimTitulo);
+    contenedorTitulo.setMaximumSize(dimTitulo);
+    contenedorTitulo.add(Titulo);
+    contenedorTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        panelContenido.add(panelIzqPlatillo);
-        panelContenido.add(Box.createHorizontalStrut(30));
-        panelContenido.add(panelDerInsumo);
+    panelFondo.add(contenedorTitulo);
+    panelFondo.add(Box.createVerticalStrut(20)); 
 
-        panelFondo.add(panelContenido);
-        
-        panelFondo.add(Box.createVerticalStrut(30)); 
-        panelFondo.add(btnEditar); 
-        panelFondo.add(Box.createVerticalGlue());
+    JPanel panelContenido = new JPanel();
+    panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.X_AXIS));
+    panelContenido.setOpaque(false);
+    panelContenido.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
-    }
+    JPanel panelIzqPlatillo = crearPanel(0, 0, 5, 5, 50, 50);
+    JPanel panelDerInsumo = crearPanel(0, 0, 5, 5, 50, 50);
+
+    agregarCampos(panelIzqPlatillo, panelDerInsumo); 
+
+    panelContenido.add(panelIzqPlatillo);
+    panelContenido.add(Box.createHorizontalStrut(25));
+    panelContenido.add(panelDerInsumo);
+
+    panelFondo.add(panelContenido);
+
+    panelFondo.add(Box.createVerticalStrut(25)); 
+    btnEditar.setAlignmentX(Component.CENTER_ALIGNMENT);
+    panelFondo.add(btnEditar); 
+    panelFondo.add(Box.createVerticalGlue());
+
+    this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
+}
     public BotonNeon getBtnEditar() { return btnEditar; }
     public String getPlatillo1(){ return platillo1.getText(); }
     public String getPlatillo2(){ return platillo2.getText(); }

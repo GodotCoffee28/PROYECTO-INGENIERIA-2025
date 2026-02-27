@@ -8,13 +8,22 @@ public class ControladorGestionMenu {
     private final Runnable onBack;
     private final Runnable onEditar;
     private final Runnable onCrear;
+    private final Runnable onAgregarInsumo;
     private final Runnable onReiniciar;
 
-    public ControladorGestionMenu(VistaGestionMenu vista, Runnable onBack, Runnable onEditar, Runnable onCrear, Runnable onReiniciar) {
+    public ControladorGestionMenu(
+        VistaGestionMenu vista,
+        Runnable onBack,
+        Runnable onEditar,
+        Runnable onCrear,
+        Runnable onAgregarInsumo,
+        Runnable onReiniciar
+    ) {
         this.vista = vista;
         this.onBack = onBack;
         this.onEditar = onEditar;
         this.onCrear = onCrear;
+        this.onAgregarInsumo = onAgregarInsumo;
         this.onReiniciar = onReiniciar;
     }
 
@@ -28,6 +37,7 @@ public class ControladorGestionMenu {
 
         vista.getBtnEditar().addActionListener(e -> onEditar.run());
         vista.getBtnCrear().addActionListener(e -> onCrear.run());
+        vista.getBtnAgregarInsumo().addActionListener(e -> onAgregarInsumo.run());
         vista.getBtnReiniciar().addActionListener(e -> onReiniciar.run());
     }
 }
