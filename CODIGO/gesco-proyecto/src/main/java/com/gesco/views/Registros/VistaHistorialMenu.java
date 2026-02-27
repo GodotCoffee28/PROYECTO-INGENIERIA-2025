@@ -2,6 +2,13 @@ package com.gesco.views.Registros;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
+import java.util.List;
+
+import com.gesco.controllers.gestion_principal.DataBase;
+import com.gesco.models.menu.Insumo;
+import com.gesco.models.menu.Menu;
+import com.gesco.models.menu.Platillo;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaHistorialMenu extends PlantillaGesco {
@@ -14,8 +21,10 @@ public class VistaHistorialMenu extends PlantillaGesco {
         ocultarIcono();
         inicializarComponentes();
         construirCuerpo();
+        cargarDatos();
         this.revalidate();
         this.repaint();
+        setVisible(true);
     }
 
     private void inicializarComponentes() {
@@ -32,7 +41,7 @@ public class VistaHistorialMenu extends PlantillaGesco {
         separadorTitulo.setMaximumSize(new Dimension(500, 2));
         separadorTitulo.setForeground(Color.WHITE);
         separadorTitulo.setBackground(Color.WHITE); 
-        
+
         contenedorVertical.add(separadorTitulo);
         contenedorVertical.add(Box.createVerticalStrut(25)); 
     }
@@ -42,7 +51,7 @@ public class VistaHistorialMenu extends PlantillaGesco {
         panelGris.setBackground(new Color(60, 60, 65));
         panelGris.setOpaque(true);
         panelGris.setPreferredSize(new Dimension(650, 600));
-        
+
         panelGris.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100), 1));
 
         JScrollPane scroll = new JScrollPane(contenedorVertical);
@@ -62,29 +71,105 @@ public class VistaHistorialMenu extends PlantillaGesco {
         }
     }
 
-    public void agregarMenuALista(String fecha, String tipo, String platillo1, String insumo1, String cantidad1, String costo1, String platillo2, String insumo2, String cantidad2, String costo2,String platillo3, String insumo3, String cantidad3, String costo3) {
-        
+    private void cargarDatos() {
+        List<LocalDate> diasHabiles = DataBase.obtenerUltimosCincoDiasHabiles(LocalDate.now());
+
+        boolean hayDatos = false;
+
+        for (LocalDate fecha : diasHabiles) {
+            String fechaStr = fecha.toString();
+
+            for (Menu.TipoMenu tipo : new Menu.TipoMenu[]{Menu.TipoMenu.DESAYUNO, Menu.TipoMenu.ALMUERZO}) {
+                Menu menu = DataBase.obtenerMenuPorFechaYTipo(fechaStr, tipo);
+
+                if (menu == null || menu.getEstado() == Menu.EstadoMenu.NO_DISPONIBLE || !menu.tienePlatillos()) {
+                    continue;
+                }
+
+                List<Platillo> platillos = menu.getPlatillos();
+
+                String p1 = "", ins1 = "-", cant1 = "-", costo1 = "-";
+                String p2 = "", ins2 = "-", cant2 = "-", costo2 = "-";
+                String p3 = "", ins3 = "-", cant3 = "-", costo3 = "-";
+
+                if (platillos.size() >= 1) {
+                    Platillo plat = platillos.get(0);
+                    p1 = plat.getNombre();
+                    if (!plat.getInsumos().isEmpty()) {
+                        Insumo i = plat.getInsumos().get(0);
+                        ins1  = i.getNombre();
+                        cant1 = String.valueOf(i.getCantidad());
+                        costo1 = String.format("%.2f", i.getCostoUnitario());
+                    }
+                }
+                if (platillos.size() >= 2) {
+                    Platillo plat = platillos.get(1);
+                    p2 = plat.getNombre();
+                    if (!plat.getInsumos().isEmpty()) {
+                        Insumo i = plat.getInsumos().get(0);
+                        ins2  = i.getNombre();
+                        cant2 = String.valueOf(i.getCantidad());
+                        costo2 = String.format("%.2f", i.getCostoUnitario());
+                    }
+                }
+                if (platillos.size() >= 3) {
+                    Platillo plat = platillos.get(2);
+                    p3 = plat.getNombre();
+                    if (!plat.getInsumos().isEmpty()) {
+                        Insumo i = plat.getInsumos().get(0);
+                        ins3  = i.getNombre();
+                        cant3 = String.valueOf(i.getCantidad());
+                        costo3 = String.format("%.2f", i.getCostoUnitario());
+                    }
+                }
+
+                agregarMenuALista(
+                    fechaStr, tipo.name(),
+                    p1, ins1, cant1, costo1,
+                    p2, ins2, cant2, costo2,
+                    p3, ins3, cant3, costo3
+                );
+                hayDatos = true;
+            }
+        }
+
+        if (!hayDatos) {
+            JLabel lblVacio = crearEtiquetaPersonalizada(
+                "No hay menús registrados para mostrar.",
+                "Segoe UI", Font.ITALIC, 16,
+                new Color(200, 200, 200), "centro"
+            );
+            contenedorVertical.add(lblVacio);
+        }
+    }
+
+    public void agregarMenuALista(
+        String fecha, String tipo,
+        String platillo1, String insumo1, String cantidad1, String costo1,
+        String platillo2, String insumo2, String cantidad2, String costo2,
+        String platillo3, String insumo3, String cantidad3, String costo3
+    ) {
         JPanel bloqueTexto = new JPanel();
         bloqueTexto.setLayout(new BoxLayout(bloqueTexto, BoxLayout.Y_AXIS));
         bloqueTexto.setOpaque(false);
         bloqueTexto.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel lblFecha = crearEtiquetaPersonalizada("FECHA: " + fecha, "Segoe UI", Font.BOLD, 18, new Color(130, 180, 255), "centro");
-        JLabel lblTipo = crearEtiquetaPersonalizada("[" + tipo.toUpperCase() + "]", "Segoe UI", Font.ITALIC, 14, new Color(200, 200, 200), "centro");
-        
+        JLabel lblTipo  = crearEtiquetaPersonalizada("[" + tipo.toUpperCase() + "]", "Segoe UI", Font.ITALIC, 14, new Color(200, 200, 200), "centro");
+
         bloqueTexto.add(lblFecha);
         bloqueTexto.add(lblTipo);
-        bloqueTexto.add(Box.createVerticalStrut(15)); 
+        bloqueTexto.add(Box.createVerticalStrut(15));
 
-        bloqueTexto.add(crearSeccion("PLATILLO 1: " + platillo1, formatoInsumo(insumo1, cantidad1, costo1)));
-        bloqueTexto.add(crearSeccion("PLATILLO 2: " + platillo2, formatoInsumo(insumo2, cantidad2, costo2)));
-        bloqueTexto.add(crearSeccion("PLATILLO 3: " + platillo3, formatoInsumo(insumo3, cantidad3, costo3)));
+        if (!platillo1.isBlank()) bloqueTexto.add(crearSeccion("PLATILLO 1: " + platillo1, formatoInsumo(insumo1, cantidad1, costo1)));
+        if (!platillo2.isBlank()) bloqueTexto.add(crearSeccion("PLATILLO 2: " + platillo2, formatoInsumo(insumo2, cantidad2, costo2)));
+        if (!platillo3.isBlank()) bloqueTexto.add(crearSeccion("PLATILLO 3: " + platillo3, formatoInsumo(insumo3, cantidad3, costo3)));
 
         JSeparator separador = new JSeparator();
         separador.setMaximumSize(new Dimension(750, 1));
-        separador.setForeground(new Color(150, 150, 150)); 
+        separador.setForeground(new Color(150, 150, 150));
         separador.setBackground(new Color(150, 150, 150));
-        
+
         bloqueTexto.add(Box.createVerticalStrut(20));
         bloqueTexto.add(separador);
         bloqueTexto.add(Box.createVerticalStrut(30));
@@ -119,7 +204,7 @@ public class VistaHistorialMenu extends PlantillaGesco {
 
     public void limpiarHistorial() {
         contenedorVertical.removeAll();
-        inicializarComponentes(); 
+        inicializarComponentes();
         contenedorVertical.revalidate();
         contenedorVertical.repaint();
     }

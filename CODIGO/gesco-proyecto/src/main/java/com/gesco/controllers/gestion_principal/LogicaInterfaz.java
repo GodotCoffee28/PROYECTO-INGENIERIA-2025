@@ -28,6 +28,7 @@ import com.gesco.views.inicio.VistaInicioAdmin;
 import com.gesco.views.inicio.VistaInicioComensal;  
 import com.gesco.views.menu.VistaCrearMenu;
 import com.gesco.views.menu.VistaEditarMenu;
+import com.gesco.views.menu.VistaAgregarInsumo;
 import com.gesco.views.menu.VistaGestionMenu;
 import com.gesco.views.menu.VistaMenuSemana;
 import com.gesco.views.otros.VistaEspera;
@@ -53,6 +54,7 @@ public class LogicaInterfaz {
     private VistaVerCFCV vistaVerCfcv;
     private VistaCrearMenu vistaCrearMenu;
     private VistaEditarMenu vistaEditarMenu;
+    private VistaAgregarInsumo vistaAgregarInsumo;
     private VistaGestionMenu vistaGestionMenu;
     private VistaHistorialMenu vistaHistorialMenu;
     private VistaHistorialSaldo vistaHistorialSaldo;
@@ -261,14 +263,33 @@ public class LogicaInterfaz {
             this::mostrarPanelControl,
             this::mostrarEditarMenu,
             this::mostrarCrearMenu,
+            this::mostrarAgregarInsumo,
             this::reiniciarMenusSemana
         ).conectar();
+    }
+
+    private void mostrarAgregarInsumo() {
+        cerrarVistas();
+        vistaAgregarInsumo = new VistaAgregarInsumo();
+        menuGescoController.conectar(vistaAgregarInsumo, sesionAdmin, cedulaSesionActual);
+        vistaAgregarInsumo.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                mostrarGestionMenu();
+            }
+        });
     }
 
     private void mostrarHistorialMenu() {
         cerrarVistas();
         vistaHistorialMenu = new VistaHistorialMenu();
         menuGescoController.conectar(vistaHistorialMenu, sesionAdmin, cedulaSesionActual);
+        vistaHistorialMenu.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                volverAPantallaPrincipal();
+            }
+        });
     }
 
     private void mostrarHistorialSaldo() {
@@ -502,12 +523,20 @@ public class LogicaInterfaz {
         }
     }
 
+    private void cerrarVistaAgregarInsumo() {
+        if (vistaAgregarInsumo != null) {
+            vistaAgregarInsumo.dispose();
+            vistaAgregarInsumo = null;
+        }
+    }
+
     private void cerrarVistaGestionMenu() {
         if (vistaGestionMenu != null) {
             vistaGestionMenu.dispose();
             vistaGestionMenu = null;
         }
     }
+
     private void cerrarVistaRecargarSaldo() {
         if (vistaRecargarSaldo != null) {
             vistaRecargarSaldo.dispose();
@@ -530,6 +559,7 @@ public class LogicaInterfaz {
         cerrarVistaVerCfcv();
         cerrarVistaCrearMenu();
         cerrarVistaEditarMenu();
+        cerrarVistaAgregarInsumo();
         cerrarVistaGestionMenu();
         cerrarVistaRecargarSaldo();
         cerrarVistaHistorialMenu();
