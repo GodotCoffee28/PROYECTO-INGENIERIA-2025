@@ -167,7 +167,7 @@ public class LogicaInterfaz {
         nombreUsuario = nombre;
         vistaInicioAdmin = new VistaInicioAdmin();
         boolean esSuperAdmin = DataBase.esSuperAdmin(cedulaSesionActual);
-        vistaInicioAdmin.getIlblSprAdmin().setVisible(esSuperAdmin);
+        vistaInicioAdmin.setEsSuperAdmin(esSuperAdmin);
         if (esSuperAdmin) {
             vistaInicioAdmin.getIlblSprAdmin().addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
