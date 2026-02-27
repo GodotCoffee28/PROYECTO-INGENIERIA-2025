@@ -2,6 +2,8 @@ package com.gesco.views.Registros;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Locale;
+import com.gesco.models.costos.CCB;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaHistorialCCB extends PlantillaGesco {
@@ -16,6 +18,7 @@ public class VistaHistorialCCB extends PlantillaGesco {
         construirCuerpo();
         this.revalidate();
         this.repaint();
+        setVisible(true);
     }
 
     private void inicializarComponentes() {
@@ -61,14 +64,24 @@ public class VistaHistorialCCB extends PlantillaGesco {
         }
     }
 
-    public void agregarRegistroCCB(String fecha, String tipoUsuario, String cf, String cv, String nb, String merma, String ccb) {
+    public void agregarRegistroCCB(CCB registro) {
+        if (registro == null) return;
+        String fecha = registro.getFecha().toString();
+        String tipoUsuario = registro.getTipoUsuario();
+        String cf = String.format(Locale.US, "%.2f", registro.getCf());
+        String cv = String.format(Locale.US, "%.2f", registro.getCv());
+        String nb = String.format(Locale.US, "%.2f", registro.getNb());
+        String merma = String.format(Locale.US, "%.4f", registro.getMerma());
+        String ccb = String.format(Locale.US, "%.4f", registro.getCcb());
+
         JPanel bloqueTexto = new JPanel();
         bloqueTexto.setLayout(new BoxLayout(bloqueTexto, BoxLayout.Y_AXIS));
         bloqueTexto.setOpaque(false);
         bloqueTexto.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel lblFecha = crearEtiquetaPersonalizada("FECHA: " + fecha, "Segoe UI", Font.BOLD, 16, new Color(130, 180, 255), "centro");
-        JLabel lblUser = crearEtiquetaPersonalizada("TIPO DE USUARIO: " + tipoUsuario.toUpperCase(), "Segoe UI", Font.ITALIC, 13, new Color(200, 200, 200), "centro");
+        String tipo = (tipoUsuario == null) ? "" : tipoUsuario.toUpperCase();
+        JLabel lblUser = crearEtiquetaPersonalizada("TIPO DE USUARIO: " + tipo, "Segoe UI", Font.ITALIC, 13, new Color(200, 200, 200), "centro");
         
         bloqueTexto.add(lblFecha);
         bloqueTexto.add(lblUser);
