@@ -60,6 +60,8 @@ public class DataBase {
     private static final double CCB_PROFESOR_MAX = 0.90;
     private static final double CCB_EMPLEADO_MIN = 0.90;
     private static final double CCB_EMPLEADO_MAX = 1.10;
+    public static final int CANTIDAD_MAXIMA_INSUMO = 1000;
+    public static final float PRECIO_MAXIMO_INSUMO = 1000.0f;
     private static final Set<String> FERIADOS_FIJOS_MM_DD = Set.of();
 
     private static String DATA_DIR = "src/main/java/com/gesco/models/data";
@@ -1086,53 +1088,61 @@ public class DataBase {
     }
 
     public static boolean guardarOActualizarInsumo(
-    String nombre,
-    int cantidadAgregar,
-    String tipo,
-    float precioUnitario) {
+        String nombre,
+        int cantidadAgregar,
+        String tipo,
+        float precioUnitario
+    ) {
+        String nombreLimpio = valorSeguro(nombre);
+        String tipoLimpio = valorSeguro(tipo);
 
-    String nombreLimpio = valorSeguro(nombre);
-    if (nombreLimpio.isBlank() || cantidadAgregar <= 0) return false;
+        if (nombreLimpio.isBlank() || tipoLimpio.isBlank()) return false;
+        if (!nombreLimpio.matches("^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]+$")) return false;
+        if (!tipoLimpio.matches("^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]+$")) return false;
+        if (cantidadAgregar <= 0 || cantidadAgregar > CANTIDAD_MAXIMA_INSUMO) return false;
+        if (!Float.isFinite(precioUnitario) || precioUnitario < 0 || precioUnitario > PRECIO_MAXIMO_INSUMO) return false;
 
-    List<String> lineas = leerLineasGenericas(ARCHIVO_INSUMOS);
-    List<String> nuevas = new ArrayList<>();
-    boolean encontrado = false;
+        List<String> lineas = leerLineasGenericas(ARCHIVO_INSUMOS);
+        List<String> nuevas = new ArrayList<>();
+        boolean encontrado = false;
 
-    for (String linea : lineas) {
-        String limpia = linea.trim();
+        for (String linea : lineas) {
+            String limpia = linea.trim();
 
-        if (limpia.toLowerCase(Locale.ROOT).startsWith("nombre insumo")) {
-            nuevas.add(linea);
-            continue;
+            if (limpia.toLowerCase(Locale.ROOT).startsWith("nombre insumo")) {
+                nuevas.add(linea);
+                continue;
+            }
+
+            String[] partes = limpia.replace(";", "").split(":");
+            String nombreLinea = partes.length > 0 ? partes[0].trim() : "";
+
+            if (nombreLinea.equalsIgnoreCase(nombreLimpio)) {
+                int cantExistente = 0;
+                try {
+                    cantExistente = (int) Float.parseFloat(partes.length > 2 ? partes[2].trim() : "0");
+                } catch (NumberFormatException ignored) {
+                }
+
+                int nuevaCantidad = cantExistente + cantidadAgregar;
+                if (nuevaCantidad > CANTIDAD_MAXIMA_INSUMO) {
+                    return false;
+                }
+
+                nuevas.add(String.format(Locale.ROOT, "%s : %s : %d : %.1f :",
+                    nombreLimpio, tipoLimpio, nuevaCantidad, precioUnitario));
+                encontrado = true;
+            } else {
+                nuevas.add(linea);
+            }
         }
 
-        String[] partes = limpia.replace(";", "").split(":");
-        String nombreLinea = partes.length > 0 ? partes[0].trim() : "";
-
-        if (nombreLinea.equalsIgnoreCase(nombreLimpio)) {
-            int cantExistente = 0;
-            try {
-                cantExistente = (int) Float.parseFloat(
-                    partes.length > 2 ? partes[2].trim() : "0");
-            } catch (NumberFormatException ignored) { }
-
-            int nuevaCantidad = cantExistente + cantidadAgregar;
-            String tipoExistente = partes.length > 1 ? partes[1].trim() : valorSeguro(tipo);
-            String precioExistente = partes.length > 3 ? partes[3].trim() : String.format(Locale.ROOT, "%.1f", precioUnitario);
-
-            nuevas.add(String.format("%s : %s : %d : %s :", nombreLinea, tipoExistente, nuevaCantidad, precioExistente));
-            encontrado = true;
-        } else {
-            nuevas.add(linea);
+        if (!encontrado) {
+            nuevas.add(String.format(Locale.ROOT, "%s : %s : %d : %.1f :",
+                nombreLimpio, tipoLimpio, cantidadAgregar, precioUnitario));
         }
-    }
 
-    if (!encontrado) {
-        nuevas.add(String.format(Locale.ROOT, "%s : %s : %d : %.1f :",
-            nombreLimpio, valorSeguro(tipo), cantidadAgregar, precioUnitario));
-    }
-
-    return reescribirArchivoGenerico(ARCHIVO_INSUMOS, nuevas);
+        return reescribirArchivoGenerico(ARCHIVO_INSUMOS, nuevas);
     }
 
     public static boolean guardarCcb(CCB ccb) {

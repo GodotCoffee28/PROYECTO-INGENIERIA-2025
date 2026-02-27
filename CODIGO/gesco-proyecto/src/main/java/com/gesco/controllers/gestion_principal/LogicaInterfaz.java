@@ -10,6 +10,7 @@ import com.gesco.controllers.costos.ControladorRecargarSaldo;
 import com.gesco.controllers.inicio.ControladorInicio;
 import com.gesco.controllers.inicio.ControladorInicioAdmin;
 import com.gesco.controllers.inicio.ControladorInicioComensal;
+import com.gesco.controllers.menu.ControladorAgregarInsumo;
 import com.gesco.controllers.menu.ControladorCrearMenu;
 import com.gesco.controllers.menu.ControladorEditarMenu;
 import com.gesco.controllers.menu.ControladorGestionMenu;
@@ -310,12 +311,10 @@ public class LogicaInterfaz {
         cerrarVistas();
         vistaAgregarInsumo = new VistaAgregarInsumo();
         menuGescoController.conectar(vistaAgregarInsumo, sesionAdmin, cedulaSesionActual);
-        vistaAgregarInsumo.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                mostrarGestionMenu();
-            }
-        });
+        new ControladorAgregarInsumo(
+            vistaAgregarInsumo,
+            this::mostrarGestionMenu
+        ).conectar();
     }
 
     private void mostrarHistorialMenu() {

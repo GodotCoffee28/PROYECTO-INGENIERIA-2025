@@ -8,7 +8,8 @@ import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaAgregarInsumo  extends PlantillaGesco {
     private BotonNeon btnCrear;
-    private JTextField insumoNombre, insumoCantidad, insumoTipoNutricional, insumoPrecioUnitario;
+    private JTextField insumoNombre, insumoCantidad, insumoPrecioUnitario;
+    private JComboBox<String> comboTipoNutricional;
 
     
     public VistaAgregarInsumo() {
@@ -58,9 +59,24 @@ public class VistaAgregarInsumo  extends PlantillaGesco {
 
         formPanel.add(crearEtiquetaPersonalizada("Tipo nutricional", "Times New Roman", Font.PLAIN, 19, Color.WHITE, "izquierda"));
         formPanel.add(Box.createVerticalStrut(8));
-        insumoTipoNutricional = new JTextField();
-        diseñarCaja(insumoTipoNutricional, tamCaja);
-        formPanel.add(insumoTipoNutricional);
+        comboTipoNutricional = new JComboBox<>(new String[] {
+            "Proteina",
+            "Carbohidrato",
+            "Grasa",
+            "Fibra",
+            "Vitamina",
+            "Mineral",
+            "Lacteo",
+            "Fruta",
+            "Verdura"
+        });
+        comboTipoNutricional.setPreferredSize(tamCaja);
+        comboTipoNutricional.setMaximumSize(tamCaja);
+        comboTipoNutricional.setMinimumSize(tamCaja);
+        comboTipoNutricional.setAlignmentX(Component.LEFT_ALIGNMENT);
+        comboTipoNutricional.setFont(new Font("Arial", Font.PLAIN, 16));
+        comboTipoNutricional.setBackground(new Color(255, 255, 255, 240));
+        formPanel.add(comboTipoNutricional);
         formPanel.add(Box.createVerticalStrut(16));
 
         formPanel.add(crearEtiquetaPersonalizada("Precio unitario", "Times New Roman", Font.PLAIN, 19, Color.WHITE, "izquierda"));
@@ -97,7 +113,10 @@ public class VistaAgregarInsumo  extends PlantillaGesco {
     public BotonNeon getBtnCrear() { return btnCrear; }
     public String getNombreInsumo() { return insumoNombre.getText(); }
     public String getCantidadInsumo() { return insumoCantidad.getText(); }
-    public String getTipoNutricional() { return insumoTipoNutricional.getText(); }
+    public String getTipoNutricional() {
+        Object tipoSeleccionado = comboTipoNutricional.getSelectedItem();
+        return tipoSeleccionado == null ? "" : tipoSeleccionado.toString();
+    }
     public String getPrecioUnitario() { return insumoPrecioUnitario.getText(); }
 }
 
