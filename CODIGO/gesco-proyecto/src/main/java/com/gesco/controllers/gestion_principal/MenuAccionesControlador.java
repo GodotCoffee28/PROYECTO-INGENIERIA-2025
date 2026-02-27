@@ -8,11 +8,16 @@ public class MenuAccionesControlador implements MenuAcciones {
     private final Runnable onFila;
     private final Runnable onMenuSemana;
     private final Runnable onTurnos;
+    private final Runnable onHistorialSaldo;
+    private final Runnable onRecargarSaldo;
     private final Runnable onPanelControl;
     private final Runnable onCargaCCB;
     private final Runnable onCrearMenu;
     private final Runnable onEditarMenu;
     private final Runnable onGestionMenu;
+    private final Runnable onAgregarInsumo;
+    private final Runnable onHistorialMenu;
+    private final Runnable onHistorialCcb;
     private final Runnable onSwapInteraccion;
     private final Runnable onSalir;
 
@@ -23,11 +28,16 @@ public class MenuAccionesControlador implements MenuAcciones {
         Runnable onFila,
         Runnable onMenuSemana,
         Runnable onTurnos,
+        Runnable onHistorialSaldo,
+        Runnable onRecargarSaldo,
         Runnable onPanelControl,
         Runnable onCargaCCB,
         Runnable onCrearMenu,
         Runnable onEditarMenu,
         Runnable onGestionMenu,
+        Runnable onAgregarInsumo,
+        Runnable onHistorialMenu,
+        Runnable onHistorialCcb,
         Runnable onSwapInteraccion,
         Runnable onSalir
     ) {
@@ -37,11 +47,16 @@ public class MenuAccionesControlador implements MenuAcciones {
         this.onFila = onFila;
         this.onMenuSemana = onMenuSemana;
         this.onTurnos = onTurnos;
+        this.onHistorialSaldo = onHistorialSaldo;
+        this.onRecargarSaldo = onRecargarSaldo;
         this.onPanelControl = onPanelControl;
         this.onCargaCCB = onCargaCCB;
         this.onCrearMenu = onCrearMenu;
         this.onEditarMenu = onEditarMenu;
         this.onGestionMenu = onGestionMenu;
+        this.onAgregarInsumo = onAgregarInsumo;
+        this.onHistorialMenu = onHistorialMenu;
+        this.onHistorialCcb = onHistorialCcb;
         this.onSwapInteraccion = onSwapInteraccion;
         this.onSalir = onSalir;
     }
@@ -77,6 +92,16 @@ public class MenuAccionesControlador implements MenuAcciones {
     }
 
     @Override
+    public void irHistorialSaldo() {
+        onHistorialSaldo.run();
+    }
+
+    @Override
+    public void irRecargarSaldo() {
+        onRecargarSaldo.run();
+    }
+
+    @Override
     public void irPanelControl() {
         onPanelControl.run();
     }
@@ -99,6 +124,21 @@ public class MenuAccionesControlador implements MenuAcciones {
     @Override
     public void irGestionMenu() {
         onGestionMenu.run();
+    }
+
+    @Override
+    public void irAgregarInsumo() {
+        onAgregarInsumo.run();
+    }
+
+    @Override
+    public void irHistorialMenu() {
+        onHistorialMenu.run();
+    }
+
+    @Override
+    public void irHistorialCcb() {
+        onHistorialCcb.run();
     }
 
     @Override
