@@ -5,8 +5,8 @@ import javax.swing.SwingUtilities;
 import com.gesco.controllers.auntentificacion.ControladorInicioSesion;
 import com.gesco.controllers.auntentificacion.ControladorRegistro;
 import com.gesco.controllers.costos.ControladorCargarCCB;
-import com.gesco.controllers.costos.ControladorRecargarSaldo;
 import com.gesco.controllers.costos.ControladorHistorialCCB;
+import com.gesco.controllers.costos.ControladorRecargarSaldo;
 import com.gesco.controllers.inicio.ControladorInicio;
 import com.gesco.controllers.inicio.ControladorInicioAdmin;
 import com.gesco.controllers.inicio.ControladorInicioComensal;
@@ -17,25 +17,25 @@ import com.gesco.controllers.menu.ControladorMenuSemana;
 import com.gesco.controllers.otros.ControladorEspera;
 import com.gesco.controllers.otros.ControladorFila;
 import com.gesco.controllers.otros.ControladorTurnos;
+import com.gesco.views.Registros.VistaHistorialCCB;
+import com.gesco.views.Registros.VistaHistorialMenu;
+import com.gesco.views.Registros.VistaHistorialSaldo;
 import com.gesco.views.auntentificacion.VistaInicioSesion;
 import com.gesco.views.auntentificacion.VistaRegistro;
 import com.gesco.views.costos.VistaCargaCCB;
 import com.gesco.views.costos.VistaRecargarSaldo;
-import com.gesco.views.Registros.VistaHistorialCCB;
 import com.gesco.views.costos.VistaVerCFCV;
 import com.gesco.views.inicio.VistaInicio;
 import com.gesco.views.inicio.VistaInicioAdmin;
 import com.gesco.views.inicio.VistaInicioComensal;  
+import com.gesco.views.menu.VistaAgregarInsumo;
 import com.gesco.views.menu.VistaCrearMenu;
 import com.gesco.views.menu.VistaEditarMenu;
-import com.gesco.views.menu.VistaAgregarInsumo;
 import com.gesco.views.menu.VistaGestionMenu;
 import com.gesco.views.menu.VistaMenuSemana;
 import com.gesco.views.otros.VistaEspera;
 import com.gesco.views.otros.VistaFila;
 import com.gesco.views.otros.VistaTurnos;
-import com.gesco.views.Registros.VistaHistorialMenu;
-import com.gesco.views.Registros.VistaHistorialSaldo;
 
 public class LogicaInterfaz {
 
@@ -231,10 +231,8 @@ public class LogicaInterfaz {
         menuGescoController.conectar(vistaHistorialCcb, sesionAdmin, cedulaSesionActual);
         ControladorHistorialCCB controlador = new ControladorHistorialCCB(
             vistaHistorialCcb,
-
             this::mostrarPanelControl
         );
-        controlador.cargar();
         controlador.conectar();
     }
 
