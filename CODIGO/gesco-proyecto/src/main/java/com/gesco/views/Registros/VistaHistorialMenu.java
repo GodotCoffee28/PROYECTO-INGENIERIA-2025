@@ -34,8 +34,7 @@ public class VistaHistorialMenu extends PlantillaGesco {
         contenedorVertical.setOpaque(false);
         contenedorVertical.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
-        JLabel titulo = crearEtiquetaPersonalizada("HISTORIAL DE MENÚS", "Times New Roman", Font.BOLD, 35, Color.WHITE, "centro");
-        contenedorVertical.add(titulo);
+        contenedorVertical.add(crearEtiquetaPersonalizada("HISTORIAL DE MENÚS", "Times New Roman", Font.BOLD, 35, Color.WHITE, "centro"));
         contenedorVertical.add(Box.createVerticalStrut(10));
 
         JSeparator separadorTitulo = new JSeparator();

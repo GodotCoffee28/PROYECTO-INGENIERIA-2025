@@ -1,18 +1,7 @@
 package com.gesco.views.costos;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import java.awt.*;
+import javax.swing.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -24,14 +13,15 @@ import com.gesco.views.PlantillasViews.CampoFecha;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaCargaCCB extends PlantillaGesco {
+    
     private static final DateTimeFormatter FECHA_FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private BotonNeon btnSubirDatos;
     private CampoFecha campoFecha;
     private JComboBox<String> usuario;
     private JTextField NB, MERMA, CF, CV;
-    private JLabel Titulo;
     private JLabel lblResultado;
     
+
     public VistaCargaCCB() {
         super();
         ocultarIcono();
@@ -44,18 +34,17 @@ public class VistaCargaCCB extends PlantillaGesco {
         setVisible(true);
     }
 
+
     private void inicializarComponentes() {
         Dimension tamBoton = new Dimension(400, 60);
         btnSubirDatos = new BotonNeon("Subir datos");
         btnSubirDatos.setPreferredSize(tamBoton);
         btnSubirDatos.setMaximumSize(tamBoton);
         btnSubirDatos.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        Titulo = crearEtiquetaPersonalizada("Datos para el CCB", "Arial", Font.BOLD, 45, new Color(240, 240, 240), "centro");
-
         lblResultado = crearEtiquetaPersonalizada(" ", "Arial", Font.BOLD, 18, new Color(240, 240, 240),"centro");
     }
-    
+
+
     private void agregarCampos(JPanel panelFondoBase) {
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
@@ -112,6 +101,7 @@ public class VistaCargaCCB extends PlantillaGesco {
         panelFondoBase.add(formPanel);
     }
 
+
     private void CajaCCB(JTextField c, Dimension d) {
         c.setPreferredSize(d);
         c.setMaximumSize(d);
@@ -121,6 +111,7 @@ public class VistaCargaCCB extends PlantillaGesco {
         c.setBackground(new Color(255, 255, 255, 240));
     }
 
+
     private void construirCuerpo() {
         JPanel panelFondo = crearPanel(250,15,500,30,50,50);
         
@@ -129,7 +120,7 @@ public class VistaCargaCCB extends PlantillaGesco {
         panelFondo.setBorder(BorderFactory.createEmptyBorder(30, 20, 30, 20));
 
         panelFondo.add(Box.createVerticalGlue()); 
-        panelFondo.add(Titulo);
+        panelFondo.add(crearEtiquetaPersonalizada("Datos para el CCB", "Arial", Font.BOLD, 45, new Color(240, 240, 240), "centro"));
         panelFondo.add(Box.createVerticalStrut(15)); 
 
         agregarCampos(panelFondo); 
@@ -144,6 +135,7 @@ public class VistaCargaCCB extends PlantillaGesco {
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
     }
 
+
     public String getUsuario(){
         Object seleccionado = usuario.getSelectedItem();
         return seleccionado == null ? "Estudiante" : seleccionado.toString();
@@ -153,6 +145,7 @@ public class VistaCargaCCB extends PlantillaGesco {
     public String getCF(){ return CF.getText();}
     public String getCV(){ return CV.getText();}
     public BotonNeon getBtnSubirDatos() { return btnSubirDatos; }
+
 
     public LocalDate getFecha() {
         String texto = campoFecha.getFechaTexto();
@@ -166,6 +159,7 @@ public class VistaCargaCCB extends PlantillaGesco {
         }
     }
 
+
     public CCB crearCCB() {
         LocalDate fecha = getFecha();
         double nb = parseDouble(getNB(), "NB");
@@ -175,6 +169,7 @@ public class VistaCargaCCB extends PlantillaGesco {
         return new CCB(fecha, getUsuario(), cf, cv, nb, merma);
     }
 
+
     public void setResultado(String resultado) {
         if (resultado == null || resultado.trim().isEmpty()) {
             lblResultado.setText(" ");
@@ -183,6 +178,7 @@ public class VistaCargaCCB extends PlantillaGesco {
             lblResultado.setText("VALOR CCB: " + resultado);
         }
     }
+
 
     private double parseDouble(String valor, String campo) {
         try {

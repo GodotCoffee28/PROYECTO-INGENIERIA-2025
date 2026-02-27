@@ -80,14 +80,15 @@ public class VistaCrearMenu extends PlantillaGesco {
 
         Dimension tamCaja = new Dimension(450, 40);
 
-        panelIzqPlatillos.add(crearEtiquetaPersonalizada("Tipo de menu", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
+        panelIzqPlatillos.add(crearEtiquetaPersonalizada("Tipo de menú", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
         panelIzqPlatillos.add(Box.createVerticalStrut(8));
+
         comboTipoMenu = new JComboBox<>(Menu.TipoMenu.values());
         comboTipoMenu.setMaximumSize(tamCaja);
         comboTipoMenu.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
         panelIzqPlatillos.add(comboTipoMenu);
         panelIzqPlatillos.add(Box.createVerticalStrut(20));
-
         panelIzqPlatillos.add(crearEtiquetaPersonalizada("Platillo 1", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
         panelIzqPlatillos.add(Box.createVerticalStrut(8));
         platillo1 = new JTextField();
@@ -228,15 +229,7 @@ public class VistaCrearMenu extends PlantillaGesco {
         cargarInsumosEnCombo(comboInsumo3, spinnerCantidad3, modeloInsumos3, disponibles);
     }
 
-    private void agregarSeccionInsumos(
-        JPanel formPanel,
-        String titulo,
-        JComboBox<Insumo> combo,
-        JSpinner spinner,
-        JButton btnAgregar,
-        JButton btnQuitar,
-        JList<Insumo> lista
-    ) {
+    private void agregarSeccionInsumos(JPanel formPanel,String titulo,JComboBox<Insumo> combo,JSpinner spinner,JButton btnAgregar,JButton btnQuitar,JList<Insumo> lista) {
         formPanel.add(crearEtiquetaPersonalizada(titulo, "Times New Roman", Font.PLAIN, 18, Color.WHITE, "centro"));
         formPanel.add(Box.createVerticalStrut(6));
 
@@ -266,14 +259,7 @@ public class VistaCrearMenu extends PlantillaGesco {
         formPanel.add(Box.createVerticalStrut(16));
     }
 
-    private void configurarAccionesInsumos(
-        JComboBox<Insumo> combo,
-        JSpinner spinner,
-        DefaultListModel<Insumo> modelo,
-        JList<Insumo> lista,
-        JButton btnAgregar,
-        JButton btnQuitar
-    ) {
+    private void configurarAccionesInsumos(JComboBox<Insumo> combo,JSpinner spinner,DefaultListModel<Insumo> modelo,JList<Insumo> lista,JButton btnAgregar,JButton btnQuitar) {
         combo.addActionListener(e -> actualizarSpinner(combo, spinner, modelo));
 
         btnAgregar.addActionListener(e -> {
@@ -316,12 +302,7 @@ public class VistaCrearMenu extends PlantillaGesco {
         });
     }
 
-    private void cargarInsumosEnCombo(
-        JComboBox<Insumo> combo,
-        JSpinner spinner,
-        DefaultListModel<Insumo> modelo,
-        List<Insumo> insumos
-    ) {
+    private void cargarInsumosEnCombo(JComboBox<Insumo> combo,JSpinner spinner,DefaultListModel<Insumo> modelo,List<Insumo> insumos) {
         combo.removeAllItems();
         for (Insumo insumo : insumos) {
             combo.addItem(insumo);
@@ -329,11 +310,7 @@ public class VistaCrearMenu extends PlantillaGesco {
         actualizarSpinner(combo, spinner, modelo);
     }
 
-    private void actualizarSpinner(
-        JComboBox<Insumo> combo,
-        JSpinner spinner,
-        DefaultListModel<Insumo> modelo
-    ) {
+    private void actualizarSpinner(JComboBox<Insumo> combo,JSpinner spinner,DefaultListModel<Insumo> modelo) {
         Insumo seleccionado = (Insumo) combo.getSelectedItem();
         if (seleccionado == null) {
             spinner.setModel(new SpinnerNumberModel(0, 0, 0, 1));

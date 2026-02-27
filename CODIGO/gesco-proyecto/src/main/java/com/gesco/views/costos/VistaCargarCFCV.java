@@ -9,7 +9,6 @@ import com.gesco.views.PlantillasViews.PlantillaGesco;
 public class VistaCargarCFCV extends PlantillaGesco {
     private BotonNeon btnGuardar;
     private JTextField CF, CV;
-    private JLabel titulo;
     private JLabel lblResultado;
 
     public VistaCargarCFCV() {
@@ -30,9 +29,6 @@ public class VistaCargarCFCV extends PlantillaGesco {
         btnGuardar.setPreferredSize(tamBoton);
         btnGuardar.setMaximumSize(tamBoton);
         btnGuardar.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        titulo = crearEtiquetaPersonalizada("Cargar Costos: Fijo y Variable", "Times New Roman", Font.BOLD, 36, new Color(240, 240, 240), "centro");
-        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         lblResultado = crearEtiquetaPersonalizada(" ", "Arial", Font.BOLD, 18, new Color(240, 240, 240), "centro");
         lblResultado.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -71,7 +67,7 @@ public class VistaCargarCFCV extends PlantillaGesco {
         panelFondo.setBorder(BorderFactory.createEmptyBorder(30, 20, 30, 20));
 
         panelFondo.add(Box.createVerticalGlue());
-        panelFondo.add(titulo);
+        panelFondo.add(crearEtiquetaPersonalizada("Cargar Costos: Fijo y Variable", "Times New Roman", Font.BOLD, 36, new Color(240, 240, 240), "centro"));
         panelFondo.add(Box.createVerticalStrut(20));
 
         agregarCampos(panelFondo);

@@ -43,22 +43,22 @@ public class VistaInicioComensal extends PlantillaGesco {
         btnRegistro.setPreferredSize(tamBoton);
 
         bienvenida = new JLabel("¡Bienvenido, " + nombreUsuario + "!");
-        bienvenida.setFont(new Font("Arial", Font.BOLD, 30));
+        bienvenida.setFont(new Font("Segoe UI", Font.ITALIC, 28));
         bienvenida.setForeground(new Color(240, 240, 240)); 
         bienvenida.setHorizontalAlignment(SwingConstants.CENTER);
 
         String estilo = "<html><body style='text-align: center; width: 280px;'>";
         
         infoMenu = new JLabel(estilo + "¡No te pierdas el menú de hoy!<br>"+ "Revisa la oferta completa de platos y organiza tu almuerzo con antelación."+ "</body></html>");
-        infoMenu.setFont(new Font("Arial", Font.PLAIN, 20));
+        infoMenu.setFont(new Font("Times New Roman", Font.PLAIN, 20));
         infoMenu.setForeground(new Color(230, 230, 230));
 
         infoTurnos = new JLabel(estilo + "El acceso está habilitado únicamente durante los turnos programados.<br>"+ "Consulte aquí los horarios específicos."+ "</body></html>");
-        infoTurnos.setFont(new Font("Arial", Font.PLAIN, 20));
+        infoTurnos.setFont(new Font("Times New Roman", Font.PLAIN, 20));
         infoTurnos.setForeground(new Color(230, 230, 230));
 
         infoFila = new JLabel(estilo + "Asegura tu lugar en el comedor.<br>" + "Consulta los turnos disponibles y gestiona tu posición en la fila de forma eficiente." + "</body></html>");
-        infoFila.setFont(new Font("Arial", Font.PLAIN, 20));
+        infoFila.setFont(new Font("Times New Roman", Font.PLAIN, 20));
         infoFila.setForeground(new Color(230, 230, 230));
 
         lblSaldo = new JLabel();
@@ -74,8 +74,6 @@ public class VistaInicioComensal extends PlantillaGesco {
 
         JPanel tarjetaBienvenida = crearTarjeta("", 0, 50, 20, 10, null);
 
-        bienvenida.setHorizontalAlignment(SwingConstants.CENTER);
-        bienvenida.setFont(new Font("Segoe UI", Font.ITALIC, 28));
 
         tarjetaBienvenida.add(bienvenida, BorderLayout.CENTER);
 
