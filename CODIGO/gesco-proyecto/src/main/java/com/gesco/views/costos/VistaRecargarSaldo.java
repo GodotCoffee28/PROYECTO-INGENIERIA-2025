@@ -155,7 +155,7 @@ public class VistaRecargarSaldo extends PlantillaGesco {
             panelFondoBase.add(formPanel);
     }
 
-    //Getters para los campos de texto y el botón, para que el controlador pueda acceder a ellos
+
     public String getFecha() { return campoFecha.getFechaTexto(); }  
     public String getCedula() { return CeduField.getText();}
     public String getBanco() { return (String) comboBanco.getSelectedItem();}
