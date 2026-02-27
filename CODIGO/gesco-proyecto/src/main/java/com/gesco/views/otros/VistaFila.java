@@ -148,7 +148,7 @@ public class VistaFila extends PlantillaGesco {
         Menu menuDesayuno = DataBase.obtenerMenuPorFechaYTipo(fechaHoy, Menu.TipoMenu.DESAYUNO);
         Menu menuAlmuerzo = DataBase.obtenerMenuPorFechaYTipo(fechaHoy, Menu.TipoMenu.ALMUERZO);
         panelTarjetas.add(new TarjetaMenu(menuDesayuno));
-        panelTarjetas.add(new TarjetaMenu(menuAlmuerzo));
+        panelTarjetas.add(new TarjetaMenu(null, menuAlmuerzo));
 
         panelInferior.add(panelTarjetas);
         panelInferior.add(Box.createVerticalStrut(15));

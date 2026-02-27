@@ -14,10 +14,12 @@ import com.gesco.controllers.menu.ControladorCrearMenu;
 import com.gesco.controllers.menu.ControladorEditarMenu;
 import com.gesco.controllers.menu.ControladorGestionMenu;
 import com.gesco.controllers.menu.ControladorMenuSemana;
+import com.gesco.controllers.registros.ControladorHistorialMenu;
 import com.gesco.controllers.otros.ControladorAutorizarAdmin;
 import com.gesco.controllers.otros.ControladorEspera;
 import com.gesco.controllers.otros.ControladorFila;
 import com.gesco.controllers.otros.ControladorTurnos;
+import com.gesco.controllers.registros.ControladorHistorialMenu;
 import com.gesco.views.Registros.VistaHistorialCCB;
 import com.gesco.views.Registros.VistaHistorialMenu;
 import com.gesco.views.Registros.VistaHistorialSaldo;
@@ -37,8 +39,6 @@ import com.gesco.views.otros.VistaEspera;
 import com.gesco.views.otros.VistaFila;
 import com.gesco.views.otros.VistaTurnos;
 import com.gesco.views.otros.VistaAutorizarAdmin;
-import com.gesco.views.Registros.VistaHistorialMenu;
-import com.gesco.views.Registros.VistaHistorialSaldo;
 
 public class LogicaInterfaz {
 
@@ -318,12 +318,7 @@ public class LogicaInterfaz {
         cerrarVistas();
         vistaHistorialMenu = new VistaHistorialMenu();
         menuGescoController.conectar(vistaHistorialMenu, sesionAdmin, cedulaSesionActual);
-        vistaHistorialMenu.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                volverAPantallaPrincipal();
-            }
-        });
+        new ControladorHistorialMenu(vistaHistorialMenu, this::volverAPantallaPrincipal).conectar();
     }
 
     private void mostrarHistorialSaldo() {

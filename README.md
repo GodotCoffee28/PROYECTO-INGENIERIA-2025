@@ -54,3 +54,29 @@ Se usó jcalendar-1.4.jar como librería externa para el uso de calendarios y ma
 
 # Requerimientos
 Se requiere tener instalado y configurado MAVEN para la compilación de pruebas unitarias.
+
+# ¿Cómo se logró el funcionamiento de las pruebas unitarias?
+
+El funcionamiento de las pruebas unitarias se logró al estandarizar la ejecución con Maven y organizar el proyecto de acuerdo con su estructura esperada.
+
+## 1) Configuración base del entorno
+- Se definió Java 17 para asegurar compatibilidad de compilación.
+- Se integró JUnit 4.11 para crear y ejecutar pruebas unitarias.
+- Se configuró Maven Surefire (2.22.1), que es el plugin encargado de descubrir y correr automáticamente las pruebas.
+
+## 2) Estructura de pruebas
+- Las pruebas se ubicaron en `CODIGO/gesco-proyecto/src/test/java`.
+- Se siguió la convención de nombres `*Test.java` para que Surefire las detecte sin configuración adicional.
+- Se crearon pruebas para distintos módulos.
+## 3) Dependencias locales del proyecto
+- Las librerías externas usadas por la aplicación (`jcalendar`, `jgoodies-common`, `jgoodies-looks`) se declararon en el `pom.xml` con ruta local dentro de `Lib/`.
+- Esto permitió compilar correctamente el código principal durante la fase de test.
+
+## 4) Ejecución y validación
+- Desde `CODIGO/gesco-proyecto`, se ejecutan las pruebas con:
+
+```bash
+mvn clean test
+```
+
+- Los resultados se generan en `target/surefire-reports/`, donde se puede validar qué pruebas pasaron o fallaron.

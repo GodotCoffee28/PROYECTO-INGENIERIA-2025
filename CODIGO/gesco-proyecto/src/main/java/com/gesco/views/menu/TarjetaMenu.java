@@ -56,8 +56,17 @@ public class TarjetaMenu extends TarjetaGeneral {
 
         lblDia.setText(diaStr);
 
-        renderMenuSection("Desayuno", menuDesayuno);
-        renderMenuSection("Almuerzo", menuAlmuerzo);
+        boolean soloDesayuno = menuDesayuno != null && menuAlmuerzo == null;
+        boolean soloAlmuerzo = menuDesayuno == null && menuAlmuerzo != null;
+
+        if (soloDesayuno) {
+            renderMenuSection("Desayuno", menuDesayuno);
+        } else if (soloAlmuerzo) {
+            renderMenuSection("Almuerzo", menuAlmuerzo);
+        } else {
+            renderMenuSection("Desayuno", menuDesayuno);
+            renderMenuSection("Almuerzo", menuAlmuerzo);
+        }
 
         revalidate();
         repaint();
