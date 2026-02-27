@@ -27,6 +27,7 @@ public class VistaEspera extends PlantillaGesco {
         ocultarIcono();
         ocultarMenu();
         ocultarBack();
+        ocultarlblSprAdmin();
         inicializarComponentes();
         construirCuerpo();
         revalidate();

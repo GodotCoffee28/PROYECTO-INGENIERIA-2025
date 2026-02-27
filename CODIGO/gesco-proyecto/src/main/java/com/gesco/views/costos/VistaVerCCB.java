@@ -30,6 +30,7 @@ public class VistaVerCCB extends PlantillaGesco {
     public VistaVerCCB() {
         super();
         ocultarIcono();
+        ocultarlblSprAdmin();
         setImagenFondo("/FondoPrincipal2.png");
         inicializar();
         construirCuerpo();

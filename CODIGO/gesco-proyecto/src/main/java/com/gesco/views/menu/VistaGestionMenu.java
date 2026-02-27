@@ -22,6 +22,7 @@ public class VistaGestionMenu extends PlantillaGesco {
     public VistaGestionMenu() {
         super();
         ocultarIcono();
+        ocultarlblSprAdmin();
         setImagenFondo("/FondoPrincipal2.png");
         inicializarComponentes();
         construirCuerpo();

@@ -46,6 +46,7 @@ public class VistaFila extends PlantillaGesco {
     public VistaFila() {
         super();
         setImagenFondo("/FondoPrincipal.png");
+        ocultarlblSprAdmin();
         inicializarComponentes();
         construirCuerpo();
         revalidate();

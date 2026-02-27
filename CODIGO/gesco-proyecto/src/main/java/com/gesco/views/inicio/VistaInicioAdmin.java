@@ -18,10 +18,14 @@ public class VistaInicioAdmin extends PlantillaGesco {
 
     private BotonNeon btnGestión, btnSubirDatos, btnCambio, btnVerCCB, btnVerMenu;
     private JLabel titulo;
+    Boolean esSuperAdmin=true;
 
     public VistaInicioAdmin() {
         super();
         ocultarIcono();
+        if(!esSuperAdmin){
+            ocultarlblSprAdmin();
+        }
         setImagenFondo("/FondoPrincipal2.png");
         inicializarComponentes();
         construirCuerpo();
@@ -143,5 +147,8 @@ public class VistaInicioAdmin extends PlantillaGesco {
 
     public BotonNeon getBtnCambio() {
         return btnCambio;
+    }
+    public void setEsSuperAdmin(Boolean esSuperAdmin) {
+    this.esSuperAdmin = esSuperAdmin;
     }
 }

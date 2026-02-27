@@ -12,6 +12,7 @@ public class VistaHistorialSaldo extends PlantillaGesco {
         super();
         setImagenFondo("/FondoPrincipal2.png");
         ocultarIcono();
+        ocultarlblSprAdmin();
         inicializarComponentes();
         construirCuerpo();
         this.revalidate();

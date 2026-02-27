@@ -31,6 +31,7 @@ public class VistaCrearMenu extends PlantillaGesco {
         super();
         setImagenFondo("/FondoPrincipal2.png");
         ocultarIcono();
+        ocultarlblSprAdmin();
         inicializarComponentes();
         construirCuerpo();
         revalidate();
@@ -159,7 +160,7 @@ public class VistaCrearMenu extends PlantillaGesco {
         JPanel contenedorTitulo = crearPanel(0, 0, 5, 5, 30, 30);
         contenedorTitulo.setLayout(new GridBagLayout());
         contenedorTitulo.setOpaque(false);
-        
+
         Dimension dimTitulo = new Dimension(600, 65);
         contenedorTitulo.setPreferredSize(dimTitulo);
         contenedorTitulo.setMaximumSize(dimTitulo);

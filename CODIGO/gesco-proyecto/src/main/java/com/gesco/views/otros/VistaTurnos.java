@@ -29,6 +29,7 @@ public class VistaTurnos extends PlantillaGesco {
         super(); 
         setImagenFondo("/FondoPrincipal.png");     
         inicializarComponentes();
+        ocultarlblSprAdmin();
         construirCuerpo();
         cargarDatosPrueba(); 
         revalidate();

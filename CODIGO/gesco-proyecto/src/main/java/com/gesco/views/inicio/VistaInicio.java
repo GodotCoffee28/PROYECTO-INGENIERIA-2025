@@ -26,6 +26,7 @@ public class VistaInicio extends PlantillaGesco {
         ocultarMenu();
         ocultarBack();
         ocultarIcono();
+        ocultarlblSprAdmin();
         inicializarComponentes();
         construirCuerpo();
         revalidate();

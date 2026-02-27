@@ -28,6 +28,7 @@ public class VistaVisualizarCCB extends PlantillaGesco {
         super();
         setImagenFondo("/FondoPrincipal2.png");
         inicializarComponentes();
+        ocultarlblSprAdmin();
         construirCuerpo();
         revalidate();
         repaint();
