@@ -1056,6 +1056,22 @@ public class DataBase {
         return parsearLineaCcb(ultima);
     }
 
+    public static List<CCB> obtenerHistorialCcb() {
+        List<String> lineas = leerLineasGenericas(ARCHIVO_CCB);
+        List<CCB> resultado = new ArrayList<>();
+        for (String linea : lineas) {
+            if (linea == null) continue;
+            String limpia = linea.trim();
+            if (limpia.isEmpty()) continue;
+
+            CCB ccb = parsearLineaCcb(limpia);
+            if (ccb != null) {
+                resultado.add(ccb);
+            }
+        }
+        return resultado;
+    }
+
     public static double calcularMontoCcbPorTipo(double ccbBase, TipoUsuario tipoUsuario) {
         if (ccbBase < 0) {
             throw new IllegalArgumentException("El CCB base no puede ser negativo.");

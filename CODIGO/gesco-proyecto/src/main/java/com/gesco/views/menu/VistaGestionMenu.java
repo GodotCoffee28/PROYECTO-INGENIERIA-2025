@@ -10,14 +10,12 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 public class VistaGestionMenu extends PlantillaGesco {
-     private BotonNeon btnEditar, btnCrear,btnAgregarInsumo ,btnReiniciar;
-    private JLabel Titulo;
+    private BotonNeon btnEditar, btnCrear,btnAgregarInsumo ,btnReiniciar;
 
     public VistaGestionMenu() {
         super();
@@ -53,9 +51,6 @@ public class VistaGestionMenu extends PlantillaGesco {
         btnReiniciar.setPreferredSize(tam);
         btnReiniciar.setMaximumSize(tam);
         btnReiniciar.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        Titulo = crearEtiquetaPersonalizada("Gestión del menú", "Times New Roman", Font.BOLD, 32, new Color(240, 240, 240),"centro");
-        
     }
 
     private void construirCuerpo() {
@@ -66,7 +61,7 @@ public class VistaGestionMenu extends PlantillaGesco {
         panelFondo.setBorder(BorderFactory.createEmptyBorder(60, 20, 60, 20));
         
         panelFondo.add(Box.createVerticalGlue());
-        panelFondo.add(Titulo);
+        panelFondo.add(crearEtiquetaPersonalizada("Gestión del menú", "Times New Roman", Font.BOLD, 32, new Color(240, 240, 240),"centro"));
         panelFondo.add(Box.createVerticalStrut(80));
 
         panelFondo.add(btnEditar);

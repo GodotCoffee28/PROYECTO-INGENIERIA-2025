@@ -1,19 +1,8 @@
 package com.gesco.views.auntentificacion;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
@@ -21,9 +10,9 @@ import com.gesco.views.PlantillasViews.PlantillaGesco;
 public class VistaInicioSesion extends PlantillaGesco {
     private BotonNeon btnInicioSesion;
     private JTextField cedula, clave;
-    private JLabel Saludo;
     private JLabel registroLink;
     
+
     public VistaInicioSesion() {
         super(); 
         setImagenFondo("/VISTAFONDO.png");
@@ -37,6 +26,7 @@ public class VistaInicioSesion extends PlantillaGesco {
         setVisible(true);
     }
 
+    
     private void inicializarComponentes() {
         Dimension tam = new Dimension(400, 60);
 
@@ -44,9 +34,8 @@ public class VistaInicioSesion extends PlantillaGesco {
         btnInicioSesion.setPreferredSize(tam);
         btnInicioSesion.setMaximumSize(tam);
         btnInicioSesion.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        Saludo = crearEtiquetaPersonalizada("¡Hola de nuevo!", "Times New Roman", Font.BOLD, 45, new Color(240, 240, 240), "centro");
     }
+
 
     private void agregarCampos(JPanel panelFondoBase) {
         JPanel formPanel = new JPanel();
@@ -93,6 +82,7 @@ public class VistaInicioSesion extends PlantillaGesco {
         panelFondoBase.add(formPanel);
     }
 
+
     private void construirCuerpo() {
         JPanel panelFondo = crearPanel(250, 10, 500, 20, 50, 50);
 
@@ -102,7 +92,7 @@ public class VistaInicioSesion extends PlantillaGesco {
 
         panelFondo.add(Box.createVerticalGlue());
 
-        panelFondo.add(Saludo);
+        panelFondo.add(crearEtiquetaPersonalizada("¡Hola de nuevo!", "Times New Roman", Font.BOLD, 45, new Color(240, 240, 240), "centro"));
         panelFondo.add(Box.createVerticalStrut(10));
 
         JLabel subTitulo = crearEtiquetaPersonalizada("Accede a la plataforma", "Times New Roman", Font.PLAIN, 20, new Color(200, 200, 205), "centro");
@@ -129,6 +119,7 @@ public class VistaInicioSesion extends PlantillaGesco {
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
     }
 
+    
     public String getCedula(){ return cedula.getText();}
     public String getClave(){ return clave.getText();}
     public BotonNeon getBtnInicioSesion() { return btnInicioSesion; }

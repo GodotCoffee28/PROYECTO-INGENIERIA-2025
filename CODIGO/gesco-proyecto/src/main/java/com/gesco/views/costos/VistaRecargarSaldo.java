@@ -13,10 +13,8 @@ import com.gesco.views.PlantillasViews.CampoFecha;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaRecargarSaldo extends PlantillaGesco {
-    
-    private JLabel Titulo;
     private CampoFecha campoFecha;
-    private JTextField CeduField, MontoField, RefenciaField;
+    private JTextField cedulaField, montoField, referenciaField;
     private JComboBox<String> comboBanco;
     private BotonNeon botonRecargar;
 
@@ -39,8 +37,6 @@ public class VistaRecargarSaldo extends PlantillaGesco {
         botonRecargar.setPreferredSize(new Dimension(400, 60));
         botonRecargar.setMaximumSize(tamBoton);
         botonRecargar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        Titulo = crearEtiquetaPersonalizada("Recargar saldo","Times New Roman", Font.BOLD, 45, new Color(240, 240, 240), "centro");
-        Titulo.setFont(new Font("Arial", Font.BOLD, 45));
         comboBanco = new JComboBox<>(new String[]{
             "Seleccione un banco",
             "Banesco Banco Universal (0134)",
@@ -71,7 +67,7 @@ public class VistaRecargarSaldo extends PlantillaGesco {
         panelFondo.setBorder(BorderFactory.createEmptyBorder(40, 20, 40, 20));
 
         panelFondo.add(Box.createVerticalGlue()); 
-        panelFondo.add(Titulo);
+        panelFondo.add(crearEtiquetaPersonalizada("Recargar saldo","Times New Roman", Font.BOLD, 45, new Color(240, 240, 240), "centro"));
         panelFondo.add(Box.createVerticalStrut(25)); 
 
         agregarCampos(panelFondo); 
@@ -101,9 +97,9 @@ public class VistaRecargarSaldo extends PlantillaGesco {
 
             formPanel.add(crearEtiquetaPersonalizada("Cedula de identidad", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
             formPanel.add(Box.createVerticalStrut(8));
-            CeduField = new JTextField();
-            diseñarCaja(CeduField, tamCaja);
-            formPanel.add(CeduField);
+            cedulaField = new JTextField();
+            diseñarCaja(cedulaField, tamCaja);
+            formPanel.add(cedulaField);
             formPanel.add(Box.createVerticalStrut(20)); 
 
             formPanel.add(crearEtiquetaPersonalizada("Banco", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
@@ -113,9 +109,9 @@ public class VistaRecargarSaldo extends PlantillaGesco {
 
             formPanel.add(crearEtiquetaPersonalizada("Referencia", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
             formPanel.add(Box.createVerticalStrut(8));
-            RefenciaField = new JTextField();
-            diseñarCaja(RefenciaField, tamCaja);
-            ((AbstractDocument) RefenciaField.getDocument()).setDocumentFilter(new DocumentFilter() {
+            referenciaField = new JTextField();
+            diseñarCaja(referenciaField, tamCaja);
+            ((AbstractDocument) referenciaField.getDocument()).setDocumentFilter(new DocumentFilter() {
                 @Override
                 public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
                         throws BadLocationException {
@@ -144,13 +140,13 @@ public class VistaRecargarSaldo extends PlantillaGesco {
                     super.replace(fb, offset, length, soloDigitos, attr);
                 }
             });
-            formPanel.add(RefenciaField);
+            formPanel.add(referenciaField);
 
             formPanel.add(crearEtiquetaPersonalizada("Monto Bs.", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
             formPanel.add(Box.createVerticalStrut(8));
-            MontoField = new JTextField();
-            diseñarCaja(MontoField, tamCaja);
-            formPanel.add(MontoField);
+            montoField = new JTextField();
+            diseñarCaja(montoField, tamCaja);
+            formPanel.add(montoField);
             formPanel.add(Box.createVerticalStrut(20));
 
             panelFondoBase.add(formPanel);
@@ -158,15 +154,15 @@ public class VistaRecargarSaldo extends PlantillaGesco {
 
 
     public String getFecha() { return campoFecha.getFechaTexto(); }  
-    public String getCedula() { return CeduField.getText();}
+    public String getCedula() { return cedulaField.getText();}
     public String getBanco() { return (String) comboBanco.getSelectedItem();}
-    public String getReferencia() { return RefenciaField.getText();}
-    public String getMonto() { return MontoField.getText();}
+    public String getReferencia() { return referenciaField.getText();}
+    public String getMonto() { return montoField.getText();}
     public BotonNeon getBotonRecargar() {return botonRecargar;}
 
     public void setCedula(String cedula) {
-        CeduField.setText(cedula == null ? "" : cedula);
-        CeduField.setEditable(false);
+        cedulaField.setText(cedula == null ? "" : cedula);
+        cedulaField.setEditable(false);
     }
 
 }
