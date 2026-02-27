@@ -24,7 +24,7 @@ public class VistaHistorialCCB extends PlantillaGesco {
         contenedorVertical.setOpaque(false);
         contenedorVertical.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
-        JLabel titulo = crearEtiquetaPersonalizada("Historial de Gestión CCB", "Times New Roman", Font.BOLD, 35, Color.WHITE, "centro");
+        JLabel titulo = crearEtiquetaPersonalizada("HISTORIAL DE GESTIÓN CCB", "Times New Roman", Font.BOLD, 35, Color.WHITE, "centro");
         contenedorVertical.add(titulo);
         contenedorVertical.add(Box.createVerticalStrut(10));
 
