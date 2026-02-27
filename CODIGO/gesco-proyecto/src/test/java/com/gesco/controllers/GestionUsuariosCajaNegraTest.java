@@ -69,9 +69,9 @@ public class GestionUsuariosCajaNegraTest {
     @Test
     public void validarInicioSesion_conCredencialesCorrectas_devuelveTrue() {
         String cedula = "35667788";
-        String clave = "password123";
+        String clave = "contra123";
 
-        assertTrue(DataBase.registrarUsuario(cedula, clave, "Login User", "login@email.com", TipoUsuario.ESTUDIANTE));
+        assertTrue(DataBase.registrarUsuario(cedula, clave, "Login", "login@email.com", TipoUsuario.ESTUDIANTE));
         assertTrue(DataBase.validarInicioSesion(cedula, clave));
     }
 }

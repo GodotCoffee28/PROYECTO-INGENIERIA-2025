@@ -2,11 +2,11 @@ package com.gesco.controllers.gestion_principal;
 
 import javax.swing.SwingUtilities;
 
-import com.gesco.controllers.auntentificacion.ControladorInicioSesion;
-import com.gesco.controllers.auntentificacion.ControladorRegistro;
+import com.gesco.controllers.autentificacion.ControladorInicioSesion;
+import com.gesco.controllers.autentificacion.ControladorRegistro;
 import com.gesco.controllers.costos.ControladorCargarCCB;
+import com.gesco.controllers.costos.ControladorHistorialCCB;
 import com.gesco.controllers.costos.ControladorRecargarSaldo;
-import com.gesco.controllers.costos.ControladorVerCCB;
 import com.gesco.controllers.inicio.ControladorInicio;
 import com.gesco.controllers.inicio.ControladorInicioAdmin;
 import com.gesco.controllers.inicio.ControladorInicioComensal;
@@ -14,26 +14,29 @@ import com.gesco.controllers.menu.ControladorCrearMenu;
 import com.gesco.controllers.menu.ControladorEditarMenu;
 import com.gesco.controllers.menu.ControladorGestionMenu;
 import com.gesco.controllers.menu.ControladorMenuSemana;
+import com.gesco.controllers.otros.ControladorAutorizarAdmin;
 import com.gesco.controllers.otros.ControladorEspera;
 import com.gesco.controllers.otros.ControladorFila;
 import com.gesco.controllers.otros.ControladorTurnos;
+import com.gesco.views.Registros.VistaHistorialCCB;
+import com.gesco.views.Registros.VistaHistorialMenu;
+import com.gesco.views.Registros.VistaHistorialSaldo;
 import com.gesco.views.auntentificacion.VistaInicioSesion;
 import com.gesco.views.auntentificacion.VistaRegistro;
 import com.gesco.views.costos.VistaCargaCCB;
 import com.gesco.views.costos.VistaRecargarSaldo;
-import com.gesco.views.costos.VistaVerCCB;
-import com.gesco.views.costos.VistaVerCFCV;
 import com.gesco.views.inicio.VistaInicio;
 import com.gesco.views.inicio.VistaInicioAdmin;
 import com.gesco.views.inicio.VistaInicioComensal;  
+import com.gesco.views.menu.VistaAgregarInsumo;
 import com.gesco.views.menu.VistaCrearMenu;
 import com.gesco.views.menu.VistaEditarMenu;
-import com.gesco.views.menu.VistaAgregarInsumo;
 import com.gesco.views.menu.VistaGestionMenu;
 import com.gesco.views.menu.VistaMenuSemana;
 import com.gesco.views.otros.VistaEspera;
 import com.gesco.views.otros.VistaFila;
 import com.gesco.views.otros.VistaTurnos;
+import com.gesco.views.otros.VistaAutorizarAdmin;
 import com.gesco.views.Registros.VistaHistorialMenu;
 import com.gesco.views.Registros.VistaHistorialSaldo;
 
@@ -50,14 +53,14 @@ public class LogicaInterfaz {
     private VistaMenuSemana vistaMenuSemana;
     private VistaTurnos vistaTurnos;
     private VistaCargaCCB vistaCargaCCB;
-    private VistaVerCCB vistaVerCcb;
-    private VistaVerCFCV vistaVerCfcv;
+    private VistaHistorialCCB vistaHistorialCcb;
     private VistaCrearMenu vistaCrearMenu;
     private VistaEditarMenu vistaEditarMenu;
     private VistaAgregarInsumo vistaAgregarInsumo;
     private VistaGestionMenu vistaGestionMenu;
     private VistaHistorialMenu vistaHistorialMenu;
     private VistaHistorialSaldo vistaHistorialSaldo;
+    private VistaAutorizarAdmin vistaAutorizarAdmin;
     private boolean usuarioAdmin;
     private boolean sesionAdmin;
     private String nombreUsuario;
@@ -163,6 +166,16 @@ public class LogicaInterfaz {
         sesionAdmin = true;
         nombreUsuario = nombre;
         vistaInicioAdmin = new VistaInicioAdmin();
+        boolean esSuperAdmin = DataBase.esSuperAdmin(cedulaSesionActual);
+        vistaInicioAdmin.setEsSuperAdmin(esSuperAdmin);
+        if (esSuperAdmin) {
+            vistaInicioAdmin.getIlblSprAdmin().addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent e) {
+                    mostrarAutorizarAdmin();
+                }
+            });
+        }
         menuGescoController.conectar(vistaInicioAdmin, true, cedulaSesionActual);
         new ControladorInicioAdmin(
             vistaInicioAdmin,
@@ -172,6 +185,25 @@ public class LogicaInterfaz {
             this::mostrarVerCcb,
             this::swapInteraccion,
             this::mostrarHistorialMenu
+        ).conectar();
+    }
+
+    private void mostrarAutorizarAdmin() {
+        if (!DataBase.esSuperAdmin(cedulaSesionActual)) {
+            javax.swing.JOptionPane.showMessageDialog(null,
+                "Solo un super admin puede autorizar administradores.",
+                "Acceso denegado",
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+            mostrarPanelControl();
+            return;
+        }
+
+        cerrarVistas();
+        vistaAutorizarAdmin = new VistaAutorizarAdmin();
+        menuGescoController.conectar(vistaAutorizarAdmin, true, cedulaSesionActual);
+        new ControladorAutorizarAdmin(
+            vistaAutorizarAdmin,
+            this::mostrarPanelControl
         ).conectar();
     }
 
@@ -226,12 +258,14 @@ public class LogicaInterfaz {
 
     private void mostrarVerCcb() {
         cerrarVistas();
-        vistaVerCcb = new VistaVerCCB();
-        menuGescoController.conectar(vistaVerCcb, sesionAdmin, cedulaSesionActual);
-        new ControladorVerCCB(
-            vistaVerCcb,
+        vistaHistorialCcb = new VistaHistorialCCB();
+        
+        menuGescoController.conectar(vistaHistorialCcb, sesionAdmin, cedulaSesionActual);
+        ControladorHistorialCCB controlador = new ControladorHistorialCCB(
+            vistaHistorialCcb,
             this::mostrarPanelControl
-        ).conectar();
+        );
+        controlador.conectar();
     }
 
     private void mostrarCrearMenu() {
@@ -329,6 +363,13 @@ public class LogicaInterfaz {
         if (vistaHistorialSaldo != null) {
             vistaHistorialSaldo.dispose();
             vistaHistorialSaldo = null;
+        }
+    }
+
+    private void cerrarVistaAutorizarAdmin() {
+        if (vistaAutorizarAdmin != null) {
+            vistaAutorizarAdmin.dispose();
+            vistaAutorizarAdmin = null;
         }
     }
 
@@ -495,17 +536,11 @@ public class LogicaInterfaz {
         }
     }
 
-    private void cerrarVistaVerCfcv() {
-        if (vistaVerCfcv != null) {
-            vistaVerCfcv.dispose();
-            vistaVerCfcv = null;
-        }
-    }
 
     private void cerrarVistaVerCcb() {
-        if (vistaVerCcb != null) {
-            vistaVerCcb.dispose();
-            vistaVerCcb = null;
+        if (vistaHistorialCcb != null) {
+            vistaHistorialCcb.dispose();
+            vistaHistorialCcb = null;
         }
     }
 
@@ -556,7 +591,6 @@ public class LogicaInterfaz {
         cerrarVistaTurnos();
         cerrarVistaCargaCCB();
         cerrarVistaVerCcb();
-        cerrarVistaVerCfcv();
         cerrarVistaCrearMenu();
         cerrarVistaEditarMenu();
         cerrarVistaAgregarInsumo();
@@ -564,6 +598,7 @@ public class LogicaInterfaz {
         cerrarVistaRecargarSaldo();
         cerrarVistaHistorialMenu();
         cerrarVistaHistorialSaldo();
+        cerrarVistaAutorizarAdmin();
     }
 
     private void mostrarRecargarSaldo() {

@@ -461,20 +461,27 @@ public class DataBase {
     }
 
     public static boolean esAdmin(String cedula) {
-        if (!cedulaValida(cedula)) return false;
-        if (esSuperAdmin(cedula)) return true;
-        List<String> admins = leerLineasGenericas(ARCHIVO_ADMINS);
-        for (String linea : admins) {
-            if (linea.trim().equals(cedula)) return true;
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (!cedulaValida(cedulaLimpia)) return false;
+        return esSuperAdmin(cedulaLimpia) || esAdminDirecto(cedulaLimpia);
+    }
+
+    public static boolean esSuperAdmin(String cedula) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (!cedulaValida(cedulaLimpia)) return false;
+        if (!esAdminDirecto(cedulaLimpia)) return false;
+
+        List<String> supers = leerLineasGenericas(ARCHIVO_SUPER_ADMINS);
+        for (String linea : supers) {
+            if (normalizarCedula(linea).equals(cedulaLimpia)) return true;
         }
         return false;
     }
 
-    public static boolean esSuperAdmin(String cedula) {
-        if (!cedulaValida(cedula)) return false;
-        List<String> supers = leerLineasGenericas(ARCHIVO_SUPER_ADMINS);
-        for (String linea : supers) {
-            if (linea.trim().equals(cedula)) return true;
+    private static boolean esAdminDirecto(String cedula) {
+        List<String> admins = leerLineasGenericas(ARCHIVO_ADMINS);
+        for (String linea : admins) {
+            if (normalizarCedula(linea).equals(cedula)) return true;
         }
         return false;
     }
@@ -501,6 +508,39 @@ public class DataBase {
             }
         }
         return false;
+    }
+
+    public static boolean autorizarAdministrador(String cedula, String codigoAutorizacion) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        String codigo = valorSeguro(codigoAutorizacion);
+
+        if (!cedulaValida(cedulaLimpia) || codigo.isBlank()) {
+            return false;
+        }
+
+        if (adminAutorizadoPorSuperAdmin(cedulaLimpia, codigo)) {
+            return true;
+        }
+
+        List<String> autorizados = leerLineasGenericas(ARCHIVO_ADMINS_AUTORIZADOS);
+        List<String> actualizadas = new ArrayList<>();
+        boolean reemplazado = false;
+
+        for (String linea : autorizados) {
+            String[] partes = linea.split(":", 2);
+            if (partes.length > 0 && cedulaLimpia.equals(partes[0].trim())) {
+                actualizadas.add(cedulaLimpia + ":" + codigo);
+                reemplazado = true;
+            } else {
+                actualizadas.add(linea);
+            }
+        }
+
+        if (!reemplazado) {
+            actualizadas.add(cedulaLimpia + ":" + codigo);
+        }
+
+        return reescribirArchivoGenerico(ARCHIVO_ADMINS_AUTORIZADOS, actualizadas);
     }
 
     private static boolean agregarAdmin(String cedula) {
@@ -1014,6 +1054,22 @@ public class DataBase {
         if (lineas.isEmpty()) return null;
         String ultima = lineas.get(lineas.size() - 1);
         return parsearLineaCcb(ultima);
+    }
+
+    public static List<CCB> obtenerHistorialCcb() {
+        List<String> lineas = leerLineasGenericas(ARCHIVO_CCB);
+        List<CCB> resultado = new ArrayList<>();
+        for (String linea : lineas) {
+            if (linea == null) continue;
+            String limpia = linea.trim();
+            if (limpia.isEmpty()) continue;
+
+            CCB ccb = parsearLineaCcb(limpia);
+            if (ccb != null) {
+                resultado.add(ccb);
+            }
+        }
+        return resultado;
     }
 
     public static double calcularMontoCcbPorTipo(double ccbBase, TipoUsuario tipoUsuario) {

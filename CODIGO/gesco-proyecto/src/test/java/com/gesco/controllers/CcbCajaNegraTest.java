@@ -65,7 +65,7 @@ public class CcbCajaNegraTest {
     public void calcularMontoCcbParaCedula_usandoTipoGuardado() {
         String cedula = "33445566";
 
-        assertTrue(DataBase.registrarUsuario(cedula, "clave123", "Profesor User", "prof@email.com", TipoUsuario.PROFESOR));
+        assertTrue(DataBase.registrarUsuario(cedula, "clave123", "Profe", "prof@gmail.com", TipoUsuario.PROFESOR));
         assertTrue(DataBase.guardarCcb(new CCB(LocalDate.now(), "Profesor", 1000.0, 500.0, 100.0, 0.0)));
 
         double monto = DataBase.calcularMontoCcbParaCedula(cedula, 0.80);
