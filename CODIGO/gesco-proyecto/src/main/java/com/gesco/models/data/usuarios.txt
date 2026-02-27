@@ -1,13 +1,1 @@
-Cedula:Contrasenia: Nombre Y apellido: gmail: Tipo de usuario: Saldo;
-12345678:123456789:Jhon:adaad@:Estudiante:101000,00;
-33246679:123456789:Gab:adad@:Comensal:120663.70;
-31768767:ale:Ale:ale@:Estudiante:0.0;
-31768765:pepe:pepe:pepe@:Profesor:0.0;
-31768766:juan:juan:juan@:Empleado:0.0;
-31768764:31768764:Alejandro Rondon:alex@:Administrador:11360,00;
-32111454:32111454:Ramses Cordoba:aaroncordobarivas@gmail.com:Administrador:943,00;
-32111455:Manolo:Manolo Sanches:Manolo@gmail.com:Estudiante:0.0;
-32111453:a:a:a@a.gmail:Estudiante:0.0;
-12345679:12345:gabbbb:fghfghf@:Estudiante:9933615.73;
-32100074:1234:Tukeke Gonzalez:tukeke@gmail.com:Estudiante:1000.02;
-8523456:123:pepito:pepito@gmail.com:Estudiante:0.0;
+12345678:12345678:Gab:adads@aadfadaja.com:Administrador:0.0;

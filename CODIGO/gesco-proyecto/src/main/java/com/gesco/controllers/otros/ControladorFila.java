@@ -116,7 +116,7 @@ public class ControladorFila {
 
     private void seleccionarArchivo() {
         JFileChooser chooser = new JFileChooser();
-        File carpetaSecretaria = DataBase.obtenerCarpetaSecretaria();
+        File carpetaSecretaria = DataBase.obtenerCarpetaImagenesSecretaria();
         if (carpetaSecretaria.isDirectory()) {
             chooser.setCurrentDirectory(carpetaSecretaria);
         }

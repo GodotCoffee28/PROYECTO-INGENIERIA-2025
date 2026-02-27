@@ -28,6 +28,17 @@ public class MonederoSaldoTest {
         dataDirAnterior = DataBase.getDataDir();
         dataDirTemporal = Files.createTempDirectory("gesco-monedero-caja-negra-");
         DataBase.setDataDir(dataDirTemporal.toString());
+
+        Path carpetaSecretaria = dataDirTemporal.resolve("secretaria");
+        Files.createDirectories(carpetaSecretaria);
+        Files.writeString(
+            carpetaSecretaria.resolve("cedulas_ocupaciones.txt"),
+            "33333333:estudiante" + System.lineSeparator()
+                + "33444444:estudiante" + System.lineSeparator(),
+            java.nio.charset.StandardCharsets.UTF_8
+        );
+        Files.writeString(carpetaSecretaria.resolve("33333333.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
+        Files.writeString(carpetaSecretaria.resolve("33444444.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
     }
 
     @After

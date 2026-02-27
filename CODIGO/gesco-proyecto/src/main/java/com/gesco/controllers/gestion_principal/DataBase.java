@@ -9,6 +9,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,6 +25,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+
+import javax.imageio.ImageIO;
 
 import com.gesco.models.costos.CCB;
 import com.gesco.models.menu.Insumo;
@@ -41,6 +48,8 @@ public class DataBase {
     private static final String ARCHIVO_FERIADOS = "feriados.txt";
     private static final String ARCHIVO_NO_LABORABLES = "sabados_domingos_2026.txt";
     private static final String CARPETA_SECRETARIA = "secretaria";
+    private static final String CARPETA_IMAGENES_SECRETARIA = "imagenes_rostros";
+    private static final String ARCHIVO_PADRON_SECRETARIA = "cedulas_ocupaciones.txt";
     private static final String ARCHIVO_REGISTRO_SALDO = "registroSaldo.txt";
 
     private static final long CEDULA_MINIMA = 8_000_000L;
@@ -149,19 +158,106 @@ public class DataBase {
         return secretariaPath.toFile();
     }
 
+    private static List<String> leerLineasSecretaria(String nombreArchivo) {
+        List<String> lineas = new ArrayList<>();
+        File carpeta = obtenerCarpetaSecretaria();
+        File archivo = new File(carpeta, nombreArchivo);
+
+        if (!archivo.exists()) return lineas;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(archivo, StandardCharsets.UTF_8))) {
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                if (!linea.trim().isEmpty()) {
+                    lineas.add(linea);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error leyendo archivo de secretaría " + nombreArchivo + ": " + e.getMessage());
+        }
+        return lineas;
+    }
+
     public static File obtenerImagenSecretaria(String cedula) {
         Path secretariaPath = obtenerCarpetaSecretaria().toPath();
+        Path imagenesPath = obtenerCarpetaImagenesSecretaria().toPath();
         String base = valorSeguro(cedula);
-        File jpg = secretariaPath.resolve(base + ".jpg").toFile();
+        File jpg = imagenesPath.resolve(base + ".jpg").toFile();
         if (jpg.exists()) return jpg;
 
-        File jpeg = secretariaPath.resolve(base + ".jpeg").toFile();
+        File jpeg = imagenesPath.resolve(base + ".jpeg").toFile();
         if (jpeg.exists()) return jpeg;
 
-        File png = secretariaPath.resolve(base + ".png").toFile();
+        File png = imagenesPath.resolve(base + ".png").toFile();
         if (png.exists()) return png;
 
+        File jpgLegacy = secretariaPath.resolve(base + ".jpg").toFile();
+        if (jpgLegacy.exists()) return jpgLegacy;
+
+        File jpegLegacy = secretariaPath.resolve(base + ".jpeg").toFile();
+        if (jpegLegacy.exists()) return jpegLegacy;
+
+        File pngLegacy = secretariaPath.resolve(base + ".png").toFile();
+        if (pngLegacy.exists()) return pngLegacy;
+
         return jpg;
+    }
+
+    public static File obtenerCarpetaImagenesSecretaria() {
+        File carpetaSecretaria = obtenerCarpetaSecretaria();
+        File carpetaImagenes = new File(carpetaSecretaria, CARPETA_IMAGENES_SECRETARIA);
+        if (!carpetaImagenes.exists()) {
+            carpetaImagenes.mkdirs();
+        }
+        return carpetaImagenes;
+    }
+
+    public static boolean cedulaTieneImagenSecretaria(String cedula) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (!cedulaValida(cedulaLimpia)) return false;
+
+        File imagen = obtenerImagenSecretaria(cedulaLimpia);
+        return imagen.exists() && imagen.isFile();
+    }
+
+    public static boolean asegurarImagenSecretariaParaCedula(String cedula) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (!cedulaValida(cedulaLimpia)) return false;
+
+        if (cedulaTieneImagenSecretaria(cedulaLimpia)) {
+            return true;
+        }
+
+        File carpetaImagenes = obtenerCarpetaImagenesSecretaria();
+        File destino = new File(carpetaImagenes, cedulaLimpia + ".png");
+
+        BufferedImage imagen = new BufferedImage(360, 360, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2 = imagen.createGraphics();
+        try {
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            int hash = Math.abs(cedulaLimpia.hashCode());
+            int r = 70 + (hash % 120);
+            int g = 70 + ((hash / 7) % 120);
+            int b = 70 + ((hash / 13) % 120);
+
+            g2.setColor(new Color(r, g, b));
+            g2.fillRect(0, 0, 360, 360);
+
+            g2.setColor(new Color(245, 245, 245));
+            g2.fillOval(100, 70, 160, 160);
+            g2.fillRoundRect(85, 215, 190, 110, 30, 30);
+
+            g2.setColor(new Color(30, 30, 30));
+            g2.setFont(new Font("Arial", Font.BOLD, 22));
+            g2.drawString("ID " + cedulaLimpia, 95, 340);
+
+            return ImageIO.write(imagen, "png", destino);
+        } catch (IOException ex) {
+            return false;
+        } finally {
+            g2.dispose();
+        }
     }
 
     private static File obtenerArchivo(String nombreArchivo) {
@@ -238,26 +334,69 @@ public class DataBase {
     }
 
     public static boolean registrarUsuario(String cedula, String clave, String nombre, String correo) {
-        return registrarUsuario(cedula, clave, nombre, correo, TipoUsuario.COMENSAL);
+        return registrarUsuario(cedula, clave, nombre, correo, TipoUsuario.ESTUDIANTE);
     }
 
     public static boolean registrarUsuario(String cedula, String clave, String nombre, String correo, TipoUsuario tipoUsuario) {
-        if (!cedulaValida(cedula)) return false;
-        if (usuarioExiste(cedula)) return false;
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (!cedulaValida(cedulaLimpia)) return false;
+        if (usuarioExiste(cedulaLimpia)) return false;
 
         TipoUsuario tipo = tipoUsuario == null ? TipoUsuario.COMENSAL : tipoUsuario;
         if (tipo == TipoUsuario.SUPER_ADMIN) {
             return false;
         }
 
+        if (tipo != TipoUsuario.ADMIN) {
+            if (!cedulaAutorizadaPorSecretaria(cedulaLimpia)) return false;
+            if (!tipoUsuarioCoincideConSecretaria(cedulaLimpia, tipo)) return false;
+        }
+
+        if (!asegurarImagenSecretariaParaCedula(cedulaLimpia)) return false;
+
         String linea = String.format("%s:%s:%s:%s:%s:0.0;",
-                valorSeguro(cedula), valorSeguro(clave), valorSeguro(nombre), valorSeguro(correo), tipo.toEtiqueta());
+                cedulaLimpia, valorSeguro(clave), valorSeguro(nombre), valorSeguro(correo), tipo.toEtiqueta());
 
         return escribirLineaGenerica(ARCHIVO_USUARIOS, linea + System.lineSeparator());
     }
 
+    public static boolean cedulaAutorizadaPorSecretaria(String cedula) {
+        return obtenerTipoUsuarioSecretaria(cedula) != null;
+    }
+
+    public static TipoUsuario obtenerTipoUsuarioSecretaria(String cedula) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (!cedulaValida(cedulaLimpia)) return null;
+
+        List<String> lineas = leerLineasSecretaria(ARCHIVO_PADRON_SECRETARIA);
+        for (String linea : lineas) {
+            String limpia = valorSeguro(linea);
+            if (limpia.isEmpty() || limpia.startsWith("#")) continue;
+
+            String[] partes = limpia.split(":");
+            if (partes.length < 2) continue;
+
+            String cedulaPadron = normalizarCedula(partes[0]);
+            if (!cedulaLimpia.equals(cedulaPadron)) continue;
+
+            return mapearTipoSecretaria(partes[1]);
+        }
+        return null;
+    }
+
+    public static boolean tipoUsuarioCoincideConSecretaria(String cedula, TipoUsuario tipoUsuario) {
+        TipoUsuario tipoPadron = obtenerTipoUsuarioSecretaria(cedula);
+        if (tipoPadron == null || tipoUsuario == null) return false;
+
+        TipoUsuario tipoSolicitado = tipoUsuario == TipoUsuario.COMENSAL
+                ? TipoUsuario.ESTUDIANTE
+                : tipoUsuario;
+        return tipoPadron == tipoSolicitado;
+    }
+
     public static boolean registrarAdministrador(String cedula, String clave, String nombre, String correo, String codigoAutorizacion) {
         if (!adminAutorizadoPorSuperAdmin(cedula, codigoAutorizacion)) return false;
+        if (!asegurarImagenSecretariaParaCedula(cedula)) return false;
 
         if (usuarioExiste(cedula)) {
             return agregarAdmin(cedula);
@@ -1044,6 +1183,24 @@ public class DataBase {
 
     private static String valorSeguro(String valor) {
         return valor == null ? "" : valor.trim();
+    }
+
+    private static TipoUsuario mapearTipoSecretaria(String valorTipo) {
+        String normalizado = valorSeguro(valorTipo)
+                .toLowerCase(Locale.ROOT)
+                .replace("á", "a")
+                .replace("é", "e")
+                .replace("í", "i")
+                .replace("ó", "o")
+                .replace("ú", "u");
+
+        return switch (normalizado) {
+            case "estudiante" -> TipoUsuario.ESTUDIANTE;
+            case "profesor" -> TipoUsuario.PROFESOR;
+            case "trabajador", "empleado" -> TipoUsuario.EMPLEADO;
+            case "administrador", "admin" -> TipoUsuario.ADMIN;
+            default -> null;
+        };
     }
 
     private static double redondearMoneda(double valor) {
