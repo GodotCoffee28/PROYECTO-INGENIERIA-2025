@@ -396,6 +396,7 @@ public class DataBase {
 
     public static boolean registrarAdministrador(String cedula, String clave, String nombre, String correo, String codigoAutorizacion) {
         if (!adminAutorizadoPorSuperAdmin(cedula, codigoAutorizacion)) return false;
+        if (!asegurarAdminEnSecretaria(cedula)) return false;
         if (!asegurarImagenSecretariaParaCedula(cedula)) return false;
 
         if (usuarioExiste(cedula)) {
@@ -518,6 +519,10 @@ public class DataBase {
             return false;
         }
 
+        if (!asegurarAdminEnSecretaria(cedulaLimpia)) {
+            return false;
+        }
+
         if (adminAutorizadoPorSuperAdmin(cedulaLimpia, codigo)) {
             return true;
         }
@@ -541,6 +546,62 @@ public class DataBase {
         }
 
         return reescribirArchivoGenerico(ARCHIVO_ADMINS_AUTORIZADOS, actualizadas);
+    }
+
+    private static boolean asegurarAdminEnSecretaria(String cedula) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (!cedulaValida(cedulaLimpia)) return false;
+
+        List<String> lineas = leerLineasSecretaria(ARCHIVO_PADRON_SECRETARIA);
+        List<String> actualizadas = new ArrayList<>();
+        boolean encontrado = false;
+
+        for (String linea : lineas) {
+            String limpia = valorSeguro(linea);
+            if (limpia.isEmpty() || limpia.startsWith("#")) {
+                actualizadas.add(linea);
+                continue;
+            }
+
+            String[] partes = limpia.split(":", 2);
+            if (partes.length < 2) {
+                actualizadas.add(linea);
+                continue;
+            }
+
+            String cedulaPadron = normalizarCedula(partes[0]);
+            if (cedulaLimpia.equals(cedulaPadron)) {
+                actualizadas.add(cedulaLimpia + ":administrador");
+                encontrado = true;
+            } else {
+                actualizadas.add(linea);
+            }
+        }
+
+        if (!encontrado) {
+            actualizadas.add(cedulaLimpia + ":administrador");
+        }
+
+        return reescribirArchivoSecretaria(ARCHIVO_PADRON_SECRETARIA, actualizadas);
+    }
+
+    private static boolean reescribirArchivoSecretaria(String nombreArchivo, List<String> nuevasLineas) {
+        File carpeta = obtenerCarpetaSecretaria();
+        if (!carpeta.exists()) {
+            carpeta.mkdirs();
+        }
+
+        File archivo = new File(carpeta, nombreArchivo);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, StandardCharsets.UTF_8, false))) {
+            for (String linea : nuevasLineas) {
+                writer.write(linea);
+                writer.newLine();
+            }
+            return true;
+        } catch (IOException e) {
+            System.err.println("Error reescribiendo archivo de secretaría " + nombreArchivo + ": " + e.getMessage());
+            return false;
+        }
     }
 
     private static boolean agregarAdmin(String cedula) {
@@ -1020,6 +1081,44 @@ public class DataBase {
         }
 
         return resultado;
+    }
+
+    public static boolean guardarOActualizarInsumo(String nombre, int cantidad, String tipo, float precioUnitario) {
+        String nombreLimpio = valorSeguro(nombre);
+        String tipoLimpio = valorSeguro(tipo);
+
+        if (nombreLimpio.isBlank() || tipoLimpio.isBlank() || cantidad <= 0 || precioUnitario < 0) {
+            return false;
+        }
+
+        List<String> lineas = leerLineasGenericas(ARCHIVO_INSUMOS);
+        List<String> actualizadas = new ArrayList<>();
+        boolean encontrado = false;
+
+        String nuevaLinea = String.format(
+            Locale.US,
+            "%s:%s:%d:%.2f;",
+            nombreLimpio,
+            tipoLimpio,
+            cantidad,
+            precioUnitario
+        );
+
+        for (String linea : lineas) {
+            Insumo insumo = parsearLineaInsumo(linea);
+            if (insumo != null && nombreLimpio.equalsIgnoreCase(valorSeguro(insumo.getNombre()))) {
+                actualizadas.add(nuevaLinea);
+                encontrado = true;
+            } else {
+                actualizadas.add(linea);
+            }
+        }
+
+        if (!encontrado) {
+            actualizadas.add(nuevaLinea);
+        }
+
+        return reescribirArchivoGenerico(ARCHIVO_INSUMOS, actualizadas);
     }
 
     public static boolean guardarCcb(CCB ccb) {

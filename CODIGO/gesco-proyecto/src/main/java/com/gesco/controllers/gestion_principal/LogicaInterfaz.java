@@ -19,7 +19,6 @@ import com.gesco.controllers.otros.ControladorAutorizarAdmin;
 import com.gesco.controllers.otros.ControladorEspera;
 import com.gesco.controllers.otros.ControladorFila;
 import com.gesco.controllers.otros.ControladorTurnos;
-import com.gesco.controllers.registros.ControladorHistorialMenu;
 import com.gesco.views.Registros.VistaHistorialCCB;
 import com.gesco.views.Registros.VistaHistorialMenu;
 import com.gesco.views.Registros.VistaHistorialSaldo;

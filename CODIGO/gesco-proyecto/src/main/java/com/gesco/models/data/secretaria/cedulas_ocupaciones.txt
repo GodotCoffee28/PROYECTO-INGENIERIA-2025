@@ -15,3 +15,4 @@
 44556677:empleado
 22334455:estudiante
 12345678:administrador
+12345679:administrador
