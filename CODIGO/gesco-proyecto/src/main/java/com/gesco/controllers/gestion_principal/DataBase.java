@@ -339,7 +339,9 @@ public class DataBase {
 
     public static boolean registrarUsuario(String cedula, String clave, String nombre, String correo, TipoUsuario tipoUsuario) {
         String cedulaLimpia = normalizarCedula(cedula);
+        String nombreLimpio = valorSeguro(nombre);
         if (!cedulaValida(cedulaLimpia)) return false;
+        if (!nombreValido(nombreLimpio)) return false;
         if (usuarioExiste(cedulaLimpia)) return false;
 
         TipoUsuario tipo = tipoUsuario == null ? TipoUsuario.COMENSAL : tipoUsuario;
@@ -355,7 +357,7 @@ public class DataBase {
         if (!asegurarImagenSecretariaParaCedula(cedulaLimpia)) return false;
 
         String linea = String.format("%s:%s:%s:%s:%s:0.0;",
-                cedulaLimpia, valorSeguro(clave), valorSeguro(nombre), valorSeguro(correo), tipo.toEtiqueta());
+            cedulaLimpia, valorSeguro(clave), nombreLimpio, valorSeguro(correo), tipo.toEtiqueta());
 
         return escribirLineaGenerica(ARCHIVO_USUARIOS, linea + System.lineSeparator());
     }
@@ -1339,6 +1341,12 @@ public class DataBase {
 
     private static String valorSeguro(String valor) {
         return valor == null ? "" : valor.trim();
+    }
+
+    private static boolean nombreValido(String nombre) {
+        return nombre != null
+            && !nombre.isBlank()
+            && nombre.matches("^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]+$");
     }
 
     private static TipoUsuario mapearTipoSecretaria(String valorTipo) {

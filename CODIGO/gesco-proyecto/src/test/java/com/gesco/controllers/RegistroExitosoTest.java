@@ -3,6 +3,7 @@ package com.gesco.controllers;
 
 import com.gesco.controllers.gestion_principal.DataBase;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -81,6 +82,11 @@ public class RegistroExitosoTest {
     public void registrarUsuario_empleado_guardaTipoUsuario() {
         assertTrue(DataBase.registrarUsuario("32654324", "clave456", "Ana Garcia", "ana@email.com", TipoUsuario.EMPLEADO));
         assertEquals(TipoUsuario.EMPLEADO, DataBase.obtenerTipoUsuario("32654324"));
+    }
+
+    @Test
+    public void registrarUsuario_nombreConNumeros_devuelveFalse() {
+        assertFalse(DataBase.registrarUsuario("32654324", "clave456", "Ana1 Garcia", "ana@email.com", TipoUsuario.EMPLEADO));
     }
 }
 
