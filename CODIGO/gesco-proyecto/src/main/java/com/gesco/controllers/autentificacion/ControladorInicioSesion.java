@@ -1,4 +1,4 @@
-package com.gesco.controllers.auntentificacion;
+package com.gesco.controllers.autentificacion;
 
 
 import com.gesco.controllers.gestion_principal.DataBase;
