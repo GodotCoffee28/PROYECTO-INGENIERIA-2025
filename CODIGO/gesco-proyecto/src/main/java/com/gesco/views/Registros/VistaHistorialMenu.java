@@ -33,7 +33,7 @@ public class VistaHistorialMenu extends PlantillaGesco {
         contenedorVertical.setOpaque(false);
         contenedorVertical.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
-        JLabel titulo = crearEtiquetaPersonalizada("Historial de menús", "Times New Roman", Font.BOLD, 35, Color.WHITE, "centro");
+        JLabel titulo = crearEtiquetaPersonalizada("HISTORIAL DE MENÚS", "Times New Roman", Font.BOLD, 35, Color.WHITE, "centro");
         contenedorVertical.add(titulo);
         contenedorVertical.add(Box.createVerticalStrut(10));
 
@@ -180,7 +180,7 @@ public class VistaHistorialMenu extends PlantillaGesco {
     }
 
     private String formatoInsumo(String ins, String cant, String costo) {
-        return ins + "  |  Cant: " + cant + "  |  Costo Unit: " + costo + "$";
+        return ins + "  |  Cantidad: " + cant + "  |  Costo unitario: " + costo + "bs";
     }
 
     private JPanel crearSeccion(String titulo, String infoProcesada) {

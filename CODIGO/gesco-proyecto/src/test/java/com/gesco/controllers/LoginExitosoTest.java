@@ -22,6 +22,15 @@ public class LoginExitosoTest {
         dataDirAnterior = DataBase.getDataDir();
         dataDirTemporal = Files.createTempDirectory("gesco-login-exitoso-");
         DataBase.setDataDir(dataDirTemporal.toString());
+
+        Path carpetaSecretaria = dataDirTemporal.resolve("secretaria");
+        Files.createDirectories(carpetaSecretaria);
+        Files.writeString(
+            carpetaSecretaria.resolve("cedulas_ocupaciones.txt"),
+            "12345678:estudiante" + System.lineSeparator(),
+            java.nio.charset.StandardCharsets.UTF_8
+        );
+        Files.writeString(carpetaSecretaria.resolve("12345678.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
     }
 
     @After

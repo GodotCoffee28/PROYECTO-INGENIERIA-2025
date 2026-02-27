@@ -16,7 +16,6 @@ public class VistaHistorialSaldo extends PlantillaGesco {
         construirCuerpo();
         this.revalidate();
         this.repaint();
-        setVisible(true);
     
     }
     private void inicializarComponentes() {
@@ -25,7 +24,7 @@ public class VistaHistorialSaldo extends PlantillaGesco {
         contenedorVertical.setOpaque(false);
         contenedorVertical.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
-        JLabel titulo = crearEtiquetaPersonalizada("Historial de transacciones", "Times New Roman", Font.BOLD, 35, Color.WHITE, "centro");
+        JLabel titulo = crearEtiquetaPersonalizada("HISTORIAL DE TRANSACCIONES", "Times New Roman", Font.BOLD, 35, Color.WHITE, "centro");
         contenedorVertical.add(titulo);
         contenedorVertical.add(Box.createVerticalStrut(10));
 
