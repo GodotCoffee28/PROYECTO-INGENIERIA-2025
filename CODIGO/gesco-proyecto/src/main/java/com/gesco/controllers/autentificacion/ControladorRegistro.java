@@ -63,6 +63,16 @@ public class ControladorRegistro {
             return;
         }
 
+        if (!nombre.trim().matches("^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]+$")) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "El nombre y apellido solo debe contener letras.",
+                "Nombre inválido",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
         if (!cedula.matches("\\d+")) {
             JOptionPane.showMessageDialog(
                 vista,
