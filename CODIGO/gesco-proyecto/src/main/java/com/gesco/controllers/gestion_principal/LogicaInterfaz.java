@@ -25,7 +25,6 @@ import com.gesco.views.auntentificacion.VistaInicioSesion;
 import com.gesco.views.auntentificacion.VistaRegistro;
 import com.gesco.views.costos.VistaCargaCCB;
 import com.gesco.views.costos.VistaRecargarSaldo;
-import com.gesco.views.costos.VistaVerCFCV;
 import com.gesco.views.inicio.VistaInicio;
 import com.gesco.views.inicio.VistaInicioAdmin;
 import com.gesco.views.inicio.VistaInicioComensal;  
@@ -55,7 +54,6 @@ public class LogicaInterfaz {
     private VistaTurnos vistaTurnos;
     private VistaCargaCCB vistaCargaCCB;
     private VistaHistorialCCB vistaHistorialCcb;
-    private VistaVerCFCV vistaVerCfcv;
     private VistaCrearMenu vistaCrearMenu;
     private VistaEditarMenu vistaEditarMenu;
     private VistaAgregarInsumo vistaAgregarInsumo;
@@ -538,12 +536,6 @@ public class LogicaInterfaz {
         }
     }
 
-    private void cerrarVistaVerCfcv() {
-        if (vistaVerCfcv != null) {
-            vistaVerCfcv.dispose();
-            vistaVerCfcv = null;
-        }
-    }
 
     private void cerrarVistaVerCcb() {
         if (vistaHistorialCcb != null) {
@@ -599,7 +591,6 @@ public class LogicaInterfaz {
         cerrarVistaTurnos();
         cerrarVistaCargaCCB();
         cerrarVistaVerCcb();
-        cerrarVistaVerCfcv();
         cerrarVistaCrearMenu();
         cerrarVistaEditarMenu();
         cerrarVistaAgregarInsumo();
