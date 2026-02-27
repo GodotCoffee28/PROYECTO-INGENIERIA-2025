@@ -80,12 +80,7 @@ public class VistaHistorialMenu extends PlantillaGesco {
         contenedorVertical.repaint();
     }
 
-    public void agregarMenuALista(
-        String fecha, String tipo,
-        String platillo1, String insumo1, String cantidad1, String costo1,
-        String platillo2, String insumo2, String cantidad2, String costo2,
-        String platillo3, String insumo3, String cantidad3, String costo3
-    ) {
+    public void agregarMenuALista(String fecha, String tipo,String platillo1, String insumo1, String cantidad1, String costo1,String platillo2, String insumo2, String cantidad2, String costo2,String platillo3, String insumo3, String cantidad3, String costo3) {
         JPanel bloqueTexto = new JPanel();
         bloqueTexto.setLayout(new BoxLayout(bloqueTexto, BoxLayout.Y_AXIS));
         bloqueTexto.setOpaque(false);
