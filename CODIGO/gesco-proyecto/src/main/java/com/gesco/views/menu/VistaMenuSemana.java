@@ -1,22 +1,14 @@
 package com.gesco.views.menu;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
+import java.awt.*;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 import com.gesco.controllers.gestion_principal.DataBase;
 import com.gesco.models.menu.Menu;
@@ -25,7 +17,6 @@ import com.gesco.views.PlantillasViews.PlantillaGesco;
 public class VistaMenuSemana extends PlantillaGesco {
     
     private List<TarjetaMenu> tarjetasSemana;
-    private JLabel titulo;
     private JPanel panelContenedorTarjetas;
 
     public VistaMenuSemana() {
@@ -41,8 +32,6 @@ public class VistaMenuSemana extends PlantillaGesco {
     }
 
     private void inicializarComponentes() {
-        titulo = crearEtiquetaPersonalizada("Menú de la semana", "Times New Roman", Font.BOLD, 30, Color.WHITE,"centro");
-        titulo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         tarjetasSemana = new ArrayList<>();
     }
 
@@ -56,7 +45,7 @@ public class VistaMenuSemana extends PlantillaGesco {
         JPanel panelTitulo = new JPanel();
         panelTitulo.setLayout(new BoxLayout(panelTitulo, BoxLayout.Y_AXIS));
         panelTitulo.setOpaque(false);
-        panelTitulo.add(titulo);
+        panelTitulo.add(crearEtiquetaPersonalizada("Menú de la semana", "Times New Roman", Font.BOLD, 30, Color.WHITE,"centro"));
         panelTitulo.add(Box.createVerticalStrut(20));
 
         panelContenedorTarjetas = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20)) {

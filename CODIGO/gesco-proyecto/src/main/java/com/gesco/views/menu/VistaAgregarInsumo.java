@@ -1,28 +1,14 @@
 package com.gesco.views.menu;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import java.awt.*;
+import javax.swing.*;
 
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaAgregarInsumo  extends PlantillaGesco {
     private BotonNeon btnCrear;
-    private JTextField insumoNombre;
-    private JTextField insumoCantidad;
-    private JTextField insumoTipoNutricional;
-    private JTextField insumoPrecioUnitario;
-    private JLabel Titulo;
+    private JTextField insumoNombre, insumoCantidad, insumoTipoNutricional, insumoPrecioUnitario;
 
     
     public VistaAgregarInsumo() {
@@ -37,18 +23,15 @@ public class VistaAgregarInsumo  extends PlantillaGesco {
         setVisible(true);
     }
 
+
     private void inicializarComponentes() {
         Dimension tamBoton = new Dimension(400, 60);
         btnCrear = new BotonNeon("Agregar");
         btnCrear.setPreferredSize(tamBoton);
         btnCrear.setMaximumSize(tamBoton);
         btnCrear.setAlignmentX(Component.CENTER_ALIGNMENT);
-        Titulo = crearEtiquetaPersonalizada("Agregar insumo", "Times New Roman", Font.BOLD, 45, new Color(240, 240, 240), "centro");
-        Titulo.setFont(new Font("Arial", Font.BOLD, 45));
-
     }
     
-
 
     private void agregarCampos(JPanel panelFondoBase) {
         JPanel formPanel = new JPanel();
@@ -89,6 +72,7 @@ public class VistaAgregarInsumo  extends PlantillaGesco {
         panelFondoBase.add(formPanel);
     }
 
+
     private void construirCuerpo() {
         JPanel panelFondo = crearPanel(250, 15, 500, 30, 50, 50);
 
@@ -97,7 +81,7 @@ public class VistaAgregarInsumo  extends PlantillaGesco {
         panelFondo.setBorder(BorderFactory.createEmptyBorder(30, 20, 30, 20));
 
         panelFondo.add(Box.createVerticalGlue());
-        panelFondo.add(Titulo);
+        panelFondo.add(crearEtiquetaPersonalizada("Agregar insumo", "Times New Roman", Font.BOLD, 45, new Color(240, 240, 240), "centro"));
         panelFondo.add(Box.createVerticalStrut(20));
 
         agregarCampos(panelFondo);
@@ -109,13 +93,12 @@ public class VistaAgregarInsumo  extends PlantillaGesco {
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
     }
 
+
     public BotonNeon getBtnCrear() { return btnCrear; }
     public String getNombreInsumo() { return insumoNombre.getText(); }
     public String getCantidadInsumo() { return insumoCantidad.getText(); }
     public String getTipoNutricional() { return insumoTipoNutricional.getText(); }
     public String getPrecioUnitario() { return insumoPrecioUnitario.getText(); }
-
-
 }
 
 

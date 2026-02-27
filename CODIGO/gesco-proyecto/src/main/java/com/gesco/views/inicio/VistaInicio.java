@@ -1,15 +1,7 @@
 package com.gesco.views.inicio;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.*;
+import javax.swing.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
@@ -18,7 +10,6 @@ public class VistaInicio extends PlantillaGesco {
 
     private BotonNeon btnRegistrarse;
     private BotonNeon btnInicioSesion;
-    private JLabel Saludo;
 
     public VistaInicio() {
         super(); 
@@ -46,8 +37,6 @@ public class VistaInicio extends PlantillaGesco {
         btnRegistrarse.setPreferredSize(tam);
         btnRegistrarse.setMaximumSize(tam);
         btnRegistrarse.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        Saludo = crearEtiquetaPersonalizada("¡Hola, Ucevista!", "Times New Roman", Font.BOLD, 60, new Color(240, 240, 240), "centro");
     }
 
     private void construirCuerpo() {
@@ -58,7 +47,7 @@ public class VistaInicio extends PlantillaGesco {
         panelFondo.setBorder(BorderFactory.createEmptyBorder(60, 20, 60, 20));
 
         panelFondo.add(Box.createVerticalGlue()); 
-        panelFondo.add(Saludo);
+        panelFondo.add(crearEtiquetaPersonalizada("¡Hola, Ucevista!", "Times New Roman", Font.BOLD, 60, new Color(240, 240, 240), "centro"));
         panelFondo.add(Box.createVerticalStrut(30)); 
         panelFondo.add(crearEtiquetaPersonalizada("Accede a la plataforma del comedor", "Times New Roman", Font.PLAIN, 28, new Color(240, 240, 240), "centro"));
         

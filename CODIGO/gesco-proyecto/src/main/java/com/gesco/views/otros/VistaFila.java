@@ -1,29 +1,11 @@
 package com.gesco.views.otros;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
+import java.awt.*;
+
 import java.io.File;
 import java.time.LocalDate;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 import com.gesco.controllers.gestion_principal.DataBase;
 import com.gesco.models.menu.Menu;
@@ -60,17 +42,17 @@ public class VistaFila extends PlantillaGesco {
         btnEntrar = new BotonNeon("Entrar a la fila");
         btnEntrar.setPreferredSize(tam);
         btnEntrar.setMaximumSize(tam);
-        btnEntrar.setFont(new Font("Arial", Font.BOLD, 32));
+        btnEntrar.setFont(new Font("Times New Roman", Font.BOLD, 32));
 
         btnSalir = new BotonNeon("Salir de la fila");
         btnSalir.setPreferredSize(tam);
         btnSalir.setMaximumSize(tam);
-        btnSalir.setFont(new Font("Arial", Font.BOLD, 32));
+        btnSalir.setFont(new Font("Times New Roman", Font.BOLD, 32));
 
         btnVerMenu = new BotonNeon("Ver menú de la semana");
         btnVerMenu.setPreferredSize(tam);
         btnVerMenu.setMaximumSize(tam);
-        btnVerMenu.setFont(new Font("Arial", Font.BOLD, 24));
+        btnVerMenu.setFont(new Font("Times New Roman", Font.BOLD, 24));
 
         infoBienvenida = crearEtiquetaPersonalizada("Estado del Comedor Universitario", "Times New Roman", Font.BOLD, 40, new Color(240, 240, 240), "centro");
 
@@ -101,7 +83,7 @@ public class VistaFila extends PlantillaGesco {
         infoBienvenida.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelNorteContenedor.add(infoBienvenida);
 
-        JLabel lblDescripcion = crearEtiquetaPersonalizada("Consulta el estado de la fila y los menús disponibles para hoy", "Arial", Font.PLAIN, 16, new Color(200, 200, 200), "centro");
+        JLabel lblDescripcion = crearEtiquetaPersonalizada("Consulta el estado de la fila y los menús disponibles para hoy", "Times New Roman", Font.PLAIN, 16, new Color(200, 200, 200), "centro");
         lblDescripcion.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelNorteContenedor.add(Box.createVerticalStrut(2));
         panelNorteContenedor.add(lblDescripcion);
@@ -148,7 +130,6 @@ public class VistaFila extends PlantillaGesco {
 
         panelPrincipal.add(panelCentralContenedor, BorderLayout.CENTER);
 
-        // Sección Inferior: Menú del Día
         JPanel panelInferior = new JPanel();
         panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.Y_AXIS));
         panelInferior.setOpaque(false);

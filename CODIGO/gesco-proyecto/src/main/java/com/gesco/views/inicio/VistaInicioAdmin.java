@@ -1,23 +1,14 @@
 package com.gesco.views.inicio;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import java.awt.*;
+import javax.swing.*;
 
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 public class VistaInicioAdmin extends PlantillaGesco {
 
     private BotonNeon btnGestión, btnSubirDatos, btnCambio, btnVerCCB, btnVerMenu;
-    private JLabel titulo;
+    Boolean esSuperAdmin=true;
 
     public VistaInicioAdmin() {
         super();
@@ -33,9 +24,6 @@ public class VistaInicioAdmin extends PlantillaGesco {
 
     private void inicializarComponentes() {
         Dimension tamBoton = new Dimension(220, 60);
-
-        titulo = crearEtiquetaPersonalizada("Panel de control", "Times New Roman", Font.BOLD, 36, new Color(240, 240, 240),"centro");
-        titulo.setHorizontalAlignment(SwingConstants.CENTER);
 
         btnGestión = new BotonNeon("Gestión del menú");
         btnGestión.setPreferredSize(tamBoton);
@@ -60,7 +48,7 @@ public class VistaInicioAdmin extends PlantillaGesco {
         
         JPanel tarjetaTitulo = crearTarjeta("", 600, 70, 20, 0, "/Billetera.png"); 
         tarjetaTitulo.setLayout(new BorderLayout());
-        tarjetaTitulo.add(titulo, BorderLayout.CENTER);
+        tarjetaTitulo.add(crearEtiquetaPersonalizada("Panel de control", "Times New Roman", Font.BOLD, 36, new Color(240, 240, 240),"centro"), BorderLayout.CENTER);
 
         panelCuerpo.add(tarjetaTitulo, BorderLayout.NORTH);
 
