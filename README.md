@@ -86,7 +86,7 @@ mvn clean test
   Se revisó y ajustó la convención de nombres para diferenciar claramente las capas del patrón MVC:  
   - Las clases de **interfaz gráfica** (vistas) conservan el prefijo `Vista` (ej. `VistaInicioSesion`, `VistaRegistro`, `VistaCargaCCB`, etc.) y se ubican en subpaquetes bajo `views/` según su funcionalidad (autentificacion, costos, inicio, menu, otros, Registros, PlantillasViews).  
   - Las clases de **control** (controladores) se nombran según el **caso de uso principal** sin incluir "Vista" (ej. `ControladorInicioSesion`, `ControladorRegistro`, `ControladorCargarCCB`, etc.), ubicadas en `controllers/`.  
-  Esto mejora la legibilidad, evita redundancia en los nombres y respeta mejor la separación de responsabilidades.
+
 
 - **Otras mejoras realizadas**  
   - Mayor consistencia en la validación de datos (especialmente cédulas, montos y fechas)  
