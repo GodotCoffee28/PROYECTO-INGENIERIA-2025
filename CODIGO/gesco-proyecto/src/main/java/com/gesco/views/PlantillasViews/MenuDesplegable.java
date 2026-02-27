@@ -125,7 +125,7 @@ public class MenuDesplegable {
     }
     private void ponerItemSalir(JPopupMenu jp) {
         añadirSeparador(jp);
-        JMenuItem itemSalir = new JMenuItem("Cerrar Sesión");
+        JMenuItem itemSalir = new JMenuItem("Cerrar programa");
         itemSalir.setActionCommand("CMD_SALIR");
         diseñarItem(itemSalir, colorSalir);
         jp.add(itemSalir);

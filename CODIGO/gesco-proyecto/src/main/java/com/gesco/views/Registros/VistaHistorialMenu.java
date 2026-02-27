@@ -21,21 +21,27 @@ public class VistaHistorialMenu extends PlantillaGesco {
     }
 
     private void inicializarComponentes() {
-        contenedorVertical = new JPanel();
-        contenedorVertical.setLayout(new BoxLayout(contenedorVertical, BoxLayout.Y_AXIS));
-        contenedorVertical.setOpaque(false);
-        contenedorVertical.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        if (contenedorVertical == null) {
+            contenedorVertical = new JPanel();
+            contenedorVertical.setLayout(new BoxLayout(contenedorVertical, BoxLayout.Y_AXIS));
+            contenedorVertical.setOpaque(false);
+            contenedorVertical.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        }
+        agregarEncabezado();
+    }
 
-        contenedorVertical.add(crearEtiquetaPersonalizada("HISTORIAL DE MENÚS", "Times New Roman", Font.BOLD, 35, Color.WHITE, "centro"));
+    private void agregarEncabezado() {
+        JLabel titulo = crearEtiquetaPersonalizada("HISTORIAL DE MENÚS", "Times New Roman", Font.BOLD, 35, Color.WHITE, "centro");
+        contenedorVertical.add(titulo);
         contenedorVertical.add(Box.createVerticalStrut(10));
 
         JSeparator separadorTitulo = new JSeparator();
         separadorTitulo.setMaximumSize(new Dimension(500, 2));
         separadorTitulo.setForeground(Color.WHITE);
-        separadorTitulo.setBackground(Color.WHITE); 
+        separadorTitulo.setBackground(Color.WHITE);
 
         contenedorVertical.add(separadorTitulo);
-        contenedorVertical.add(Box.createVerticalStrut(25)); 
+        contenedorVertical.add(Box.createVerticalStrut(25));
     }
 
     private void construirCuerpo() {
@@ -63,9 +69,9 @@ public class VistaHistorialMenu extends PlantillaGesco {
         }
     }
 
-    public void mostrarMensajeSinDatos() {
+    public void mostrarMensajeVacio(String mensaje) {
         JLabel lblVacio = crearEtiquetaPersonalizada(
-            "No hay menús registrados para mostrar.",
+            mensaje,
             "Segoe UI", Font.ITALIC, 16,
             new Color(200, 200, 200), "centro"
         );
@@ -135,7 +141,7 @@ public class VistaHistorialMenu extends PlantillaGesco {
 
     public void limpiarHistorial() {
         contenedorVertical.removeAll();
-        inicializarComponentes();
+        agregarEncabezado();
         contenedorVertical.revalidate();
         contenedorVertical.repaint();
     }

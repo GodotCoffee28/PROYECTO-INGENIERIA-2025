@@ -1,5 +1,4 @@
 package com.gesco.views.inicio;
-
 import java.awt.*;
 import javax.swing.*;
 
@@ -8,12 +7,15 @@ import com.gesco.views.PlantillasViews.PlantillaGesco;
 public class VistaInicioAdmin extends PlantillaGesco {
 
     private BotonNeon btnGestión, btnSubirDatos, btnCambio, btnVerCCB, btnVerMenu;
+    private JLabel titulo;
     Boolean esSuperAdmin=true;
 
     public VistaInicioAdmin() {
         super();
         ocultarIcono();
-        setEsSuperAdmin(false);
+        if(!esSuperAdmin){
+            ocultarlblSprAdmin();
+        }
         setImagenFondo("/FondoPrincipal2.png");
         inicializarComponentes();
         construirCuerpo();
@@ -24,6 +26,9 @@ public class VistaInicioAdmin extends PlantillaGesco {
 
     private void inicializarComponentes() {
         Dimension tamBoton = new Dimension(220, 60);
+
+        titulo = crearEtiquetaPersonalizada("Panel de control", "Times New Roman", Font.BOLD, 36, new Color(240, 240, 240),"centro");
+        titulo.setHorizontalAlignment(SwingConstants.CENTER);
 
         btnGestión = new BotonNeon("Gestión del menú");
         btnGestión.setPreferredSize(tamBoton);
@@ -46,9 +51,9 @@ public class VistaInicioAdmin extends PlantillaGesco {
         panelCuerpo.setOpaque(false);
         panelCuerpo.setBorder(BorderFactory.createEmptyBorder(20, 50, 40, 50));
         
-        JPanel tarjetaTitulo = crearTarjeta("", 600, 70, 20, 0, "/Billetera.png"); 
+        JPanel tarjetaTitulo = crearTarjeta("", 600, 70, 20, 0, "/Platos.png"); 
         tarjetaTitulo.setLayout(new BorderLayout());
-        tarjetaTitulo.add(crearEtiquetaPersonalizada("Panel de control", "Times New Roman", Font.BOLD, 36, new Color(240, 240, 240),"centro"), BorderLayout.CENTER);
+        tarjetaTitulo.add(titulo, BorderLayout.CENTER);
 
         panelCuerpo.add(tarjetaTitulo, BorderLayout.NORTH);
 
@@ -58,7 +63,7 @@ public class VistaInicioAdmin extends PlantillaGesco {
         gbc.insets = new Insets(0, 15, 20, 15);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
-        JPanel cajaMenu = crearTarjeta("Respecto al menú", 420, 280, 40, 15, "/Billetera.png");
+        JPanel cajaMenu = crearTarjeta("Respecto al menú", 420, 280, 40, 15, "/Platos.png");
         JPanel pnlInternoMenu = new JPanel(new GridBagLayout());
         pnlInternoMenu.setOpaque(false);
         
@@ -133,13 +138,7 @@ public class VistaInicioAdmin extends PlantillaGesco {
     public BotonNeon getBtnCambio() {
         return btnCambio;
     }
-
-    public void setEsSuperAdmin(boolean esSuperAdmin) {
-        if (esSuperAdmin) {
-            getIlblSprAdmin().setVisible(true);
-            getIlblSprAdmin().setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-            return;
-        }
-        ocultarlblSprAdmin();
+    public void setEsSuperAdmin(Boolean esSuperAdmin) {
+    this.esSuperAdmin = esSuperAdmin;
     }
 }
