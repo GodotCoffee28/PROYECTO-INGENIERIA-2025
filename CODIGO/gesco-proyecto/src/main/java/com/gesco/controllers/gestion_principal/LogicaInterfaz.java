@@ -269,6 +269,12 @@ public class LogicaInterfaz {
         cerrarVistas();
         vistaHistorialMenu = new VistaHistorialMenu();
         menuGescoController.conectar(vistaHistorialMenu, sesionAdmin, cedulaSesionActual);
+        vistaHistorialMenu.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                volverAPantallaPrincipal();
+            }
+        });
     }
 
     private void mostrarHistorialSaldo() {
@@ -508,6 +514,7 @@ public class LogicaInterfaz {
             vistaGestionMenu = null;
         }
     }
+
     private void cerrarVistaRecargarSaldo() {
         if (vistaRecargarSaldo != null) {
             vistaRecargarSaldo.dispose();
