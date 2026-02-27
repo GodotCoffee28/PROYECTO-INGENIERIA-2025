@@ -81,30 +81,15 @@ mvn clean test
 
 - Los resultados se generan en `target/surefire-reports/`, donde se puede validar qué pruebas pasaron o fallaron.
 
-## Observaciones del Incremento 1 y Ajustes Realizados
-
-De acuerdo con las observaciones realizadas por el profesor en la revisión del Incremento 1, se implementaron las siguientes mejoras y correcciones:
 
 - **Estructura de paquetes y nomenclatura de clases**  
   Se revisó y ajustó la convención de nombres para diferenciar claramente las capas del patrón MVC:  
   - Las clases de **interfaz gráfica** (vistas) conservan el prefijo `Vista` (ej. `VistaInicioSesion`, `VistaRegistro`, `VistaCargaCCB`, etc.) y se ubican en subpaquetes bajo `views/` según su funcionalidad (autentificacion, costos, inicio, menu, otros, Registros, PlantillasViews).  
   - Las clases de **control** (controladores) se nombran según el **caso de uso principal** sin incluir "Vista" (ej. `ControladorInicioSesion`, `ControladorRegistro`, `ControladorCargarCCB`, etc.), ubicadas en `controllers/`.  
-  Esto mejora la legibilidad, evita redundancia en los nombres y respeta mejor la separación de responsabilidades.
 
-- **Contenido del README**  
-  Se enriqueció significativamente la documentación con las secciones recomendadas:  
-  - Misión y Visión del proyecto  
-  - Tecnologías utilizadas (detalladas)  
-  - Instrucciones claras de compilación, ejecución y pruebas  
-  - Explicación de dependencias locales y configuración de Maven  
-  - Resumen de las observaciones recibidas y cómo fueron atendidas
 
 - **Otras mejoras realizadas**  
   - Mayor consistencia en la validación de datos (especialmente cédulas, montos y fechas)  
   - Refuerzo de mensajes de error más descriptivos en la interfaz  
   - Mantenimiento de pruebas unitarias básicas en módulos clave (costos, autenticación, menús)  
   - Documentación interna mejorada en clases críticas como `DataBase.java`
-
-Estas correcciones y ampliaciones buscan alinear el proyecto con las buenas prácticas de desarrollo de software indicadas y mejorar tanto la mantenibilidad como la comprensión del sistema por parte de evaluadores y futuros colaboradores.
-
-¡Gracias por el feedback recibido! Seguimos trabajando para entregar una solución más robusta y bien documentada en los próximos incrementos.
