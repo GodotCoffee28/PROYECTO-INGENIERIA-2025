@@ -1,16 +1,15 @@
 package com.gesco.controllers.costos;
 
-
 import com.gesco.controllers.gestion_principal.DataBase;
 import com.gesco.models.costos.CCB;
-import com.gesco.views.costos.VistaVerCCB;
+import com.gesco.views.Registros.VistaHistorialCCB;
 
-public class ControladorVerCCB {
+public class ControladorHistorialCCB {
 
-    private final VistaVerCCB vista;
+    private final VistaHistorialCCB vista;
     private final Runnable onBack;
 
-    public ControladorVerCCB(VistaVerCCB vista, Runnable onBack) {
+    public ControladorHistorialCCB(VistaHistorialCCB vista, Runnable onBack) {
         this.vista = vista;
         this.onBack = onBack;
     }
@@ -23,16 +22,17 @@ public class ControladorVerCCB {
             }
         });
 
-        vista.getBtnRefrescar().addActionListener(e -> cargar());
         cargar();
     }
 
-    private void cargar() {
-        CCB ccb = DataBase.obtenerUltimoCcb();
-        vista.setCCB(ccb);
+    public void cargar() {
+        vista.limpiarHistorial();
+        java.util.List<CCB> registros = DataBase.obtenerHistorialCcb();
+        for (CCB ccb : registros) {
+            vista.agregarRegistroCCB(ccb);
+        }
     }
 }
-
 
 
 
