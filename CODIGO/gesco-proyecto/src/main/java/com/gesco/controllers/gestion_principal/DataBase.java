@@ -143,7 +143,7 @@ public class DataBase {
         }
         return false;
     }
-
+    
     public static File obtenerCarpetaSecretaria() {
         Path basePath = obtenerBaseProyecto();
         Path dataPath = Paths.get(DATA_DIR);
@@ -1083,42 +1083,54 @@ public class DataBase {
         return resultado;
     }
 
-    public static boolean guardarOActualizarInsumo(String nombre, int cantidad, String tipo, float precioUnitario) {
-        String nombreLimpio = valorSeguro(nombre);
-        String tipoLimpio = valorSeguro(tipo);
+    public static boolean guardarOActualizarInsumo(
+    String nombre,
+    int cantidadAgregar,
+    String tipo,
+    float precioUnitario) {
 
-        if (nombreLimpio.isBlank() || tipoLimpio.isBlank() || cantidad <= 0 || precioUnitario < 0) {
-            return false;
+    String nombreLimpio = valorSeguro(nombre);
+    if (nombreLimpio.isBlank() || cantidadAgregar <= 0) return false;
+
+    List<String> lineas = leerLineasGenericas(ARCHIVO_INSUMOS);
+    List<String> nuevas = new ArrayList<>();
+    boolean encontrado = false;
+
+    for (String linea : lineas) {
+        String limpia = linea.trim();
+
+        if (limpia.toLowerCase(Locale.ROOT).startsWith("nombre insumo")) {
+            nuevas.add(linea);
+            continue;
         }
 
-        List<String> lineas = leerLineasGenericas(ARCHIVO_INSUMOS);
-        List<String> actualizadas = new ArrayList<>();
-        boolean encontrado = false;
+        String[] partes = limpia.replace(";", "").split(":");
+        String nombreLinea = partes.length > 0 ? partes[0].trim() : "";
 
-        String nuevaLinea = String.format(
-            Locale.US,
-            "%s:%s:%d:%.2f;",
-            nombreLimpio,
-            tipoLimpio,
-            cantidad,
-            precioUnitario
-        );
+        if (nombreLinea.equalsIgnoreCase(nombreLimpio)) {
+            int cantExistente = 0;
+            try {
+                cantExistente = (int) Float.parseFloat(
+                    partes.length > 2 ? partes[2].trim() : "0");
+            } catch (NumberFormatException ignored) { }
 
-        for (String linea : lineas) {
-            Insumo insumo = parsearLineaInsumo(linea);
-            if (insumo != null && nombreLimpio.equalsIgnoreCase(valorSeguro(insumo.getNombre()))) {
-                actualizadas.add(nuevaLinea);
-                encontrado = true;
-            } else {
-                actualizadas.add(linea);
-            }
+            int nuevaCantidad = cantExistente + cantidadAgregar;
+            String tipoExistente = partes.length > 1 ? partes[1].trim() : valorSeguro(tipo);
+            String precioExistente = partes.length > 3 ? partes[3].trim() : String.format(Locale.ROOT, "%.1f", precioUnitario);
+
+            nuevas.add(String.format("%s : %s : %d : %s :", nombreLinea, tipoExistente, nuevaCantidad, precioExistente));
+            encontrado = true;
+        } else {
+            nuevas.add(linea);
         }
+    }
 
-        if (!encontrado) {
-            actualizadas.add(nuevaLinea);
-        }
+    if (!encontrado) {
+        nuevas.add(String.format(Locale.ROOT, "%s : %s : %d : %.1f :",
+            nombreLimpio, valorSeguro(tipo), cantidadAgregar, precioUnitario));
+    }
 
-        return reescribirArchivoGenerico(ARCHIVO_INSUMOS, actualizadas);
+    return reescribirArchivoGenerico(ARCHIVO_INSUMOS, nuevas);
     }
 
     public static boolean guardarCcb(CCB ccb) {

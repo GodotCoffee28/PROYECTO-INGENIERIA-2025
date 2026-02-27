@@ -7,11 +7,16 @@ public interface MenuAcciones {
     void irFila();
     void irMenuSemana();
     void irTurnos();
+    void irHistorialSaldo();
+    void irRecargarSaldo();
     void irPanelControl();
     void irCargaCCB();
     void irCrearMenu();
     void irEditarMenu();
     void irGestionMenu();
+    void irAgregarInsumo();
+    void irHistorialMenu();
+    void irHistorialCcb();
     void swapInteraccion();
     void salir();
 }

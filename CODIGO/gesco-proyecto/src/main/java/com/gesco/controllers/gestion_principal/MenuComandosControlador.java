@@ -14,12 +14,11 @@ public class MenuComandosControlador {
         }
 
         switch (comando) {
-            case "CMD_INICIO"     -> acciones.irInicio();
-            case "CMD_SESION"     -> acciones.irSesion();
-            case "CMD_REGISTRO"   -> acciones.irRegistro();
             case "CMD_FILA"       -> acciones.irFila();
             case "CMD_MENUSEMANA" -> acciones.irMenuSemana();
             case "CMD_TURNOS"     -> acciones.irTurnos();
+            case "CMD_HISTORIAL_SALDO" -> acciones.irHistorialSaldo();
+            case "CMD_RECARGAR_SALDO"  -> acciones.irRecargarSaldo();
             case "CMD_SALIR"      -> acciones.salir();
             default -> {
             }
@@ -35,6 +34,9 @@ public class MenuComandosControlador {
             case "CMD_CREARMENU"   -> acciones.irCrearMenu();
             case "CMD_EDITARMENU"  -> acciones.irEditarMenu();
             case "CMD_GESTIONMENU" -> acciones.irGestionMenu();
+            case "CMD_AGREGAR_INSUMO" -> acciones.irAgregarInsumo();
+            case "CMD_HISTORIAL_MENU" -> acciones.irHistorialMenu();
+            case "CMD_HISTORIAL_CCB"  -> acciones.irHistorialCcb();
             case "CMD_SWAP"        -> acciones.swapInteraccion();
             default -> {
             }

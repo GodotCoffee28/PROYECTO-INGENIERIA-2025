@@ -57,11 +57,11 @@ public class MenuDesplegable {
         añadirSeparador(menu);
 
         String[][] datos = {
-            {"Ir a Inicio", "CMD_INICIO"},
-            {"Ir a Inicio de sesión", "CMD_SESION"},
-            {"Ir a Registro", "CMD_REGISTRO"},
             {"Ver Menú de la semana", "CMD_MENUSEMANA"},
-            {"Ver turnos", "CMD_TURNOS"}
+            {"Ver turnos", "CMD_TURNOS"},
+            {"Historial de transacciones", "CMD_HISTORIAL_SALDO"},
+            {"Ir a Fila", "CMD_FILA"},
+            {"Recargar saldo", "CMD_RECARGAR_SALDO"}
         };
 
         for (String[] fila : datos) {
@@ -107,7 +107,10 @@ public class MenuDesplegable {
             {"Carga del CCB", "CMD_CCB"},
             {"Crear Menú", "CMD_CREARMENU"},
             {"Editar Menú", "CMD_EDITARMENU"},
-            {"Gestión de Menú", "CMD_GESTIONMENU"}
+            {"Gestión de Menú", "CMD_GESTIONMENU"},
+            {"Agregar insumo", "CMD_AGREGAR_INSUMO"},
+            {"Historial de menús", "CMD_HISTORIAL_MENU"},
+            {"Historial de gestión CCB", "CMD_HISTORIAL_CCB"}
         };
 
         for (String[] fila : datosAdmin) {
