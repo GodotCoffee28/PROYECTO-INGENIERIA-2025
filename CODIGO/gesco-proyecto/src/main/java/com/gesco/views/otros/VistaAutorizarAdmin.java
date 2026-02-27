@@ -23,7 +23,7 @@ public class VistaAutorizarAdmin  extends PlantillaGesco {
         ocultarlblSprAdmin();
         inicializarComponentes();
         construirCuerpo();
-        revalidate();
+        revalidate(); 
         repaint();
         setVisible(true);
     }
