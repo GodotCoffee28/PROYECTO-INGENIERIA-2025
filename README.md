@@ -81,9 +81,7 @@ mvn clean test
 
 - Los resultados se generan en `target/surefire-reports/`, donde se puede validar qué pruebas pasaron o fallaron.
 
-## Observaciones del Incremento 1 y Ajustes Realizados
 
-De acuerdo con las observaciones realizadas por el profesor en la revisión del Incremento 1, se implementaron las siguientes mejoras y correcciones:
 
 - **Estructura de paquetes y nomenclatura de clases**  
   Se revisó y ajustó la convención de nombres para diferenciar claramente las capas del patrón MVC:  
