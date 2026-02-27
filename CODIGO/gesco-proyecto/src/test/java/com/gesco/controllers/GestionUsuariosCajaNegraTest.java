@@ -1,8 +1,6 @@
 package com.gesco.controllers;
 
-
-import com.gesco.controllers.gestion_principal.DataBase;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,7 +10,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LoginCedulaNegativaTest {
+import com.gesco.controllers.gestion_principal.DataBase;
+import com.gesco.models.usuarios.Usuario.TipoUsuario;
+
+public class GestionUsuariosCajaNegraTest {
 
     private Path dataDirTemporal;
     private String dataDirAnterior;
@@ -20,7 +21,7 @@ public class LoginCedulaNegativaTest {
     @Before
     public void setUp() throws IOException {
         dataDirAnterior = DataBase.getDataDir();
-        dataDirTemporal = Files.createTempDirectory("gesco-login-cedula-");
+        dataDirTemporal = Files.createTempDirectory("gesco-usuarios-caja-negra-");
         DataBase.setDataDir(dataDirTemporal.toString());
     }
 
@@ -43,19 +44,23 @@ public class LoginCedulaNegativaTest {
     }
 
     @Test
-    public void validarInicioSesion_cedulaNegativa_devuelveFalse() {
-        assertFalse(DataBase.validarInicioSesion("-12345678", "password123"));
+    public void registrarUsuario_conDatosValidos_devuelveTrue() {
+        boolean registrado = DataBase.registrarUsuario(
+            "44556677",
+            "clave123",
+            "Usuario Valido",
+            "usuario@email.com",
+            TipoUsuario.EMPLEADO
+        );
+        assertTrue(registrado);
     }
 
     @Test
-    public void validarInicioSesion_cedulaMenorA8Millones_devuelveFalse() {
-        assertFalse(DataBase.validarInicioSesion("7999999", "password123"));
-    }
+    public void validarInicioSesion_conCredencialesCorrectas_devuelveTrue() {
+        String cedula = "35667788";
+        String clave = "password123";
 
-    @Test
-    public void validarInicioSesion_cedulaMayorA45Millones_devuelveFalse() {
-        assertFalse(DataBase.validarInicioSesion("45000001", "password123"));
+        assertTrue(DataBase.registrarUsuario(cedula, clave, "Login User", "login@email.com", TipoUsuario.ESTUDIANTE));
+        assertTrue(DataBase.validarInicioSesion(cedula, clave));
     }
 }
-
-

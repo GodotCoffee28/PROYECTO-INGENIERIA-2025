@@ -34,6 +34,7 @@ import com.gesco.views.otros.VistaEspera;
 import com.gesco.views.otros.VistaFila;
 import com.gesco.views.otros.VistaTurnos;
 import com.gesco.views.Registros.VistaHistorialMenu;
+import com.gesco.views.Registros.VistaHistorialSaldo;
 
 public class LogicaInterfaz {
 
@@ -54,6 +55,7 @@ public class LogicaInterfaz {
     private VistaEditarMenu vistaEditarMenu;
     private VistaGestionMenu vistaGestionMenu;
     private VistaHistorialMenu vistaHistorialMenu;
+    private VistaHistorialSaldo vistaHistorialSaldo;
     private boolean usuarioAdmin;
     private boolean sesionAdmin;
     private String nombreUsuario;
@@ -148,7 +150,8 @@ public class LogicaInterfaz {
             this::mostrarMenuSemana,
             this::mostrarTurnos,
             this::mostrarRecargarSaldo,
-            this::mostrarFila
+            this::mostrarFila,
+            this::mostrarHistorialSaldo
         ).conectar();
     }
 
@@ -266,12 +269,51 @@ public class LogicaInterfaz {
         cerrarVistas();
         vistaHistorialMenu = new VistaHistorialMenu();
         menuGescoController.conectar(vistaHistorialMenu, sesionAdmin, cedulaSesionActual);
+        vistaHistorialMenu.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                volverAPantallaPrincipal();
+            }
+        });
+    }
+
+    private void mostrarHistorialSaldo() {
+        if (cedulaSesionActual == null || cedulaSesionActual.isBlank()) {
+            javax.swing.JOptionPane.showMessageDialog(null,
+                "No hay una cédula de sesión activa para ver movimientos.",
+                "Sesión requerida",
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+            volverAPantallaPrincipal();
+            return;
+        }
+
+        cerrarVistas();
+        vistaHistorialSaldo = new VistaHistorialSaldo();
+        menuGescoController.conectar(vistaHistorialSaldo, sesionAdmin, cedulaSesionActual);
+
+        java.util.List<String[]> recargas = DataBase.obtenerRecargasPorCedula(cedulaSesionActual);
+        for (int i = recargas.size() - 1; i >= 0; i--) {
+            String[] recarga = recargas.get(i);
+            String referencia = recarga[0];
+            String monto = recarga[1];
+            String banco = recarga[2];
+            String fecha = recarga[3];
+            String cedula = recarga[4];
+            vistaHistorialSaldo.agregarTransaccionALista(fecha, referencia, monto, banco, cedula);
+        }
     }
 
     private void cerrarVistaHistorialMenu() {
         if (vistaHistorialMenu != null) {
             vistaHistorialMenu.dispose();
             vistaHistorialMenu = null;
+        }
+    }
+
+    private void cerrarVistaHistorialSaldo() {
+        if (vistaHistorialSaldo != null) {
+            vistaHistorialSaldo.dispose();
+            vistaHistorialSaldo = null;
         }
     }
 
@@ -472,6 +514,7 @@ public class LogicaInterfaz {
             vistaGestionMenu = null;
         }
     }
+
     private void cerrarVistaRecargarSaldo() {
         if (vistaRecargarSaldo != null) {
             vistaRecargarSaldo.dispose();
@@ -497,6 +540,7 @@ public class LogicaInterfaz {
         cerrarVistaGestionMenu();
         cerrarVistaRecargarSaldo();
         cerrarVistaHistorialMenu();
+        cerrarVistaHistorialSaldo();
     }
 
     private void mostrarRecargarSaldo() {
