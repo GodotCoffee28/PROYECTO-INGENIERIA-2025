@@ -17,6 +17,7 @@ public class VistaHistorialSaldo extends PlantillaGesco {
         construirCuerpo();
         this.revalidate();
         this.repaint();
+        setVisible(true);
     
     }
     private void inicializarComponentes() {
