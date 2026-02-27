@@ -18,6 +18,7 @@ import com.gesco.controllers.otros.ControladorAutorizarAdmin;
 import com.gesco.controllers.otros.ControladorEspera;
 import com.gesco.controllers.otros.ControladorFila;
 import com.gesco.controllers.otros.ControladorTurnos;
+import com.gesco.controllers.registros.ControladorHistorialMenu;
 import com.gesco.views.auntentificacion.VistaInicioSesion;
 import com.gesco.views.auntentificacion.VistaRegistro;
 import com.gesco.views.costos.VistaCargaCCB;
@@ -316,6 +317,7 @@ public class LogicaInterfaz {
         cerrarVistas();
         vistaHistorialMenu = new VistaHistorialMenu();
         menuGescoController.conectar(vistaHistorialMenu, sesionAdmin, cedulaSesionActual);
+        new ControladorHistorialMenu(vistaHistorialMenu).conectar();
         vistaHistorialMenu.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
