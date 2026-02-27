@@ -137,13 +137,6 @@ public class VistaCrearMenu extends PlantillaGesco {
         agregarSeccionInsumos(panelDerInsumos, "Insumos platillo 3", comboInsumo3, spinnerCantidad3,
             btnAgregarInsumo3, btnQuitarInsumo3, listaInsumos3);
 
-        configurarAccionesInsumos(comboInsumo1, spinnerCantidad1, modeloInsumos1, listaInsumos1,
-            btnAgregarInsumo1, btnQuitarInsumo1);
-        configurarAccionesInsumos(comboInsumo2, spinnerCantidad2, modeloInsumos2, listaInsumos2,
-            btnAgregarInsumo2, btnQuitarInsumo2);
-        configurarAccionesInsumos(comboInsumo3, spinnerCantidad3, modeloInsumos3, listaInsumos3,
-            btnAgregarInsumo3, btnQuitarInsumo3);
-
         chkNoDisponible = new JCheckBox("Menu no disponible para este día");
         chkNoDisponible.setOpaque(false);
         chkNoDisponible.setForeground(Color.WHITE);
@@ -205,6 +198,24 @@ public class VistaCrearMenu extends PlantillaGesco {
     public String getFechaTexto(){ return campoFecha.getFechaTexto();}
     public boolean isMenuNoDisponibleSeleccionado() { return chkNoDisponible.isSelected(); }
     public Menu.TipoMenu getTipoMenu() { return (Menu.TipoMenu) comboTipoMenu.getSelectedItem(); }
+    public JComboBox<Insumo> getComboInsumo1() { return comboInsumo1; }
+    public JComboBox<Insumo> getComboInsumo2() { return comboInsumo2; }
+    public JComboBox<Insumo> getComboInsumo3() { return comboInsumo3; }
+    public JSpinner getSpinnerCantidad1() { return spinnerCantidad1; }
+    public JSpinner getSpinnerCantidad2() { return spinnerCantidad2; }
+    public JSpinner getSpinnerCantidad3() { return spinnerCantidad3; }
+    public JButton getBtnAgregarInsumo1() { return btnAgregarInsumo1; }
+    public JButton getBtnAgregarInsumo2() { return btnAgregarInsumo2; }
+    public JButton getBtnAgregarInsumo3() { return btnAgregarInsumo3; }
+    public JButton getBtnQuitarInsumo1() { return btnQuitarInsumo1; }
+    public JButton getBtnQuitarInsumo2() { return btnQuitarInsumo2; }
+    public JButton getBtnQuitarInsumo3() { return btnQuitarInsumo3; }
+    public DefaultListModel<Insumo> getModeloInsumos1() { return modeloInsumos1; }
+    public DefaultListModel<Insumo> getModeloInsumos2() { return modeloInsumos2; }
+    public DefaultListModel<Insumo> getModeloInsumos3() { return modeloInsumos3; }
+    public JList<Insumo> getListaInsumos1() { return listaInsumos1; }
+    public JList<Insumo> getListaInsumos2() { return listaInsumos2; }
+    public JList<Insumo> getListaInsumos3() { return listaInsumos3; }
     public List<Insumo> getInsumosPlatillo1() { return obtenerInsumosDesdeModelo(modeloInsumos1); }
     public List<Insumo> getInsumosPlatillo2() { return obtenerInsumosDesdeModelo(modeloInsumos2); }
     public List<Insumo> getInsumosPlatillo3() { return obtenerInsumosDesdeModelo(modeloInsumos3); }
@@ -259,49 +270,6 @@ public class VistaCrearMenu extends PlantillaGesco {
         formPanel.add(Box.createVerticalStrut(16));
     }
 
-    private void configurarAccionesInsumos(JComboBox<Insumo> combo,JSpinner spinner,DefaultListModel<Insumo> modelo,JList<Insumo> lista,JButton btnAgregar,JButton btnQuitar) {
-        combo.addActionListener(e -> actualizarSpinner(combo, spinner, modelo));
-
-        btnAgregar.addActionListener(e -> {
-            Insumo base = (Insumo) combo.getSelectedItem();
-            if (base == null) return;
-
-            int cantidad = ((Number) spinner.getValue()).intValue();
-            if (cantidad <= 0) return;
-
-            int stock = base.getCantidad();
-            int existente = obtenerCantidadExistente(modelo, base);
-            if (cantidad + existente > stock) {
-                JOptionPane.showMessageDialog(this,
-                    "La cantidad supera el stock disponible (" + stock + ").",
-                    "Stock insuficiente",
-                    JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            float unitario = base.getCostoUnitario();
-            int nuevaCantidad = cantidad + existente;
-            Insumo nuevo = new Insumo(base.getNombre(), nuevaCantidad, base.getTipoNutricional(), unitario);
-
-            int index = buscarInsumo(modelo, base);
-            if (index >= 0) {
-                modelo.set(index, nuevo);
-            } else {
-                modelo.addElement(nuevo);
-            }
-
-            actualizarSpinner(combo, spinner, modelo);
-        });
-
-        btnQuitar.addActionListener(e -> {
-            int index = lista.getSelectedIndex();
-            if (index >= 0) {
-                modelo.remove(index);
-                actualizarSpinner(combo, spinner, modelo);
-            }
-        });
-    }
-
     private void cargarInsumosEnCombo(JComboBox<Insumo> combo,JSpinner spinner,DefaultListModel<Insumo> modelo,List<Insumo> insumos) {
         combo.removeAllItems();
         for (Insumo insumo : insumos) {
@@ -310,7 +278,7 @@ public class VistaCrearMenu extends PlantillaGesco {
         actualizarSpinner(combo, spinner, modelo);
     }
 
-    private void actualizarSpinner(JComboBox<Insumo> combo,JSpinner spinner,DefaultListModel<Insumo> modelo) {
+    public void actualizarSpinner(JComboBox<Insumo> combo,JSpinner spinner,DefaultListModel<Insumo> modelo) {
         Insumo seleccionado = (Insumo) combo.getSelectedItem();
         if (seleccionado == null) {
             spinner.setModel(new SpinnerNumberModel(0, 0, 0, 1));
@@ -318,7 +286,15 @@ public class VistaCrearMenu extends PlantillaGesco {
             return;
         }
 
-        int existente = obtenerCantidadExistente(modelo, seleccionado);
+        int existente = 0;
+        for (int i = 0; i < modelo.size(); i++) {
+            Insumo actual = modelo.getElementAt(i);
+            if (actual.getNombre().equalsIgnoreCase(seleccionado.getNombre())
+                && actual.getTipoNutricional().equalsIgnoreCase(seleccionado.getTipoNutricional())) {
+                existente = actual.getCantidad();
+                break;
+            }
+        }
         int restante = seleccionado.getCantidad() - existente;
         if (restante <= 0) {
             spinner.setModel(new SpinnerNumberModel(0, 0, 0, 1));
@@ -328,25 +304,6 @@ public class VistaCrearMenu extends PlantillaGesco {
 
         spinner.setModel(new SpinnerNumberModel(1, 1, restante, 1));
         spinner.setEnabled(true);
-    }
-
-    private int buscarInsumo(DefaultListModel<Insumo> modelo, Insumo base) {
-        for (int i = 0; i < modelo.size(); i++) {
-            Insumo actual = modelo.getElementAt(i);
-            if (actual.getNombre().equalsIgnoreCase(base.getNombre())
-                && actual.getTipoNutricional().equalsIgnoreCase(base.getTipoNutricional())) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    private int obtenerCantidadExistente(DefaultListModel<Insumo> modelo, Insumo base) {
-        int index = buscarInsumo(modelo, base);
-        if (index >= 0) {
-            return modelo.getElementAt(index).getCantidad();
-        }
-        return 0;
     }
 
     private List<Insumo> obtenerInsumosDesdeModelo(DefaultListModel<Insumo> modelo) {
