@@ -935,17 +935,6 @@ public class DataBase {
         return menu.tienePlatillos();
     }
 
-    private static boolean existeMenuParaFecha(List<String> lineas, LocalDate fecha) {
-        String fechaStr = fecha.toString();
-        for (String linea : lineas) {
-            String[] partes = linea.split("\\|");
-            if (partes.length > 0 && fechaStr.equals(partes[0])) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private static boolean existeMenuParaFechaYTipo(List<String> lineas, LocalDate fecha, Menu.TipoMenu tipoMenu) {
         String fechaStr = fecha.toString();
         Menu.TipoMenu tipoSeguro = tipoMenu == null ? Menu.TipoMenu.NO_DEFINIDO : tipoMenu;
