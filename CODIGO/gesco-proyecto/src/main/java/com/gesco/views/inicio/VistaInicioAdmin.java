@@ -7,7 +7,7 @@ import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaInicioAdmin extends PlantillaGesco {
 
-    private BotonNeon btnGestión, btnSubirDatos, btnCambio, btnVerCCB, btnVerMenu, btnVerAdmins;
+    private BotonNeon btnGestión, btnSubirDatos, btnCambio, btnVerCCB, btnVerMenu, btnVerAdmins, btnVerUsuarios;
     private JLabel titulo;
 
     public VistaInicioAdmin() {
@@ -45,6 +45,9 @@ public class VistaInicioAdmin extends PlantillaGesco {
 
         btnVerAdmins = new BotonNeon("Admins Autorizados");
         btnVerAdmins.setPreferredSize(new Dimension(220, 50));
+
+        btnVerUsuarios = new BotonNeon("Ver Usuarios");
+        btnVerUsuarios.setPreferredSize(new Dimension(220, 50));
     }
 
     private void construirCuerpo() {
@@ -105,6 +108,7 @@ public class VistaInicioAdmin extends PlantillaGesco {
         cajaNavegacion.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 35));
         cajaNavegacion.add(btnCambio);
         cajaNavegacion.add(btnVerAdmins);
+        cajaNavegacion.add(btnVerUsuarios);
 
         gbc.gridy = 1;
         gbc.gridx = 0;
@@ -122,6 +126,7 @@ public class VistaInicioAdmin extends PlantillaGesco {
     public BotonNeon getBtnVerCCB() { return btnVerCCB; }
     public BotonNeon getBtnCambio() { return btnCambio; }
     public BotonNeon getBtnVerAdmins() { return btnVerAdmins; }
+    public BotonNeon getBtnVerUsuarios() { return btnVerUsuarios; }
 
     public void setEsSuperAdmin(boolean esSuperAdmin) {
         JLabel iconoSuperAdmin = getIlblSprAdmin();

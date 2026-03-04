@@ -1403,6 +1403,10 @@ public class DataBase {
         return leerLineasGenericas(ARCHIVO_ADMINS_AUTORIZADOS);
     }
 
+    public static java.util.List<String> obtenerTodosLosUsuarios() {
+        return leerLineasGenericas(ARCHIVO_USUARIOS);
+    }
+
 
 
 }

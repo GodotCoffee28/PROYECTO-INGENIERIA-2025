@@ -41,6 +41,8 @@ import com.gesco.views.otros.VistaTurnos;
 import com.gesco.views.otros.VistaAutorizarAdmin;
 import com.gesco.views.Registros.VistaHistorialAdmins;
 import com.gesco.controllers.registros.ControladorHistorialAdmins;
+import com.gesco.views.Registros.VistaHistorialUsuarios;
+import com.gesco.controllers.registros.ControladorHistorialUsuarios;
 
 public class LogicaInterfaz {
 
@@ -68,6 +70,7 @@ public class LogicaInterfaz {
     private String nombreUsuario;
     private String cedulaSesionActual;
     private VistaHistorialAdmins vistaHistorialAdmins;
+    private VistaHistorialUsuarios vistaHistorialUsuarios;
     private final InicioSesionRedireccionador inicioSesionRedireccionador =
         new InicioSesionRedireccionador(this::mostrarPantallaAdmin, nombre -> mostrarPantallaPrincipal(false, nombre));
     private final MenuGescoControlador menuGescoController = new MenuGescoControlador(
@@ -193,7 +196,8 @@ public class LogicaInterfaz {
             this::mostrarVerCcb,
             this::swapInteraccion,
             this::mostrarHistorialMenu,
-            this::mostrarHistorialAdmins // AÑADIDO: Acción para el botón
+            this::mostrarHistorialAdmins,
+            this::mostrarHistorialUsuarios
         ).conectar();
     }
 
@@ -283,6 +287,16 @@ public class LogicaInterfaz {
         menuGescoController.conectar(vistaHistorialAdmins, sesionAdmin, cedulaSesionActual);
         new ControladorHistorialAdmins(
             vistaHistorialAdmins,
+            this::mostrarPanelControl
+        ).conectar();
+    }
+
+    private void mostrarHistorialUsuarios() {
+        cerrarVistas();
+        vistaHistorialUsuarios = new VistaHistorialUsuarios();
+        menuGescoController.conectar(vistaHistorialUsuarios, sesionAdmin, cedulaSesionActual);
+        new ControladorHistorialUsuarios(
+            vistaHistorialUsuarios,
             this::mostrarPanelControl
         ).conectar();
     }
@@ -598,6 +612,13 @@ public class LogicaInterfaz {
         }
     }
 
+    private void cerrarVistaHistorialUsuarios() {
+        if (vistaHistorialUsuarios != null) {
+            vistaHistorialUsuarios.dispose();
+            vistaHistorialUsuarios = null;
+        }
+    }
+
     private void cerrarVistas() {
         cerrarVistaInicio();
         cerrarVistaInicioSesion();
@@ -613,6 +634,7 @@ public class LogicaInterfaz {
         cerrarVistaCrearMenu();
         cerrarVistaEditarMenu();
         cerrarVistaHistorialAdmins();
+        cerrarVistaHistorialUsuarios();
         cerrarVistaAgregarInsumo();
         cerrarVistaGestionMenu();
         cerrarVistaRecargarSaldo();
