@@ -1398,5 +1398,12 @@ public class DataBase {
             return false;
         }
     }
+
+    public static java.util.List<String> obtenerHistorialAdminsAutorizados() {
+        return leerLineasGenericas(ARCHIVO_ADMINS_AUTORIZADOS);
+    }
+
+
+
 }
 

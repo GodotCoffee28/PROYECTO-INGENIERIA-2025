@@ -1,12 +1,13 @@
 package com.gesco.views.inicio;
+
 import java.awt.*;
 import javax.swing.*;
-
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
+
 public class VistaInicioAdmin extends PlantillaGesco {
 
-    private BotonNeon btnGestión, btnSubirDatos, btnCambio, btnVerCCB, btnVerMenu;
+    private BotonNeon btnGestión, btnSubirDatos, btnCambio, btnVerCCB, btnVerMenu, btnVerAdmins;
     private JLabel titulo;
 
     public VistaInicioAdmin() {
@@ -41,6 +42,9 @@ public class VistaInicioAdmin extends PlantillaGesco {
 
         btnCambio = new BotonNeon("Navegar como comensal");
         btnCambio.setPreferredSize(new Dimension(220, 50));
+
+        btnVerAdmins = new BotonNeon("Admins Autorizados");
+        btnVerAdmins.setPreferredSize(new Dimension(220, 50));
     }
 
     private void construirCuerpo() {
@@ -60,6 +64,7 @@ public class VistaInicioAdmin extends PlantillaGesco {
         gbc.insets = new Insets(0, 15, 20, 15);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
+
         JPanel cajaMenu = crearTarjeta("Respecto al menú", 420, 280, 40, 15, "/Platos.png");
         JPanel pnlInternoMenu = new JPanel(new GridBagLayout());
         pnlInternoMenu.setOpaque(false);
@@ -68,15 +73,10 @@ public class VistaInicioAdmin extends PlantillaGesco {
         gMenu.gridx = 0;
         gMenu.fill = GridBagConstraints.HORIZONTAL; 
         gMenu.weightx = 1.0;
-
         gMenu.insets = new Insets(10, 50, 10, 50); 
         
-        gMenu.gridy = 0; 
-        pnlInternoMenu.add(btnGestión, gMenu);
-
-        gMenu.gridy = 1; 
-        pnlInternoMenu.add(btnVerMenu, gMenu);
-        
+        gMenu.gridy = 0; pnlInternoMenu.add(btnGestión, gMenu);
+        gMenu.gridy = 1; pnlInternoMenu.add(btnVerMenu, gMenu);
         cajaMenu.add(pnlInternoMenu, BorderLayout.CENTER);
         
         gbc.gridx = 0;
@@ -93,18 +93,18 @@ public class VistaInicioAdmin extends PlantillaGesco {
         gCCB.fill = GridBagConstraints.HORIZONTAL; 
         gCCB.weightx = 1.0;
         gCCB.insets = new Insets(10, 50, 10, 50);
+
         gCCB.gridy = 0; pnlInternoCCB.add(btnSubirDatos, gCCB);
         gCCB.gridy = 1; pnlInternoCCB.add(btnVerCCB, gCCB);
-        
         cajaCCB.add(pnlInternoCCB, BorderLayout.CENTER);
         
         gbc.gridx = 1;
         panelCentral.add(cajaCCB, gbc);
 
         JPanel cajaNavegacion = crearTarjeta("", 880, 120,40,15,"/Billetera.png"); 
-        cajaNavegacion.setLayout(new BorderLayout());
-        cajaNavegacion.setBorder(BorderFactory.createEmptyBorder(35, 80, 35, 80));
-        cajaNavegacion.add(btnCambio, BorderLayout.CENTER);
+        cajaNavegacion.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 35));
+        cajaNavegacion.add(btnCambio);
+        cajaNavegacion.add(btnVerAdmins);
 
         gbc.gridy = 1;
         gbc.gridx = 0;
@@ -116,25 +116,13 @@ public class VistaInicioAdmin extends PlantillaGesco {
         contenedorPrincipal.add(panelCuerpo, BorderLayout.CENTER);
     }
 
-    public BotonNeon getBtnGestion() {
-        return btnGestión;
-    }
+    public BotonNeon getBtnGestion() { return btnGestión; }
+    public BotonNeon getBtnSubirDatos() { return btnSubirDatos; }
+    public BotonNeon getBtnVerMenu() { return btnVerMenu; }
+    public BotonNeon getBtnVerCCB() { return btnVerCCB; }
+    public BotonNeon getBtnCambio() { return btnCambio; }
+    public BotonNeon getBtnVerAdmins() { return btnVerAdmins; }
 
-    public BotonNeon getBtnSubirDatos() {
-        return btnSubirDatos;
-    }
-
-    public BotonNeon getBtnVerMenu() {
-        return btnVerMenu;
-    }
-
-    public BotonNeon getBtnVerCCB() {
-        return btnVerCCB;
-    }
-
-    public BotonNeon getBtnCambio() {
-        return btnCambio;
-    }
     public void setEsSuperAdmin(boolean esSuperAdmin) {
         JLabel iconoSuperAdmin = getIlblSprAdmin();
         if (iconoSuperAdmin != null) {

@@ -11,6 +11,7 @@ public class ControladorInicioAdmin {
     private final Runnable onVerDatos;
     private final Runnable onCambio;
     private final Runnable onVerMenu;
+    private final Runnable onVerAdmins;
 
     public ControladorInicioAdmin(
         VistaInicioAdmin vista,
@@ -19,7 +20,8 @@ public class ControladorInicioAdmin {
         Runnable onSubirDatos,
         Runnable onVerDatos,
         Runnable onCambio,
-        Runnable onVerMenu
+        Runnable onVerMenu,
+        Runnable onVerAdmins
     ) {
         this.vista = vista;
         this.onBack = onBack;
@@ -28,6 +30,7 @@ public class ControladorInicioAdmin {
         this.onVerDatos = onVerDatos;
         this.onCambio = onCambio;
         this.onVerMenu = onVerMenu;
+        this.onVerAdmins = onVerAdmins;
     }
 
     public void conectar() {
@@ -43,6 +46,7 @@ public class ControladorInicioAdmin {
         vista.getBtnVerCCB().addActionListener(e -> onVerDatos.run());
         vista.getBtnCambio().addActionListener(e -> onCambio.run());
         vista.getBtnVerMenu().addActionListener(e -> onVerMenu.run());
+        vista.getBtnVerAdmins().addActionListener(e -> onVerAdmins.run());
     }
 }
 

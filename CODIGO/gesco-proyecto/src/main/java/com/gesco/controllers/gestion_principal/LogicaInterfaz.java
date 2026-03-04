@@ -39,6 +39,8 @@ import com.gesco.views.otros.VistaEspera;
 import com.gesco.views.otros.VistaFila;
 import com.gesco.views.otros.VistaTurnos;
 import com.gesco.views.otros.VistaAutorizarAdmin;
+import com.gesco.views.Registros.VistaHistorialAdmins;
+import com.gesco.controllers.registros.ControladorHistorialAdmins;
 
 public class LogicaInterfaz {
 
@@ -65,6 +67,7 @@ public class LogicaInterfaz {
     private boolean sesionAdmin;
     private String nombreUsuario;
     private String cedulaSesionActual;
+    private VistaHistorialAdmins vistaHistorialAdmins;
     private final InicioSesionRedireccionador inicioSesionRedireccionador =
         new InicioSesionRedireccionador(this::mostrarPantallaAdmin, nombre -> mostrarPantallaPrincipal(false, nombre));
     private final MenuGescoControlador menuGescoController = new MenuGescoControlador(
@@ -189,7 +192,8 @@ public class LogicaInterfaz {
             this::mostrarCargaCCB,
             this::mostrarVerCcb,
             this::swapInteraccion,
-            this::mostrarHistorialMenu
+            this::mostrarHistorialMenu,
+            this::mostrarHistorialAdmins // AÑADIDO: Acción para el botón
         ).conectar();
     }
 
@@ -271,6 +275,16 @@ public class LogicaInterfaz {
             this::mostrarPanelControl
         );
         controlador.conectar();
+    }
+
+    private void mostrarHistorialAdmins() {
+        cerrarVistas();
+        vistaHistorialAdmins = new VistaHistorialAdmins();
+        menuGescoController.conectar(vistaHistorialAdmins, sesionAdmin, cedulaSesionActual);
+        new ControladorHistorialAdmins(
+            vistaHistorialAdmins,
+            this::mostrarPanelControl
+        ).conectar();
     }
 
     private void mostrarCrearMenu() {
@@ -478,6 +492,13 @@ public class LogicaInterfaz {
         }
     }
 
+    private void cerrarVistaHistorialAdmins() {
+        if (vistaHistorialAdmins != null) {
+            vistaHistorialAdmins.dispose();
+            vistaHistorialAdmins = null;
+        }
+    }
+
     private void cerrarVistaRegistro() {
         if (vistaRegistro != null) {
             vistaRegistro.dispose();
@@ -591,6 +612,7 @@ public class LogicaInterfaz {
         cerrarVistaVerCcb();
         cerrarVistaCrearMenu();
         cerrarVistaEditarMenu();
+        cerrarVistaHistorialAdmins();
         cerrarVistaAgregarInsumo();
         cerrarVistaGestionMenu();
         cerrarVistaRecargarSaldo();
