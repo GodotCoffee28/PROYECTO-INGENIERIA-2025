@@ -7,10 +7,8 @@ import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaRegistro extends PlantillaGesco {
-    private JTextField TxtNombreApellido, TxtCedula, TxtCorreo;
-    private JTextField TxtCodigoAdmin;
+    private JTextField TxtCedula, TxtCorreo;
     private JPasswordField TxtContra;
-    private JComboBox<String> cmbTipoUsuario;
     private BotonNeon btnRegistrarse;
     private JLabel loginLink;
 
@@ -46,16 +44,11 @@ public class VistaRegistro extends PlantillaGesco {
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
         formPanel.setOpaque(false);
-        formPanel.setMaximumSize(new Dimension(450, 320)); 
+        formPanel.setMaximumSize(new Dimension(450, 260)); 
         formPanel.setAlignmentX(Component.CENTER_ALIGNMENT); 
 
         Dimension tamanoCaja = new Dimension(450, 35); 
         Font labelFont = new Font("Arial", Font.BOLD, 14);
-
-        formPanel.add(crearLabelForm("Nombre y apellido", labelFont));
-        TxtNombreApellido = crearTextField(tamanoCaja);
-        formPanel.add(TxtNombreApellido);
-        formPanel.add(Box.createVerticalStrut(8)); 
 
         formPanel.add(crearLabelForm("Cédula de identidad", labelFont));
         TxtCedula = crearTextField(tamanoCaja);
@@ -71,17 +64,6 @@ public class VistaRegistro extends PlantillaGesco {
         TxtContra = new JPasswordField();
         estilizarComponente(TxtContra, tamanoCaja);
         formPanel.add(TxtContra);
-        formPanel.add(Box.createVerticalStrut(8));
-
-        formPanel.add(crearLabelForm("Tipo de usuario", labelFont));
-        cmbTipoUsuario = new JComboBox<>(new String[] {"Estudiante", "Profesor", "Empleado", "Administrador"});
-        estilizarComponente(cmbTipoUsuario, tamanoCaja);
-        formPanel.add(cmbTipoUsuario);
-        formPanel.add(Box.createVerticalStrut(8));
-
-        formPanel.add(crearLabelForm("Código admin (si aplica)", labelFont));
-        TxtCodigoAdmin = crearTextField(tamanoCaja);
-        formPanel.add(TxtCodigoAdmin);
 
         panelFondoBase.add(formPanel);
     }
@@ -146,15 +128,9 @@ public class VistaRegistro extends PlantillaGesco {
     }
 
     
-    public String getNombreApellido() { return TxtNombreApellido.getText(); }
     public String getCedula() { return TxtCedula.getText(); }
     public String getCorreo() { return TxtCorreo.getText(); }
     public String getContra() { return new String(TxtContra.getPassword()); }
-    public String getTipoUsuarioSeleccionado() {
-        Object seleccion = cmbTipoUsuario.getSelectedItem();
-        return seleccion == null ? "Estudiante" : seleccion.toString();
-    }
-    public String getCodigoAdmin() { return TxtCodigoAdmin.getText(); }
     public JLabel getLoginLink() { return loginLink; }
     public BotonNeon getBtnRegistrarse() { return btnRegistrarse; }
 }

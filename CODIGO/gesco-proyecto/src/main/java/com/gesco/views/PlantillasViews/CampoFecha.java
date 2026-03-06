@@ -139,6 +139,13 @@ public class CampoFecha extends JPanel {
         label.setForeground(color);
     }
 
+    public void addFechaChangeListener(Runnable listener) {
+        if (listener == null) return;
+        diaCombo.addActionListener(e -> listener.run());
+        mesChooser.addPropertyChangeListener("month", evt -> listener.run());
+        anioChooser.addPropertyChangeListener("year", evt -> listener.run());
+    }
+
     private int parseEnteroSeguro(String valor) {
         if (valor == null) {
             return 0;

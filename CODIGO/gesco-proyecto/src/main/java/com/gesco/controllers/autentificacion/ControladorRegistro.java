@@ -43,31 +43,17 @@ public class ControladorRegistro {
     }
 
     private void procesarRegistro() {
-        String nombre = vista.getNombreApellido();
         String cedula = DataBase.normalizarCedula(vista.getCedula());
         String correo = vista.getCorreo();
         String clave = vista.getContra();
-        String tipoUsuario = vista.getTipoUsuarioSeleccionado();
-        String codigoAdmin = vista.getCodigoAdmin();
 
-        if (nombre == null || nombre.isBlank()
-            || cedula == null || cedula.isBlank()
+        if (cedula == null || cedula.isBlank()
             || correo == null || correo.isBlank()
             || clave == null || clave.isBlank()) {
             JOptionPane.showMessageDialog(
                 vista,
                 "Debe completar todos los campos.",
                 "Datos incompletos",
-                JOptionPane.WARNING_MESSAGE
-            );
-            return;
-        }
-
-        if (!nombre.trim().matches("^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]+$")) {
-            JOptionPane.showMessageDialog(
-                vista,
-                "El nombre y apellido solo debe contener letras.",
-                "Nombre inválido",
                 JOptionPane.WARNING_MESSAGE
             );
             return;
@@ -85,10 +71,10 @@ public class ControladorRegistro {
 
         try {
             long cedulaNumero = Long.parseLong(cedula);
-            if (cedulaNumero < 8_000_000L || cedulaNumero > 45_000_000L) {
+            if (cedulaNumero < 4_000_000L || cedulaNumero > 45_000_000L) {
                 JOptionPane.showMessageDialog(
                     vista,
-                    "La cédula debe estar entre 8.000.000 y 45.000.000.",
+                    "La cédula debe estar entre 4.000.000 y 45.000.000.",
                     "Cédula inválida",
                     JOptionPane.WARNING_MESSAGE
                 );
@@ -104,6 +90,16 @@ public class ControladorRegistro {
             return;
         }
 
+        if (clave.length() < 8 || !clave.matches(".*[A-Za-z].*") || !clave.matches(".*\\d.*") || clave.contains(" ")) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "La contraseña debe tener mínimo 8 caracteres, incluir letras y números, y no contener espacios.",
+                "Contraseña insegura",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
         if (!correo.matches("^[^@]+@[^@]+\\.com$")) {
             JOptionPane.showMessageDialog(
                 vista,
@@ -114,30 +110,18 @@ public class ControladorRegistro {
             return;
         }
 
-        boolean guardado;
-        boolean esAdmin = "Administrador".equalsIgnoreCase(tipoUsuario);
-        if (esAdmin && (codigoAdmin == null || codigoAdmin.isBlank())) {
+        TipoUsuario tipoPadron = DataBase.obtenerTipoUsuarioSecretaria(cedula);
+        if (tipoPadron == null) {
             JOptionPane.showMessageDialog(
                 vista,
-                "Para registrarse como administrador debe ingresar un código de autorización.",
-                "Código requerido",
+                "La cédula no está autorizada por Secretaría para registro.",
+                "Cédula no verificada",
                 JOptionPane.WARNING_MESSAGE
             );
             return;
         }
 
-        if (esAdmin) {
-            if (!DataBase.adminAutorizadoPorSuperAdmin(cedula, codigoAdmin)) {
-                JOptionPane.showMessageDialog(
-                    vista,
-                    "No está autorizado para registrarse como administrador con esa cédula/código.",
-                    "Autorización inválida",
-                    JOptionPane.WARNING_MESSAGE
-                );
-                return;
-            }
-            guardado = DataBase.registrarAdministrador(cedula, clave, nombre, correo, codigoAdmin);
-        } else {
+        if (tipoPadron == TipoUsuario.ADMIN) {
             if (DataBase.cedulaYaRegistrada(cedula)) {
                 JOptionPane.showMessageDialog(
                     vista,
@@ -147,43 +131,40 @@ public class ControladorRegistro {
                 );
                 return;
             }
-            TipoUsuario tipoComensal = switch (tipoUsuario) {
-                case "Profesor" -> TipoUsuario.PROFESOR;
-                case "Empleado" -> TipoUsuario.EMPLEADO;
-                default -> TipoUsuario.ESTUDIANTE;
-            };
 
-            if (!DataBase.cedulaAutorizadaPorSecretaria(cedula)) {
+            String nombreDerivado = "Administrador Ucevista";
+            boolean guardadoAdmin = DataBase.registrarAdministradorPreAutorizado(cedula, clave, nombreDerivado, correo);
+            if (!guardadoAdmin) {
                 JOptionPane.showMessageDialog(
                     vista,
-                    "La cédula no está autorizada por Secretaría para registro.",
-                    "Cédula no verificada",
-                    JOptionPane.WARNING_MESSAGE
+                    "No se pudo guardar el administrador por un error de persistencia. Intente nuevamente.",
+                    "Registro fallido",
+                    JOptionPane.ERROR_MESSAGE
                 );
                 return;
             }
 
-            if (!DataBase.tipoUsuarioCoincideConSecretaria(cedula, tipoComensal)) {
-                TipoUsuario tipoCorrecto = DataBase.obtenerTipoUsuarioSecretaria(cedula);
-                String etiqueta = tipoCorrecto == null ? "desconocido" : tipoCorrecto.toEtiqueta();
-                JOptionPane.showMessageDialog(
-                    vista,
-                    "El tipo de usuario seleccionado no coincide con Secretaría.\nDebe registrarse como: " + etiqueta + ".",
-                    "Tipo de usuario inválido",
-                    JOptionPane.WARNING_MESSAGE
-                );
-                return;
-            }
-
-            guardado = DataBase.registrarUsuario(cedula, clave, nombre, correo, tipoComensal);
+            onRegistroSuccess.run();
+            return;
         }
+
+        if (DataBase.cedulaYaRegistrada(cedula)) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "La cédula ya está registrada. Inicie sesión o use otra cédula.",
+                "Cédula duplicada",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        String nombreDerivado = "Usuario Ucevista";
+        boolean guardado = DataBase.registrarUsuario(cedula, clave, nombreDerivado, correo, tipoPadron);
 
         if (!guardado) {
             JOptionPane.showMessageDialog(
                 vista,
-                esAdmin
-                    ? "No se pudo registrar como administrador. Revise datos y autorización."
-                    : "No se pudo guardar el usuario por un error de persistencia. Intente nuevamente.",
+                "No se pudo guardar el usuario por un error de persistencia. Intente nuevamente.",
                 "Registro fallido",
                 JOptionPane.ERROR_MESSAGE
             );

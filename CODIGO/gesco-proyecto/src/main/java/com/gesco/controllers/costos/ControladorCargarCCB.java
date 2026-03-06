@@ -19,6 +19,10 @@ public class ControladorCargarCCB {
     }
 
     public void conectar() {
+        LocalDate hoy = LocalDate.now();
+        vista.setFecha(hoy);
+        vista.setCV(DataBase.calcularCostoMenusDelDia(hoy));
+
         vista.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -51,7 +55,7 @@ public class ControladorCargarCCB {
         if (ccb.getCcb() >= 20702.0) {
             JOptionPane.showMessageDialog(
                 vista,
-                "El valor del CCB no puede superar los 20702 Bs (50$ BCV).\nSe ha limitado automáticamente.",
+                "El valor del CCB no puede superar los 20702 Bs (50 bs BCV).\nSe ha limitado automáticamente.",
                 "Límite de CCB excedido",
                 JOptionPane.WARNING_MESSAGE
             );

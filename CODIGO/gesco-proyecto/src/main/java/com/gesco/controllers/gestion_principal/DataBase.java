@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
 import javax.imageio.ImageIO;
 
@@ -40,7 +39,6 @@ public class DataBase {
     private static final String ARCHIVO_USUARIOS = "usuarios.txt";
     private static final String ARCHIVO_ADMINS = "admins.txt";
     private static final String ARCHIVO_SUPER_ADMINS = "super_admins.txt";
-    private static final String ARCHIVO_ADMINS_AUTORIZADOS = "admins_autorizados.txt";
     private static final String ARCHIVO_MENUS = "menus.txt";
     private static final String ARCHIVO_CFCV = "cfcv.txt";
     private static final String ARCHIVO_CCB = "ccb.txt";
@@ -52,7 +50,7 @@ public class DataBase {
     private static final String ARCHIVO_PADRON_SECRETARIA = "cedulas_ocupaciones.txt";
     private static final String ARCHIVO_REGISTRO_SALDO = "registroSaldo.txt";
 
-    private static final long CEDULA_MINIMA = 8_000_000L;
+    private static final long CEDULA_MINIMA = 4_000_000L;
     private static final long CEDULA_MAXIMA = 45_000_000L;
     private static final double CCB_ESTUDIANTE_MIN = 0.20;
     private static final double CCB_ESTUDIANTE_MAX = 0.30;
@@ -398,8 +396,7 @@ public class DataBase {
         return tipoPadron == tipoSolicitado;
     }
 
-    public static boolean registrarAdministrador(String cedula, String clave, String nombre, String correo, String codigoAutorizacion) {
-        if (!adminAutorizadoPorSuperAdmin(cedula, codigoAutorizacion)) return false;
+    public static boolean registrarAdministradorPreAutorizado(String cedula, String clave, String nombre, String correo) {
         if (!asegurarAdminEnSecretaria(cedula)) return false;
         if (!asegurarImagenSecretariaParaCedula(cedula)) return false;
 
@@ -489,67 +486,6 @@ public class DataBase {
             if (normalizarCedula(linea).equals(cedula)) return true;
         }
         return false;
-    }
-
-    public static boolean adminAutorizadoPorSuperAdmin(String cedula, String codigoAutorizacion) {
-        if (!cedulaValida(cedula)) return false;
-        List<String> autorizados = leerLineasGenericas(ARCHIVO_ADMINS_AUTORIZADOS);
-        String codigo = valorSeguro(codigoAutorizacion);
-
-        if (codigo.isBlank()) return false;
-
-        for (String linea : autorizados) {
-            String[] partes = linea.split(":", 2);
-            if (partes.length == 0) continue;
-
-            String cedulaPermitida = partes[0].trim();
-            if (!cedula.equals(cedulaPermitida)) continue;
-
-            if (partes.length < 2) continue;
-
-            String codigoPermitido = partes[1].trim();
-            if (!codigoPermitido.isBlank() && codigoPermitido.equals(codigo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean autorizarAdministrador(String cedula, String codigoAutorizacion) {
-        String cedulaLimpia = normalizarCedula(cedula);
-        String codigo = valorSeguro(codigoAutorizacion);
-
-        if (!cedulaValida(cedulaLimpia) || codigo.isBlank()) {
-            return false;
-        }
-
-        if (!asegurarAdminEnSecretaria(cedulaLimpia)) {
-            return false;
-        }
-
-        if (adminAutorizadoPorSuperAdmin(cedulaLimpia, codigo)) {
-            return true;
-        }
-
-        List<String> autorizados = leerLineasGenericas(ARCHIVO_ADMINS_AUTORIZADOS);
-        List<String> actualizadas = new ArrayList<>();
-        boolean reemplazado = false;
-
-        for (String linea : autorizados) {
-            String[] partes = linea.split(":", 2);
-            if (partes.length > 0 && cedulaLimpia.equals(partes[0].trim())) {
-                actualizadas.add(cedulaLimpia + ":" + codigo);
-                reemplazado = true;
-            } else {
-                actualizadas.add(linea);
-            }
-        }
-
-        if (!reemplazado) {
-            actualizadas.add(cedulaLimpia + ":" + codigo);
-        }
-
-        return reescribirArchivoGenerico(ARCHIVO_ADMINS_AUTORIZADOS, actualizadas);
     }
 
     private static boolean asegurarAdminEnSecretaria(String cedula) {
@@ -774,14 +710,11 @@ public class DataBase {
             for (LocalDate fecha : semanaActual) {
                 fechasSemana.add(fecha.toString());
             }
+
             List<String> nuevasLineas = new ArrayList<>();
             for (String linea : actuales) {
                 String[] partes = linea.split("\\|");
-                if (partes.length > 0 && fechasSemana.contains(partes[0])) {
-                    Menu menu = parsearLineaMenu(partes);
-                    menu.setEstado(EstadoMenu.NO_DISPONIBLE);
-                    nuevasLineas.add(menuToLine(menu));
-                } else {
+                if (partes.length > 0 && !fechasSemana.contains(partes[0])) {
                     nuevasLineas.add(linea);
                 }
             }
@@ -1189,10 +1122,7 @@ public class DataBase {
             throw new IllegalArgumentException("El CCB base no puede ser negativo.");
         }
 
-        double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
-        double porcentaje = rango[0] == rango[1]
-                ? rango[0]
-                : ThreadLocalRandom.current().nextDouble(rango[0], rango[1]);
+        double porcentaje = obtenerPorcentajeDeterministicoPorTipo(tipoUsuario);
         return redondearMoneda(ccbBase * porcentaje);
     }
 
@@ -1240,6 +1170,29 @@ public class DataBase {
         return resultado;
     }
 
+    public static double calcularCostoMenusDelDia(LocalDate fecha) {
+        if (fecha == null) return 0.0;
+
+        List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
+        double total = 0.0;
+
+        for (String linea : lineas) {
+            String[] partes = linea.split("\\|");
+            if (partes.length < 2 || !fecha.toString().equals(partes[0])) {
+                continue;
+            }
+
+            Menu menu = parsearLineaMenu(partes);
+            if (menu == null || menu.getEstado() != EstadoMenu.CON_MENU) {
+                continue;
+            }
+
+            total += menu.getCostoMenu();
+        }
+
+        return redondearMoneda(total);
+    }
+
     private static CCB parsearLineaCcb(String linea) {
         if (linea == null || linea.isBlank()) return null;
         String[] partes = linea.split("\\|");
@@ -1274,9 +1227,17 @@ public class DataBase {
         return switch (tipoUsuario) {
             case ESTUDIANTE -> new double[] { CCB_ESTUDIANTE_MIN, CCB_ESTUDIANTE_MAX };
             case PROFESOR -> new double[] { CCB_PROFESOR_MIN, CCB_PROFESOR_MAX };
-            case EMPLEADO -> new double[] { CCB_EMPLEADO_MIN, CCB_EMPLEADO_MAX };
+            case EMPLEADO, ADMIN, SUPER_ADMIN -> new double[] { CCB_EMPLEADO_MIN, CCB_EMPLEADO_MAX };
             default -> new double[] { 1.0, 1.0 };
         };
+    }
+
+    private static double obtenerPorcentajeDeterministicoPorTipo(TipoUsuario tipoUsuario) {
+        double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
+        if (rango[0] == rango[1]) {
+            return rango[0];
+        }
+        return (rango[0] + rango[1]) / 2.0;
     }
 
     private static float parseFloatSeguro(String valor) {

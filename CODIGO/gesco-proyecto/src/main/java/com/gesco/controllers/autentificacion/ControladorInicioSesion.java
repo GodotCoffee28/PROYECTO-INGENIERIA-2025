@@ -79,10 +79,10 @@ public class ControladorInicioSesion {
 
         try {
             long cedulaNumero = Long.parseLong(cedula);
-            if (cedulaNumero < 8_000_000L || cedulaNumero > 45_000_000L) {
+            if (cedulaNumero < 4_000_000L || cedulaNumero > 45_000_000L) {
                 JOptionPane.showMessageDialog(
                     vista,
-                    "La cédula debe estar entre 8.000.000 y 45.000.000.",
+                    "La cédula debe estar entre 4.000.000 y 45.000.000.",
                     "Cédula inválida",
                     JOptionPane.WARNING_MESSAGE
                 );

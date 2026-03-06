@@ -1,5 +1,0 @@
-2025-02-10|Pollo a la brasa>Pollo,Papas fritas,Ensalada rayada;Jugo de Melon>Melón,Azúcar,Agua; MOnda Liquida> mon,da,agua;
-2025-02-11|Pabellón Criollo>Arroz blanco,Caraotas negras,Carne mechada,Tajadas;Sopa de Res>Verduras,Costilla,Cilantro;
-2025-02-12|Pasta a la Boloñesa>Pasta larga,Carne molida,Salsa napolitana,Queso parmesano;Refresco>Vaso de cola;
-2025-02-13|Milanesa de Pollo>Pechuga de pollo,Pan rallado,Puré de papas;Ensalada César>Lechuga,Crutones,Aderezo,Queso;
-2025-02-14|Pescado Frito>Pargo rojo,Tostones,Ensalada mixta;Jugo de Papelón>Papelón,Limón,Hielo;

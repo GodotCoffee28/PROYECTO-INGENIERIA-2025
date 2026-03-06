@@ -146,6 +146,19 @@ public class VistaCargaCCB extends PlantillaGesco {
     public String getCV(){ return CV.getText();}
     public BotonNeon getBtnSubirDatos() { return btnSubirDatos; }
 
+    public void setCV(double valor) {
+        CV.setText(String.format(java.util.Locale.US, "%.2f", valor));
+    }
+
+    public void setFecha(LocalDate fecha) {
+        if (fecha == null) return;
+        campoFecha.setFecha(
+            String.valueOf(fecha.getDayOfMonth()),
+            String.valueOf(fecha.getMonthValue()),
+            String.valueOf(fecha.getYear())
+        );
+    }
+
 
     public LocalDate getFecha() {
         String texto = campoFecha.getFechaTexto();

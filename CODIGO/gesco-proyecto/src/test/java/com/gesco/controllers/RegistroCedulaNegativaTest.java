@@ -48,8 +48,8 @@ public class RegistroCedulaNegativaTest {
     }
 
     @Test
-    public void registrarUsuario_cedulaMenorA8Millones_devuelveFalse() {
-        assertFalse(DataBase.registrarUsuario("7999999", "password123", "Maria Lopez", "maria@email.com"));
+    public void registrarUsuario_cedulaMenorA4Millones_devuelveFalse() {
+        assertFalse(DataBase.registrarUsuario("3999999", "password123", "Maria Lopez", "maria@email.com"));
     }
 
     @Test

@@ -135,7 +135,7 @@ public class ControladorRecargarSaldo {
         if (monto > 10351.0) {
         JOptionPane.showMessageDialog(
             vista,
-            "El monto máximo permitido por recarga es 10.351 Bs (25$ BCV).",
+            "El monto máximo permitido por recarga es 10.351 Bs (25 bs BCV).",
             "Límite de recarga excedido",
             JOptionPane.WARNING_MESSAGE
         );

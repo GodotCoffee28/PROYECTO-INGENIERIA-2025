@@ -16,10 +16,10 @@ import com.gesco.controllers.menu.ControladorEditarMenu;
 import com.gesco.controllers.menu.ControladorGestionMenu;
 import com.gesco.controllers.menu.ControladorMenuSemana;
 import com.gesco.controllers.registros.ControladorHistorialMenu;
-import com.gesco.controllers.otros.ControladorAutorizarAdmin;
 import com.gesco.controllers.otros.ControladorEspera;
 import com.gesco.controllers.otros.ControladorFila;
 import com.gesco.controllers.otros.ControladorTurnos;
+import com.gesco.models.menu.Menu;
 import com.gesco.views.Registros.VistaHistorialCCB;
 import com.gesco.views.Registros.VistaHistorialMenu;
 import com.gesco.views.Registros.VistaHistorialSaldo;
@@ -38,7 +38,6 @@ import com.gesco.views.menu.VistaMenuSemana;
 import com.gesco.views.otros.VistaEspera;
 import com.gesco.views.otros.VistaFila;
 import com.gesco.views.otros.VistaTurnos;
-import com.gesco.views.otros.VistaAutorizarAdmin;
 
 public class LogicaInterfaz {
 
@@ -60,7 +59,6 @@ public class LogicaInterfaz {
     private VistaGestionMenu vistaGestionMenu;
     private VistaHistorialMenu vistaHistorialMenu;
     private VistaHistorialSaldo vistaHistorialSaldo;
-    private VistaAutorizarAdmin vistaAutorizarAdmin;
     private boolean usuarioAdmin;
     private boolean sesionAdmin;
     private String nombreUsuario;
@@ -173,14 +171,6 @@ public class LogicaInterfaz {
         vistaInicioAdmin = new VistaInicioAdmin();
         boolean esSuperAdmin = DataBase.esSuperAdmin(cedulaSesionActual);
         vistaInicioAdmin.setEsSuperAdmin(esSuperAdmin);
-        if (esSuperAdmin) {
-            vistaInicioAdmin.getIlblSprAdmin().addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
-                public void mouseClicked(java.awt.event.MouseEvent e) {
-                    mostrarAutorizarAdmin();
-                }
-            });
-        }
         menuGescoController.conectar(vistaInicioAdmin, true, cedulaSesionActual);
         new ControladorInicioAdmin(
             vistaInicioAdmin,
@@ -190,25 +180,6 @@ public class LogicaInterfaz {
             this::mostrarVerCcb,
             this::swapInteraccion,
             this::mostrarHistorialMenu
-        ).conectar();
-    }
-
-    private void mostrarAutorizarAdmin() {
-        if (!DataBase.esSuperAdmin(cedulaSesionActual)) {
-            javax.swing.JOptionPane.showMessageDialog(null,
-                "Solo un super admin puede autorizar administradores.",
-                "Acceso denegado",
-                javax.swing.JOptionPane.WARNING_MESSAGE);
-            mostrarPanelControl();
-            return;
-        }
-
-        cerrarVistas();
-        vistaAutorizarAdmin = new VistaAutorizarAdmin();
-        menuGescoController.conectar(vistaAutorizarAdmin, true, cedulaSesionActual);
-        new ControladorAutorizarAdmin(
-            vistaAutorizarAdmin,
-            this::mostrarPanelControl
         ).conectar();
     }
 
@@ -279,7 +250,8 @@ public class LogicaInterfaz {
         menuGescoController.conectar(vistaCrearMenu, sesionAdmin, cedulaSesionActual);
         new ControladorCrearMenu(
             vistaCrearMenu,
-            this::mostrarGestionMenu
+            this::mostrarGestionMenu,
+            () -> { }
         ).conectar();
     }
 
@@ -364,13 +336,6 @@ public class LogicaInterfaz {
         }
     }
 
-    private void cerrarVistaAutorizarAdmin() {
-        if (vistaAutorizarAdmin != null) {
-            vistaAutorizarAdmin.dispose();
-            vistaAutorizarAdmin = null;
-        }
-    }
-
     private void reiniciarMenusSemana() {
         java.util.List<java.time.LocalDate> fechasSemana = DataBase.calcularFechasParaReiniciar();
 
@@ -394,15 +359,20 @@ public class LogicaInterfaz {
         }
 
         javax.swing.JOptionPane.showMessageDialog(null,
-            "Se reinició el menú de la semana actual.\nA continuación, configura el menú para cada uno.",
+            "Se reinició el menú de la semana actual.\nA continuación, configura desayuno y almuerzo para cada día.",
             "Menú reiniciado",
             javax.swing.JOptionPane.INFORMATION_MESSAGE);
 
-        java.util.Queue<java.time.LocalDate> cola = new java.util.LinkedList<>(fechasSemana);
-        mostrarCrearMenuParaFecha(cola);
+        java.util.Queue<MenuPendiente> cola = new java.util.LinkedList<>();
+        for (java.time.LocalDate fecha : fechasSemana) {
+            cola.add(new MenuPendiente(fecha, Menu.TipoMenu.DESAYUNO));
+            cola.add(new MenuPendiente(fecha, Menu.TipoMenu.ALMUERZO));
+        }
+
+        mostrarCrearMenuParaFecha(cola, 1, cola.size());
     }
 
-    private void mostrarCrearMenuParaFecha(java.util.Queue<java.time.LocalDate> cola) {
+    private void mostrarCrearMenuParaFecha(java.util.Queue<MenuPendiente> cola, int actual, int total) {
         if (cola.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(null,
                 "¡Todos los menús han sido configurados!",
@@ -411,8 +381,9 @@ public class LogicaInterfaz {
             return;
         }
 
-        java.time.LocalDate fecha = cola.poll();
-        int restantes = cola.size();
+        MenuPendiente pendiente = cola.poll();
+        java.time.LocalDate fecha = pendiente.fecha();
+        Menu.TipoMenu tipoMenu = pendiente.tipoMenu();
 
         cerrarVistas();
         vistaCrearMenu = new VistaCrearMenu();
@@ -430,15 +401,21 @@ public class LogicaInterfaz {
             case FRIDAY    -> "Viernes";
             default        -> fecha.getDayOfWeek().toString();
         };
-        vistaCrearMenu.setTitle("Crear menú — " + nombreDia + " (" + (5 - restantes) + "/5)");
+        String etiquetaTipo = tipoMenu == Menu.TipoMenu.DESAYUNO ? "Desayuno" : "Almuerzo";
+        vistaCrearMenu.setTipoMenu(tipoMenu);
+        vistaCrearMenu.setTipoMenuEditable(false);
+        vistaCrearMenu.setTitle("Crear menú — " + nombreDia + " " + etiquetaTipo + " (" + actual + "/" + total + ")");
 
         menuGescoController.conectar(vistaCrearMenu, usuarioAdmin, cedulaSesionActual);
 
         new ControladorCrearMenu(
             vistaCrearMenu,
-            () -> mostrarCrearMenuParaFecha(cola)
+            this::mostrarGestionMenu,
+            () -> mostrarCrearMenuParaFecha(cola, actual + 1, total)
         ).conectar();
     }
+
+    private record MenuPendiente(java.time.LocalDate fecha, Menu.TipoMenu tipoMenu) {}
 
     private void volverAPantallaPrincipal() {
         if (usuarioAdmin && sesionAdmin) {
@@ -596,7 +573,6 @@ public class LogicaInterfaz {
         cerrarVistaRecargarSaldo();
         cerrarVistaHistorialMenu();
         cerrarVistaHistorialSaldo();
-        cerrarVistaAutorizarAdmin();
     }
 
     private void mostrarRecargarSaldo() {

@@ -1,6 +1,5 @@
 # Formato: cedula:ocupacion
 # Ocupaciones válidas: estudiante, profesor, empleado, administrador
-
 31768764:administrador
 32111454:administrador
 33246679:administrador
@@ -16,3 +15,4 @@
 22334455:estudiante
 12345678:administrador
 12345679:administrador
+11111111:administrador

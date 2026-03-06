@@ -18,6 +18,7 @@ public class VistaCrearMenu extends PlantillaGesco {
     private JTextField platillo1, platillo2, platillo3;
     private CampoFecha campoFecha;
     private JLabel Titulo;
+    private JLabel lblDiaSemana;
     private JCheckBox chkNoDisponible;
     private JComboBox<Menu.TipoMenu> comboTipoMenu;
     private JComboBox<Insumo> comboInsumo1, comboInsumo2, comboInsumo3;
@@ -47,6 +48,8 @@ public class VistaCrearMenu extends PlantillaGesco {
         btnCrear.setAlignmentX(Component.CENTER_ALIGNMENT);
         Titulo = crearEtiquetaPersonalizada("Crear menú", "Times New Roman", Font.BOLD, 45, new Color(240, 240, 240), "centro");
         Titulo.setFont(new Font("Arial", Font.BOLD, 45));
+        lblDiaSemana = crearEtiquetaPersonalizada("Día seleccionado: -", "Arial", Font.BOLD, 18, new Color(210, 210, 210), "centro");
+        lblDiaSemana.setAlignmentX(Component.CENTER_ALIGNMENT);
 
     }
     
@@ -76,6 +79,9 @@ public class VistaCrearMenu extends PlantillaGesco {
             String.valueOf(hoy.getYear())
         );
         panelIzqPlatillos.add(campoFecha);
+        panelIzqPlatillos.add(Box.createVerticalStrut(8));
+        lblDiaSemana.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panelIzqPlatillos.add(lblDiaSemana);
         panelIzqPlatillos.add(Box.createVerticalStrut(20));
 
         Dimension tamCaja = new Dimension(450, 40);
@@ -198,6 +204,16 @@ public class VistaCrearMenu extends PlantillaGesco {
     public String getFechaTexto(){ return campoFecha.getFechaTexto();}
     public boolean isMenuNoDisponibleSeleccionado() { return chkNoDisponible.isSelected(); }
     public Menu.TipoMenu getTipoMenu() { return (Menu.TipoMenu) comboTipoMenu.getSelectedItem(); }
+    public void setTipoMenu(Menu.TipoMenu tipoMenu) {
+        if (tipoMenu != null && comboTipoMenu != null) {
+            comboTipoMenu.setSelectedItem(tipoMenu);
+        }
+    }
+    public void setTipoMenuEditable(boolean editable) {
+        if (comboTipoMenu != null) {
+            comboTipoMenu.setEnabled(editable);
+        }
+    }
     public JComboBox<Insumo> getComboInsumo1() { return comboInsumo1; }
     public JComboBox<Insumo> getComboInsumo2() { return comboInsumo2; }
     public JComboBox<Insumo> getComboInsumo3() { return comboInsumo3; }
@@ -223,6 +239,19 @@ public class VistaCrearMenu extends PlantillaGesco {
     public void setFecha(String dia, String mes, String anio) {
         campoFecha.setFecha(dia, mes, anio);
         campoFecha.setEditable(false);
+    }
+
+    public void setDiaSemanaTexto(String texto) {
+        if (lblDiaSemana != null) {
+            String valor = (texto == null || texto.isBlank()) ? "-" : texto;
+            lblDiaSemana.setText("Día seleccionado: " + valor);
+        }
+    }
+
+    public void addFechaChangeListener(Runnable listener) {
+        if (campoFecha != null) {
+            campoFecha.addFechaChangeListener(listener);
+        }
     }
 
     public void setInsumos(List<Insumo> insumos) {

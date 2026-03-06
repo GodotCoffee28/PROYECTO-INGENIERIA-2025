@@ -12,21 +12,31 @@ import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 
 public class ControladorCrearMenu {
 
     private final VistaCrearMenu vista;
     private final Runnable onBack;
+    private final Runnable onSaveSuccess;
 
     public ControladorCrearMenu(VistaCrearMenu vista, Runnable onBack) {
+        this(vista, onBack, onBack);
+    }
+
+    public ControladorCrearMenu(VistaCrearMenu vista, Runnable onBack, Runnable onSaveSuccess) {
         this.vista = vista;
         this.onBack = onBack;
+        this.onSaveSuccess = onSaveSuccess == null ? onBack : onSaveSuccess;
     }
 
     public void conectar() {
         vista.setInsumos(DataBase.obtenerInsumos());
         conectarAccionesInsumos();
+        vista.addFechaChangeListener(this::actualizarDiaSemanaSeleccionado);
+        actualizarDiaSemanaSeleccionado();
         vista.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -134,15 +144,7 @@ public class ControladorCrearMenu {
 
     private void crearMenu() {
         try {
-            String dia = vista.getDia();
-            String mes = vista.getMes();
-            String anio = vista.getAnio();
-            String fechaStr = String.format("%s-%02d-%02d",
-                anio.trim(),
-                Integer.parseInt(mes.trim()),
-                Integer.parseInt(dia.trim()));
-
-            java.time.LocalDate fecha = java.time.LocalDate.parse(fechaStr);
+            LocalDate fecha = obtenerFechaSeleccionada();
             if (!DataBase.esFechaValidaParaMenu(fecha)) {
                 javax.swing.JOptionPane.showMessageDialog(vista,
                     "Solo se permiten días hábiles (lunes a viernes no feriados).",
@@ -220,7 +222,7 @@ public class ControladorCrearMenu {
                     noDisponible ? "Día marcado como menú no disponible." : "Menú creado.",
                     "OK",
                     javax.swing.JOptionPane.INFORMATION_MESSAGE);
-                onBack.run();
+                onSaveSuccess.run();
             } else {
                 javax.swing.JOptionPane.showMessageDialog(vista, "Error al crear menú.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             }
@@ -234,6 +236,31 @@ public class ControladorCrearMenu {
         for (Insumo insumo : insumos) {
             platillo.agregarInsumo(insumo);
         }
+    }
+
+    private void actualizarDiaSemanaSeleccionado() {
+        try {
+            LocalDate fecha = obtenerFechaSeleccionada();
+            vista.setDiaSemanaTexto(capitalizar(fecha.getDayOfWeek().getDisplayName(java.time.format.TextStyle.FULL, new Locale("es", "ES"))));
+        } catch (Exception ex) {
+            vista.setDiaSemanaTexto("-");
+        }
+    }
+
+    private LocalDate obtenerFechaSeleccionada() {
+        String dia = vista.getDia();
+        String mes = vista.getMes();
+        String anio = vista.getAnio();
+        String fechaStr = String.format("%s-%02d-%02d",
+            anio.trim(),
+            Integer.parseInt(mes.trim()),
+            Integer.parseInt(dia.trim()));
+        return LocalDate.parse(fechaStr);
+    }
+
+    private String capitalizar(String texto) {
+        if (texto == null || texto.isBlank()) return texto;
+        return texto.substring(0, 1).toUpperCase(new Locale("es", "ES")) + texto.substring(1);
     }
 }
 

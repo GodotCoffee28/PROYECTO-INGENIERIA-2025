@@ -92,7 +92,7 @@ public class TarjetaMenu extends TarjetaGeneral {
             return;
         }
 
-        JLabel lblCosto = new JLabel(String.format("Costo: $%.2f", menu.getCostoMenu()));
+        JLabel lblCosto = new JLabel(String.format("Costo: %.2f bs", menu.getCostoMenu()));
         lblCosto.setFont(new Font("Arial", Font.PLAIN, 16));
         lblCosto.setForeground(Color.WHITE);
         containerCuerpo.add(lblCosto);

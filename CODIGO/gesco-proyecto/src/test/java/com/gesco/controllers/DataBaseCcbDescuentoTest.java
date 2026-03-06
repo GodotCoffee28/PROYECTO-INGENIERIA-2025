@@ -93,6 +93,19 @@ public class DataBaseCcbDescuentoTest {
         double monto = DataBase.calcularMontoCcbParaCedula("12345678", 0.20);
         assertEquals(3.0, monto, 0.0001);
     }
+
+    @Test
+    public void calcularMontoCcbPorTipo_noEsAleatorio_yAdminCuentaComoEmpleado() {
+        double estudiante1 = DataBase.calcularMontoCcbPorTipo(100.0, TipoUsuario.ESTUDIANTE);
+        double estudiante2 = DataBase.calcularMontoCcbPorTipo(100.0, TipoUsuario.ESTUDIANTE);
+        assertEquals(25.0, estudiante1, 0.0001);
+        assertEquals(estudiante1, estudiante2, 0.0001);
+
+        double admin = DataBase.calcularMontoCcbPorTipo(100.0, TipoUsuario.ADMIN);
+        double empleado = DataBase.calcularMontoCcbPorTipo(100.0, TipoUsuario.EMPLEADO);
+        assertEquals(100.0, admin, 0.0001);
+        assertEquals(empleado, admin, 0.0001);
+    }
 }
 
 
