@@ -1,0 +1,12 @@
+Estimados Estudiantes. A continuación se especifican las pre-condiciones para el desarrollo y entrega del Incremento 2 bajo XP:
+
+El Grupo Docente actuando en rol de Product Owner ante el Servicio de Comedor, teniendo en cuenta los resultados del incremento 1, y revisando la planificación del Sprint2 les informa que el alcance del incremento 2 será la implementación de las siguientes HU (Alta prioridad):
+
+a) Para el usuario Consumidor(comensal): 
+
+Visualización con recarga del saldo del monedero (sólo se puede incrementar el valor del monedero con el monto a recargar)
+Acceso al servicio de comedor simulando el reconocimiento facial y el cobro automático de la tarifa del servicio a consumir. El reconocimiento facial se simulará con la carga y comparación de un archivo imagen jpeg o png (foto del usuario que quiere tener acceso), el cual será validado con la foto previamente cargada en la BD del sub sistema de Secretaria para el usuario correspondiente (investigar como implementar en Java la comparación de archivos en formato de imagen). Si la foto del usuario no corresponde con la que tiene cargada en la BD de Secretaria, entonces es un usuario inválido. Si el ususario obtiene un reconocimiento facial válido y tiene saldo disponible para el servicio podrá acceder al servicio.
+ b) Para el usuario Administrador del Servicio de Comedor:  
+
+Efectuar el cálculo completo del CCB reflejando su impacto en las tarifas de cada servicio (menús) y por cada tipo de usuario comensal
+Configuración de los menús (carga y actualización) para los servicios de desayuno y almuerzo. El comedor no tiene disponible el servicio cena por los momentos.

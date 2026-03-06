@@ -1,6 +1,6 @@
 package com.gesco;
 
-import com.gesco.controllers.LogicaInterfaz;
+import com.gesco.controllers.gestion_principal.LogicaInterfaz;
 
 public class Main {
 
@@ -9,3 +9,4 @@ public class Main {
         logica.iniciar();
     }
 }
+
