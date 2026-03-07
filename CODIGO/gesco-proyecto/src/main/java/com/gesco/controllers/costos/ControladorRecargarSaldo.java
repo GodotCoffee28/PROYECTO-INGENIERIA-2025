@@ -99,6 +99,16 @@ public class ControladorRecargarSaldo {
             return;
         }
 
+        if (!DataBase.referenciaBancariaValida(referencia)) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "Verifique su transacción.",
+                "Referencia bancaria invalida",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
         if (DataBase.referenciaRecargaExiste(referencia)) {
             JOptionPane.showMessageDialog(
                 vista,

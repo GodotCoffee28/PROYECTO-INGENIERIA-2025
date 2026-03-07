@@ -45,6 +45,7 @@ public class DataBase {
     private static final String ARCHIVO_INSUMOS = "insumos.txt";
     private static final String ARCHIVO_FERIADOS = "feriados.txt";
     private static final String ARCHIVO_NO_LABORABLES = "sabados_domingos_2026.txt";
+    private static final String ARCHIVO_BANCO = "banco.txt";
     private static final String CARPETA_SECRETARIA = "secretaria";
     private static final String CARPETA_IMAGENES_SECRETARIA = "imagenes_rostros";
     private static final String ARCHIVO_PADRON_SECRETARIA = "cedulas_ocupaciones.txt";
@@ -143,6 +144,22 @@ public class DataBase {
                 return true;
             }
         }
+        return false;
+    }
+
+    public static boolean referenciaBancariaValida(String referencia) {
+        String referenciaLimpia = valorSeguro(referencia);
+        if (!referenciaLimpia.matches("\\d{20}")) {
+            return false;
+        }
+
+        List<String> referenciasBanco = leerLineasGenericas(ARCHIVO_BANCO);
+        for (String referenciaBanco : referenciasBanco) {
+            if (referenciaLimpia.equals(valorSeguro(referenciaBanco))) {
+                return true;
+            }
+        }
+
         return false;
     }
     
