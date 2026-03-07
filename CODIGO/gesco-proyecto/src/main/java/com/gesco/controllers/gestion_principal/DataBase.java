@@ -19,6 +19,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +52,7 @@ public class DataBase {
     private static final String CARPETA_IMAGENES_SECRETARIA = "imagenes_rostros";
     private static final String ARCHIVO_PADRON_SECRETARIA = "cedulas_ocupaciones.txt";
     private static final String ARCHIVO_REGISTRO_SALDO = "registroSaldo.txt";
+    private static final String ARCHIVO_ACUDIERON = "acudieron.txt";
 
     private static final long CEDULA_MINIMA = 4_000_000L;
     private static final long CEDULA_MAXIMA = 45_000_000L;
@@ -161,6 +164,89 @@ public class DataBase {
         }
 
         return false;
+    }
+
+    public static boolean registrarAcudieron(
+        String cedula,
+        TipoUsuario tipoUsuario,
+        Menu.TipoMenu tipoMenu,
+        double montoCobrado
+    ) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (!cedulaValida(cedulaLimpia)) {
+            return false;
+        }
+
+        TipoUsuario tipoSeguro = tipoUsuario == null ? obtenerTipoUsuario(cedulaLimpia) : tipoUsuario;
+        Menu.TipoMenu tipoMenuSeguro = tipoMenu == null ? Menu.TipoMenu.DESAYUNO : tipoMenu;
+        String fecha = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+        String nombre = valorSeguro(obtenerNombre(cedulaLimpia));
+        double monto = redondearMoneda(montoCobrado);
+
+        String linea = String.format(
+            Locale.ROOT,
+            "%s:%s:%s:%s:%s:%.2f",
+            fecha,
+            cedulaLimpia,
+            nombre,
+            etiquetaTipoComensal(tipoSeguro),
+            tipoMenuSeguro.name(),
+            monto
+        );
+
+        return escribirLineaGenerica(ARCHIVO_ACUDIERON, linea + System.lineSeparator());
+    }
+
+    public static boolean eliminarRegistroAcudieron(String cedula) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (!cedulaValida(cedulaLimpia)) {
+            return false;
+        }
+
+        List<String> lineas = leerLineasGenericas(ARCHIVO_ACUDIERON);
+        if (lineas.isEmpty()) {
+            return true;
+        }
+
+        String fechaHoy = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+        int indice = buscarIndiceRegistroAcudieron(lineas, cedulaLimpia, fechaHoy);
+
+        if (indice < 0) {
+            indice = buscarIndiceRegistroAcudieron(lineas, cedulaLimpia, null);
+        }
+
+        if (indice < 0) {
+            return true;
+        }
+
+        lineas.remove(indice);
+        return reescribirArchivoGenerico(ARCHIVO_ACUDIERON, lineas);
+    }
+
+    private static int buscarIndiceRegistroAcudieron(List<String> lineas, String cedula, String fecha) {
+        for (int i = lineas.size() - 1; i >= 0; i--) {
+            String linea = valorSeguro(lineas.get(i));
+            if (linea.isBlank()) {
+                continue;
+            }
+
+            String[] partes = linea.contains(":") ? linea.split(":") : linea.split("\\|");
+            if (partes.length < 2) {
+                continue;
+            }
+
+            String fechaRegistro = valorSeguro(partes[0]);
+            String cedulaRegistro = valorSeguro(partes[1]);
+            if (!cedula.equals(cedulaRegistro)) {
+                continue;
+            }
+
+            if (fecha == null || fechaRegistro.startsWith(fecha)) {
+                return i;
+            }
+        }
+
+        return -1;
     }
     
     public static File obtenerCarpetaSecretaria() {
@@ -1623,6 +1709,19 @@ public class DataBase {
                 .replace("í", "i")
                 .replace("ó", "o")
                 .replace("ú", "u");
+    }
+
+    private static String etiquetaTipoComensal(TipoUsuario tipoUsuario) {
+        if (tipoUsuario == null) {
+            return TipoUsuario.COMENSAL.name();
+        }
+
+        return switch (tipoUsuario) {
+            case ESTUDIANTE -> "ESTUDIANTE_REGULAR";
+            case BECARIO -> "ESTUDIANTE_BECARIO";
+            case EXONERADO -> "ESTUDIANTE_EXONERADO";
+            default -> tipoUsuario.name();
+        };
     }
 
     private static double redondearMoneda(double valor) {
