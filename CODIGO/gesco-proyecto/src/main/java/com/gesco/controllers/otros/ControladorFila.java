@@ -63,6 +63,16 @@ public class ControladorFila {
             return;
         }
 
+        if (!hayMenuActivoHoy()) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "No hay menu disponible para hoy.",
+                "Menu no disponible",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
         if (vista.getEnFila() >= vista.getDisponible()) {
             JOptionPane.showMessageDialog(
                 vista,
@@ -278,5 +288,19 @@ public class ControladorFila {
             return TipoUsuario.COMENSAL;
         }
         return DataBase.obtenerTipoUsuario(cedulaSesion);
+    }
+
+    private boolean hayMenuActivoHoy() {
+        String fechaHoy = LocalDate.now().toString();
+        Menu menuDesayuno = DataBase.obtenerMenuPorFechaYTipo(fechaHoy, Menu.TipoMenu.DESAYUNO);
+        Menu menuAlmuerzo = DataBase.obtenerMenuPorFechaYTipo(fechaHoy, Menu.TipoMenu.ALMUERZO);
+
+        return esMenuActivo(menuDesayuno) || esMenuActivo(menuAlmuerzo);
+    }
+
+    private boolean esMenuActivo(Menu menu) {
+        return menu != null
+            && menu.getEstado() != Menu.EstadoMenu.NO_DISPONIBLE
+            && menu.tienePlatillos();
     }
 }

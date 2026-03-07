@@ -6,4 +6,5 @@
 2026-02-25|CON_MENU|DESAYUNO|Tazon de frutas>Manzana~3~7.50;Sandwich>Queso~1~3.40,Tomate~1~1.30;Pollo a la plancha>Pollo~1~4.75,Sal~1~0.10,Aceite~1~2.20;
 2026-02-25|CON_MENU|ALMUERZO|Pasta>Tomate~2~2.60,Sal~1~0.10,Aceite~1~2.20;Ensalada>Lechuga~2~2.20,Tomate~1~1.30;Jugo>Manzana~2~5.00;
 2026-02-26|CON_MENU|DESAYUNO|Arroz con pollo>Arroz~2~2.40,Pollo~1~4.75,Sal~1~0.10;Ensalada>Lechuga~2~2.20,Tomate~1~1.30,Aceite~1~2.20;Queso fresco>Queso~1~3.40;
-
+2026-03-06|NO_DISPONIBLE|DESAYUNO|
+2026-03-06|CON_MENU|ALMUERZO|popo>Manzana~1~2.50;
