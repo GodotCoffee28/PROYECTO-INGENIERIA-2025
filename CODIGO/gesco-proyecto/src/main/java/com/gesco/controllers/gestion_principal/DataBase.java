@@ -731,6 +731,62 @@ public class DataBase {
         }
     }
 
+    public static boolean reiniciarMenuDia(LocalDate fecha) {
+        if (fecha == null) return false;
+
+        try {
+            List<String> actuales = leerLineasGenericas(ARCHIVO_MENUS);
+            String fechaObjetivo = fecha.toString();
+
+            List<String> nuevasLineas = new ArrayList<>();
+            for (String linea : actuales) {
+                String[] partes = linea.split("\\|");
+                if (partes.length > 0 && !fechaObjetivo.equals(partes[0])) {
+                    nuevasLineas.add(linea);
+                }
+            }
+
+            asegurarMenuNoDisponible(nuevasLineas, fecha, Menu.TipoMenu.DESAYUNO);
+            asegurarMenuNoDisponible(nuevasLineas, fecha, Menu.TipoMenu.ALMUERZO);
+
+            return reescribirArchivoGenerico(ARCHIVO_MENUS, nuevasLineas);
+        } catch (Exception e) {
+            System.err.println("Error reiniciando menu del dia: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static List<LocalDate> obtenerFechasConMenusCreados() {
+        List<LocalDate> fechas = new ArrayList<>();
+        try {
+            List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
+            Set<LocalDate> unicas = new java.util.TreeSet<>();
+
+            for (String linea : lineas) {
+                if (linea == null || linea.isBlank()) continue;
+
+                String[] partes = linea.split("\\|");
+                if (partes.length == 0) continue;
+
+                LocalDate fecha = LocalDate.parse(partes[0].trim());
+                EstadoMenu estado = partes.length >= 2
+                        ? parsearEstadoMenu(partes[1])
+                        : EstadoMenu.CON_MENU;
+
+                // Solo mostrar dias donde al menos exista un menu cargado.
+                if (estado != EstadoMenu.NO_DISPONIBLE) {
+                    unicas.add(fecha);
+                }
+            }
+
+            fechas.addAll(unicas);
+            return fechas;
+        } catch (Exception e) {
+            System.err.println("Error obteniendo fechas con menus creados: " + e.getMessage());
+            return fechas;
+        }
+    }
+
     public static boolean prepararSemanaConEstados(LocalDate fechaReferencia) {
         if (fechaReferencia == null) return false;
 
@@ -1124,6 +1180,16 @@ public class DataBase {
 
         double porcentaje = obtenerPorcentajeDeterministicoPorTipo(tipoUsuario);
         return redondearMoneda(ccbBase * porcentaje);
+    }
+
+    public static double generarPorcentajeCcbPorTipo(TipoUsuario tipoUsuario) {
+        double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
+        if (rango[0] == rango[1]) {
+            return redondearMoneda(rango[0]);
+        }
+
+        double porcentaje = rango[0] + (Math.random() * (rango[1] - rango[0]));
+        return redondearMoneda(porcentaje);
     }
 
     public static double calcularMontoCcbPorTipo(double ccbBase, TipoUsuario tipoUsuario, double porcentajeCcb) {

@@ -136,8 +136,9 @@ public class ControladorFila {
         double costoMenu = obtenerCostoMenuHoy();
         double ccbBase = obtenerCcbBase();
         TipoUsuario tipoUsuario = obtenerTipoUsuarioSesion();
-        double porcentaje = DataBase.calcularMontoCcbPorTipo(1.0, tipoUsuario);
-        double costoFinal = costoMenu + (ccbBase * porcentaje);
+        double porcentaje = DataBase.generarPorcentajeCcbPorTipo(tipoUsuario);
+        double costoCcb = DataBase.calcularMontoCcbPorTipo(ccbBase, tipoUsuario, porcentaje);
+        double costoFinal = costoMenu + costoCcb;
         double ajuste = porcentaje * 100.0;
 
         vista.setCobroInfo(costoMenu, ajuste, costoFinal);

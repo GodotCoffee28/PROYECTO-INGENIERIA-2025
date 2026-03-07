@@ -275,7 +275,7 @@ public class LogicaInterfaz {
             this::mostrarEditarMenu,
             this::mostrarCrearMenu,
             this::mostrarAgregarInsumo,
-            this::reiniciarMenusSemana
+            this::reiniciarMenus
         ).conectar();
     }
 
@@ -336,6 +336,34 @@ public class LogicaInterfaz {
         }
     }
 
+    private void reiniciarMenus() {
+        Object[] opciones = {
+            "Reiniciar semana actual",
+            "Reiniciar un dia",
+            "Cancelar"
+        };
+
+        int seleccion = javax.swing.JOptionPane.showOptionDialog(
+            null,
+            "Que deseas reiniciar?",
+            "Reiniciar menu",
+            javax.swing.JOptionPane.DEFAULT_OPTION,
+            javax.swing.JOptionPane.QUESTION_MESSAGE,
+            null,
+            opciones,
+            opciones[0]
+        );
+
+        if (seleccion == 0) {
+            reiniciarMenusSemana();
+            return;
+        }
+
+        if (seleccion == 1) {
+            reiniciarMenuDia();
+        }
+    }
+
     private void reiniciarMenusSemana() {
         java.util.List<java.time.LocalDate> fechasSemana = DataBase.calcularFechasParaReiniciar();
 
@@ -358,13 +386,86 @@ public class LogicaInterfaz {
             return;
         }
 
-        javax.swing.JOptionPane.showMessageDialog(null,
-            "Se reinició el menú de la semana actual.\nA continuación, configura desayuno y almuerzo para cada día.",
-            "Menú reiniciado",
-            javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        iniciarFlujoCreacionMenus(
+            fechasSemana,
+            "Se reinició el menú de la semana actual.\nA continuación, configura desayuno y almuerzo para cada día."
+        );
+    }
+
+    private void reiniciarMenuDia() {
+        java.util.List<java.time.LocalDate> fechasDisponibles = DataBase.obtenerFechasConMenusCreados();
+        if (fechasDisponibles.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(
+                null,
+                "No hay dias con menu creado para reiniciar.",
+                "Sin dias disponibles",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE
+            );
+            return;
+        }
+
+        DiaDisponible[] opcionesDias = new DiaDisponible[fechasDisponibles.size()];
+        for (int i = 0; i < fechasDisponibles.size(); i++) {
+            java.time.LocalDate fecha = fechasDisponibles.get(i);
+            opcionesDias[i] = new DiaDisponible(fecha, nombreDiaSemana(fecha) + " " + fecha);
+        }
+
+        DiaDisponible seleccion = (DiaDisponible) javax.swing.JOptionPane.showInputDialog(
+            null,
+            "Selecciona el dia que deseas reiniciar:",
+            "Reiniciar menu de un dia",
+            javax.swing.JOptionPane.QUESTION_MESSAGE,
+            null,
+            opcionesDias,
+            opcionesDias[0]
+        );
+
+        if (seleccion == null) {
+            return;
+        }
+
+        boolean ok = DataBase.reiniciarMenuDia(seleccion.fecha());
+        if (!ok) {
+            javax.swing.JOptionPane.showMessageDialog(
+                null,
+                "Error al reiniciar el menu del dia seleccionado.",
+                "Error",
+                javax.swing.JOptionPane.ERROR_MESSAGE
+            );
+            mostrarGestionMenu();
+            return;
+        }
+
+        iniciarFlujoCreacionMenus(
+            java.util.List.of(seleccion.fecha()),
+            "Se reinició el menú del dia seleccionado.\nA continuación, configura desayuno y almuerzo."
+        );
+    }
+
+    private void iniciarFlujoCreacionMenus(
+        java.util.List<java.time.LocalDate> fechas,
+        String mensaje
+    ) {
+        if (fechas == null || fechas.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(
+                null,
+                "No hay fechas para configurar menus.",
+                "Sin cambios",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE
+            );
+            mostrarGestionMenu();
+            return;
+        }
+
+        javax.swing.JOptionPane.showMessageDialog(
+            null,
+            mensaje,
+            "Menu reiniciado",
+            javax.swing.JOptionPane.INFORMATION_MESSAGE
+        );
 
         java.util.Queue<MenuPendiente> cola = new java.util.LinkedList<>();
-        for (java.time.LocalDate fecha : fechasSemana) {
+        for (java.time.LocalDate fecha : fechas) {
             cola.add(new MenuPendiente(fecha, Menu.TipoMenu.DESAYUNO));
             cola.add(new MenuPendiente(fecha, Menu.TipoMenu.ALMUERZO));
         }
@@ -393,14 +494,7 @@ public class LogicaInterfaz {
         String anio = String.valueOf(fecha.getYear());
         vistaCrearMenu.setFecha(dia, mes, anio);
 
-        String nombreDia = switch (fecha.getDayOfWeek()) {
-            case MONDAY    -> "Lunes";
-            case TUESDAY   -> "Martes";
-            case WEDNESDAY -> "Miércoles";
-            case THURSDAY  -> "Jueves";
-            case FRIDAY    -> "Viernes";
-            default        -> fecha.getDayOfWeek().toString();
-        };
+        String nombreDia = nombreDiaSemana(fecha);
         String etiquetaTipo = tipoMenu == Menu.TipoMenu.DESAYUNO ? "Desayuno" : "Almuerzo";
         vistaCrearMenu.setTipoMenu(tipoMenu);
         vistaCrearMenu.setTipoMenuEditable(false);
@@ -415,7 +509,26 @@ public class LogicaInterfaz {
         ).conectar();
     }
 
+    private String nombreDiaSemana(java.time.LocalDate fecha) {
+        return switch (fecha.getDayOfWeek()) {
+            case MONDAY -> "Lunes";
+            case TUESDAY -> "Martes";
+            case WEDNESDAY -> "Miércoles";
+            case THURSDAY -> "Jueves";
+            case FRIDAY -> "Viernes";
+            case SATURDAY -> "Sábado";
+            case SUNDAY -> "Domingo";
+        };
+    }
+
     private record MenuPendiente(java.time.LocalDate fecha, Menu.TipoMenu tipoMenu) {}
+
+    private record DiaDisponible(java.time.LocalDate fecha, String etiqueta) {
+        @Override
+        public String toString() {
+            return etiqueta;
+        }
+    }
 
     private void volverAPantallaPrincipal() {
         if (usuarioAdmin && sesionAdmin) {
