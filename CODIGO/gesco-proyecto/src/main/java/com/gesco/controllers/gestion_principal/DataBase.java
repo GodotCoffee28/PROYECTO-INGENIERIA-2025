@@ -736,19 +736,17 @@ public class DataBase {
             List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
             List<String> nuevas = new ArrayList<>();
             String fecha = menu.getFecha().toString();
-            Menu.TipoMenu tipoMenu = menu.getTipoMenu() == null ? Menu.TipoMenu.NO_DEFINIDO : menu.getTipoMenu();
+            Menu.TipoMenu tipoMenu = menu.getTipoMenu() == null ? Menu.TipoMenu.DESAYUNO : menu.getTipoMenu();
             boolean encontrado = false;
             String nuevaLinea = menuToLine(menu);
 
             for (String linea : lineas) {
                 String[] partes = linea.split("\\|");
                 if (partes.length > 0 && partes[0].equals(fecha)) {
-                    Menu.TipoMenu tipoLinea = partes.length >= 3
+                        Menu.TipoMenu tipoLinea = partes.length >= 3
                             ? parsearTipoMenu(partes[2])
-                            : Menu.TipoMenu.NO_DEFINIDO;
-                    boolean coincideTipo = tipoMenu == Menu.TipoMenu.NO_DEFINIDO
-                            ? tipoLinea == Menu.TipoMenu.NO_DEFINIDO
-                            : tipoLinea == tipoMenu;
+                            : Menu.TipoMenu.DESAYUNO;
+                        boolean coincideTipo = tipoLinea == tipoMenu;
                     if (coincideTipo) {
                         nuevas.add(nuevaLinea);
                         encontrado = true;
@@ -888,7 +886,7 @@ public class DataBase {
     public static Menu obtenerMenuPorFecha(String fechaStr) {
         List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
 
-        Menu exacto = buscarMenuPorFechaYTipo(lineas, fechaStr, Menu.TipoMenu.NO_DEFINIDO);
+        Menu exacto = buscarMenuPorFechaYTipo(lineas, fechaStr, Menu.TipoMenu.DESAYUNO);
         if (exacto != null) return exacto;
 
         Menu cualquiera = buscarMenuPorFecha(lineas, fechaStr);
@@ -902,14 +900,9 @@ public class DataBase {
 
     public static Menu obtenerMenuPorFechaYTipo(String fechaStr, Menu.TipoMenu tipoMenu) {
         List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
-        Menu.TipoMenu tipoSeguro = tipoMenu == null ? Menu.TipoMenu.NO_DEFINIDO : tipoMenu;
+        Menu.TipoMenu tipoSeguro = tipoMenu == null ? Menu.TipoMenu.DESAYUNO : tipoMenu;
         Menu menu = buscarMenuPorFechaYTipo(lineas, fechaStr, tipoSeguro);
         if (menu != null) return menu;
-
-        if (tipoSeguro == Menu.TipoMenu.NO_DEFINIDO) {
-            Menu cualquiera = buscarMenuPorFecha(lineas, fechaStr);
-            if (cualquiera != null) return cualquiera;
-        }
 
         try {
             Menu noDisponible = new Menu(LocalDate.parse(fechaStr), EstadoMenu.NO_DISPONIBLE);
@@ -925,7 +918,7 @@ public class DataBase {
             LocalDate fecha = LocalDate.parse(partesPrincipales[0]);
             EstadoMenu estado = EstadoMenu.CON_MENU;
             String bloquePlatillos = "";
-            Menu.TipoMenu tipoMenu = Menu.TipoMenu.NO_DEFINIDO;
+            Menu.TipoMenu tipoMenu = Menu.TipoMenu.DESAYUNO;
 
             if (partesPrincipales.length >= 2) {
                 estado = parsearEstadoMenu(partesPrincipales[1]);
@@ -1033,11 +1026,11 @@ public class DataBase {
     }
 
     private static Menu.TipoMenu parsearTipoMenu(String raw) {
-        if (raw == null || raw.isBlank()) return Menu.TipoMenu.NO_DEFINIDO;
+        if (raw == null || raw.isBlank()) return Menu.TipoMenu.DESAYUNO;
         try {
             return Menu.TipoMenu.valueOf(raw.trim());
         } catch (IllegalArgumentException ex) {
-            return Menu.TipoMenu.NO_DEFINIDO;
+            return Menu.TipoMenu.DESAYUNO;
         }
     }
 
@@ -1052,7 +1045,7 @@ public class DataBase {
     }
 
     private static String valorTipoMenu(Menu.TipoMenu tipoMenu) {
-        return tipoMenu == null ? Menu.TipoMenu.NO_DEFINIDO.name() : tipoMenu.name();
+        return tipoMenu == null ? Menu.TipoMenu.DESAYUNO.name() : tipoMenu.name();
     }
 
     private static boolean menuValidoParaGuardar(Menu menu) {
@@ -1068,16 +1061,14 @@ public class DataBase {
 
     private static boolean existeMenuParaFechaYTipo(List<String> lineas, LocalDate fecha, Menu.TipoMenu tipoMenu) {
         String fechaStr = fecha.toString();
-        Menu.TipoMenu tipoSeguro = tipoMenu == null ? Menu.TipoMenu.NO_DEFINIDO : tipoMenu;
+        Menu.TipoMenu tipoSeguro = tipoMenu == null ? Menu.TipoMenu.DESAYUNO : tipoMenu;
         for (String linea : lineas) {
             String[] partes = linea.split("\\|");
             if (partes.length > 0 && fechaStr.equals(partes[0])) {
                 Menu.TipoMenu tipoLinea = partes.length >= 3
                         ? parsearTipoMenu(partes[2])
-                        : Menu.TipoMenu.NO_DEFINIDO;
-                boolean coincideTipo = tipoSeguro == Menu.TipoMenu.NO_DEFINIDO
-                        ? tipoLinea == Menu.TipoMenu.NO_DEFINIDO
-                        : tipoLinea == tipoSeguro;
+                : Menu.TipoMenu.DESAYUNO;
+            boolean coincideTipo = tipoLinea == tipoSeguro;
                 if (coincideTipo) return true;
             }
         }
@@ -1103,16 +1094,14 @@ public class DataBase {
     }
 
     private static Menu buscarMenuPorFechaYTipo(List<String> lineas, String fechaStr, Menu.TipoMenu tipoMenu) {
-        Menu.TipoMenu tipoSeguro = tipoMenu == null ? Menu.TipoMenu.NO_DEFINIDO : tipoMenu;
+        Menu.TipoMenu tipoSeguro = tipoMenu == null ? Menu.TipoMenu.DESAYUNO : tipoMenu;
         for (String linea : lineas) {
             String[] partes = linea.split("\\|");
             if (partes.length > 0 && partes[0].equals(fechaStr)) {
                 Menu.TipoMenu tipoLinea = partes.length >= 3
                         ? parsearTipoMenu(partes[2])
-                        : Menu.TipoMenu.NO_DEFINIDO;
-                boolean coincideTipo = tipoSeguro == Menu.TipoMenu.NO_DEFINIDO
-                        ? tipoLinea == Menu.TipoMenu.NO_DEFINIDO
-                        : tipoLinea == tipoSeguro;
+                : Menu.TipoMenu.DESAYUNO;
+            boolean coincideTipo = tipoLinea == tipoSeguro;
                 if (coincideTipo) {
                     return parsearLineaMenu(partes);
                 }

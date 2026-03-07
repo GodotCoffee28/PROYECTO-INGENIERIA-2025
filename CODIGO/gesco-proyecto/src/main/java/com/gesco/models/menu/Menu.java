@@ -12,8 +12,7 @@ public class Menu {
     }
     public enum TipoMenu{
         DESAYUNO,
-        ALMUERZO,
-        NO_DEFINIDO
+        ALMUERZO
     }
 
     private final LocalDate fecha; 
@@ -26,21 +25,21 @@ public class Menu {
         this.fecha = fecha;
         this.platillos = new ArrayList<>();
         this.estado = EstadoMenu.CON_MENU;
-        this.tipoMenu = TipoMenu.NO_DEFINIDO;
+        this.tipoMenu = TipoMenu.DESAYUNO;
     }
 
     public Menu(LocalDate fecha, EstadoMenu estado) {
         this.fecha = fecha;
         this.platillos = new ArrayList<>();
         this.estado = estado == null ? EstadoMenu.CON_MENU : estado;
-        this.tipoMenu = TipoMenu.NO_DEFINIDO;
+        this.tipoMenu = TipoMenu.DESAYUNO;
     }
 
     public Menu() {
         this.fecha = LocalDate.now();
         this.platillos = new ArrayList<>();
         this.estado = EstadoMenu.NO_DISPONIBLE;
-        this.tipoMenu = TipoMenu.NO_DEFINIDO;
+        this.tipoMenu = TipoMenu.DESAYUNO;
         this.costoMenu = 0.0f;
     }
     
