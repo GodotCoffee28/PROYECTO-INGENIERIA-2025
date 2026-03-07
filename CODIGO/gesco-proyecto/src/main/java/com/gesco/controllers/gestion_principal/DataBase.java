@@ -769,11 +769,7 @@ public class DataBase {
                 if (partes.length == 0) continue;
 
                 LocalDate fecha = LocalDate.parse(partes[0].trim());
-                EstadoMenu estado = partes.length >= 2
-                        ? parsearEstadoMenu(partes[1])
-                        : EstadoMenu.CON_MENU;
-
-                // Solo mostrar dias donde al menos exista un menu cargado.
+                EstadoMenu estado = partes.length >= 2 ? parsearEstadoMenu(partes[1]) : EstadoMenu.CON_MENU;
                 if (estado != EstadoMenu.NO_DISPONIBLE) {
                     unicas.add(fecha);
                 }
