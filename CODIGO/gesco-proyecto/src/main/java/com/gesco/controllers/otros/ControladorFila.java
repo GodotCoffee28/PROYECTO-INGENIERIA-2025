@@ -3,6 +3,7 @@ package com.gesco.controllers.otros;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -117,6 +118,16 @@ public class ControladorFila {
                 "Saldo reembolsado correctamente. Saldo disponible: " + String.format("%.2f", saldoActual + costoFinal) + " Bs.",
                 "Reembolso exitoso",
                 JOptionPane.INFORMATION_MESSAGE
+            );
+        }
+
+        boolean eliminadoAcudieron = DataBase.eliminarRegistroAcudieron(cedulaSesion);
+        if (!eliminadoAcudieron) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "No se pudo actualizar el archivo acudieron.txt al salir de la fila.",
+                "Actualización incompleta",
+                JOptionPane.WARNING_MESSAGE
             );
         }
 
@@ -251,6 +262,23 @@ public class ControladorFila {
             return;
         }
 
+        TipoUsuario tipoUsuario = obtenerTipoUsuarioSesion();
+        Menu.TipoMenu tipoServicio = obtenerTipoServicioActual();
+        boolean registroAcudieron = DataBase.registrarAcudieron(
+            cedulaSesion,
+            tipoUsuario,
+            tipoServicio,
+            costoFinal
+        );
+        if (!registroAcudieron) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "El cobro se realizó, pero no se pudo registrar la asistencia en acudieron.txt.",
+                "Registro de asistencia incompleto",
+                JOptionPane.WARNING_MESSAGE
+            );
+        }
+
         vista.setEnFila(vista.getEnFila() + 1);
         usuarioEnFila = true;
 
@@ -264,15 +292,39 @@ public class ControladorFila {
     }
 
     private double obtenerCostoMenuHoy() {
-        String fechaHoy = LocalDate.now().toString();
-        Menu menu = DataBase.obtenerMenuPorFechaYTipo(fechaHoy, Menu.TipoMenu.ALMUERZO);
-        if (menu == null || menu.getEstado() == Menu.EstadoMenu.NO_DISPONIBLE || !menu.tienePlatillos()) {
-            menu = DataBase.obtenerMenuPorFechaYTipo(fechaHoy, Menu.TipoMenu.DESAYUNO);
-        }
-        if (menu == null || menu.getEstado() == Menu.EstadoMenu.NO_DISPONIBLE || !menu.tienePlatillos()) {
+        Menu menu = obtenerMenuServicioActual();
+        if (menu == null) {
             return 0.0;
         }
         return menu.getCostoMenu();
+    }
+
+    private Menu.TipoMenu obtenerTipoServicioActual() {
+        Menu menuServicio = obtenerMenuServicioActual();
+        return menuServicio == null ? Menu.TipoMenu.DESAYUNO : menuServicio.getTipoMenu();
+    }
+
+    private Menu obtenerMenuServicioActual() {
+        String fechaHoy = LocalDate.now().toString();
+        Menu menuDesayuno = DataBase.obtenerMenuPorFechaYTipo(fechaHoy, Menu.TipoMenu.DESAYUNO);
+        Menu menuAlmuerzo = DataBase.obtenerMenuPorFechaYTipo(fechaHoy, Menu.TipoMenu.ALMUERZO);
+
+        boolean desayunoActivo = esMenuActivo(menuDesayuno);
+        boolean almuerzoActivo = esMenuActivo(menuAlmuerzo);
+
+        if (desayunoActivo && !almuerzoActivo) {
+            return menuDesayuno;
+        }
+
+        if (!desayunoActivo && almuerzoActivo) {
+            return menuAlmuerzo;
+        }
+
+        if (desayunoActivo && almuerzoActivo) {
+            return LocalTime.now().isBefore(LocalTime.NOON) ? menuDesayuno : menuAlmuerzo;
+        }
+
+        return null;
     }
 
     private double obtenerCcbBase() {
