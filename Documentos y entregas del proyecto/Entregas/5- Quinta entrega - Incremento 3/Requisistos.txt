@@ -1,0 +1,21 @@
+Estimados Estudiantes. A continuación se especifican las pre-condiciones para el desarrollo y entrega del Incremento 3 bajo XP:
+
+ 1. El Grupo Docente actuando en rol de Product Owner ante el Servicio de Comedor, teniendo en cuenta los resultados del incremento 2 y revisando la planificación del Sprint3  les informa que el alcance del incremento 3 será la implementación de las siguientes HU (Alta prioridad):
+
+a) Para el usuario Consumidor(comensal):
+
+Incluir "Saldo Pana". Un estudiante puede apoyar a recargar el saldo de otro estudiante mediante su CI
+Un estudiante Exonerado puede acceder al comedor sin que se le descuente tarifa. Un estudiante Becario accede al comedor y solo se le descuenta el 5% de la tarifa (el porcentaje es menor al de los estudiantes regulares)
+ 
+
+b) Para el usuario Administrador del Servicio de Comedor: 
+
+Agregar un estudiante Exonerado o Becario mediante la CI del estudiante. En el caso Becario indicar el porcentaje de descuento (por ejemplo 5%). EL porcentaje del Becario siempre estará por debajo del porcentaje de los estudiantes regulares.
+Obtener el listado de los comensales que acudieron a un servicio (desayuno o almuerzo), indicando tipo de comensal y cantidad. En el caso de los estudiantes desagregar por: estudiantes regulares, becarios y exonerados
+Realizar el ajuste de la planificación del Sprint 3 para cubrir exclusivamente las HU indicadas en los apartado a) y b). Para ello, actualizar en la herramienta de seguimiento de actividades, bajo modelo dashboard Kanban (Trello, Notion, GitHub etc.), las tarjetas de actividades. Las tarjetas de actividades deben reflejar las HU a implementar con sus respectivos criterios de aceptación y la correspondiente asignación a cada integrante. Enviar el enlace para compartir el dashboard a los correos del grupo docente hasta el viernes 06-03-26. Los equipos  1 al 7 enviarán los enlaces de sus dashboards a la Profa Yosly Hernández y al preparador Samuel Flores. Los equipos 8 al 13 harán envío al Prof. Marcel Castro y a la preparadora Thibisay Palma (Ver correos en sección Grupo Docente).
+
+Un representante de cada equipo ha de subir en esta sección el enlace al Github con la rama correspondiente a la implementación de las HU más las pruebas unitarias el día de la presentación. ** Fecha de entrega: jueves 12-03-26 **
+
+4. ** La presentación del incremento 3 es el viernes 13-03-26 **, la modalidad será presencial con la participación de todos los integrantes de cada equipo. El horario y modalidad se acordará previamente con los preparadores.
+
+5.No se acepta entrega al equipo que le falte algun integrante por asistir de manera presencial en la fecha indicada.
