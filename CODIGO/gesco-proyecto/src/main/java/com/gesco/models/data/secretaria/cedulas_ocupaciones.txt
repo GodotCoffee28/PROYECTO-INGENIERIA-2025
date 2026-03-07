@@ -1,18 +1,27 @@
-# Formato: cedula:ocupacion
-# Ocupaciones válidas: estudiante, profesor, empleado, administrador
+# Formato base: cedula:ocupacion
+# Formato extendido para estudiante: cedula:estudiante:subtipo
+# Ocupaciones validas: estudiante, profesor, empleado, administrador, becario, exonerado
+# Subtipos validos para estudiante: regular, becario, exonerado
+# Ejemplos:
+# 12345678:estudiante
+# 12345679:becario
+# 12345680:exonerado
+# 12345681:estudiante:regular
+# 12345682:estudiante:becario
+# 12345683:estudiante:exonerado
 31768764:administrador
 32111454:administrador
 33246679:administrador
-32654321:estudiante
-32654322:estudiante
+32654321:estudiante:regular
+32654322:estudiante:regular
 32654323:profesor
 32654324:empleado
-33333333:estudiante
-33444444:estudiante
+33333333:estudiante:regular
+33444444:estudiante:regular
 33445566:profesor
-35667788:estudiante
+35667788:estudiante:regular
 44556677:empleado
-22334455:estudiante
+22334455:estudiante:becario
 12345678:administrador
 12345679:administrador
 11111111:administrador

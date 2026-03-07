@@ -7,6 +7,8 @@ public class Usuario {
 	public enum TipoUsuario {
 		COMENSAL,
 		ESTUDIANTE,
+		BECARIO,
+		EXONERADO,
 		PROFESOR,
 		EMPLEADO,
 		ADMIN,
@@ -19,6 +21,8 @@ public class Usuario {
 		public String toEtiqueta() {
 			return switch (this) {
 				case ESTUDIANTE -> "Estudiante";
+				case BECARIO -> "Becario";
+				case EXONERADO -> "Exonerado";
 				case PROFESOR -> "Profesor";
 				case EMPLEADO -> "Empleado";
 				case ADMIN, SUPER_ADMIN -> "Administrador";
@@ -30,6 +34,8 @@ public class Usuario {
 			if (valor == null) return COMENSAL;
 			return switch (valor.trim().toLowerCase(Locale.ROOT)) {
 				case "estudiante" -> ESTUDIANTE;
+				case "becario" -> BECARIO;
+				case "exonerado" -> EXONERADO;
 				case "profesor" -> PROFESOR;
 				case "empleado" -> EMPLEADO;
 				case "administrador" -> ADMIN;

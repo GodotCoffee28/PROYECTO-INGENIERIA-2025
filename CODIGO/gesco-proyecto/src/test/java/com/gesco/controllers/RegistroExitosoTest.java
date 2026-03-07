@@ -34,13 +34,17 @@ public class RegistroExitosoTest {
             "32654321:estudiante" + System.lineSeparator()
                 + "32654322:estudiante" + System.lineSeparator()
                 + "32654323:profesor" + System.lineSeparator()
-                + "32654324:trabajador" + System.lineSeparator(),
+                + "32654324:trabajador" + System.lineSeparator()
+                + "32654325:estudiante:becario" + System.lineSeparator()
+                + "32654326:exonerado" + System.lineSeparator(),
             java.nio.charset.StandardCharsets.UTF_8
         );
             Files.writeString(carpetaSecretaria.resolve("32654321.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
             Files.writeString(carpetaSecretaria.resolve("32654322.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
             Files.writeString(carpetaSecretaria.resolve("32654323.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
             Files.writeString(carpetaSecretaria.resolve("32654324.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
+            Files.writeString(carpetaSecretaria.resolve("32654325.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
+            Files.writeString(carpetaSecretaria.resolve("32654326.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
     }
 
     @After
@@ -87,6 +91,23 @@ public class RegistroExitosoTest {
     @Test
     public void registrarUsuario_nombreConNumeros_devuelveFalse() {
         assertFalse(DataBase.registrarUsuario("32654324", "clave456", "Ana1 Garcia", "ana@email.com", TipoUsuario.EMPLEADO));
+    }
+
+    @Test
+    public void obtenerTipoUsuarioSecretaria_estudianteBecario_resuelveBecario() {
+        assertEquals(TipoUsuario.BECARIO, DataBase.obtenerTipoUsuarioSecretaria("32654325"));
+    }
+
+    @Test
+    public void registrarUsuario_becario_guardaTipoUsuario() {
+        assertTrue(DataBase.registrarUsuario("32654325", "clave456", "Ana Garcia", "ana@email.com", TipoUsuario.BECARIO));
+        assertEquals(TipoUsuario.BECARIO, DataBase.obtenerTipoUsuario("32654325"));
+    }
+
+    @Test
+    public void registrarUsuario_exonerado_guardaTipoUsuario() {
+        assertTrue(DataBase.registrarUsuario("32654326", "clave456", "Ana Garcia", "ana@email.com", TipoUsuario.EXONERADO));
+        assertEquals(TipoUsuario.EXONERADO, DataBase.obtenerTipoUsuario("32654326"));
     }
 }
 

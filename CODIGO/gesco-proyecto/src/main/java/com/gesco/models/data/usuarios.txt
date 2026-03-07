@@ -2,3 +2,4 @@
 25000123:123456789:SuperAdmin:SprAdmin@gmail.com:Administrador:0.0;
 33246679:123456789:Gabriel Castillo:abcde@gmail.com:Administrador:0.0;
 11111111:12345678g:Administrador Ucevista:dadsdasdas@gmail.com:Administrador:10000.00;
+22334455:12345678a:Usuario Ucevista:dasdasdad@gmail.com:Becario:0.0;

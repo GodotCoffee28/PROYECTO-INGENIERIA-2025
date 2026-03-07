@@ -76,6 +76,18 @@ public class DataBaseCcbDescuentoTest {
     }
 
     @Test
+    public void calcularMontoCcbPorTipo_becario_descuentoFijoCincoPorciento() {
+        double monto = DataBase.calcularMontoCcbPorTipo(100.0, TipoUsuario.BECARIO);
+        assertEquals(5.0, monto, 0.0001);
+    }
+
+    @Test
+    public void calcularMontoCcbPorTipo_exonerado_sinCobro() {
+        double monto = DataBase.calcularMontoCcbPorTipo(100.0, TipoUsuario.EXONERADO);
+        assertEquals(0.0, monto, 0.0001);
+    }
+
+    @Test
     public void calcularMontoCcbPorTipo_profesor_porcentajeFueraDeRango_lanzaExcepcion() {
         try {
             DataBase.calcularMontoCcbPorTipo(100.0, TipoUsuario.PROFESOR, 0.60);

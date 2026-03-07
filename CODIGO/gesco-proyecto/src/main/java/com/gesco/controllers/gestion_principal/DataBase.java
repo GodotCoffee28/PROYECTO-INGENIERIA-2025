@@ -54,6 +54,8 @@ public class DataBase {
     private static final long CEDULA_MAXIMA = 45_000_000L;
     private static final double CCB_ESTUDIANTE_MIN = 0.20;
     private static final double CCB_ESTUDIANTE_MAX = 0.30;
+    private static final double CCB_BECARIO_PORCENTAJE = 0.05;
+    private static final double CCB_EXONERADO_PORCENTAJE = 0.00;
     private static final double CCB_PROFESOR_MIN = 0.70;
     private static final double CCB_PROFESOR_MAX = 0.90;
     private static final double CCB_EMPLEADO_MIN = 0.90;
@@ -375,13 +377,16 @@ public class DataBase {
             String limpia = valorSeguro(linea);
             if (limpia.isEmpty() || limpia.startsWith("#")) continue;
 
-            String[] partes = limpia.split(":");
+            String[] partes = limpia.split(":", 3);
             if (partes.length < 2) continue;
 
             String cedulaPadron = normalizarCedula(partes[0]);
             if (!cedulaLimpia.equals(cedulaPadron)) continue;
 
-            return mapearTipoSecretaria(partes[1]);
+            TipoUsuario tipoResuelto = resolverTipoDesdeRegistroSecretaria(partes);
+            if (tipoResuelto != null) {
+                return tipoResuelto;
+            }
         }
         return null;
     }
@@ -393,6 +398,10 @@ public class DataBase {
         TipoUsuario tipoSolicitado = tipoUsuario == TipoUsuario.COMENSAL
                 ? TipoUsuario.ESTUDIANTE
                 : tipoUsuario;
+
+        if (tipoSolicitado == TipoUsuario.ESTUDIANTE && esTipoEstudiante(tipoPadron)) {
+            return true;
+        }
         return tipoPadron == tipoSolicitado;
     }
 
@@ -1288,6 +1297,8 @@ public class DataBase {
 
         return switch (tipoUsuario) {
             case ESTUDIANTE -> new double[] { CCB_ESTUDIANTE_MIN, CCB_ESTUDIANTE_MAX };
+            case BECARIO -> new double[] { CCB_BECARIO_PORCENTAJE, CCB_BECARIO_PORCENTAJE };
+            case EXONERADO -> new double[] { CCB_EXONERADO_PORCENTAJE, CCB_EXONERADO_PORCENTAJE };
             case PROFESOR -> new double[] { CCB_PROFESOR_MIN, CCB_PROFESOR_MAX };
             case EMPLEADO, ADMIN, SUPER_ADMIN -> new double[] { CCB_EMPLEADO_MIN, CCB_EMPLEADO_MAX };
             default -> new double[] { 1.0, 1.0 };
@@ -1383,21 +1394,53 @@ public class DataBase {
     }
 
     private static TipoUsuario mapearTipoSecretaria(String valorTipo) {
-        String normalizado = valorSeguro(valorTipo)
+        String normalizado = normalizarTextoTipo(valorTipo);
+
+        return switch (normalizado) {
+            case "estudiante" -> TipoUsuario.ESTUDIANTE;
+            case "becario" -> TipoUsuario.BECARIO;
+            case "exonerado" -> TipoUsuario.EXONERADO;
+            case "profesor" -> TipoUsuario.PROFESOR;
+            case "trabajador", "empleado" -> TipoUsuario.EMPLEADO;
+            case "administrador", "admin" -> TipoUsuario.ADMIN;
+            default -> null;
+        };
+    }
+
+    private static TipoUsuario resolverTipoDesdeRegistroSecretaria(String[] partes) {
+        TipoUsuario tipoBase = mapearTipoSecretaria(partes[1]);
+        if (tipoBase != TipoUsuario.ESTUDIANTE || partes.length < 3) {
+            return tipoBase;
+        }
+
+        TipoUsuario subtipoUsuario = mapearSubtipoUsuario(partes[2]);
+        return subtipoUsuario == null ? tipoBase : subtipoUsuario;
+    }
+
+    private static TipoUsuario mapearSubtipoUsuario(String valor) {
+        String normalizado = normalizarTextoTipo(valor);
+        return switch (normalizado) {
+            case "regular", "estudiante" -> TipoUsuario.ESTUDIANTE;
+            case "becario" -> TipoUsuario.BECARIO;
+            case "exonerado" -> TipoUsuario.EXONERADO;
+            default -> null;
+        };
+    }
+
+    private static boolean esTipoEstudiante(TipoUsuario tipoUsuario) {
+        return tipoUsuario == TipoUsuario.ESTUDIANTE
+            || tipoUsuario == TipoUsuario.BECARIO
+            || tipoUsuario == TipoUsuario.EXONERADO;
+    }
+
+    private static String normalizarTextoTipo(String valorTipo) {
+        return valorSeguro(valorTipo)
                 .toLowerCase(Locale.ROOT)
                 .replace("á", "a")
                 .replace("é", "e")
                 .replace("í", "i")
                 .replace("ó", "o")
                 .replace("ú", "u");
-
-        return switch (normalizado) {
-            case "estudiante" -> TipoUsuario.ESTUDIANTE;
-            case "profesor" -> TipoUsuario.PROFESOR;
-            case "trabajador", "empleado" -> TipoUsuario.EMPLEADO;
-            case "administrador", "admin" -> TipoUsuario.ADMIN;
-            default -> null;
-        };
     }
 
     private static double redondearMoneda(double valor) {
