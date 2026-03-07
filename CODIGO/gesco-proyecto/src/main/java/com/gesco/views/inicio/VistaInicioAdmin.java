@@ -6,7 +6,7 @@ import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 public class VistaInicioAdmin extends PlantillaGesco {
 
-    private BotonNeon btnGestión, btnSubirDatos, btnCambio, btnVerCCB, btnVerMenu;
+    private BotonNeon btnGestión, btnSubirDatos, btnCambio, btnVerCCB, btnVerMenu, btnCambiarTipoUsuario;
     private JLabel titulo;
 
     public VistaInicioAdmin() {
@@ -41,6 +41,9 @@ public class VistaInicioAdmin extends PlantillaGesco {
 
         btnCambio = new BotonNeon("Navegar como comensal");
         btnCambio.setPreferredSize(new Dimension(220, 50));
+
+        btnCambiarTipoUsuario = new BotonNeon("Cambiar tipo por cédula");
+        btnCambiarTipoUsuario.setPreferredSize(new Dimension(220, 50));
     }
 
     private void construirCuerpo() {
@@ -103,8 +106,20 @@ public class VistaInicioAdmin extends PlantillaGesco {
 
         JPanel cajaNavegacion = crearTarjeta("", 880, 120,40,15,"/Billetera.png"); 
         cajaNavegacion.setLayout(new BorderLayout());
-        cajaNavegacion.setBorder(BorderFactory.createEmptyBorder(35, 80, 35, 80));
-        cajaNavegacion.add(btnCambio, BorderLayout.CENTER);
+        cajaNavegacion.setBorder(BorderFactory.createEmptyBorder(20, 80, 20, 80));
+
+        JPanel panelNavegacion = new JPanel(new GridBagLayout());
+        panelNavegacion.setOpaque(false);
+        GridBagConstraints gNav = new GridBagConstraints();
+        gNav.gridx = 0;
+        gNav.insets = new Insets(6, 20, 6, 20);
+        gNav.fill = GridBagConstraints.HORIZONTAL;
+        gNav.weightx = 1.0;
+        gNav.gridy = 0;
+        panelNavegacion.add(btnCambio, gNav);
+        gNav.gridy = 1;
+        panelNavegacion.add(btnCambiarTipoUsuario, gNav);
+        cajaNavegacion.add(panelNavegacion, BorderLayout.CENTER);
 
         gbc.gridy = 1;
         gbc.gridx = 0;
@@ -135,6 +150,11 @@ public class VistaInicioAdmin extends PlantillaGesco {
     public BotonNeon getBtnCambio() {
         return btnCambio;
     }
+
+    public BotonNeon getBtnCambiarTipoUsuario() {
+        return btnCambiarTipoUsuario;
+    }
+
     public void setEsSuperAdmin(boolean esSuperAdmin) {
         JLabel iconoSuperAdmin = getIlblSprAdmin();
         if (iconoSuperAdmin != null) {

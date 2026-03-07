@@ -21,7 +21,7 @@
 33445566:profesor
 35667788:estudiante:regular
 44556677:empleado
-22334455:estudiante:becario
+22334455:estudiante:regular
 12345678:administrador
 12345679:administrador
 11111111:administrador

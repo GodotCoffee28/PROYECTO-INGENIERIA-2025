@@ -417,6 +417,36 @@ public class DataBase {
         return agregarAdmin(cedula);
     }
 
+    public static boolean cambiarTipoUsuarioPorCedula(String cedula, TipoUsuario nuevoTipo) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (!cedulaValida(cedulaLimpia) || nuevoTipo == null || nuevoTipo == TipoUsuario.COMENSAL) {
+            return false;
+        }
+
+        TipoUsuario tipoAnterior = obtenerTipoUsuarioSecretaria(cedulaLimpia);
+        if (tipoAnterior == null) {
+            return false;
+        }
+
+        if (esSuperAdmin(cedulaLimpia) && !nuevoTipo.esAdmin()) {
+            return false;
+        }
+
+        if (!actualizarTipoEnPadronSecretaria(cedulaLimpia, nuevoTipo)) {
+            return false;
+        }
+
+        if (!actualizarTipoEnUsuariosRegistrados(cedulaLimpia, nuevoTipo)) {
+            return false;
+        }
+
+        if (nuevoTipo.esAdmin()) {
+            return agregarAdmin(cedulaLimpia);
+        }
+
+        return removerAdmin(cedulaLimpia);
+    }
+
     public static boolean validarInicioSesion(String cedula, String clave) {
         if (!cedulaValida(cedula) || clave == null) return false;
         List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
@@ -556,6 +586,31 @@ public class DataBase {
     private static boolean agregarAdmin(String cedula) {
         if (esAdmin(cedula)) return true;
         return escribirLineaGenerica(ARCHIVO_ADMINS, cedula + System.lineSeparator());
+    }
+
+    private static boolean removerAdmin(String cedula) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (!cedulaValida(cedulaLimpia)) return false;
+        if (esSuperAdmin(cedulaLimpia)) return false;
+
+        List<String> admins = leerLineasGenericas(ARCHIVO_ADMINS);
+        List<String> actualizados = new ArrayList<>();
+        boolean cambio = false;
+
+        for (String linea : admins) {
+            String admin = normalizarCedula(linea);
+            if (cedulaLimpia.equals(admin)) {
+                cambio = true;
+                continue;
+            }
+            actualizados.add(linea);
+        }
+
+        if (!cambio) {
+            return true;
+        }
+
+        return reescribirArchivoGenerico(ARCHIVO_ADMINS, actualizados);
     }
 
     public static double obtenerSaldo(String cedula) {
@@ -1425,6 +1480,127 @@ public class DataBase {
             case "exonerado" -> TipoUsuario.EXONERADO;
             default -> null;
         };
+    }
+
+    private static boolean actualizarTipoEnPadronSecretaria(String cedula, TipoUsuario nuevoTipo) {
+        List<String> lineas = leerLineasSecretaria(ARCHIVO_PADRON_SECRETARIA);
+        List<String> actualizadas = new ArrayList<>();
+        boolean encontrado = false;
+        String registroNuevo = construirRegistroSecretaria(cedula, nuevoTipo);
+        if (registroNuevo == null) {
+            return false;
+        }
+
+        for (String linea : lineas) {
+            String limpia = valorSeguro(linea);
+            if (limpia.isEmpty() || limpia.startsWith("#")) {
+                actualizadas.add(linea);
+                continue;
+            }
+
+            String[] partes = limpia.split(":", 2);
+            if (partes.length < 2) {
+                actualizadas.add(linea);
+                continue;
+            }
+
+            String cedulaPadron = normalizarCedula(partes[0]);
+            if (cedula.equals(cedulaPadron)) {
+                actualizadas.add(registroNuevo);
+                encontrado = true;
+            } else {
+                actualizadas.add(linea);
+            }
+        }
+
+        if (!encontrado) {
+            return false;
+        }
+
+        return reescribirArchivoSecretaria(ARCHIVO_PADRON_SECRETARIA, actualizadas);
+    }
+
+    private static boolean actualizarTipoEnUsuariosRegistrados(String cedula, TipoUsuario nuevoTipo) {
+        List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
+        List<String> actualizadas = new ArrayList<>();
+        boolean encontrado = false;
+
+        for (String linea : lineas) {
+            String[] partes = linea.split(":");
+            if (partes.length > 0 && cedula.equals(normalizarCedula(partes[0]))) {
+                actualizadas.add(reconstruirLineaUsuarioConTipo(partes, nuevoTipo));
+                encontrado = true;
+            } else {
+                actualizadas.add(linea);
+            }
+        }
+
+        if (!encontrado) {
+            return true;
+        }
+
+        return reescribirArchivoGenerico(ARCHIVO_USUARIOS, actualizadas);
+    }
+
+    private static String reconstruirLineaUsuarioConTipo(String[] partes, TipoUsuario nuevoTipo) {
+        String cedula = partes.length > 0 ? partes[0].trim() : "";
+        String clave = partes.length > 1 ? partes[1].trim() : "";
+        String nombre = partes.length > 2 ? partes[2].trim() : "";
+        String correo = partes.length > 3 ? partes[3].trim() : "";
+        String saldo = "0.0;";
+
+        if (partes.length >= 6) {
+            saldo = asegurarSaldoConTerminador(partes[5]);
+        } else if (partes.length == 5) {
+            String quinto = valorSeguro(partes[4]);
+            if (esValorNumerico(quinto.replace(";", ""))) {
+                saldo = asegurarSaldoConTerminador(quinto);
+            }
+        }
+
+        return String.format(
+            Locale.ROOT,
+            "%s:%s:%s:%s:%s:%s",
+            cedula,
+            clave,
+            nombre,
+            correo,
+            nuevoTipo.toEtiqueta(),
+            saldo
+        );
+    }
+
+    private static String construirRegistroSecretaria(String cedula, TipoUsuario tipoUsuario) {
+        if (tipoUsuario == null) {
+            return null;
+        }
+
+        return switch (tipoUsuario) {
+            case ESTUDIANTE -> cedula + ":estudiante:regular";
+            case BECARIO -> cedula + ":estudiante:becario";
+            case EXONERADO -> cedula + ":estudiante:exonerado";
+            case PROFESOR -> cedula + ":profesor";
+            case EMPLEADO -> cedula + ":empleado";
+            case ADMIN, SUPER_ADMIN -> cedula + ":administrador";
+            default -> null;
+        };
+    }
+
+    private static String asegurarSaldoConTerminador(String saldo) {
+        String limpio = valorSeguro(saldo);
+        return limpio.endsWith(";") ? limpio : limpio + ";";
+    }
+
+    private static boolean esValorNumerico(String valor) {
+        if (valor == null || valor.isBlank()) {
+            return false;
+        }
+        try {
+            Double.parseDouble(valor.replace(',', '.'));
+            return true;
+        } catch (NumberFormatException ex) {
+            return false;
+        }
     }
 
     private static boolean esTipoEstudiante(TipoUsuario tipoUsuario) {

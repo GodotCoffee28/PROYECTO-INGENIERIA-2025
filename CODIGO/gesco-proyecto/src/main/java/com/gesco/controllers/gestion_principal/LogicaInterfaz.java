@@ -20,6 +20,7 @@ import com.gesco.controllers.otros.ControladorEspera;
 import com.gesco.controllers.otros.ControladorFila;
 import com.gesco.controllers.otros.ControladorTurnos;
 import com.gesco.models.menu.Menu;
+import com.gesco.models.usuarios.Usuario.TipoUsuario;
 import com.gesco.views.Registros.VistaHistorialCCB;
 import com.gesco.views.Registros.VistaHistorialMenu;
 import com.gesco.views.Registros.VistaHistorialSaldo;
@@ -179,8 +180,84 @@ public class LogicaInterfaz {
             this::mostrarCargaCCB,
             this::mostrarVerCcb,
             this::swapInteraccion,
-            this::mostrarHistorialMenu
+            this::mostrarHistorialMenu,
+            this::mostrarDialogoCambioTipoUsuario
         ).conectar();
+    }
+
+    private void mostrarDialogoCambioTipoUsuario() {
+        String cedulaIngresada = javax.swing.JOptionPane.showInputDialog(
+            null,
+            "Ingrese la cédula del estudiante o usuario a actualizar:",
+            "Cambiar tipo de usuario",
+            javax.swing.JOptionPane.QUESTION_MESSAGE
+        );
+
+        String cedula = DataBase.normalizarCedula(cedulaIngresada);
+        if (cedula.isBlank()) {
+            return;
+        }
+
+        TipoUsuario tipoActual = DataBase.obtenerTipoUsuarioSecretaria(cedula);
+        if (tipoActual == null) {
+            javax.swing.JOptionPane.showMessageDialog(
+                null,
+                "La cédula no existe en el padrón de secretaría.",
+                "Cédula no encontrada",
+                javax.swing.JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        OpcionTipo[] opciones = new OpcionTipo[] {
+            new OpcionTipo("Estudiante regular", TipoUsuario.ESTUDIANTE),
+            new OpcionTipo("Estudiante becario", TipoUsuario.BECARIO),
+            new OpcionTipo("Estudiante exonerado", TipoUsuario.EXONERADO),
+            new OpcionTipo("Profesor", TipoUsuario.PROFESOR),
+            new OpcionTipo("Empleado", TipoUsuario.EMPLEADO),
+            new OpcionTipo("Administrador", TipoUsuario.ADMIN)
+        };
+
+        OpcionTipo seleccionada = (OpcionTipo) javax.swing.JOptionPane.showInputDialog(
+            null,
+            "Seleccione el nuevo tipo para la cédula " + cedula + ":",
+            "Nuevo tipo de usuario",
+            javax.swing.JOptionPane.QUESTION_MESSAGE,
+            null,
+            opciones,
+            opcionPorTipo(opciones, tipoActual)
+        );
+
+        if (seleccionada == null) {
+            return;
+        }
+
+        boolean actualizado = DataBase.cambiarTipoUsuarioPorCedula(cedula, seleccionada.tipo());
+        if (!actualizado) {
+            javax.swing.JOptionPane.showMessageDialog(
+                null,
+                "No se pudo actualizar el tipo. Verifique si la cédula es válida o si intenta modificar un super administrador.",
+                "Error al actualizar",
+                javax.swing.JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
+        javax.swing.JOptionPane.showMessageDialog(
+            null,
+            "Tipo actualizado correctamente para la cédula " + cedula + ".",
+            "Actualización exitosa",
+            javax.swing.JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+
+    private OpcionTipo opcionPorTipo(OpcionTipo[] opciones, TipoUsuario tipo) {
+        for (OpcionTipo opcion : opciones) {
+            if (opcion.tipo() == tipo) {
+                return opcion;
+            }
+        }
+        return opciones[0];
     }
 
     private void mostrarPanelControl() {
@@ -522,6 +599,13 @@ public class LogicaInterfaz {
     }
 
     private record MenuPendiente(java.time.LocalDate fecha, Menu.TipoMenu tipoMenu) {}
+
+    private record OpcionTipo(String etiqueta, TipoUsuario tipo) {
+        @Override
+        public String toString() {
+            return etiqueta;
+        }
+    }
 
     private record DiaDisponible(java.time.LocalDate fecha, String etiqueta) {
         @Override
