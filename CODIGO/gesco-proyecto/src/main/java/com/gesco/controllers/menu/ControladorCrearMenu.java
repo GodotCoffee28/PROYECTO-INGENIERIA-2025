@@ -1,20 +1,23 @@
 package com.gesco.controllers.menu;
 
 
-import com.gesco.controllers.gestion_principal.DataBase;
-import com.gesco.views.menu.VistaCrearMenu;
-import com.gesco.models.menu.Insumo;
-import com.gesco.models.menu.Menu;
-import com.gesco.models.menu.Platillo;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Locale;
+
+import com.gesco.controllers.gestion_principal.DataBase;
+import com.gesco.models.menu.Insumo;
+import com.gesco.models.menu.Menu;
+import com.gesco.models.menu.Platillo;
+import com.gesco.views.menu.VistaCrearMenu;
 
 public class ControladorCrearMenu {
 
@@ -33,8 +36,10 @@ public class ControladorCrearMenu {
     }
 
     public void conectar() {
-        vista.setInsumos(DataBase.obtenerInsumos());
+        List<Insumo> insumosDisponibles = filtrarInsumosConStock(DataBase.obtenerInsumos());
+        vista.setInsumos(insumosDisponibles);
         conectarAccionesInsumos();
+        actualizarTodosLosSpinners();
         vista.addFechaChangeListener(this::actualizarDiaSemanaSeleccionado);
         actualizarDiaSemanaSeleccionado();
         vista.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
@@ -81,7 +86,7 @@ public class ControladorCrearMenu {
         JButton btnAgregar,
         JButton btnQuitar
     ) {
-        combo.addActionListener(e -> vista.actualizarSpinner(combo, spinner, modelo));
+        combo.addActionListener(e -> actualizarSpinnerSegunDisponibilidad(combo, spinner, modelo));
 
         btnAgregar.addActionListener(e -> {
             Insumo base = (Insumo) combo.getSelectedItem();
@@ -111,16 +116,59 @@ public class ControladorCrearMenu {
                 modelo.addElement(nuevo);
             }
 
-            vista.actualizarSpinner(combo, spinner, modelo);
+            actualizarSpinnerSegunDisponibilidad(combo, spinner, modelo);
         });
 
         btnQuitar.addActionListener(e -> {
             int index = lista.getSelectedIndex();
             if (index >= 0) {
                 modelo.remove(index);
-                vista.actualizarSpinner(combo, spinner, modelo);
+                actualizarSpinnerSegunDisponibilidad(combo, spinner, modelo);
             }
         });
+    }
+
+    private List<Insumo> filtrarInsumosConStock(List<Insumo> insumos) {
+        List<Insumo> disponibles = new ArrayList<>();
+        if (insumos == null) {
+            return disponibles;
+        }
+        for (Insumo insumo : insumos) {
+            if (insumo != null && insumo.getCantidad() > 0) {
+                disponibles.add(insumo);
+            }
+        }
+        return disponibles;
+    }
+
+    private void actualizarTodosLosSpinners() {
+        actualizarSpinnerSegunDisponibilidad(vista.getComboInsumo1(), vista.getSpinnerCantidad1(), vista.getModeloInsumos1());
+        actualizarSpinnerSegunDisponibilidad(vista.getComboInsumo2(), vista.getSpinnerCantidad2(), vista.getModeloInsumos2());
+        actualizarSpinnerSegunDisponibilidad(vista.getComboInsumo3(), vista.getSpinnerCantidad3(), vista.getModeloInsumos3());
+    }
+
+    private void actualizarSpinnerSegunDisponibilidad(
+        JComboBox<Insumo> combo,
+        JSpinner spinner,
+        DefaultListModel<Insumo> modelo
+    ) {
+        Insumo seleccionado = (Insumo) combo.getSelectedItem();
+        if (seleccionado == null) {
+            spinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 0, 1));
+            spinner.setEnabled(false);
+            return;
+        }
+
+        int existente = obtenerCantidadExistente(modelo, seleccionado);
+        int restante = seleccionado.getCantidad() - existente;
+        if (restante <= 0) {
+            spinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 0, 1));
+            spinner.setEnabled(false);
+            return;
+        }
+
+        spinner.setModel(new javax.swing.SpinnerNumberModel(1, 1, restante, 1));
+        spinner.setEnabled(true);
     }
 
     private int buscarInsumo(DefaultListModel<Insumo> modelo, Insumo base) {
@@ -226,7 +274,7 @@ public class ControladorCrearMenu {
             } else {
                 javax.swing.JOptionPane.showMessageDialog(vista, "Error al crear menú.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
             }
-        } catch (Exception ex) {
+        } catch (NumberFormatException | java.time.format.DateTimeParseException | NullPointerException ex) {
             javax.swing.JOptionPane.showMessageDialog(vista, "Fecha inválida. Use formato DD MM AAAA.", "Error", javax.swing.JOptionPane.WARNING_MESSAGE);
         }
     }

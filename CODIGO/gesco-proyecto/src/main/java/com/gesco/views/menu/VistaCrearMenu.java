@@ -255,18 +255,9 @@ public class VistaCrearMenu extends PlantillaGesco {
     }
 
     public void setInsumos(List<Insumo> insumos) {
-        List<Insumo> disponibles = new ArrayList<>();
-        if (insumos != null) {
-            for (Insumo insumo : insumos) {
-                if (insumo != null && insumo.getCantidad() > 0) {
-                    disponibles.add(insumo);
-                }
-            }
-        }
-
-        cargarInsumosEnCombo(comboInsumo1, spinnerCantidad1, modeloInsumos1, disponibles);
-        cargarInsumosEnCombo(comboInsumo2, spinnerCantidad2, modeloInsumos2, disponibles);
-        cargarInsumosEnCombo(comboInsumo3, spinnerCantidad3, modeloInsumos3, disponibles);
+        cargarInsumosEnCombo(comboInsumo1, insumos);
+        cargarInsumosEnCombo(comboInsumo2, insumos);
+        cargarInsumosEnCombo(comboInsumo3, insumos);
     }
 
     private void agregarSeccionInsumos(JPanel formPanel,String titulo,JComboBox<Insumo> combo,JSpinner spinner,JButton btnAgregar,JButton btnQuitar,JList<Insumo> lista) {
@@ -299,40 +290,16 @@ public class VistaCrearMenu extends PlantillaGesco {
         formPanel.add(Box.createVerticalStrut(16));
     }
 
-    private void cargarInsumosEnCombo(JComboBox<Insumo> combo,JSpinner spinner,DefaultListModel<Insumo> modelo,List<Insumo> insumos) {
+    private void cargarInsumosEnCombo(JComboBox<Insumo> combo, List<Insumo> insumos) {
         combo.removeAllItems();
-        for (Insumo insumo : insumos) {
-            combo.addItem(insumo);
-        }
-        actualizarSpinner(combo, spinner, modelo);
-    }
-
-    public void actualizarSpinner(JComboBox<Insumo> combo,JSpinner spinner,DefaultListModel<Insumo> modelo) {
-        Insumo seleccionado = (Insumo) combo.getSelectedItem();
-        if (seleccionado == null) {
-            spinner.setModel(new SpinnerNumberModel(0, 0, 0, 1));
-            spinner.setEnabled(false);
+        if (insumos == null) {
             return;
         }
-
-        int existente = 0;
-        for (int i = 0; i < modelo.size(); i++) {
-            Insumo actual = modelo.getElementAt(i);
-            if (actual.getNombre().equalsIgnoreCase(seleccionado.getNombre())
-                && actual.getTipoNutricional().equalsIgnoreCase(seleccionado.getTipoNutricional())) {
-                existente = actual.getCantidad();
-                break;
+        for (Insumo insumo : insumos) {
+            if (insumo != null) {
+                combo.addItem(insumo);
             }
         }
-        int restante = seleccionado.getCantidad() - existente;
-        if (restante <= 0) {
-            spinner.setModel(new SpinnerNumberModel(0, 0, 0, 1));
-            spinner.setEnabled(false);
-            return;
-        }
-
-        spinner.setModel(new SpinnerNumberModel(1, 1, restante, 1));
-        spinner.setEnabled(true);
     }
 
     private List<Insumo> obtenerInsumosDesdeModelo(DefaultListModel<Insumo> modelo) {

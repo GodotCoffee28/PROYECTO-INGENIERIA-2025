@@ -10,7 +10,7 @@
 # 12345682:estudiante:becario
 # 12345683:estudiante:exonerado
 31768764:administrador
-32111454:estudiante:regular
+32111454:administrador
 33246679:administrador
 32654321:estudiante:regular
 32654322:estudiante:regular

@@ -1,11 +1,30 @@
 package com.gesco.views.PlantillasViews;
 
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 public class PlantillaGesco extends JFrame {
 
@@ -150,14 +169,10 @@ public class PlantillaGesco extends JFrame {
         JLabel etiqueta = new JLabel(texto);
         etiqueta.setFont(new Font(fuente, estilo, size)); 
         etiqueta.setForeground(color);
-        if (alineacion.equals("izquierda")) {
-            etiqueta.setAlignmentX(Component.LEFT_ALIGNMENT);
-        } 
-        else if (alineacion.equals("derecha")) {
-            etiqueta.setAlignmentX(Component.RIGHT_ALIGNMENT);
-        } 
-        else {
-            etiqueta.setAlignmentX(Component.CENTER_ALIGNMENT);
+        switch (alineacion) {
+            case "izquierda" -> etiqueta.setAlignmentX(Component.LEFT_ALIGNMENT);
+            case "derecha" -> etiqueta.setAlignmentX(Component.RIGHT_ALIGNMENT);
+            default -> etiqueta.setAlignmentX(Component.CENTER_ALIGNMENT);
         }
         return etiqueta;
     }
