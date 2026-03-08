@@ -3,5 +3,5 @@
 33246679:123456789:Gabriel Castillo:abcde@gmail.com:Administrador:4000,00;
 11111111:12345678g:Administrador Ucevista:dadsdasdas@gmail.com:Administrador:10000.00;
 22334455:12345678a:Usuario Ucevista:dasdasdad@gmail.com:Estudiante:0.0;
-32111454:32111454Ramses:Administrador Ucevista:aaroncordobarivas@gmail.com:Administrador:0.0;
-32111455:12345678R.:Usuario Ucevista:manolo@gmail.com:Estudiante:0.0;
+32111454:32111454Ramses:Administrador Ucevista:aaroncordobarivas@gmail.com:Administrador:11100,00;
+32111455:12345678R.:Usuario Ucevista:manolo@gmail.com:Estudiante:9,00;

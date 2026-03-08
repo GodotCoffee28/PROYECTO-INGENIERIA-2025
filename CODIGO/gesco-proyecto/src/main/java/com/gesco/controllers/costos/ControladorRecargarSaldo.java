@@ -63,12 +63,46 @@ public class ControladorRecargarSaldo {
         String banco = valor(vista.getBanco());
         String referencia = valor(vista.getReferencia());
         String montoStr = valor(vista.getMonto());
+        boolean modoPana = vista.getSwitchPana().isSelected();
+        String cedulaDestino = modoPana
+            ? DataBase.normalizarCedula(valor(vista.getCedula().getText()))
+            : cedulaSesion;
 
         if (cedulaSesion.isBlank()) {
             JOptionPane.showMessageDialog(
                 vista,
                 "No hay una sesión activa para recargar saldo.",
                 "Sesión requerida",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        if (cedulaDestino.isBlank()) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "Debe indicar una cédula destino válida.",
+                "Cédula requerida",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        if (!cedulaDestino.matches("\\d+")) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "La cédula debe contener solo números.",
+                "Cédula inválida",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        if (!DataBase.cedulaYaRegistrada(cedulaDestino)) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "La cédula destino no se encuentra registrada.",
+                "Usuario no encontrado",
                 JOptionPane.WARNING_MESSAGE
             );
             return;
@@ -167,9 +201,9 @@ public class ControladorRecargarSaldo {
             return;
         }
 
-        double saldoActual = DataBase.obtenerSaldo(cedulaSesion);
+        double saldoActual = DataBase.obtenerSaldo(cedulaDestino);
         double nuevoSaldo = saldoActual + monto;
-        boolean actualizado = DataBase.actualizarSaldo(cedulaSesion, nuevoSaldo);
+        boolean actualizado = DataBase.actualizarSaldo(cedulaDestino, nuevoSaldo);
 
         if (!actualizado) {
             JOptionPane.showMessageDialog(
@@ -193,7 +227,7 @@ public class ControladorRecargarSaldo {
 
         JOptionPane.showMessageDialog(
             vista,
-            "Recarga exitosa. Nuevo saldo: " + String.format("%.2f", nuevoSaldo) + " Bs.",
+            "Recarga exitosa para la cédula " + cedulaDestino + ". Nuevo saldo: " + String.format("%.2f", nuevoSaldo) + " Bs.",
             "Recarga exitosa",
             JOptionPane.INFORMATION_MESSAGE
         );
