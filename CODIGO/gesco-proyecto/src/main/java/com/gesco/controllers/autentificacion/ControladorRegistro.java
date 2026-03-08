@@ -1,9 +1,9 @@
 package com.gesco.controllers.autentificacion;
 
 
-import com.gesco.controllers.gestion_principal.DataBase;
 import javax.swing.JOptionPane;
 
+import com.gesco.controllers.gestion_principal.DataBase;
 import com.gesco.models.usuarios.Usuario.TipoUsuario;
 import com.gesco.views.auntentificacion.VistaRegistro;
 
@@ -80,6 +80,7 @@ public class ControladorRegistro {
                 );
                 return;
             }
+
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(
                 vista,

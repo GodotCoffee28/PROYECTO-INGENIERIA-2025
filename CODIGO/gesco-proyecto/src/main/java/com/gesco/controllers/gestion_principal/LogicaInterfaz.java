@@ -15,10 +15,11 @@ import com.gesco.controllers.menu.ControladorCrearMenu;
 import com.gesco.controllers.menu.ControladorEditarMenu;
 import com.gesco.controllers.menu.ControladorGestionMenu;
 import com.gesco.controllers.menu.ControladorMenuSemana;
-import com.gesco.controllers.registros.ControladorHistorialMenu;
 import com.gesco.controllers.otros.ControladorEspera;
 import com.gesco.controllers.otros.ControladorFila;
 import com.gesco.controllers.otros.ControladorTurnos;
+import com.gesco.controllers.registros.ControladorHistorialMenu;
+import com.gesco.controllers.registros.ControladorHistorialSaldo;
 import com.gesco.models.menu.Menu;
 import com.gesco.models.usuarios.Usuario.TipoUsuario;
 import com.gesco.views.Registros.VistaHistorialCCB;
@@ -387,16 +388,10 @@ public class LogicaInterfaz {
         vistaHistorialSaldo = new VistaHistorialSaldo();
         menuGescoController.conectar(vistaHistorialSaldo, sesionAdmin, cedulaSesionActual);
 
-        java.util.List<String[]> recargas = DataBase.obtenerRecargasPorCedula(cedulaSesionActual);
-        for (int i = recargas.size() - 1; i >= 0; i--) {
-            String[] recarga = recargas.get(i);
-            String referencia = recarga[0];
-            String monto = recarga[1];
-            String banco = recarga[2];
-            String fecha = recarga[3];
-            String cedula = recarga[4];
-            vistaHistorialSaldo.agregarTransaccionALista(fecha, referencia, monto, banco, cedula);
-        }
+        new ControladorHistorialSaldo(
+            vistaHistorialSaldo,
+            this::volverAPantallaPrincipal
+        ).conectar(cedulaSesionActual);
     }
 
     private void cerrarVistaHistorialMenu() {
