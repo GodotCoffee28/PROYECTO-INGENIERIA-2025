@@ -1,11 +1,21 @@
 package com.gesco.views.costos;
 
-import java.awt.*;
-import javax.swing.*;
-
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import com.gesco.models.costos.CCB;
 import com.gesco.views.PlantillasViews.BotonNeon;
@@ -18,7 +28,7 @@ public class VistaCargaCCB extends PlantillaGesco {
     private BotonNeon btnSubirDatos;
     private CampoFecha campoFecha;
     private JComboBox<String> usuario;
-    private JTextField NB, MERMA, CF, CV;
+    private JTextField NB, MERMA, CF, CV, porcentajeDescuento;
     private JLabel lblResultado;
     
 
@@ -60,15 +70,22 @@ public class VistaCargaCCB extends PlantillaGesco {
         formPanel.add(campoFecha);
         formPanel.add(Box.createVerticalStrut(12));
 
-        formPanel.add(crearEtiquetaPersonalizada("Tipo de usuario (Estudiante/Profesor/Empleado)", "Times New Roman", Font.PLAIN, 18, new Color(180, 180, 180), "izquierda"));
+        formPanel.add(crearEtiquetaPersonalizada("Tipo de usuario (Estudiante/Becario/Exonerado/Profesor/Empleado)", "Times New Roman", Font.PLAIN, 18, new Color(180, 180, 180), "izquierda"));
         formPanel.add(Box.createVerticalStrut(5));
-        usuario = new JComboBox<>(new String[] {"Estudiante", "Profesor", "Empleado"});
+        usuario = new JComboBox<>(new String[] {"Estudiante", "Becario", "Exonerado", "Profesor", "Empleado"});
         usuario.setPreferredSize(tamCaja);
         usuario.setMaximumSize(tamCaja);
         usuario.setAlignmentX(Component.LEFT_ALIGNMENT);
         usuario.setFont(new Font("Arial", Font.PLAIN, 15));
         usuario.setBackground(new Color(255, 255, 255, 240));
         formPanel.add(usuario);
+        formPanel.add(Box.createVerticalStrut(12));
+
+        formPanel.add(crearEtiquetaPersonalizada("% descuento a aplicar (ej: 25)", "Arial", Font.BOLD, 14, new Color(180, 180, 180), "izquierda"));
+        formPanel.add(Box.createVerticalStrut(5));
+        porcentajeDescuento = new JTextField();
+        CajaCCB(porcentajeDescuento, tamCaja);
+        formPanel.add(porcentajeDescuento);
         formPanel.add(Box.createVerticalStrut(12));
 
         formPanel.add(crearEtiquetaPersonalizada("NB (Número de bandejas servidas)", "Arial", Font.BOLD, 14, new Color(180, 180, 180), "izquierda"));
@@ -127,7 +144,7 @@ public class VistaCargaCCB extends PlantillaGesco {
 
         panelFondo.add(Box.createVerticalStrut(20)); 
         panelFondo.add(lblResultado);
-        panelFondo.add(Box.createVerticalStrut(15)); 
+        panelFondo.add(Box.createVerticalStrut(1)); 
         
         panelFondo.add(btnSubirDatos); 
         panelFondo.add(Box.createVerticalGlue());
@@ -144,6 +161,7 @@ public class VistaCargaCCB extends PlantillaGesco {
     public String getMERMA(){ return MERMA.getText();}
     public String getCF(){ return CF.getText();}
     public String getCV(){ return CV.getText();}
+    public String getPorcentajeDescuento(){ return porcentajeDescuento.getText();}
     public BotonNeon getBtnSubirDatos() { return btnSubirDatos; }
 
     public void setCV(double valor) {
@@ -179,7 +197,8 @@ public class VistaCargaCCB extends PlantillaGesco {
         double merma = parseDouble(getMERMA(), "MERMA");
         double cf = parseDouble(getCF(), "CF");
         double cv = parseDouble(getCV(), "CV");
-        return new CCB(fecha, getUsuario(), cf, cv, nb, merma);
+        double porcentaje = parseDouble(getPorcentajeDescuento(), "% descuento") / 100.0;
+        return new CCB(fecha, getUsuario(), cf, cv, nb, merma, porcentaje);
     }
 
 

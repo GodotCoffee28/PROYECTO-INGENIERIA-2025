@@ -1,6 +1,19 @@
 package com.gesco.views.inicio;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
+
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
@@ -8,7 +21,7 @@ public class VistaInicioComensal extends PlantillaGesco {
 
     private BotonNeon btnVerMenu, btnHorarios, btnAccesoFila, btnRecargar, btnRegistro;
     private JLabel bienvenida, infoTurnos, infoMenu, lblSaldo, infoFila;
-    private String nombreUsuario;
+    private final String nombreUsuario;
     private double saldoDisponible = 0.0;
 
     public VistaInicioComensal(String nombre, double saldo) {

@@ -1,6 +1,10 @@
 package com.gesco.models.costos;
 
-import java.time.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+
+import com.gesco.models.usuarios.Usuario.TipoUsuario;
 
 /*
 CCB: Valor del Costo Cubierto por bandeja
@@ -15,12 +19,25 @@ NB: Número de bandejas proyectadas o servidas en un periodo
 
 public class CCB {
     private static final double LIMITE_COSTO = 10_000.0;
+    private static final double CCB_ESTUDIANTE_MIN = 0.20;
+    private static final double CCB_ESTUDIANTE_MAX = 0.30;
+    private static final double CCB_BECARIO_PORCENTAJE = 0.05;
+    private static final double CCB_EXONERADO_PORCENTAJE = 0.00;
+    private static final double CCB_PROFESOR_MIN = 0.70;
+    private static final double CCB_PROFESOR_MAX = 0.90;
+    private static final double CCB_EMPLEADO_MIN = 0.90;
+    private static final double CCB_EMPLEADO_MAX = 1.10;
 
     private final LocalDate fecha;
     private final String tipoUsuario;
+    private final double porcentajeAplicado;
     private final double ccb, cf, cv, nb, merma;
 
     public CCB(LocalDate fecha, String tipoUsuario, double cf, double cv, double nb, double merma) {
+        this(fecha, tipoUsuario, cf, cv, nb, merma, obtenerPorcentajeDeterministicoPorTipo(parseTipoUsuario(tipoUsuario)));
+    }
+
+    public CCB(LocalDate fecha, String tipoUsuario, double cf, double cv, double nb, double merma, double porcentajeAplicado) {
         if (fecha == null) {
             throw new IllegalArgumentException("La fecha no puede ser null.");
         }
@@ -38,6 +55,9 @@ public class CCB {
         }
         this.fecha = fecha;
         this.tipoUsuario = tipoUsuario == null ? "" : tipoUsuario.trim();
+        TipoUsuario tipoNormalizado = parseTipoUsuario(this.tipoUsuario);
+        validarPorcentajeEnRango(tipoNormalizado, porcentajeAplicado);
+        this.porcentajeAplicado = redondearMoneda(porcentajeAplicado);
         this.cf = cf;
         this.cv = cv;
         this.nb = nb;
@@ -79,6 +99,128 @@ public class CCB {
 
     public double getMerma() {
         return merma;
+    }
+
+    public double getPorcentajeAplicado() {
+        return porcentajeAplicado;
+    }
+
+    public static double calcularMontoPorTipo(double ccbBase, TipoUsuario tipoUsuario) {
+        if (ccbBase < 0) {
+            throw new IllegalArgumentException("El CCB base no puede ser negativo.");
+        }
+
+        double porcentaje = obtenerPorcentajeDeterministicoPorTipo(tipoUsuario);
+        return redondearMoneda(ccbBase * porcentaje);
+    }
+
+    public static double generarPorcentajePorTipo(TipoUsuario tipoUsuario) {
+        double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
+        if (rango[0] == rango[1]) {
+            return redondearMoneda(rango[0]);
+        }
+
+        double porcentaje = rango[0] + (Math.random() * (rango[1] - rango[0]));
+        return redondearMoneda(porcentaje);
+    }
+
+    public static double calcularMontoPorTipo(double ccbBase, TipoUsuario tipoUsuario, double porcentajeCcb) {
+        if (ccbBase < 0) {
+            throw new IllegalArgumentException("El CCB base no puede ser negativo.");
+        }
+
+        double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
+        if (porcentajeCcb < rango[0] || porcentajeCcb > rango[1]) {
+            throw new IllegalArgumentException("El porcentaje no esta en el rango permitido para el tipo de usuario.");
+        }
+
+        return redondearMoneda(ccbBase * porcentajeCcb);
+    }
+
+    public static double normalizarPorcentajeParaTipo(TipoUsuario tipoUsuario, double porcentajeSugerido) {
+        double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
+        if (porcentajeSugerido >= rango[0] && porcentajeSugerido <= rango[1]) {
+            return redondearMoneda(porcentajeSugerido);
+        }
+        return redondearMoneda(obtenerPorcentajeDeterministicoPorTipo(tipoUsuario));
+    }
+
+    public static TipoUsuario parseTipoUsuario(String tipoUsuarioTexto) {
+        if (tipoUsuarioTexto == null || tipoUsuarioTexto.isBlank()) {
+            return null;
+        }
+
+        String normalizado = tipoUsuarioTexto.trim().toUpperCase();
+        return switch (normalizado) {
+            case "ESTUDIANTE" -> TipoUsuario.ESTUDIANTE;
+            case "BECARIO" -> TipoUsuario.BECARIO;
+            case "EXONERADO" -> TipoUsuario.EXONERADO;
+            case "PROFESOR" -> TipoUsuario.PROFESOR;
+            case "EMPLEADO" -> TipoUsuario.EMPLEADO;
+            case "ADMIN" -> TipoUsuario.ADMIN;
+            case "SUPER_ADMIN", "SUPER ADMIN" -> TipoUsuario.SUPER_ADMIN;
+            default -> null;
+        };
+    }
+
+    public static boolean coincideTipoCcb(String tipoGuardado, TipoUsuario tipoUsuario) {
+        TipoUsuario tipoRegistro = parseTipoUsuario(tipoGuardado);
+        if (tipoRegistro == null || tipoUsuario == null) {
+            return false;
+        }
+
+        if (tipoRegistro == tipoUsuario) {
+            return true;
+        }
+
+        // Compatibilidad: tipos laborales comparten CCB (empleado/admin/super_admin)
+        return esTipoLaboral(tipoRegistro) && esTipoLaboral(tipoUsuario);
+    }
+
+    private static boolean esTipoLaboral(TipoUsuario tipoUsuario) {
+        return tipoUsuario == TipoUsuario.EMPLEADO
+            || tipoUsuario == TipoUsuario.ADMIN
+            || tipoUsuario == TipoUsuario.SUPER_ADMIN;
+    }
+
+    public static double[] obtenerRangoPorTipoUsuario(TipoUsuario tipoUsuario) {
+        if (tipoUsuario == null) {
+            return new double[] { 1.0, 1.0 };
+        }
+
+        return switch (tipoUsuario) {
+            case ESTUDIANTE -> new double[] { CCB_ESTUDIANTE_MIN, CCB_ESTUDIANTE_MAX };
+            case BECARIO -> new double[] { CCB_BECARIO_PORCENTAJE, CCB_BECARIO_PORCENTAJE };
+            case EXONERADO -> new double[] { CCB_EXONERADO_PORCENTAJE, CCB_EXONERADO_PORCENTAJE };
+            case PROFESOR -> new double[] { CCB_PROFESOR_MIN, CCB_PROFESOR_MAX };
+            case EMPLEADO, ADMIN, SUPER_ADMIN -> new double[] { CCB_EMPLEADO_MIN, CCB_EMPLEADO_MAX };
+            default -> new double[] { 1.0, 1.0 };
+        };
+    }
+
+    private static double obtenerPorcentajeDeterministicoPorTipo(TipoUsuario tipoUsuario) {
+        double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
+        if (rango[0] == rango[1]) {
+            return rango[0];
+        }
+        return (rango[0] + rango[1]) / 2.0;
+    }
+
+    private static void validarPorcentajeEnRango(TipoUsuario tipoUsuario, double porcentaje) {
+        double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
+        if (porcentaje < rango[0] || porcentaje > rango[1]) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "El porcentaje debe estar entre %.2f%% y %.2f%% para el tipo seleccionado.",
+                    rango[0] * 100.0,
+                    rango[1] * 100.0
+                )
+            );
+        }
+    }
+
+    private static double redondearMoneda(double valor) {
+        return BigDecimal.valueOf(valor).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
     @Override

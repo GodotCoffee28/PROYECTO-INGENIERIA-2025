@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
+
 public class VistaGestionMenu extends PlantillaGesco {
     private BotonNeon btnEditar, btnCrear,btnAgregarInsumo ,btnReiniciar;
 
@@ -62,16 +63,16 @@ public class VistaGestionMenu extends PlantillaGesco {
         
         panelFondo.add(Box.createVerticalGlue());
         panelFondo.add(crearEtiquetaPersonalizada("Gestión del menú", "Times New Roman", Font.BOLD, 32, new Color(240, 240, 240),"centro"));
-        panelFondo.add(Box.createVerticalStrut(80));
+        panelFondo.add(Box.createVerticalStrut(30));
 
         panelFondo.add(btnEditar);
-        panelFondo.add(Box.createVerticalStrut(50));
+        panelFondo.add(Box.createVerticalStrut(30));
 
         panelFondo.add(btnCrear);
-        panelFondo.add(Box.createVerticalStrut(50));
+        panelFondo.add(Box.createVerticalStrut(30));
         
         panelFondo.add(btnAgregarInsumo);
-        panelFondo.add(Box.createVerticalStrut(50));
+        panelFondo.add(Box.createVerticalStrut(30));
         
         panelFondo.add(btnReiniciar);
         panelFondo.add(Box.createVerticalGlue());
@@ -83,5 +84,6 @@ public class VistaGestionMenu extends PlantillaGesco {
     public BotonNeon getBtnCrear() { return btnCrear; }
     public BotonNeon getBtnAgregarInsumo() { return btnAgregarInsumo; }
     public BotonNeon getBtnReiniciar() { return btnReiniciar; }
+
 }
 

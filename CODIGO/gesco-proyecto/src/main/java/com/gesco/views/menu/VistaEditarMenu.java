@@ -20,7 +20,7 @@ public class VistaEditarMenu extends PlantillaGesco {
     private JTextField platillo1, platillo2, platillo3;
     private CampoFecha campoFecha;
     private JCheckBox chkNoDisponible;
-    private JLabel Titulo;
+    private JLabel Titulo, elementoMenu, lblDiaSemana;
     private JComboBox<Menu.TipoMenu> comboTipoMenu;
     private JComboBox<Insumo> comboInsumo1, comboInsumo2, comboInsumo3;
     private JSpinner spinnerCantidad1, spinnerCantidad2, spinnerCantidad3;
@@ -50,6 +50,8 @@ public class VistaEditarMenu extends PlantillaGesco {
 
         Titulo = crearEtiquetaPersonalizada("Editar menú", "Times New Roman", Font.BOLD, 45, new Color(240, 240, 240), "centro");
 
+         lblDiaSemana = crearEtiquetaPersonalizada("Día seleccionado: -", "Times New Roman", Font.BOLD, 18, new Color(210, 210, 210), "centro");
+        lblDiaSemana.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
 
     private void agregarCampos(JPanel panelIzqPlatillos, JPanel panelDerInsumos) {
@@ -78,9 +80,12 @@ public class VistaEditarMenu extends PlantillaGesco {
             String.valueOf(hoy.getYear())
         );
         panelIzqPlatillos.add(campoFecha);
-        panelIzqPlatillos.add(Box.createVerticalStrut(20));
+        panelIzqPlatillos.add(Box.createVerticalStrut(8));
+        lblDiaSemana.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panelIzqPlatillos.add(lblDiaSemana);
+        panelIzqPlatillos.add(Box.createVerticalStrut(8));
 
-        Dimension tamCaja = new Dimension(450, 40);
+        Dimension tamCaja = new Dimension(450, 50);
 
         panelIzqPlatillos.add(crearEtiquetaPersonalizada("Tipo de menú", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
         panelIzqPlatillos.add(Box.createVerticalStrut(8));
@@ -88,9 +93,18 @@ public class VistaEditarMenu extends PlantillaGesco {
         comboTipoMenu.setMaximumSize(tamCaja);
         comboTipoMenu.setAlignmentX(Component.LEFT_ALIGNMENT);
         panelIzqPlatillos.add(comboTipoMenu);
-        panelIzqPlatillos.add(Box.createVerticalStrut(20));
+        panelIzqPlatillos.add(Box.createVerticalStrut(10));
 
-        panelIzqPlatillos.add(crearEtiquetaPersonalizada("Platillo 1", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
+        elementoMenu= crearEtiquetaPersonalizada("Elementos del menú", "Times New Roman", Font.BOLD, 18, Color.WHITE, "izquierda");
+        panelIzqPlatillos.add(elementoMenu);
+        panelIzqPlatillos.add(Box.createVerticalStrut(8));
+
+        ImageIcon iconoPlatito = obtenerIcono("/Platos.png", 25);
+
+        JLabel lbl1 = crearEtiquetaPersonalizada(" 1", "Times New Roman", Font.BOLD, 18, Color.WHITE, "izquierda");
+        lbl1.setIcon(iconoPlatito);
+        lbl1.setIconTextGap(10);
+        panelIzqPlatillos.add(lbl1);
         panelIzqPlatillos.add(Box.createVerticalStrut(8));
         platillo1 = new JTextField();
         diseñarCaja(platillo1, tamCaja);
@@ -103,10 +117,13 @@ public class VistaEditarMenu extends PlantillaGesco {
         spinnerCantidad1 = new JSpinner();
         btnAgregarInsumo1 = new JButton("Agregar insumo");
         btnQuitarInsumo1 = new JButton("Eliminar insumo");
-        agregarSeccionInsumos(panelDerInsumos, "Insumos platillo 1", comboInsumo1, spinnerCantidad1,
+        agregarSeccionInsumos(panelDerInsumos, "Insumos del elemento 1", comboInsumo1, spinnerCantidad1,
             btnAgregarInsumo1, btnQuitarInsumo1, listaInsumos1);
         
-        panelIzqPlatillos.add(crearEtiquetaPersonalizada("Platillo 2", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
+        JLabel lbl2 = crearEtiquetaPersonalizada(" 2", "Times New Roman", Font.BOLD, 18, Color.WHITE, "izquierda");
+        lbl2.setIcon(iconoPlatito);
+        lbl2.setIconTextGap(10);
+        panelIzqPlatillos.add(lbl2);
         panelIzqPlatillos.add(Box.createVerticalStrut(8));
         platillo2 = new JTextField();
         diseñarCaja(platillo2, tamCaja);
@@ -119,10 +136,13 @@ public class VistaEditarMenu extends PlantillaGesco {
         spinnerCantidad2 = new JSpinner();
         btnAgregarInsumo2 = new JButton("Agregar insumo");
         btnQuitarInsumo2 = new JButton("Eliminar insumo");
-        agregarSeccionInsumos(panelDerInsumos, "Insumos platillo 2", comboInsumo2, spinnerCantidad2,
+        agregarSeccionInsumos(panelDerInsumos, "Insumos del elemento 2", comboInsumo2, spinnerCantidad2,
             btnAgregarInsumo2, btnQuitarInsumo2, listaInsumos2);
 
-        panelIzqPlatillos.add(crearEtiquetaPersonalizada("Platillo 3", "Times New Roman", Font.PLAIN, 18, Color.WHITE, "izquierda"));
+        JLabel lbl3 = crearEtiquetaPersonalizada(" 3", "Times New Roman", Font.BOLD, 18, Color.WHITE, "izquierda");
+        lbl3.setIcon(iconoPlatito);
+        lbl3.setIconTextGap(10);
+        panelIzqPlatillos.add(lbl3);
         panelIzqPlatillos.add(Box.createVerticalStrut(8));
         platillo3 = new JTextField();
         diseñarCaja(platillo3, tamCaja);
@@ -135,7 +155,7 @@ public class VistaEditarMenu extends PlantillaGesco {
         spinnerCantidad3 = new JSpinner();
         btnAgregarInsumo3 = new JButton("Agregar insumo");
         btnQuitarInsumo3 = new JButton("Eliminar insumo");
-        agregarSeccionInsumos(panelDerInsumos, "Insumos platillo 3", comboInsumo3, spinnerCantidad3,
+        agregarSeccionInsumos(panelDerInsumos, "Insumos del elemento 3", comboInsumo3, spinnerCantidad3,
             btnAgregarInsumo3, btnQuitarInsumo3, listaInsumos3);
 
         chkNoDisponible = new JCheckBox("Menú no disponible para este día");
@@ -190,52 +210,11 @@ public class VistaEditarMenu extends PlantillaGesco {
 
     this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
 }
-    public BotonNeon getBtnEditar() { return btnEditar; }
-    public String getPlatillo1(){ return platillo1.getText(); }
-    public String getPlatillo2(){ return platillo2.getText(); }
-    public String getPlatillo3(){ return platillo3.getText(); }
-    public String getDia(){ return campoFecha.getDia(); }
-    public String getMes(){ return campoFecha.getMes(); }
-    public String getAnio(){ return campoFecha.getAnio(); }
-    public String getFechaTexto(){ return campoFecha.getFechaTexto(); }
-    public boolean isMenuNoDisponibleSeleccionado() { return chkNoDisponible.isSelected(); }
-    public Menu.TipoMenu getTipoMenu() { return (Menu.TipoMenu) comboTipoMenu.getSelectedItem(); }
-    public void setTipoMenu(Menu.TipoMenu tipoMenu) { comboTipoMenu.setSelectedItem(tipoMenu); }
-    public JComboBox<Insumo> getComboInsumo1() { return comboInsumo1; }
-    public JComboBox<Insumo> getComboInsumo2() { return comboInsumo2; }
-    public JComboBox<Insumo> getComboInsumo3() { return comboInsumo3; }
-    public JSpinner getSpinnerCantidad1() { return spinnerCantidad1; }
-    public JSpinner getSpinnerCantidad2() { return spinnerCantidad2; }
-    public JSpinner getSpinnerCantidad3() { return spinnerCantidad3; }
-    public JButton getBtnAgregarInsumo1() { return btnAgregarInsumo1; }
-    public JButton getBtnAgregarInsumo2() { return btnAgregarInsumo2; }
-    public JButton getBtnAgregarInsumo3() { return btnAgregarInsumo3; }
-    public JButton getBtnQuitarInsumo1() { return btnQuitarInsumo1; }
-    public JButton getBtnQuitarInsumo2() { return btnQuitarInsumo2; }
-    public JButton getBtnQuitarInsumo3() { return btnQuitarInsumo3; }
-    public DefaultListModel<Insumo> getModeloInsumos1() { return modeloInsumos1; }
-    public DefaultListModel<Insumo> getModeloInsumos2() { return modeloInsumos2; }
-    public DefaultListModel<Insumo> getModeloInsumos3() { return modeloInsumos3; }
-    public JList<Insumo> getListaInsumos1() { return listaInsumos1; }
-    public JList<Insumo> getListaInsumos2() { return listaInsumos2; }
-    public JList<Insumo> getListaInsumos3() { return listaInsumos3; }
-    public List<Insumo> getInsumosPlatillo1() { return obtenerInsumosDesdeModelo(modeloInsumos1); }
-    public List<Insumo> getInsumosPlatillo2() { return obtenerInsumosDesdeModelo(modeloInsumos2); }
-    public List<Insumo> getInsumosPlatillo3() { return obtenerInsumosDesdeModelo(modeloInsumos3); }
 
     public void setInsumos(List<Insumo> insumos) {
-        List<Insumo> disponibles = new ArrayList<>();
-        if (insumos != null) {
-            for (Insumo insumo : insumos) {
-                if (insumo != null && insumo.getCantidad() > 0) {
-                    disponibles.add(insumo);
-                }
-            }
-        }
-
-        cargarInsumosEnCombo(comboInsumo1, spinnerCantidad1, modeloInsumos1, disponibles);
-        cargarInsumosEnCombo(comboInsumo2, spinnerCantidad2, modeloInsumos2, disponibles);
-        cargarInsumosEnCombo(comboInsumo3, spinnerCantidad3, modeloInsumos3, disponibles);
+        cargarInsumosEnCombo(comboInsumo1, insumos);
+        cargarInsumosEnCombo(comboInsumo2, insumos);
+        cargarInsumosEnCombo(comboInsumo3, insumos);
     }
 
     private void agregarSeccionInsumos(
@@ -278,47 +257,17 @@ public class VistaEditarMenu extends PlantillaGesco {
 
     private void cargarInsumosEnCombo(
         JComboBox<Insumo> combo,
-        JSpinner spinner,
-        DefaultListModel<Insumo> modelo,
         List<Insumo> insumos
     ) {
         combo.removeAllItems();
-        for (Insumo insumo : insumos) {
-            combo.addItem(insumo);
-        }
-        actualizarSpinner(combo, spinner, modelo);
-    }
-
-    public void actualizarSpinner(
-        JComboBox<Insumo> combo,
-        JSpinner spinner,
-        DefaultListModel<Insumo> modelo
-    ) {
-        Insumo seleccionado = (Insumo) combo.getSelectedItem();
-        if (seleccionado == null) {
-            spinner.setModel(new SpinnerNumberModel(0, 0, 0, 1));
-            spinner.setEnabled(false);
+        if (insumos == null) {
             return;
         }
-
-        int existente = 0;
-        for (int i = 0; i < modelo.size(); i++) {
-            Insumo actual = modelo.getElementAt(i);
-            if (actual.getNombre().equalsIgnoreCase(seleccionado.getNombre())
-                && actual.getTipoNutricional().equalsIgnoreCase(seleccionado.getTipoNutricional())) {
-                existente = actual.getCantidad();
-                break;
+        for (Insumo insumo : insumos) {
+            if (insumo != null) {
+                combo.addItem(insumo);
             }
         }
-        int restante = seleccionado.getCantidad() - existente;
-        if (restante <= 0) {
-            spinner.setModel(new SpinnerNumberModel(0, 0, 0, 1));
-            spinner.setEnabled(false);
-            return;
-        }
-
-        spinner.setModel(new SpinnerNumberModel(1, 1, restante, 1));
-        spinner.setEnabled(true);
     }
 
     private List<Insumo> obtenerInsumosDesdeModelo(DefaultListModel<Insumo> modelo) {
@@ -328,5 +277,38 @@ public class VistaEditarMenu extends PlantillaGesco {
         }
         return resultado;
     }
+
+    public BotonNeon getBtnEditar() { return btnEditar; }
+    public String getPlatillo1(){ return platillo1.getText(); }
+    public String getPlatillo2(){ return platillo2.getText(); }
+    public String getPlatillo3(){ return platillo3.getText(); }
+    public String getDia(){ return campoFecha.getDia(); }
+    public String getMes(){ return campoFecha.getMes(); }
+    public String getAnio(){ return campoFecha.getAnio(); }
+    public String getFechaTexto(){ return campoFecha.getFechaTexto(); }
+    public boolean isMenuNoDisponibleSeleccionado() { return chkNoDisponible.isSelected(); }
+    public Menu.TipoMenu getTipoMenu() { return (Menu.TipoMenu) comboTipoMenu.getSelectedItem(); }
+    public void setTipoMenu(Menu.TipoMenu tipoMenu) { comboTipoMenu.setSelectedItem(tipoMenu); }
+    public JComboBox<Insumo> getComboInsumo1() { return comboInsumo1; }
+    public JComboBox<Insumo> getComboInsumo2() { return comboInsumo2; }
+    public JComboBox<Insumo> getComboInsumo3() { return comboInsumo3; }
+    public JSpinner getSpinnerCantidad1() { return spinnerCantidad1; }
+    public JSpinner getSpinnerCantidad2() { return spinnerCantidad2; }
+    public JSpinner getSpinnerCantidad3() { return spinnerCantidad3; }
+    public JButton getBtnAgregarInsumo1() { return btnAgregarInsumo1; }
+    public JButton getBtnAgregarInsumo2() { return btnAgregarInsumo2; }
+    public JButton getBtnAgregarInsumo3() { return btnAgregarInsumo3; }
+    public JButton getBtnQuitarInsumo1() { return btnQuitarInsumo1; }
+    public JButton getBtnQuitarInsumo2() { return btnQuitarInsumo2; }
+    public JButton getBtnQuitarInsumo3() { return btnQuitarInsumo3; }
+    public DefaultListModel<Insumo> getModeloInsumos1() { return modeloInsumos1; }
+    public DefaultListModel<Insumo> getModeloInsumos2() { return modeloInsumos2; }
+    public DefaultListModel<Insumo> getModeloInsumos3() { return modeloInsumos3; }
+    public JList<Insumo> getListaInsumos1() { return listaInsumos1; }
+    public JList<Insumo> getListaInsumos2() { return listaInsumos2; }
+    public JList<Insumo> getListaInsumos3() { return listaInsumos3; }
+    public List<Insumo> getInsumosPlatillo1() { return obtenerInsumosDesdeModelo(modeloInsumos1); }
+    public List<Insumo> getInsumosPlatillo2() { return obtenerInsumosDesdeModelo(modeloInsumos2); }
+    public List<Insumo> getInsumosPlatillo3() { return obtenerInsumosDesdeModelo(modeloInsumos3); }
 }
 

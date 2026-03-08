@@ -1,5 +1,5 @@
-# Formato base: cedula:ocupacion
-# Formato extendido para estudiante: cedula:estudiante:subtipo
+# Formato base: cedula:ocupacion:nombreCompleto
+# Formato extendido para estudiante: cedula:estudiante:subtipo:nombreCompleto
 # Ocupaciones validas: estudiante, profesor, empleado, administrador, becario, exonerado
 # Subtipos validos para estudiante: regular, becario, exonerado
 # Ejemplos:
@@ -9,19 +9,21 @@
 # 12345681:estudiante:regular
 # 12345682:estudiante:becario
 # 12345683:estudiante:exonerado
-31768764:administrador
-32111454:administrador
-33246679:administrador
-32654321:estudiante:regular
-32654322:estudiante:regular
-32654323:profesor
-32654324:empleado
-33333333:estudiante:regular
-33444444:estudiante:regular
-33445566:profesor
-35667788:estudiante:regular
-44556677:empleado
-22334455:estudiante:regular
-12345678:administrador
-12345679:administrador
-11111111:administrador
+31768764:administrador:Carlos Ortega
+32111454:administrador:Aaron Cordoba
+33246679:administrador:Gabriel Castillo
+32654321:estudiante:regular:Maria Fernanda Ruiz
+32654322:estudiante:regular:Jose Antonio Perez
+32654323:profesor:Elena Gonzalez
+32654324:empleado:Luis Mendoza
+33333333:estudiante:regular:Ana Sofia Ramirez
+33444444:estudiante:regular:Diego Alejandro Leon
+33445566:profesor:Ricardo Salinas
+35667788:estudiante:regular:Valentina Mora
+44556677:empleado:Pedro Contreras
+22334455:estudiante:regular:Daniela Suarez
+12345678:administrador:Gabriela Torres
+12345679:administrador:Manuel Rojas
+11111111:administrador:Eladmin
+32111455:estudiante:becario:Ramses Lopez
+32111456:estudiante:exonerado

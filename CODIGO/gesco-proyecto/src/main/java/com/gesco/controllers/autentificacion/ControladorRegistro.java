@@ -1,9 +1,9 @@
 package com.gesco.controllers.autentificacion;
 
 
-import com.gesco.controllers.gestion_principal.DataBase;
 import javax.swing.JOptionPane;
 
+import com.gesco.controllers.gestion_principal.DataBase;
 import com.gesco.models.usuarios.Usuario.TipoUsuario;
 import com.gesco.views.auntentificacion.VistaRegistro;
 
@@ -80,6 +80,7 @@ public class ControladorRegistro {
                 );
                 return;
             }
+
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(
                 vista,
@@ -121,6 +122,8 @@ public class ControladorRegistro {
             return;
         }
 
+        String nombreSecretaria = DataBase.obtenerNombreSecretaria(cedula);
+
         if (tipoPadron == TipoUsuario.ADMIN) {
             if (DataBase.cedulaYaRegistrada(cedula)) {
                 JOptionPane.showMessageDialog(
@@ -132,7 +135,9 @@ public class ControladorRegistro {
                 return;
             }
 
-            String nombreDerivado = "Administrador Ucevista";
+            String nombreDerivado = (nombreSecretaria == null || nombreSecretaria.isBlank())
+                ? "Administrador Ucevista"
+                : nombreSecretaria;
             boolean guardadoAdmin = DataBase.registrarAdministradorPreAutorizado(cedula, clave, nombreDerivado, correo);
             if (!guardadoAdmin) {
                 JOptionPane.showMessageDialog(
@@ -158,7 +163,9 @@ public class ControladorRegistro {
             return;
         }
 
-        String nombreDerivado = "Usuario Ucevista";
+        String nombreDerivado = (nombreSecretaria == null || nombreSecretaria.isBlank())
+            ? "Usuario Ucevista"
+            : nombreSecretaria;
         boolean guardado = DataBase.registrarUsuario(cedula, clave, nombreDerivado, correo, tipoPadron);
 
         if (!guardado) {

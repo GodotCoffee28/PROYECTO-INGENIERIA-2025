@@ -1,8 +1,22 @@
 package com.gesco.views.Registros;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagLayout;
 import java.util.Locale;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
+
 import com.gesco.models.costos.CCB;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
@@ -79,6 +93,7 @@ public class VistaHistorialCCB extends PlantillaGesco {
         String nb = String.format(Locale.US, "%.2f", registro.getNb());
         String merma = String.format(Locale.US, "%.4f", registro.getMerma());
         String ccb = String.format(Locale.US, "%.4f", registro.getCcb());
+        String porcentajeAplicado = String.format(Locale.US, "%.2f%%", registro.getPorcentajeAplicado() * 100.0);
 
         JPanel bloqueTexto = new JPanel();
         bloqueTexto.setLayout(new BoxLayout(bloqueTexto, BoxLayout.Y_AXIS));
@@ -97,6 +112,7 @@ public class VistaHistorialCCB extends PlantillaGesco {
         bloqueTexto.add(crearFilaDetalle("Costos Variables (CV):", cv + " BS."));
         bloqueTexto.add(crearFilaDetalle("Número de Bandejas (NB):", nb));
         bloqueTexto.add(crearFilaDetalle("Merma:", merma));
+        bloqueTexto.add(crearFilaDetalle("% aplicado por tipo:", porcentajeAplicado));
 
         bloqueTexto.add(crearFilaDetalle("COSTO COMEDOR/BANDEJA (CCB):", ccb + " BS."));
 

@@ -15,12 +15,13 @@ import com.gesco.controllers.menu.ControladorCrearMenu;
 import com.gesco.controllers.menu.ControladorEditarMenu;
 import com.gesco.controllers.menu.ControladorGestionMenu;
 import com.gesco.controllers.menu.ControladorMenuSemana;
-import com.gesco.controllers.registros.ControladorHistorialMenu;
+import com.gesco.controllers.otros.ControladorCambiarTipoEstudiante;
 import com.gesco.controllers.otros.ControladorEspera;
 import com.gesco.controllers.otros.ControladorFila;
 import com.gesco.controllers.otros.ControladorTurnos;
+import com.gesco.controllers.registros.ControladorHistorialMenu;
+import com.gesco.controllers.registros.ControladorHistorialSaldo;
 import com.gesco.models.menu.Menu;
-import com.gesco.models.usuarios.Usuario.TipoUsuario;
 import com.gesco.views.Registros.VistaHistorialCCB;
 import com.gesco.views.Registros.VistaHistorialMenu;
 import com.gesco.views.Registros.VistaHistorialSaldo;
@@ -36,6 +37,7 @@ import com.gesco.views.menu.VistaCrearMenu;
 import com.gesco.views.menu.VistaEditarMenu;
 import com.gesco.views.menu.VistaGestionMenu;
 import com.gesco.views.menu.VistaMenuSemana;
+import com.gesco.views.otros.VistaCambiarTipoEstudiante;
 import com.gesco.views.otros.VistaEspera;
 import com.gesco.views.otros.VistaFila;
 import com.gesco.views.otros.VistaTurnos;
@@ -60,6 +62,7 @@ public class LogicaInterfaz {
     private VistaGestionMenu vistaGestionMenu;
     private VistaHistorialMenu vistaHistorialMenu;
     private VistaHistorialSaldo vistaHistorialSaldo;
+    private VistaCambiarTipoEstudiante vistaCambiarTipoEstudiante;
     private boolean usuarioAdmin;
     private boolean sesionAdmin;
     private String nombreUsuario;
@@ -141,7 +144,7 @@ public class LogicaInterfaz {
         nombreUsuario = nombre;
 
         String nombreMostrar = (nombre == null || nombre.isBlank()) ? "Usuario" : nombre;
-        double saldo = 0.0;
+        double saldo;
         if (cedulaSesionActual != null && !cedulaSesionActual.isBlank()) {
             saldo = DataBase.obtenerSaldo(cedulaSesionActual);
         } else if (sesionAdmin) {
@@ -181,83 +184,18 @@ public class LogicaInterfaz {
             this::mostrarVerCcb,
             this::swapInteraccion,
             this::mostrarHistorialMenu,
-            this::mostrarDialogoCambioTipoUsuario
+            this::mostrarCambiarTipoEstudiante
         ).conectar();
     }
 
-    private void mostrarDialogoCambioTipoUsuario() {
-        String cedulaIngresada = javax.swing.JOptionPane.showInputDialog(
-            null,
-            "Ingrese la cédula del estudiante o usuario a actualizar:",
-            "Cambiar tipo de usuario",
-            javax.swing.JOptionPane.QUESTION_MESSAGE
-        );
-
-        String cedula = DataBase.normalizarCedula(cedulaIngresada);
-        if (cedula.isBlank()) {
-            return;
-        }
-
-        TipoUsuario tipoActual = DataBase.obtenerTipoUsuarioSecretaria(cedula);
-        if (tipoActual == null) {
-            javax.swing.JOptionPane.showMessageDialog(
-                null,
-                "La cédula no existe en el padrón de secretaría.",
-                "Cédula no encontrada",
-                javax.swing.JOptionPane.WARNING_MESSAGE
-            );
-            return;
-        }
-
-        OpcionTipo[] opciones = new OpcionTipo[] {
-            new OpcionTipo("Estudiante regular", TipoUsuario.ESTUDIANTE),
-            new OpcionTipo("Estudiante becario", TipoUsuario.BECARIO),
-            new OpcionTipo("Estudiante exonerado", TipoUsuario.EXONERADO),
-            new OpcionTipo("Profesor", TipoUsuario.PROFESOR),
-            new OpcionTipo("Empleado", TipoUsuario.EMPLEADO),
-            new OpcionTipo("Administrador", TipoUsuario.ADMIN)
-        };
-
-        OpcionTipo seleccionada = (OpcionTipo) javax.swing.JOptionPane.showInputDialog(
-            null,
-            "Seleccione el nuevo tipo para la cédula " + cedula + ":",
-            "Nuevo tipo de usuario",
-            javax.swing.JOptionPane.QUESTION_MESSAGE,
-            null,
-            opciones,
-            opcionPorTipo(opciones, tipoActual)
-        );
-
-        if (seleccionada == null) {
-            return;
-        }
-
-        boolean actualizado = DataBase.cambiarTipoUsuarioPorCedula(cedula, seleccionada.tipo());
-        if (!actualizado) {
-            javax.swing.JOptionPane.showMessageDialog(
-                null,
-                "No se pudo actualizar el tipo. Verifique si la cédula es válida o si intenta modificar un super administrador.",
-                "Error al actualizar",
-                javax.swing.JOptionPane.ERROR_MESSAGE
-            );
-            return;
-        }
-
-        javax.swing.JOptionPane.showMessageDialog(
-            null,
-            "Tipo actualizado correctamente para la cédula " + cedula + ".",
-            "Actualización exitosa",
-            javax.swing.JOptionPane.INFORMATION_MESSAGE
-        );
-    }
-
-    private OpcionTipo opcionPorTipo(OpcionTipo[] opciones, TipoUsuario tipo) {
-        for (OpcionTipo opcion : opciones) {
-            if (opcion.tipo() == tipo) {
-                return opcion;
-            }
-        }
-        return opciones[0];
+    private void mostrarCambiarTipoEstudiante() {
+        cerrarVistas();
+        vistaCambiarTipoEstudiante = new VistaCambiarTipoEstudiante();
+        menuGescoController.conectar(vistaCambiarTipoEstudiante, sesionAdmin, cedulaSesionActual);
+        new ControladorCambiarTipoEstudiante(
+            vistaCambiarTipoEstudiante,
+            this::mostrarPanelControl
+        ).conectar();
     }
 
     private void mostrarPanelControl() {
@@ -387,16 +325,10 @@ public class LogicaInterfaz {
         vistaHistorialSaldo = new VistaHistorialSaldo();
         menuGescoController.conectar(vistaHistorialSaldo, sesionAdmin, cedulaSesionActual);
 
-        java.util.List<String[]> recargas = DataBase.obtenerRecargasPorCedula(cedulaSesionActual);
-        for (int i = recargas.size() - 1; i >= 0; i--) {
-            String[] recarga = recargas.get(i);
-            String referencia = recarga[0];
-            String monto = recarga[1];
-            String banco = recarga[2];
-            String fecha = recarga[3];
-            String cedula = recarga[4];
-            vistaHistorialSaldo.agregarTransaccionALista(fecha, referencia, monto, banco, cedula);
-        }
+        new ControladorHistorialSaldo(
+            vistaHistorialSaldo,
+            this::volverAPantallaPrincipal
+        ).conectar(cedulaSesionActual);
     }
 
     private void cerrarVistaHistorialMenu() {
@@ -414,29 +346,33 @@ public class LogicaInterfaz {
     }
 
     private void reiniciarMenus() {
+        javax.swing.UIManager.put("Button.margin", new java.awt.Insets(15, 35, 15, 35));
+        javax.swing.UIManager.put("Button.font", new java.awt.Font("Arial", java.awt.Font.BOLD, 14));
+        
         Object[] opciones = {
             "Reiniciar semana actual",
-            "Reiniciar un dia",
+            "Reiniciar un día",
             "Cancelar"
         };
 
-        int seleccion = javax.swing.JOptionPane.showOptionDialog(
-            null,
-            "Que deseas reiniciar?",
-            "Reiniciar menu",
-            javax.swing.JOptionPane.DEFAULT_OPTION,
-            javax.swing.JOptionPane.QUESTION_MESSAGE,
-            null,
-            opciones,
-            opciones[0]
-        );
+        javax.swing.JPanel panelTitulo = new javax.swing.JPanel(new java.awt.BorderLayout());
+
+        panelTitulo.setPreferredSize(new java.awt.Dimension(600, 80)); 
+
+        javax.swing.JLabel etiquetaTitulo = new javax.swing.JLabel("¿Qué deseas reiniciar?");
+        etiquetaTitulo.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 20)); 
+        etiquetaTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        panelTitulo.add(etiquetaTitulo, java.awt.BorderLayout.CENTER);
+
+        int seleccion = javax.swing.JOptionPane.showOptionDialog(null, panelTitulo, "Reiniciar menú",javax.swing.JOptionPane.DEFAULT_OPTION,javax.swing.JOptionPane.PLAIN_MESSAGE, null, opciones, opciones[0]);
+
+        javax.swing.UIManager.put("Button.margin", null);
+        javax.swing.UIManager.put("Button.font", null);
 
         if (seleccion == 0) {
             reiniciarMenusSemana();
-            return;
-        }
-
-        if (seleccion == 1) {
+        } 
+        else if (seleccion == 1) {
             reiniciarMenuDia();
         }
     }
@@ -446,100 +382,73 @@ public class LogicaInterfaz {
 
         boolean ok = DataBase.reiniciarMenusSemana();
         if (!ok) {
-            javax.swing.JOptionPane.showMessageDialog(null,
-                "Error al reiniciar menús.",
-                "Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(null,"Error al reiniciar menús.","Error",javax.swing.JOptionPane.ERROR_MESSAGE);
             mostrarGestionMenu();
             return;
         }
 
         if (fechasSemana.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(null,
-                "No se pudieron calcular los días de la semana actual.",
-                "Sin cambios",
-                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(null,"No se pudieron calcular los días de la semana actual.","Sin cambios",javax.swing.JOptionPane.INFORMATION_MESSAGE);
             mostrarGestionMenu();
             return;
         }
 
-        iniciarFlujoCreacionMenus(
-            fechasSemana,
-            "Se reinició el menú de la semana actual.\nA continuación, configura desayuno y almuerzo para cada día."
-        );
+        iniciarFlujoCreacionMenus(fechasSemana,"Se reinició el menú de la semana actual.\nA continuación, configura desayuno y almuerzo para cada día.");
     }
 
     private void reiniciarMenuDia() {
         java.util.List<java.time.LocalDate> fechasDisponibles = DataBase.obtenerFechasConMenusCreados();
         if (fechasDisponibles.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(
-                null,
-                "No hay dias con menu creado para reiniciar.",
-                "Sin dias disponibles",
-                javax.swing.JOptionPane.INFORMATION_MESSAGE
-            );
+            javax.swing.JOptionPane.showMessageDialog(null, "No hay días con menú creado para reiniciar.", "Sin días disponibles", javax.swing.JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
-        DiaDisponible[] opcionesDias = new DiaDisponible[fechasDisponibles.size()];
-        for (int i = 0; i < fechasDisponibles.size(); i++) {
-            java.time.LocalDate fecha = fechasDisponibles.get(i);
-            opcionesDias[i] = new DiaDisponible(fecha, nombreDiaSemana(fecha) + " " + fecha);
+        DiaDisponible[] opcionesDias = fechasDisponibles.stream()
+            .map(f -> new DiaDisponible(f, nombreDiaSemana(f) + " " + f)).toArray(DiaDisponible[]::new);
+
+        javax.swing.UIManager.put("Button.margin", new java.awt.Insets(12, 40, 12, 40));
+        javax.swing.UIManager.put("Button.font", new java.awt.Font("Arial", java.awt.Font.BOLD, 14));
+
+        javax.swing.JPanel panelContenedor = new javax.swing.JPanel(new java.awt.GridBagLayout());
+        panelContenedor.setPreferredSize(new java.awt.Dimension(550, 160)); 
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+
+        javax.swing.JLabel etiqueta = new javax.swing.JLabel("Selecciona el día que deseas reiniciar:");
+        etiqueta.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 18));
+        gbc.gridy = 0;
+        gbc.insets = new java.awt.Insets(0, 0, 20, 0); 
+        panelContenedor.add(etiqueta, gbc);
+
+        javax.swing.JComboBox<DiaDisponible> comboDias = new javax.swing.JComboBox<>(opcionesDias);
+        comboDias.setPreferredSize(new java.awt.Dimension(350, 40));
+        comboDias.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 14));
+        gbc.gridy = 1;
+        gbc.insets = new java.awt.Insets(0, 0, 10, 0);
+        panelContenedor.add(comboDias, gbc);
+
+        int respuesta = javax.swing.JOptionPane.showConfirmDialog(null, panelContenedor, "Reiniciar menú de un día", javax.swing.JOptionPane.OK_CANCEL_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE);
+
+        javax.swing.UIManager.put("Button.margin", null);
+        javax.swing.UIManager.put("Button.font", null);
+
+        if (respuesta == javax.swing.JOptionPane.OK_OPTION) {
+            DiaDisponible seleccion = (DiaDisponible) comboDias.getSelectedItem();
+            if (seleccion != null && DataBase.reiniciarMenuDia(seleccion.fecha())) {
+                iniciarFlujoCreacionMenus(java.util.List.of(seleccion.fecha()), 
+                    "Se reinició el menú del día seleccionado correctamente.");
+            }
         }
-
-        DiaDisponible seleccion = (DiaDisponible) javax.swing.JOptionPane.showInputDialog(
-            null,
-            "Selecciona el dia que deseas reiniciar:",
-            "Reiniciar menu de un dia",
-            javax.swing.JOptionPane.QUESTION_MESSAGE,
-            null,
-            opcionesDias,
-            opcionesDias[0]
-        );
-
-        if (seleccion == null) {
-            return;
-        }
-
-        boolean ok = DataBase.reiniciarMenuDia(seleccion.fecha());
-        if (!ok) {
-            javax.swing.JOptionPane.showMessageDialog(
-                null,
-                "Error al reiniciar el menu del dia seleccionado.",
-                "Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE
-            );
-            mostrarGestionMenu();
-            return;
-        }
-
-        iniciarFlujoCreacionMenus(
-            java.util.List.of(seleccion.fecha()),
-            "Se reinició el menú del dia seleccionado.\nA continuación, configura desayuno y almuerzo."
-        );
     }
-
-    private void iniciarFlujoCreacionMenus(
-        java.util.List<java.time.LocalDate> fechas,
-        String mensaje
-    ) {
+    private void iniciarFlujoCreacionMenus(java.util.List<java.time.LocalDate> fechas,String mensaje) {
         if (fechas == null || fechas.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(
-                null,
-                "No hay fechas para configurar menus.",
-                "Sin cambios",
-                javax.swing.JOptionPane.INFORMATION_MESSAGE
-            );
+            javax.swing.JOptionPane.showMessageDialog(null,"No hay fechas para configurar menus.","Sin cambios",javax.swing.JOptionPane.INFORMATION_MESSAGE);
             mostrarGestionMenu();
             return;
         }
 
-        javax.swing.JOptionPane.showMessageDialog(
-            null,
-            mensaje,
-            "Menu reiniciado",
-            javax.swing.JOptionPane.INFORMATION_MESSAGE
-        );
+        javax.swing.JOptionPane.showMessageDialog(null,mensaje,"Menu reiniciado",javax.swing.JOptionPane.INFORMATION_MESSAGE);
 
         java.util.Queue<MenuPendiente> cola = new java.util.LinkedList<>();
         for (java.time.LocalDate fecha : fechas) {
@@ -579,11 +488,7 @@ public class LogicaInterfaz {
 
         menuGescoController.conectar(vistaCrearMenu, usuarioAdmin, cedulaSesionActual);
 
-        new ControladorCrearMenu(
-            vistaCrearMenu,
-            this::mostrarGestionMenu,
-            () -> mostrarCrearMenuParaFecha(cola, actual + 1, total)
-        ).conectar();
+        new ControladorCrearMenu(vistaCrearMenu,this::mostrarGestionMenu,() -> mostrarCrearMenuParaFecha(cola, actual + 1, total)).conectar();
     }
 
     private String nombreDiaSemana(java.time.LocalDate fecha) {
@@ -599,13 +504,6 @@ public class LogicaInterfaz {
     }
 
     private record MenuPendiente(java.time.LocalDate fecha, Menu.TipoMenu tipoMenu) {}
-
-    private record OpcionTipo(String etiqueta, TipoUsuario tipo) {
-        @Override
-        public String toString() {
-            return etiqueta;
-        }
-    }
 
     private record DiaDisponible(java.time.LocalDate fecha, String etiqueta) {
         @Override
@@ -751,6 +649,13 @@ public class LogicaInterfaz {
         }
     }
 
+    private void cerrarVistaCambiarTipoEstudiante() {
+        if (vistaCambiarTipoEstudiante != null) {
+            vistaCambiarTipoEstudiante.dispose();
+            vistaCambiarTipoEstudiante = null;
+        }
+    }
+
     private void cerrarVistas() {
         cerrarVistaInicio();
         cerrarVistaInicioSesion();
@@ -768,6 +673,7 @@ public class LogicaInterfaz {
         cerrarVistaAgregarInsumo();
         cerrarVistaGestionMenu();
         cerrarVistaRecargarSaldo();
+        cerrarVistaCambiarTipoEstudiante();
         cerrarVistaHistorialMenu();
         cerrarVistaHistorialSaldo();
     }
