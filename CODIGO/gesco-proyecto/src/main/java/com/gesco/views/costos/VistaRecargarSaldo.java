@@ -189,9 +189,9 @@ public class VistaRecargarSaldo extends PlantillaGesco {
     public String getCedulaOriginal(){return cedulaOriginal;};
 
     public void setCedula(String cedula) {
-    this.cedulaOriginal = (cedula == null) ? "" : cedula; // Guardamos el respaldo
-    this.cedulaField.setText(cedulaOriginal);            // Lo mostramos
-    this.cedulaField.setEditable(false);                 // Bloqueamos por defecto
+    this.cedulaOriginal = (cedula == null) ? "" : cedula;
+    this.cedulaField.setText(cedulaOriginal);          
+    this.cedulaField.setEditable(false);            
 }
 
 }

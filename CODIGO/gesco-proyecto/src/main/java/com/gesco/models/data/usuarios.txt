@@ -1,4 +1,4 @@
-12345678:12345678:Gab:adads@aadfadaja.com:Administrador:0.0;
+12345678:12345678:Gab:adads@aadfadaja.com:Administrador:10,00;
 25000123:123456789:SuperAdmin:SprAdmin@gmail.com:Administrador:0.0;
 33246679:123456789:Gabriel Castillo:abcde@gmail.com:Administrador:4000,00;
 11111111:12345678g:Eladmin:dadsdasdas@gmail.com:Administrador:10000.00;

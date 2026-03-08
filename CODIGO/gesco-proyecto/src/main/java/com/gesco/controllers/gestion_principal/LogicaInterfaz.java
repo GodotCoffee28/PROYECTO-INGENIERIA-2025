@@ -346,29 +346,33 @@ public class LogicaInterfaz {
     }
 
     private void reiniciarMenus() {
+        javax.swing.UIManager.put("Button.margin", new java.awt.Insets(15, 35, 15, 35));
+        javax.swing.UIManager.put("Button.font", new java.awt.Font("Arial", java.awt.Font.BOLD, 14));
+        
         Object[] opciones = {
             "Reiniciar semana actual",
-            "Reiniciar un dia",
+            "Reiniciar un día",
             "Cancelar"
         };
 
-        int seleccion = javax.swing.JOptionPane.showOptionDialog(
-            null,
-            "Que deseas reiniciar?",
-            "Reiniciar menu",
-            javax.swing.JOptionPane.DEFAULT_OPTION,
-            javax.swing.JOptionPane.QUESTION_MESSAGE,
-            null,
-            opciones,
-            opciones[0]
-        );
+        javax.swing.JPanel panelTitulo = new javax.swing.JPanel(new java.awt.BorderLayout());
+
+        panelTitulo.setPreferredSize(new java.awt.Dimension(600, 80)); 
+
+        javax.swing.JLabel etiquetaTitulo = new javax.swing.JLabel("¿Qué deseas reiniciar?");
+        etiquetaTitulo.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 20)); 
+        etiquetaTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        panelTitulo.add(etiquetaTitulo, java.awt.BorderLayout.CENTER);
+
+        int seleccion = javax.swing.JOptionPane.showOptionDialog(null, panelTitulo, "Reiniciar menú",javax.swing.JOptionPane.DEFAULT_OPTION,javax.swing.JOptionPane.PLAIN_MESSAGE, null, opciones, opciones[0]);
+
+        javax.swing.UIManager.put("Button.margin", null);
+        javax.swing.UIManager.put("Button.font", null);
 
         if (seleccion == 0) {
             reiniciarMenusSemana();
-            return;
-        }
-
-        if (seleccion == 1) {
+        } 
+        else if (seleccion == 1) {
             reiniciarMenuDia();
         }
     }
@@ -378,100 +382,73 @@ public class LogicaInterfaz {
 
         boolean ok = DataBase.reiniciarMenusSemana();
         if (!ok) {
-            javax.swing.JOptionPane.showMessageDialog(null,
-                "Error al reiniciar menús.",
-                "Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(null,"Error al reiniciar menús.","Error",javax.swing.JOptionPane.ERROR_MESSAGE);
             mostrarGestionMenu();
             return;
         }
 
         if (fechasSemana.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(null,
-                "No se pudieron calcular los días de la semana actual.",
-                "Sin cambios",
-                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(null,"No se pudieron calcular los días de la semana actual.","Sin cambios",javax.swing.JOptionPane.INFORMATION_MESSAGE);
             mostrarGestionMenu();
             return;
         }
 
-        iniciarFlujoCreacionMenus(
-            fechasSemana,
-            "Se reinició el menú de la semana actual.\nA continuación, configura desayuno y almuerzo para cada día."
-        );
+        iniciarFlujoCreacionMenus(fechasSemana,"Se reinició el menú de la semana actual.\nA continuación, configura desayuno y almuerzo para cada día.");
     }
 
     private void reiniciarMenuDia() {
         java.util.List<java.time.LocalDate> fechasDisponibles = DataBase.obtenerFechasConMenusCreados();
         if (fechasDisponibles.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(
-                null,
-                "No hay dias con menu creado para reiniciar.",
-                "Sin dias disponibles",
-                javax.swing.JOptionPane.INFORMATION_MESSAGE
-            );
+            javax.swing.JOptionPane.showMessageDialog(null, "No hay días con menú creado para reiniciar.", "Sin días disponibles", javax.swing.JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
-        DiaDisponible[] opcionesDias = new DiaDisponible[fechasDisponibles.size()];
-        for (int i = 0; i < fechasDisponibles.size(); i++) {
-            java.time.LocalDate fecha = fechasDisponibles.get(i);
-            opcionesDias[i] = new DiaDisponible(fecha, nombreDiaSemana(fecha) + " " + fecha);
+        DiaDisponible[] opcionesDias = fechasDisponibles.stream()
+            .map(f -> new DiaDisponible(f, nombreDiaSemana(f) + " " + f)).toArray(DiaDisponible[]::new);
+
+        javax.swing.UIManager.put("Button.margin", new java.awt.Insets(12, 40, 12, 40));
+        javax.swing.UIManager.put("Button.font", new java.awt.Font("Arial", java.awt.Font.BOLD, 14));
+
+        javax.swing.JPanel panelContenedor = new javax.swing.JPanel(new java.awt.GridBagLayout());
+        panelContenedor.setPreferredSize(new java.awt.Dimension(550, 160)); 
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+
+        javax.swing.JLabel etiqueta = new javax.swing.JLabel("Selecciona el día que deseas reiniciar:");
+        etiqueta.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 18));
+        gbc.gridy = 0;
+        gbc.insets = new java.awt.Insets(0, 0, 20, 0); 
+        panelContenedor.add(etiqueta, gbc);
+
+        javax.swing.JComboBox<DiaDisponible> comboDias = new javax.swing.JComboBox<>(opcionesDias);
+        comboDias.setPreferredSize(new java.awt.Dimension(350, 40));
+        comboDias.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 14));
+        gbc.gridy = 1;
+        gbc.insets = new java.awt.Insets(0, 0, 10, 0);
+        panelContenedor.add(comboDias, gbc);
+
+        int respuesta = javax.swing.JOptionPane.showConfirmDialog(null, panelContenedor, "Reiniciar menú de un día", javax.swing.JOptionPane.OK_CANCEL_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE);
+
+        javax.swing.UIManager.put("Button.margin", null);
+        javax.swing.UIManager.put("Button.font", null);
+
+        if (respuesta == javax.swing.JOptionPane.OK_OPTION) {
+            DiaDisponible seleccion = (DiaDisponible) comboDias.getSelectedItem();
+            if (seleccion != null && DataBase.reiniciarMenuDia(seleccion.fecha())) {
+                iniciarFlujoCreacionMenus(java.util.List.of(seleccion.fecha()), 
+                    "Se reinició el menú del día seleccionado correctamente.");
+            }
         }
-
-        DiaDisponible seleccion = (DiaDisponible) javax.swing.JOptionPane.showInputDialog(
-            null,
-            "Selecciona el dia que deseas reiniciar:",
-            "Reiniciar menu de un dia",
-            javax.swing.JOptionPane.QUESTION_MESSAGE,
-            null,
-            opcionesDias,
-            opcionesDias[0]
-        );
-
-        if (seleccion == null) {
-            return;
-        }
-
-        boolean ok = DataBase.reiniciarMenuDia(seleccion.fecha());
-        if (!ok) {
-            javax.swing.JOptionPane.showMessageDialog(
-                null,
-                "Error al reiniciar el menu del dia seleccionado.",
-                "Error",
-                javax.swing.JOptionPane.ERROR_MESSAGE
-            );
-            mostrarGestionMenu();
-            return;
-        }
-
-        iniciarFlujoCreacionMenus(
-            java.util.List.of(seleccion.fecha()),
-            "Se reinició el menú del dia seleccionado.\nA continuación, configura desayuno y almuerzo."
-        );
     }
-
-    private void iniciarFlujoCreacionMenus(
-        java.util.List<java.time.LocalDate> fechas,
-        String mensaje
-    ) {
+    private void iniciarFlujoCreacionMenus(java.util.List<java.time.LocalDate> fechas,String mensaje) {
         if (fechas == null || fechas.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(
-                null,
-                "No hay fechas para configurar menus.",
-                "Sin cambios",
-                javax.swing.JOptionPane.INFORMATION_MESSAGE
-            );
+            javax.swing.JOptionPane.showMessageDialog(null,"No hay fechas para configurar menus.","Sin cambios",javax.swing.JOptionPane.INFORMATION_MESSAGE);
             mostrarGestionMenu();
             return;
         }
 
-        javax.swing.JOptionPane.showMessageDialog(
-            null,
-            mensaje,
-            "Menu reiniciado",
-            javax.swing.JOptionPane.INFORMATION_MESSAGE
-        );
+        javax.swing.JOptionPane.showMessageDialog(null,mensaje,"Menu reiniciado",javax.swing.JOptionPane.INFORMATION_MESSAGE);
 
         java.util.Queue<MenuPendiente> cola = new java.util.LinkedList<>();
         for (java.time.LocalDate fecha : fechas) {
@@ -511,11 +488,7 @@ public class LogicaInterfaz {
 
         menuGescoController.conectar(vistaCrearMenu, usuarioAdmin, cedulaSesionActual);
 
-        new ControladorCrearMenu(
-            vistaCrearMenu,
-            this::mostrarGestionMenu,
-            () -> mostrarCrearMenuParaFecha(cola, actual + 1, total)
-        ).conectar();
+        new ControladorCrearMenu(vistaCrearMenu,this::mostrarGestionMenu,() -> mostrarCrearMenuParaFecha(cola, actual + 1, total)).conectar();
     }
 
     private String nombreDiaSemana(java.time.LocalDate fecha) {

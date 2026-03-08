@@ -36,7 +36,6 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
         setVisible(true);
     }
 
-
     private void inicializarComponentes() {
         titulo = crearEtiquetaPersonalizada("Cambiar tipo de usuario", "Times New Roman", Font.BOLD, 45, new Color(240, 240, 240), "centro");
         titulo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
@@ -74,8 +73,17 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
         comboTipoEstudiante.setPreferredSize(tamCaja);
         comboTipoEstudiante.setMaximumSize(tamCaja);
         comboTipoEstudiante.setAlignmentX(Component.LEFT_ALIGNMENT);
-        comboTipoEstudiante.setFont(new Font("Arial", Font.PLAIN, 16));
+        comboTipoEstudiante.setFont(new Font("TimesNewRoman", Font.PLAIN, 16));
         formPanel.add(comboTipoEstudiante);
+        formPanel.add(Box.createVerticalStrut(16));
+
+        formPanel.add(crearEtiquetaPersonalizada("Cédula", "Times New Roman", Font.PLAIN, 23, Color.WHITE, "izquierda"));
+        formPanel.add(Box.createVerticalStrut(8));
+        ciField = new JTextField();
+        diseñarCaja(ciField, tamCaja);
+        formPanel.add(ciField);
+
+
         panelFondoBase.add(formPanel);
     }
 
@@ -89,11 +97,11 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
 
         panelFondo.add(Box.createVerticalStrut(20));
         panelFondo.add(titulo);
-        panelFondo.add(Box.createVerticalStrut(50));
+        panelFondo.add(Box.createVerticalStrut(30));
 
         agregarCampos(panelFondo);
 
-        panelFondo.add(Box.createVerticalStrut(18));
+        panelFondo.add(Box.createVerticalStrut(5));
         panelFondo.add(btnCambiar);
 
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
