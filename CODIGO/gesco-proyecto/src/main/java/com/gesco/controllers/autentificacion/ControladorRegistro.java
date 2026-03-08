@@ -122,6 +122,8 @@ public class ControladorRegistro {
             return;
         }
 
+        String nombreSecretaria = DataBase.obtenerNombreSecretaria(cedula);
+
         if (tipoPadron == TipoUsuario.ADMIN) {
             if (DataBase.cedulaYaRegistrada(cedula)) {
                 JOptionPane.showMessageDialog(
@@ -133,7 +135,9 @@ public class ControladorRegistro {
                 return;
             }
 
-            String nombreDerivado = "Administrador Ucevista";
+            String nombreDerivado = (nombreSecretaria == null || nombreSecretaria.isBlank())
+                ? "Administrador Ucevista"
+                : nombreSecretaria;
             boolean guardadoAdmin = DataBase.registrarAdministradorPreAutorizado(cedula, clave, nombreDerivado, correo);
             if (!guardadoAdmin) {
                 JOptionPane.showMessageDialog(
@@ -159,7 +163,9 @@ public class ControladorRegistro {
             return;
         }
 
-        String nombreDerivado = "Usuario Ucevista";
+        String nombreDerivado = (nombreSecretaria == null || nombreSecretaria.isBlank())
+            ? "Usuario Ucevista"
+            : nombreSecretaria;
         boolean guardado = DataBase.registrarUsuario(cedula, clave, nombreDerivado, correo, tipoPadron);
 
         if (!guardado) {

@@ -1,4 +1,3 @@
-2026-02-14|CON_MENU|NO_DEFINIDO|Pollo frito>;Big mac>;Pasta a la carbonara>;
 2026-02-23|CON_MENU|DESAYUNO|Arepa con queso>Queso~1~3.40,Sal~1~0.10;Ensalada fresca>Lechuga~2~2.20,Tomate~1~1.30,Aceite~1~2.20;Jugo de manzana>Manzana~2~5.00;
 2026-02-23|CON_MENU|ALMUERZO|Arroz con pollo>Arroz~2~2.40,Pollo~1~4.75,Sal~1~0.10;Ensalada mixta>Lechuga~2~2.20,Tomate~1~1.30;Jugo natural>Manzana~2~5.00;
 2026-02-24|CON_MENU|ALMUERZO|Pollo a la brasa>Pollo~1~4.75;Hamburguesa>Queso~1~3.40,Lechuga~1~1.10,Tomate~1~1.30,Sal~1~0.10;Jugo de frutas>Manzana~3~7.50;
@@ -10,3 +9,4 @@
 2026-03-06|CON_MENU|ALMUERZO|popo>Manzana~1~2.50;
 2026-03-05|CON_MENU|ALMUERZO|kkkkk>Manzana~1~2.50;
 2026-03-05|CON_MENU|DESAYUNO|lllll>Manzana~1~2.50;
+

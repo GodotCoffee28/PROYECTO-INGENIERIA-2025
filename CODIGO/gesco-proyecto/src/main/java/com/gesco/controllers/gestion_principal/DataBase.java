@@ -1,19 +1,19 @@
 package com.gesco.controllers.gestion_principal;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -490,6 +490,50 @@ public class DataBase {
                 return tipoResuelto;
             }
         }
+        return null;
+    }
+
+    public static String obtenerNombreSecretaria(String cedula) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (!cedulaValida(cedulaLimpia)) {
+            return null;
+        }
+
+        List<String> lineas = leerLineasSecretaria(ARCHIVO_PADRON_SECRETARIA);
+        for (String linea : lineas) {
+            String limpia = valorSeguro(linea);
+            if (limpia.isEmpty() || limpia.startsWith("#")) {
+                continue;
+            }
+
+            String[] partes = limpia.split(":", 4);
+            if (partes.length < 2) {
+                continue;
+            }
+
+            String cedulaPadron = normalizarCedula(partes[0]);
+            if (!cedulaLimpia.equals(cedulaPadron)) {
+                continue;
+            }
+
+            String tipoBase = normalizarTextoTipo(partes[1]);
+            if ("estudiante".equals(tipoBase)) {
+                if (partes.length >= 4) {
+                    return valorSeguro(partes[3]);
+                }
+                if (partes.length == 3 && mapearSubtipoUsuario(partes[2]) == null) {
+                    return valorSeguro(partes[2]);
+                }
+                return null;
+            }
+
+            if (partes.length >= 3) {
+                return valorSeguro(partes[2]);
+            }
+
+            return null;
+        }
+
         return null;
     }
 
