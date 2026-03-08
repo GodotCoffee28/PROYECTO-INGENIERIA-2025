@@ -26,3 +26,4 @@
 12345679:administrador:Manuel Rojas
 11111111:administrador:Eladmin
 32111455:estudiante:becario:Ramses Lopez
+32111456:estudiante:exonerado

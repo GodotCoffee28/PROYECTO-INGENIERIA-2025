@@ -55,14 +55,6 @@ public class DataBase {
 
     private static final long CEDULA_MINIMA = 4_000_000L;
     private static final long CEDULA_MAXIMA = 45_000_000L;
-    private static final double CCB_ESTUDIANTE_MIN = 0.20;
-    private static final double CCB_ESTUDIANTE_MAX = 0.30;
-    private static final double CCB_BECARIO_PORCENTAJE = 0.05;
-    private static final double CCB_EXONERADO_PORCENTAJE = 0.00;
-    private static final double CCB_PROFESOR_MIN = 0.70;
-    private static final double CCB_PROFESOR_MAX = 0.90;
-    private static final double CCB_EMPLEADO_MIN = 0.90;
-    private static final double CCB_EMPLEADO_MAX = 1.10;
     public static final int CANTIDAD_MAXIMA_INSUMO = 1000;
     public static final float PRECIO_MAXIMO_INSUMO = 1000.0f;
     private static final Set<String> FERIADOS_FIJOS_MM_DD = Set.of();
@@ -1333,14 +1325,15 @@ public class DataBase {
         if (ccb == null) return false;
         String linea = String.format(
                 Locale.US,
-                "%s|%s|%.2f|%.2f|%.2f|%.4f|%.4f",
+                "%s|%s|%.2f|%.2f|%.2f|%.4f|%.4f|%.4f",
                 ccb.getFecha().toString(),
                 valorSeguro(ccb.getTipoUsuario()),
                 ccb.getCf(),
                 ccb.getCv(),
                 ccb.getNb(),
                 ccb.getMerma(),
-                ccb.getCcb()
+                ccb.getCcb(),
+                ccb.getPorcentajeAplicado()
         );
         return escribirLineaGenerica(ARCHIVO_CCB, linea + System.lineSeparator());
     }
@@ -1350,6 +1343,26 @@ public class DataBase {
         if (lineas.isEmpty()) return null;
         String ultima = lineas.get(lineas.size() - 1);
         return parsearLineaCcb(ultima);
+    }
+
+    public static CCB obtenerUltimoCcbPorTipo(TipoUsuario tipoUsuario) {
+        List<String> lineas = leerLineasGenericas(ARCHIVO_CCB);
+        if (lineas.isEmpty()) {
+            return null;
+        }
+
+        for (int i = lineas.size() - 1; i >= 0; i--) {
+            CCB ccb = parsearLineaCcb(lineas.get(i));
+            if (ccb == null) {
+                continue;
+            }
+
+            if (CCB.coincideTipoCcb(ccb.getTipoUsuario(), tipoUsuario)) {
+                return ccb;
+            }
+        }
+
+        return null;
     }
 
     public static List<CCB> obtenerHistorialCcb() {
@@ -1369,35 +1382,15 @@ public class DataBase {
     }
 
     public static double calcularMontoCcbPorTipo(double ccbBase, TipoUsuario tipoUsuario) {
-        if (ccbBase < 0) {
-            throw new IllegalArgumentException("El CCB base no puede ser negativo.");
-        }
-
-        double porcentaje = obtenerPorcentajeDeterministicoPorTipo(tipoUsuario);
-        return redondearMoneda(ccbBase * porcentaje);
+        return CCB.calcularMontoPorTipo(ccbBase, tipoUsuario);
     }
 
     public static double generarPorcentajeCcbPorTipo(TipoUsuario tipoUsuario) {
-        double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
-        if (rango[0] == rango[1]) {
-            return redondearMoneda(rango[0]);
-        }
-
-        double porcentaje = rango[0] + (Math.random() * (rango[1] - rango[0]));
-        return redondearMoneda(porcentaje);
+        return CCB.generarPorcentajePorTipo(tipoUsuario);
     }
 
     public static double calcularMontoCcbPorTipo(double ccbBase, TipoUsuario tipoUsuario, double porcentajeCcb) {
-        if (ccbBase < 0) {
-            throw new IllegalArgumentException("El CCB base no puede ser negativo.");
-        }
-
-        double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
-        if (porcentajeCcb < rango[0] || porcentajeCcb > rango[1]) {
-            throw new IllegalArgumentException("El porcentaje no está en el rango permitido para el tipo de usuario.");
-        }
-
-        return redondearMoneda(ccbBase * porcentajeCcb);
+        return CCB.calcularMontoPorTipo(ccbBase, tipoUsuario, porcentajeCcb);
     }
 
     public static double calcularMontoCcbParaCedula(String cedula) {
@@ -1457,7 +1450,7 @@ public class DataBase {
     private static CCB parsearLineaCcb(String linea) {
         if (linea == null || linea.isBlank()) return null;
         String[] partes = linea.split("\\|");
-        if (partes.length < 6) return null;
+        if (partes.length < 7) return null;
         try {
             LocalDate fecha = LocalDate.parse(partes[0].trim());
             String tipoUsuario = partes[1].trim();
@@ -1465,7 +1458,12 @@ public class DataBase {
             double cv = parseDoubleSeguro(partes[3]);
             double nb = parseDoubleSeguro(partes[4]);
             double merma = parseDoubleSeguro(partes[5]);
-            return new CCB(fecha, tipoUsuario, cf, cv, nb, merma);
+            TipoUsuario tipoEnum = CCB.parseTipoUsuario(tipoUsuario);
+            double[] rango = CCB.obtenerRangoPorTipoUsuario(tipoEnum);
+            double porcentaje = (partes.length >= 8)
+                ? parseDoubleSeguro(partes[7])
+                : (rango[0] + rango[1]) / 2.0;
+            return new CCB(fecha, tipoUsuario, cf, cv, nb, merma, porcentaje);
         } catch (Exception ex) {
             return null;
         }
@@ -1478,29 +1476,6 @@ public class DataBase {
         } catch (NumberFormatException ex) {
             return 0.0;
         }
-    }
-
-    private static double[] obtenerRangoPorTipoUsuario(TipoUsuario tipoUsuario) {
-        if (tipoUsuario == null) {
-            return new double[] { 1.0, 1.0 };
-        }
-
-        return switch (tipoUsuario) {
-            case ESTUDIANTE -> new double[] { CCB_ESTUDIANTE_MIN, CCB_ESTUDIANTE_MAX };
-            case BECARIO -> new double[] { CCB_BECARIO_PORCENTAJE, CCB_BECARIO_PORCENTAJE };
-            case EXONERADO -> new double[] { CCB_EXONERADO_PORCENTAJE, CCB_EXONERADO_PORCENTAJE };
-            case PROFESOR -> new double[] { CCB_PROFESOR_MIN, CCB_PROFESOR_MAX };
-            case EMPLEADO, ADMIN, SUPER_ADMIN -> new double[] { CCB_EMPLEADO_MIN, CCB_EMPLEADO_MAX };
-            default -> new double[] { 1.0, 1.0 };
-        };
-    }
-
-    private static double obtenerPorcentajeDeterministicoPorTipo(TipoUsuario tipoUsuario) {
-        double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
-        if (rango[0] == rango[1]) {
-            return rango[0];
-        }
-        return (rango[0] + rango[1]) / 2.0;
     }
 
     private static float parseFloatSeguro(String valor) {

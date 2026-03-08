@@ -84,7 +84,8 @@ public class ControladorFila {
             return;
         }
 
-        if (obtenerCcbBase() <= 0) {
+        TipoUsuario tipoUsuarioSesion = obtenerTipoUsuarioSesion();
+        if (tipoUsuarioSesion != TipoUsuario.EXONERADO && obtenerCcbBase() <= 0) {
             JOptionPane.showMessageDialog(
                 vista,
                 "No hay un CCB cargado para calcular el cobro.",
@@ -154,11 +155,24 @@ public class ControladorFila {
     }
 
     private void actualizarCobro() {
-        double costoMenu = obtenerCostoMenuHoy();
-        double ccbBase = obtenerCcbBase();
         TipoUsuario tipoUsuario = obtenerTipoUsuarioSesion();
-        double porcentaje = DataBase.generarPorcentajeCcbPorTipo(tipoUsuario);
-        double costoCcb = DataBase.calcularMontoCcbPorTipo(ccbBase, tipoUsuario, porcentaje);
+        double costoMenu = obtenerCostoMenuHoy();
+
+        // Exonerado no requiere CCB disponible: aplica 0% de recargo.
+        if (tipoUsuario == TipoUsuario.EXONERADO) {
+            vista.setCobroInfo(costoMenu, 0.0, costoMenu);
+            return;
+        }
+
+        CCB ccbConfigurado = DataBase.obtenerUltimoCcbPorTipo(tipoUsuario);
+        if (ccbConfigurado == null) {
+            vista.setCobroInfo(0.0, 0.0, 0.0);
+            return;
+        }
+
+        double ccbBase = ccbConfigurado.getCcb();
+        double porcentaje = CCB.normalizarPorcentajeParaTipo(tipoUsuario, ccbConfigurado.getPorcentajeAplicado());
+        double costoCcb = CCB.calcularMontoPorTipo(ccbBase, tipoUsuario, porcentaje);
         double costoFinal = costoMenu + costoCcb;
         double ajuste = porcentaje * 100.0;
 
@@ -328,7 +342,7 @@ public class ControladorFila {
     }
 
     private double obtenerCcbBase() {
-        CCB ultimoCcb = DataBase.obtenerUltimoCcb();
+        CCB ultimoCcb = DataBase.obtenerUltimoCcbPorTipo(obtenerTipoUsuarioSesion());
         if (ultimoCcb == null) {
             return 0.0;
         }
