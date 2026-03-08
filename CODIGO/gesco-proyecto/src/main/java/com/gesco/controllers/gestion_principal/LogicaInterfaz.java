@@ -142,7 +142,7 @@ public class LogicaInterfaz {
         nombreUsuario = nombre;
 
         String nombreMostrar = (nombre == null || nombre.isBlank()) ? "Usuario" : nombre;
-        double saldo = 0.0;
+        double saldo;
         if (cedulaSesionActual != null && !cedulaSesionActual.isBlank()) {
             saldo = DataBase.obtenerSaldo(cedulaSesionActual);
         } else if (sesionAdmin) {

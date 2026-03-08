@@ -29,6 +29,13 @@ public class Usuario {
 				default -> "Comensal";
 			};
 		}
+		public static String[] obtenerTiposEstudiante() {
+			return new String[] {
+				"Regular",
+				"Becario",
+				"Exonerado"
+			};
+		}
 
 		public static TipoUsuario fromEtiqueta(String valor) {
 			if (valor == null) return COMENSAL;
