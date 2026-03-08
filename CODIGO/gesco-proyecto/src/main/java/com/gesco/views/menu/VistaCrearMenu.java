@@ -56,14 +56,14 @@ public class VistaCrearMenu extends PlantillaGesco {
     private void agregarCampos(JPanel panelIzqPlatillos, JPanel panelDerInsumos) {
         int pading = 18;
         panelIzqPlatillos.setLayout(new BoxLayout(panelIzqPlatillos, BoxLayout.Y_AXIS));
-        panelIzqPlatillos.setOpaque(true);
+        panelIzqPlatillos.setOpaque(false);
         panelIzqPlatillos.setPreferredSize(new Dimension(600, 540));
         panelIzqPlatillos.setMaximumSize(new Dimension(600, 540));
         panelIzqPlatillos.setBorder(BorderFactory.createEmptyBorder(pading, pading, pading, pading));
         panelIzqPlatillos.setAlignmentY(Component.TOP_ALIGNMENT);
 
         panelDerInsumos.setLayout(new BoxLayout(panelDerInsumos, BoxLayout.Y_AXIS));
-        panelDerInsumos.setOpaque(true);
+        panelDerInsumos.setOpaque(false);
         panelDerInsumos.setPreferredSize(new Dimension(600, 540));
         panelDerInsumos.setMaximumSize(new Dimension(600, 540));
         panelDerInsumos.setBorder(BorderFactory.createEmptyBorder(pading, pading, pading, pading));

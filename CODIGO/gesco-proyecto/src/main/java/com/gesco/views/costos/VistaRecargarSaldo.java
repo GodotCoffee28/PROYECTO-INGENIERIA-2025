@@ -17,7 +17,8 @@ public class VistaRecargarSaldo extends PlantillaGesco {
     private JTextField cedulaField, montoField, referenciaField;
     private JComboBox<String> comboBanco;
     private BotonNeon botonRecargar;
-
+    private JToggleButton switchPana;
+    private String cedulaOriginal = "";
     public VistaRecargarSaldo() {
         super();
         setImagenFondo("/FondoPrincipal2.png");
@@ -57,6 +58,17 @@ public class VistaRecargarSaldo extends PlantillaGesco {
         comboBanco.setFont(new Font("Arial", Font.PLAIN, 15));
         comboBanco.setBackground(new Color(255, 255, 255, 240));
         comboBanco.setSelectedIndex(0);
+
+        switchPana = new JToggleButton("¿Recargar a un Pana?");
+        switchPana.setPreferredSize(new Dimension(450, 35));
+        switchPana.setMaximumSize(new Dimension(450, 35));
+        switchPana.setFocusPainted(false);
+        switchPana.setBackground(new Color(30, 30, 35));
+        switchPana.setForeground(Color.WHITE);
+        switchPana.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        switchPana.setFont(new Font("Arial", Font.BOLD, 14));
+        switchPana.setAlignmentX(Component.LEFT_ALIGNMENT);
+
     }
 
     private void construirCuerpo() {
@@ -92,6 +104,9 @@ public class VistaRecargarSaldo extends PlantillaGesco {
             campoFecha.setAlignmentX(Component.LEFT_ALIGNMENT);
             formPanel.add(campoFecha);
             formPanel.add(Box.createVerticalStrut(20));
+            
+            formPanel.add(switchPana);
+            formPanel.add(Box.createVerticalStrut(15));
 
             Dimension tamCaja = new Dimension(450, 40);
 
@@ -154,16 +169,19 @@ public class VistaRecargarSaldo extends PlantillaGesco {
 
 
     public String getFecha() { return campoFecha.getFechaTexto(); }  
-    public String getCedula() { return cedulaField.getText();}
+    public JTextField getCedula() { return cedulaField;}
     public String getBanco() { return (String) comboBanco.getSelectedItem();}
     public String getReferencia() { return referenciaField.getText();}
     public String getMonto() { return montoField.getText();}
     public BotonNeon getBotonRecargar() {return botonRecargar;}
+    public JToggleButton getSwitchPana(){return switchPana;};
+    public String getCedulaOriginal(){return cedulaOriginal;};
 
     public void setCedula(String cedula) {
-        cedulaField.setText(cedula == null ? "" : cedula);
-        cedulaField.setEditable(false);
-    }
+    this.cedulaOriginal = (cedula == null) ? "" : cedula; // Guardamos el respaldo
+    this.cedulaField.setText(cedulaOriginal);            // Lo mostramos
+    this.cedulaField.setEditable(false);                 // Bloqueamos por defecto
+}
 
 }
 

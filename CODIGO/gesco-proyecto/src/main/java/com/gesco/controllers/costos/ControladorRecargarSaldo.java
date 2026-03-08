@@ -33,6 +33,21 @@ public class ControladorRecargarSaldo {
     public void conectar() {
         vista.setCedula(cedulaSesion);
 
+        vista.getSwitchPana().addActionListener(e -> {
+        if (vista.getSwitchPana().isSelected()) {
+            vista.getSwitchPana().setText("¡Modo Pana Activado!");
+            vista.getSwitchPana().setBackground(new java.awt.Color(45, 120, 180));
+            vista.getCedula().setEditable(true);
+            vista.getCedula().setText("");
+            vista.getCedula().requestFocus();
+        } 
+        else {
+            vista.getSwitchPana().setText("¿Recargar a un Pana?");
+            vista.getSwitchPana().setBackground(new java.awt.Color(30, 30, 35));
+            vista.getCedula().setEditable(false);
+            vista.getCedula().setText(cedulaSesion);
+        }
+    });
         vista.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
