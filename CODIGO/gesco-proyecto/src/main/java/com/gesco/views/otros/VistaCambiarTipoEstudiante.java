@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.gesco.models.usuarios.Usuario.TipoUsuario;
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
@@ -37,7 +38,7 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
 
 
     private void inicializarComponentes() {
-        titulo = crearEtiquetaPersonalizada("Cambiar tipo de estudiante", "Times New Roman", Font.BOLD, 45, new Color(240, 240, 240), "centro");
+        titulo = crearEtiquetaPersonalizada("Cambiar tipo de usuario", "Times New Roman", Font.BOLD, 45, new Color(240, 240, 240), "centro");
         titulo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         Dimension tamBoton = new Dimension(400, 60);
         btnCambiar = new BotonNeon("Cambiar tipo");
@@ -63,12 +64,12 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
         formPanel.add(ciField);
         formPanel.add(Box.createVerticalStrut(16));
 
-        formPanel.add(crearEtiquetaPersonalizada("Tipo estudiante", "Times New Roman", Font.PLAIN, 19, Color.WHITE, "izquierda"));
+        formPanel.add(crearEtiquetaPersonalizada("Tipo de usuario", "Times New Roman", Font.PLAIN, 19, Color.WHITE, "izquierda"));
         formPanel.add(Box.createVerticalStrut(8));
         comboTipoEstudiante = new JComboBox<>(new String[] {
-            "Regular",
-            "Becario",
-            "Exonerado"
+            "Estudiante regular",
+            "Estudiante becario",
+            "Estudiante exonerado"
         });
         comboTipoEstudiante.setPreferredSize(tamCaja);
         comboTipoEstudiante.setMaximumSize(tamCaja);
@@ -104,6 +105,29 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
     public String getTipoEstudiante() {
         Object tipoSeleccionado = comboTipoEstudiante.getSelectedItem();
         return tipoSeleccionado == null ? "" : tipoSeleccionado.toString();
+    }
+
+    public TipoUsuario getTipoUsuarioSeleccionado() {
+        String valor = getTipoEstudiante();
+        return switch (valor) {
+            case "Estudiante regular" -> TipoUsuario.ESTUDIANTE;
+            case "Estudiante becario" -> TipoUsuario.BECARIO;
+            case "Estudiante exonerado" -> TipoUsuario.EXONERADO;
+            default -> TipoUsuario.ESTUDIANTE;
+        };
+    }
+
+    public void setTipoUsuarioSeleccionado(TipoUsuario tipoUsuario) {
+        if (tipoUsuario == null || comboTipoEstudiante == null) {
+            return;
+        }
+        String etiqueta = switch (tipoUsuario) {
+            case ESTUDIANTE -> "Estudiante regular";
+            case BECARIO -> "Estudiante becario";
+            case EXONERADO -> "Estudiante exonerado";
+            default -> "Estudiante regular";
+        };
+        comboTipoEstudiante.setSelectedItem(etiqueta);
     }
 
 }
