@@ -10,6 +10,7 @@ public class VistaInicioAdmin extends PlantillaGesco {
     private BotonNeon btnGestión, btnSubirDatos, btnCambio, btnVerCCB, btnVerMenu, btnCambiarTipoUsuario, btnVerHistorialAsistencia;
     private JLabel titulo;
 
+    @SuppressWarnings("OverridableMethodCallInConstructor")
     public VistaInicioAdmin() {
         super();
         ocultarIcono();

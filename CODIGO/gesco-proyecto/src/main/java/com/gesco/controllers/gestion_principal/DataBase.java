@@ -1702,15 +1702,10 @@ public class DataBase {
     }
 
     private static boolean esValorNumerico(String valor) {
-        if (valor == null || valor.isBlank()) {
-            return false;
-        }
-        try {
-            Double.parseDouble(valor.replace(',', '.'));
-            return true;
-        } catch (NumberFormatException ex) {
-            return false;
-        }
+        if (valor == null) return false;
+        String limpio = valor.trim();
+        if (limpio.isEmpty()) return false;
+        return limpio.matches("[-+]?\\d+(?:[\\.,]\\d+)?");
     }
 
     private static boolean esTipoEstudiante(TipoUsuario tipoUsuario) {
