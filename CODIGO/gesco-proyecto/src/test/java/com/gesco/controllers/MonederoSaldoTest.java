@@ -34,11 +34,15 @@ public class MonederoSaldoTest {
         Files.writeString(
             carpetaSecretaria.resolve("cedulas_ocupaciones.txt"),
             "33333333:estudiante" + System.lineSeparator()
-                + "33444444:estudiante" + System.lineSeparator(),
+                + "33444444:estudiante" + System.lineSeparator()
+                + "33555555:estudiante:becario" + System.lineSeparator()
+                + "33666666:estudiante:exonerado" + System.lineSeparator(),
             java.nio.charset.StandardCharsets.UTF_8
         );
         Files.writeString(carpetaSecretaria.resolve("33333333.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
         Files.writeString(carpetaSecretaria.resolve("33444444.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
+        Files.writeString(carpetaSecretaria.resolve("33555555.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
+        Files.writeString(carpetaSecretaria.resolve("33666666.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
     }
 
     @After
@@ -102,5 +106,48 @@ public class MonederoSaldoTest {
         assertTrue(DataBase.actualizarSaldo(cedula, saldoAntes - costoFinal));
 
         assertEquals(saldoFinalEsperado, DataBase.obtenerSaldo(cedula), 0.0001);
+    }
+
+    @Test
+    public void cobroPedidoMenu_becario_aplicaCincoPorcientoCcb_yActualizaSaldo_cajaNegra() {
+        String cedula = "33555555";
+
+        assertTrue(DataBase.registrarUsuario(cedula, "clave123", "Becario Test", "becario@email.com", TipoUsuario.BECARIO));
+        assertTrue(DataBase.actualizarSaldo(cedula, 200.00));
+
+        // CCB base = (1000 + 500) / 100 * (1 + 0) = 15.00
+        assertTrue(DataBase.guardarCcb(new com.gesco.models.costos.CCB(LocalDate.now(), "Estudiante", 1000.0, 500.0, 100.0, 0.0)));
+
+        double costoMenu = 50.00;
+        double montoCcb = DataBase.calcularMontoCcbParaCedula(cedula);
+        double costoFinal = costoMenu + montoCcb;
+
+        assertEquals(0.75, montoCcb, 0.0001);
+        assertEquals(50.75, costoFinal, 0.0001);
+
+        double saldoAntes = DataBase.obtenerSaldo(cedula);
+        assertTrue(DataBase.actualizarSaldo(cedula, saldoAntes - costoFinal));
+        assertEquals(149.25, DataBase.obtenerSaldo(cedula), 0.0001);
+    }
+
+    @Test
+    public void cobroPedidoMenu_exonerado_noCobraCcb_yActualizaSaldoSoloPorMenu_cajaNegra() {
+        String cedula = "33666666";
+
+        assertTrue(DataBase.registrarUsuario(cedula, "clave123", "Exonerado Test", "exonerado@email.com", TipoUsuario.EXONERADO));
+        assertTrue(DataBase.actualizarSaldo(cedula, 200.00));
+
+        assertTrue(DataBase.guardarCcb(new com.gesco.models.costos.CCB(LocalDate.now(), "Estudiante", 1000.0, 500.0, 100.0, 0.0)));
+
+        double costoMenu = 50.00;
+        double montoCcb = DataBase.calcularMontoCcbParaCedula(cedula);
+        double costoFinal = costoMenu + montoCcb;
+
+        assertEquals(0.0, montoCcb, 0.0001);
+        assertEquals(50.0, costoFinal, 0.0001);
+
+        double saldoAntes = DataBase.obtenerSaldo(cedula);
+        assertTrue(DataBase.actualizarSaldo(cedula, saldoAntes - costoFinal));
+        assertEquals(150.00, DataBase.obtenerSaldo(cedula), 0.0001);
     }
 }

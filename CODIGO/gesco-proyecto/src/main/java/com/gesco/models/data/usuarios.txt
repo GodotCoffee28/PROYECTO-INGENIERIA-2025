@@ -5,4 +5,4 @@
 22334455:12345678a:Usuario Ucevista:dasdasdad@gmail.com:Estudiante:0.0;
 32111454:32111454Ramses:Ramses Cordoba:aaroncordobarivas@gmail.com:Administrador:11103,00;
 32111455:12345678R.:Usuario Ucevista:manolo@gmail.com:Becario:10006,40;
-32111456:32111456R:Padrino lopez:aa@gmai.com:Exonerado:1108,50;
+32111456:32111456R:Padrino lopez:aa@gmai.com:Exonerado:1608.50;

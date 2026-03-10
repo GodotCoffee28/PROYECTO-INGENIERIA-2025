@@ -88,12 +88,15 @@ public class LogicaInterfaz {
             this::mostrarHistorialMenu,
             this::mostrarVerCcb,
             this::swapInteraccion,
-            () -> System.exit(0)
+            this::manejarSolicitudSalida
         )
     );
 
     public void iniciar() {
         cedulaSesionActual = null;
+        sesionAdmin = false;
+        usuarioAdmin = false;
+        nombreUsuario = null;
         SwingUtilities.invokeLater(() -> {
             cerrarVistas();
             vistaInicio = new VistaInicio();
@@ -158,7 +161,7 @@ public class LogicaInterfaz {
         menuGescoController.conectar(vistaInicioComensal, sesionAdmin, cedulaSesionActual);
         new ControladorInicioComensal(
             vistaInicioComensal,
-            this::iniciar,
+            this::intentarCerrarSesionConConfirmacion,
             this::mostrarMenuSemana,
             this::mostrarTurnos,
             this::mostrarRecargarSaldo,
@@ -178,7 +181,7 @@ public class LogicaInterfaz {
         menuGescoController.conectar(vistaInicioAdmin, true, cedulaSesionActual);
         new ControladorInicioAdmin(
             vistaInicioAdmin,
-            this::iniciar,
+            this::intentarCerrarSesionConConfirmacion,
             this::mostrarGestionMenu,
             this::mostrarCargaCCB,
             this::mostrarVerCcb,
@@ -186,6 +189,71 @@ public class LogicaInterfaz {
             this::mostrarHistorialMenu,
             this::mostrarCambiarTipoEstudiante
         ).conectar();
+    }
+
+    private void manejarSolicitudSalida() {
+        if (!haySesionActiva()) {
+            confirmarYCerrarPrograma();
+            return;
+        }
+
+        Object[] opciones = { "Cerrar sesión", "Cerrar programa", "Cancelar" };
+        int seleccion = javax.swing.JOptionPane.showOptionDialog(
+            null,
+            "¿Qué deseas hacer?",
+            "Salir",
+            javax.swing.JOptionPane.DEFAULT_OPTION,
+            javax.swing.JOptionPane.QUESTION_MESSAGE,
+            null,
+            opciones,
+            opciones[0]
+        );
+
+        if (seleccion == 0) {
+            intentarCerrarSesionConConfirmacion();
+            return;
+        }
+
+        if (seleccion == 1) {
+            confirmarYCerrarPrograma();
+        }
+    }
+
+    private void intentarCerrarSesionConConfirmacion() {
+        if (!haySesionActiva()) {
+            iniciar();
+            return;
+        }
+
+        int respuesta = javax.swing.JOptionPane.showConfirmDialog(
+            null,
+            "¿En verdad desea salir de su sesión?",
+            "Confirmar cierre de sesión",
+            javax.swing.JOptionPane.YES_NO_OPTION,
+            javax.swing.JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (respuesta == javax.swing.JOptionPane.YES_OPTION) {
+            iniciar();
+        }
+    }
+
+    private void confirmarYCerrarPrograma() {
+        int respuesta = javax.swing.JOptionPane.showConfirmDialog(
+            null,
+            "¿En verdad desea cerrar el programa?",
+            "Confirmar salida",
+            javax.swing.JOptionPane.YES_NO_OPTION,
+            javax.swing.JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (respuesta == javax.swing.JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
+    }
+
+    private boolean haySesionActiva() {
+        return sesionAdmin || (cedulaSesionActual != null && !cedulaSesionActual.isBlank());
     }
 
     private void mostrarCambiarTipoEstudiante() {
