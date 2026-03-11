@@ -23,18 +23,9 @@ public class TarjetaMenu extends TarjetaGeneral {
     }
 
     public TarjetaMenu(Menu menuDesayuno, Menu menuAlmuerzo) {
-        /*Dimension tamañoFijo = new Dimension(300, 600);
-    
-    // IMPORTANTE: Para que el Layout de la vista principal no la ignore
-    this.setPreferredSize(tamañoFijo);
-    this.setMinimumSize(tamañoFijo); // Esto evita que se encoja
-    this.setMaximumSize(tamañoFijo); // Esto evita que se estire raro */
-    
         super(new Color(255, 255, 255), new Color(255, 255, 255));
         this.menuDesayuno = menuDesayuno;
         this.menuAlmuerzo = menuAlmuerzo;
-        
-        
         actualizarInterfaz();
     }
 
@@ -103,16 +94,12 @@ public class TarjetaMenu extends TarjetaGeneral {
         }
 
         for (Platillo platillo : menu.getPlatillos()) {
-          String textoHtml = "<html><p style='margin: 0; padding: 0; color: white; font-family: Segoe UI;'>" +
-                   "• " + platillo.getNombre().toUpperCase() + "</p></html>";
+          String textoHtml = "<html><p style='margin: 0; padding: 0; color: white; font-family: Segoe UI;'>" +"• " + platillo.getNombre().toUpperCase() + "</p></html>";
     
             JLabel lblNombrePlatillo = new JLabel(textoHtml);
             configurarLabelPlatillo(lblNombrePlatillo);
             
             containerCuerpo.add(lblNombrePlatillo);
-            
-            // CONTROL TOTAL: Si quieres un espacio mínimo, usa este Strut. 
-            // Ponle 0 si quieres que estén pegaditos.
             containerCuerpo.add(Box.createVerticalStrut(2));
         }
     }
