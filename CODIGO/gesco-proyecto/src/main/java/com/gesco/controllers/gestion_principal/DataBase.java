@@ -1323,6 +1323,9 @@ public class DataBase {
 
     public static boolean guardarCcb(CCB ccb) {
         if (ccb == null) return false;
+        if (ccb.getFecha() == null || ccb.getFecha().isBefore(LocalDate.now())) {
+            return false;
+        }
         String linea = String.format(
                 Locale.US,
                 "%s|%s|%.2f|%.2f|%.2f|%.4f|%.4f|%.4f",

@@ -118,6 +118,18 @@ public class DataBaseCcbDescuentoTest {
         assertEquals(100.0, admin, 0.0001);
         assertEquals(empleado, admin, 0.0001);
     }
+
+    @Test
+    public void guardarCcb_fechaFutura_permiteGuardar() {
+        CCB ccbFuturo = new CCB(LocalDate.now().plusDays(1), "Estudiante", 1000.0, 500.0, 100.0, 0.0);
+        assertTrue(DataBase.guardarCcb(ccbFuturo));
+    }
+
+    @Test
+    public void guardarCcb_fechaAnterior_rechazaGuardado() {
+        CCB ccbPasado = new CCB(LocalDate.now().minusDays(1), "Estudiante", 1000.0, 500.0, 100.0, 0.0);
+        assertEquals(false, DataBase.guardarCcb(ccbPasado));
+    }
 }
 
 

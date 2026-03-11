@@ -209,6 +209,9 @@ public class CCB {
     private static void validarPorcentajeEnRango(TipoUsuario tipoUsuario, double porcentaje) {
         double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
         if (porcentaje < rango[0] || porcentaje > rango[1]) {
+            if (tipoUsuario == TipoUsuario.EXONERADO) {
+                throw new IllegalArgumentException("El usuario exonerado no debe pagar porcentaje de CCB.");
+            }
             throw new IllegalArgumentException(
                 String.format(
                     "El porcentaje debe estar entre %.2f%% y %.2f%% para el tipo seleccionado.",
