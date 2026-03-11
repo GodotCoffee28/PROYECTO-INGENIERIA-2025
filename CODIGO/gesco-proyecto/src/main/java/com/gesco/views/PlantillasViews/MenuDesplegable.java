@@ -105,10 +105,7 @@ public class MenuDesplegable {
         String[][] datosAdmin = {
             {"Panel de Control", "CMD_CONTROL"},
             {"Carga del CCB", "CMD_CCB"},
-            {"Crear Menú", "CMD_CREARMENU"},
-            {"Editar Menú", "CMD_EDITARMENU"},
             {"Gestión de Menú", "CMD_GESTIONMENU"},
-            {"Agregar insumo", "CMD_AGREGAR_INSUMO"},
             {"Historial de menús", "CMD_HISTORIAL_MENU"},
             {"Historial de gestión CCB", "CMD_HISTORIAL_CCB"}
         };
