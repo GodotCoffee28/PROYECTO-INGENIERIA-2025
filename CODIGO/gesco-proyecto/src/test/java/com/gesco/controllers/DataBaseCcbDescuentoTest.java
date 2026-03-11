@@ -118,6 +118,52 @@ public class DataBaseCcbDescuentoTest {
         assertEquals(100.0, admin, 0.0001);
         assertEquals(empleado, admin, 0.0001);
     }
+
+    @Test
+    public void guardarCcb_fechaFutura_permiteGuardar() {
+        CCB ccbFuturo = new CCB(LocalDate.now().plusDays(1), "Estudiante", 1000.0, 500.0, 100.0, 0.0);
+        assertTrue(DataBase.guardarCcb(ccbFuturo));
+    }
+
+    @Test
+    public void guardarCcb_fechaAnterior_rechazaGuardado() {
+        CCB ccbPasado = new CCB(LocalDate.now().minusDays(1), "Estudiante", 1000.0, 500.0, 100.0, 0.0);
+        assertEquals(false, DataBase.guardarCcb(ccbPasado));
+    }
+
+    @Test
+    public void guardarCcb_mismaFechaYMismoTipo_reemplazaRegistroExistente() {
+        LocalDate fecha = LocalDate.now().plusDays(1);
+
+        CCB primero = new CCB(fecha, "Estudiante", 1000.0, 500.0, 100.0, 0.0);
+        CCB segundo = new CCB(fecha, "Estudiante", 2000.0, 500.0, 100.0, 0.0);
+
+        assertTrue(DataBase.guardarCcb(primero));
+        assertTrue(DataBase.guardarCcb(segundo));
+
+        long cantidadMismoTipoYFecha = DataBase.obtenerHistorialCcb().stream()
+            .filter(c -> fecha.equals(c.getFecha()))
+            .filter(c -> "ESTUDIANTE".equalsIgnoreCase(c.getTipoUsuario()))
+            .count();
+
+        assertEquals(1L, cantidadMismoTipoYFecha);
+        CCB ultimoEstudiante = DataBase.obtenerUltimoCcbPorTipo(TipoUsuario.ESTUDIANTE);
+        assertEquals(segundo.getCcb(), ultimoEstudiante.getCcb(), 0.0001);
+    }
+
+    @Test
+    public void calcularMontoCcbParaCedula_usaCcbDeHoy_yNoElDeFechaFutura() {
+        DataBase.registrarUsuario("12345678", "clave123", "Juan Perez", "juan@email.com", TipoUsuario.ESTUDIANTE);
+
+        CCB ccbHoy = new CCB(LocalDate.now(), "Estudiante", 1000.0, 500.0, 100.0, 0.0); // ccb = 15
+        CCB ccbFuturo = new CCB(LocalDate.now().plusDays(1), "Estudiante", 2000.0, 500.0, 100.0, 0.0); // ccb = 25
+
+        assertTrue(DataBase.guardarCcb(ccbHoy));
+        assertTrue(DataBase.guardarCcb(ccbFuturo));
+
+        double monto = DataBase.calcularMontoCcbParaCedula("12345678", 0.20);
+        assertEquals(3.0, monto, 0.0001);
+    }
 }
 
 

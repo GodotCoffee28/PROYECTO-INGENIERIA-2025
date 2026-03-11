@@ -471,7 +471,7 @@ public class DataBase {
             String limpia = valorSeguro(linea);
             if (limpia.isEmpty() || limpia.startsWith("#")) continue;
 
-            String[] partes = limpia.split(":", 3);
+            String[] partes = limpia.split(":", 4);
             if (partes.length < 2) continue;
 
             String cedulaPadron = normalizarCedula(partes[0]);
@@ -1323,19 +1323,60 @@ public class DataBase {
 
     public static boolean guardarCcb(CCB ccb) {
         if (ccb == null) return false;
-        String linea = String.format(
-                Locale.US,
-                "%s|%s|%.2f|%.2f|%.2f|%.4f|%.4f|%.4f",
-                ccb.getFecha().toString(),
-                valorSeguro(ccb.getTipoUsuario()),
-                ccb.getCf(),
-                ccb.getCv(),
-                ccb.getNb(),
-                ccb.getMerma(),
-                ccb.getCcb(),
-                ccb.getPorcentajeAplicado()
+        if (ccb.getFecha() == null || ccb.getFecha().isBefore(LocalDate.now())) {
+            return false;
+        }
+        String nuevaLinea = formatearLineaCcb(ccb);
+        List<String> lineas = leerLineasGenericas(ARCHIVO_CCB);
+        List<String> actualizadas = new ArrayList<>();
+
+        TipoUsuario tipoNuevo = CCB.parseTipoUsuario(ccb.getTipoUsuario());
+        LocalDate fechaNueva = ccb.getFecha();
+        boolean reemplazado = false;
+
+        for (String linea : lineas) {
+            CCB existente = parsearLineaCcb(linea);
+            if (existente == null) {
+                actualizadas.add(linea);
+                continue;
+            }
+
+            TipoUsuario tipoExistente = CCB.parseTipoUsuario(existente.getTipoUsuario());
+            boolean mismaFecha = fechaNueva.equals(existente.getFecha());
+            boolean mismoTipo = CCB.coincideTipoCcb(existente.getTipoUsuario(), tipoNuevo)
+                || CCB.coincideTipoCcb(ccb.getTipoUsuario(), tipoExistente);
+
+            if (mismaFecha && mismoTipo) {
+                if (!reemplazado) {
+                    actualizadas.add(nuevaLinea);
+                    reemplazado = true;
+                }
+                continue;
+            }
+
+            actualizadas.add(linea);
+        }
+
+        if (!reemplazado) {
+            actualizadas.add(nuevaLinea);
+        }
+
+        return reescribirArchivoGenerico(ARCHIVO_CCB, actualizadas);
+    }
+
+    private static String formatearLineaCcb(CCB ccb) {
+        return String.format(
+            Locale.US,
+            "%s|%s|%.2f|%.2f|%.2f|%.4f|%.4f|%.4f",
+            ccb.getFecha().toString(),
+            valorSeguro(ccb.getTipoUsuario()),
+            ccb.getCf(),
+            ccb.getCv(),
+            ccb.getNb(),
+            ccb.getMerma(),
+            ccb.getCcb(),
+            ccb.getPorcentajeAplicado()
         );
-        return escribirLineaGenerica(ARCHIVO_CCB, linea + System.lineSeparator());
     }
 
     public static CCB obtenerUltimoCcb() {
@@ -1354,6 +1395,34 @@ public class DataBase {
         for (int i = lineas.size() - 1; i >= 0; i--) {
             CCB ccb = parsearLineaCcb(lineas.get(i));
             if (ccb == null) {
+                continue;
+            }
+
+            if (CCB.coincideTipoCcb(ccb.getTipoUsuario(), tipoUsuario)) {
+                return ccb;
+            }
+        }
+
+        return null;
+    }
+
+    public static CCB obtenerCcbPorFechaYTipo(LocalDate fecha, TipoUsuario tipoUsuario) {
+        if (fecha == null || tipoUsuario == null) {
+            return null;
+        }
+
+        List<String> lineas = leerLineasGenericas(ARCHIVO_CCB);
+        if (lineas.isEmpty()) {
+            return null;
+        }
+
+        for (int i = lineas.size() - 1; i >= 0; i--) {
+            CCB ccb = parsearLineaCcb(lineas.get(i));
+            if (ccb == null) {
+                continue;
+            }
+
+            if (!fecha.equals(ccb.getFecha())) {
                 continue;
             }
 
@@ -1394,23 +1463,31 @@ public class DataBase {
     }
 
     public static double calcularMontoCcbParaCedula(String cedula) {
-        CCB ultimoCcb = obtenerUltimoCcb();
-        if (ultimoCcb == null || !cedulaValida(cedula)) {
+        if (!cedulaValida(cedula)) {
             return 0.0;
         }
 
         TipoUsuario tipoUsuario = obtenerTipoUsuario(cedula);
-        return calcularMontoCcbPorTipo(ultimoCcb.getCcb(), tipoUsuario);
+        CCB ccbHoy = obtenerCcbPorFechaYTipo(LocalDate.now(), tipoUsuario);
+        if (ccbHoy == null) {
+            return 0.0;
+        }
+
+        return calcularMontoCcbPorTipo(ccbHoy.getCcb(), tipoUsuario);
     }
 
     public static double calcularMontoCcbParaCedula(String cedula, double porcentajeCcb) {
-        CCB ultimoCcb = obtenerUltimoCcb();
-        if (ultimoCcb == null || !cedulaValida(cedula)) {
+        if (!cedulaValida(cedula)) {
             return 0.0;
         }
 
         TipoUsuario tipoUsuario = obtenerTipoUsuario(cedula);
-        return calcularMontoCcbPorTipo(ultimoCcb.getCcb(), tipoUsuario, porcentajeCcb);
+        CCB ccbHoy = obtenerCcbPorFechaYTipo(LocalDate.now(), tipoUsuario);
+        if (ccbHoy == null) {
+            return 0.0;
+        }
+
+        return calcularMontoCcbPorTipo(ccbHoy.getCcb(), tipoUsuario, porcentajeCcb);
     }
 
     public static List<Menu> obtenerUltimos5Menus() {

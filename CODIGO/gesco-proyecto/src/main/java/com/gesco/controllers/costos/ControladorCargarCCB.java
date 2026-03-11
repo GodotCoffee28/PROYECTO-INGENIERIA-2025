@@ -42,10 +42,10 @@ public class ControladorCargarCCB {
             return;
         }
 
-        if (!ccb.getFecha().equals(LocalDate.now())) {
+        if (ccb.getFecha().isBefore(LocalDate.now())) {
             JOptionPane.showMessageDialog(
                 vista,
-                "Para actualizar el CCB debe seleccionar la fecha del día actual.",
+                "Solo se puede configurar CCB para el día actual o fechas posteriores.",
                 "Fecha inválida",
                 JOptionPane.WARNING_MESSAGE
             );

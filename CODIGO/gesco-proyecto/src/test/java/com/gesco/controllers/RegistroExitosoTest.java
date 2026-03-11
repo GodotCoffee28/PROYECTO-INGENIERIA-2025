@@ -36,7 +36,8 @@ public class RegistroExitosoTest {
                 + "32654323:profesor" + System.lineSeparator()
                 + "32654324:trabajador" + System.lineSeparator()
                 + "32654325:estudiante:becario" + System.lineSeparator()
-                + "32654326:exonerado" + System.lineSeparator(),
+                + "32654326:exonerado" + System.lineSeparator()
+                + "32654327:estudiante:exonerado:Juan Exonerado" + System.lineSeparator(),
             java.nio.charset.StandardCharsets.UTF_8
         );
             Files.writeString(carpetaSecretaria.resolve("32654321.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
@@ -45,6 +46,7 @@ public class RegistroExitosoTest {
             Files.writeString(carpetaSecretaria.resolve("32654324.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
             Files.writeString(carpetaSecretaria.resolve("32654325.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
             Files.writeString(carpetaSecretaria.resolve("32654326.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
+            Files.writeString(carpetaSecretaria.resolve("32654327.jpg"), "img", java.nio.charset.StandardCharsets.UTF_8);
     }
 
     @After
@@ -108,6 +110,19 @@ public class RegistroExitosoTest {
     public void registrarUsuario_exonerado_guardaTipoUsuario() {
         assertTrue(DataBase.registrarUsuario("32654326", "clave456", "Ana Garcia", "ana@email.com", TipoUsuario.EXONERADO));
         assertEquals(TipoUsuario.EXONERADO, DataBase.obtenerTipoUsuario("32654326"));
+    }
+
+    @Test
+    public void obtenerTipoUsuarioSecretaria_estudianteExoneradoConNombre_resuelveExonerado() {
+        assertEquals(TipoUsuario.EXONERADO, DataBase.obtenerTipoUsuarioSecretaria("32654327"));
+    }
+
+    @Test
+    public void registrarUsuario_desdePadronEstudianteExoneradoConNombre_guardaExonerado() {
+        TipoUsuario tipoPadron = DataBase.obtenerTipoUsuarioSecretaria("32654327");
+        assertEquals(TipoUsuario.EXONERADO, tipoPadron);
+        assertTrue(DataBase.registrarUsuario("32654327", "clave456", "Juan Exonerado", "juan@email.com", tipoPadron));
+        assertEquals(TipoUsuario.EXONERADO, DataBase.obtenerTipoUsuario("32654327"));
     }
 }
 
