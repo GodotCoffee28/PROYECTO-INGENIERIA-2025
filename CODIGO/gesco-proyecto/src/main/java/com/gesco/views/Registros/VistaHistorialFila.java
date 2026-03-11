@@ -8,8 +8,10 @@ import com.gesco.views.PlantillasViews.PlantillaGesco;
 public class VistaHistorialFila extends PlantillaGesco {
 
     private JPanel contenedorVertical;
+    private JPanel contenedorRegistros;
     private JLabel lblGananciaGeneral;
-    private JLabel lblConteoGeneral;
+    private JLabel lblResumenHoyDesayuno;
+    private JLabel lblResumenHoyAlmuerzo;
 
     public VistaHistorialFila() {
         super();
@@ -29,7 +31,13 @@ public class VistaHistorialFila extends PlantillaGesco {
         contenedorVertical.setOpaque(false);
         contenedorVertical.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
+        contenedorRegistros = new JPanel();
+        contenedorRegistros.setLayout(new BoxLayout(contenedorRegistros, BoxLayout.Y_AXIS));
+        contenedorRegistros.setOpaque(false);
+        contenedorRegistros.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         agregarEncabezado();
+        contenedorVertical.add(contenedorRegistros);
     }
 
     private void agregarEncabezado() {
@@ -55,25 +63,29 @@ public class VistaHistorialFila extends PlantillaGesco {
         panelResumen.setOpaque(false);
         panelResumen.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        lblGananciaGeneral = crearEtiquetaPersonalizada("GANANCIA GENERAL: 0.00 Bs", "Segoe UI", Font.BOLD, 22, new Color(150, 255, 150), "centro");
-        lblConteoGeneral = crearEtiquetaPersonalizada("Estudiantes: 0 | Becarios: 0 | Exonerados: 0 | Empleados: 0 | Profesores: 0", "Segoe UI", Font.PLAIN, 15, new Color(200, 230, 255), "centro");
+        lblGananciaGeneral = crearEtiquetaPersonalizada("GANANCIA GENERAL: 0.00 Bs", "Segoe UI", Font.BOLD, 22, new Color(130, 255, 140), "centro");
+        lblResumenHoyDesayuno = crearEtiquetaPersonalizada("Regulares: 0 | Becarios: 0 | Exonerados: 0 | Empleados: 0 | Profesores: 0 | Administrafores: 0", "Segoe UI", Font.PLAIN, 15, new Color(200, 230, 255), "centro");
+        lblResumenHoyAlmuerzo = crearEtiquetaPersonalizada("", "Segoe UI", Font.PLAIN, 15, new Color(200, 230, 255), "centro");
+        lblResumenHoyAlmuerzo.setVisible(false);
 
         panelResumen.add(lblGananciaGeneral);
         panelResumen.add(Box.createVerticalStrut(5));
-        panelResumen.add(lblConteoGeneral);
-        panelResumen.add(Box.createVerticalStrut(20));
+        panelResumen.add(lblResumenHoyDesayuno);
+        panelResumen.add(Box.createVerticalStrut(3));
+        panelResumen.add(lblResumenHoyAlmuerzo);
+        panelResumen.add(Box.createVerticalStrut(15));
         contenedorVertical.add(panelResumen);
 
     }
 
     public void mostrarMensajeVacio(String mensaje) {
         JLabel lblVacio = crearEtiquetaPersonalizada(mensaje,"Segoe UI", Font.ITALIC, 16,new Color(200, 200, 200), "centro");
-        contenedorVertical.add(lblVacio);
-        contenedorVertical.revalidate();
-        contenedorVertical.repaint();
+        contenedorRegistros.add(lblVacio);
+        contenedorRegistros.revalidate();
+        contenedorRegistros.repaint();
     }
 
-    public void agregarRegistroALista(String fecha, String tipoServicio, String ci, String tipoUsuario, double cobro, double cobroTotal, int est, int estExo, int estBec, int emp, int prof) {
+    public void agregarRegistroALista(String fecha, String tipoServicio, String ci, String tipoUsuario, double cobro, double cobroTotal, int est, int estExo, int estBec, int emp, int prof, int admins) {
         
         JSeparator separador = new JSeparator();
         separador.setMaximumSize(new Dimension(750, 1));
@@ -86,14 +98,14 @@ public class VistaHistorialFila extends PlantillaGesco {
 
         JLabel lblEncabezado = crearEtiquetaPersonalizada(fecha + "  |  " + tipoServicio.toUpperCase(), "Segoe UI", Font.BOLD, 16, new Color(130, 180, 255), "izquierda");
 
-        String detalle = "CI: " + ci + "  -  ESTUDIANTE: " + tipoUsuario;
+        String detalle = "CI: " + ci + "  -  USUARIO: " + tipoUsuario;
         JLabel lblDetalle = crearEtiquetaPersonalizada(detalle, "Segoe UI", Font.PLAIN, 14, Color.WHITE, "izquierda");
 
         JLabel lblCobro = crearEtiquetaPersonalizada(String.format(Locale.ROOT, "MONTO COBRADO: %.2f Bs", cobro),"Segoe UI",Font.BOLD,14,new Color(200, 200, 200),"izquierda");
 
         JLabel lblCobroTotal = crearEtiquetaPersonalizada(String.format(Locale.ROOT, "COBRO ACUMULADO DEL TURNO: %.2f Bs", cobroTotal),"Segoe UI",Font.BOLD,14,new Color(200, 200, 200),"izquierda");
 
-        String resumenUsuarios = String.format("<html><b>USUARIOS QUE INGRESARON:</b><br>" +"Regulares: %d | Exonerados: %d | Becarios: %d | Empleados: %d | Profesores: %d</html>", est, estExo, estBec, emp, prof);
+        String resumenUsuarios = String.format("<html><b>USUARIOS QUE INGRESARON EN ESTE TURNO:</b><br>" +"Regulares: %d | Exonerados: %d | Becarios: %d | Empleados: %d | Profesores: %d | Admins: %d</html>", est, estExo, estBec, emp, prof, admins);
 
         JLabel lblTipos = crearEtiquetaPersonalizada(resumenUsuarios, "Segoe UI", Font.PLAIN, 13, new Color(220, 220, 220), "izquierda");
 
@@ -109,9 +121,9 @@ public class VistaHistorialFila extends PlantillaGesco {
         bloque.add(separador);
         bloque.add(Box.createVerticalStrut(20));
 
-        contenedorVertical.add(bloque);
-        contenedorVertical.revalidate();
-        contenedorVertical.repaint();
+        contenedorRegistros.add(bloque);
+        contenedorRegistros.revalidate();
+        contenedorRegistros.repaint();
     }
 
     private void construirCuerpo() {
@@ -136,9 +148,55 @@ public class VistaHistorialFila extends PlantillaGesco {
         this.contenedorPrincipal.add(capaCentro, BorderLayout.CENTER);
 
     }
-    public void actualizarSemana(double total, int est, int bec, int exo, int emp, int prof) {
+    public void limpiarHistorial() {
+        contenedorRegistros.removeAll();
+        contenedorRegistros.revalidate();
+        contenedorRegistros.repaint();
+    }
+
+    public void actualizarGananciaSemanal(double total) {
         lblGananciaGeneral.setText(String.format(Locale.ROOT, "GANANCIA GENERAL: %.2f Bs", total));
-        lblConteoGeneral.setText(String.format("Estudiantes: %d | Becarios: %d | Exonerados: %d | Empleados: %d | Profesores: %d", est, bec, exo, emp, prof));
+    }
+
+    public void actualizarResumenHoy(
+        int regDes,
+        int becDes,
+        int exoDes,
+        int profDes,
+        int empDes,
+        int adminDes,
+        int regAlm,
+        int becAlm,
+        int exoAlm,
+        int profAlm,
+        int empAlm,
+        int adminAlm
+    ) {
+        lblResumenHoyDesayuno.setText(String.format(
+            "Regulares: %d | Becarios: %d | Exonerados: %d | Empleados: %d | Profesores: %d | Administrafores: %d",
+            regDes,
+            becDes,
+            exoDes,
+            empDes,
+            profDes,
+            adminDes
+        ));
+
+        lblResumenHoyAlmuerzo.setText("");
+    }
+
+    public void actualizarResumenSemanal(int est, int bec, int exo, int emp, int prof, int admin) {
+        lblResumenHoyDesayuno.setText(String.format(
+            "Regulares: %d | Becarios: %d | Exonerados: %d | Empleados: %d | Profesores: %d | Administrafores: %d",
+            est,
+            bec,
+            exo,
+            emp,
+            prof,
+            admin
+        ));
+
+        lblResumenHoyAlmuerzo.setText("");
     }
 
     public void agregarSeparadorTurno() {
@@ -163,6 +221,6 @@ public class VistaHistorialFila extends PlantillaGesco {
     panelSeparador.add(lblFin);
     panelSeparador.add(lineaDer);
 
-    contenedorVertical.add(panelSeparador);
+    contenedorRegistros.add(panelSeparador);
 }
 }
