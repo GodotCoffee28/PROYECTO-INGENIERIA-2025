@@ -26,4 +26,16 @@
 12345679:administrador:Manuel Rojas
 11111111:administrador:Eladmin
 32111455:estudiante:becario:Ramses Lopez
-32111456:estudiante:exonerado
+32111456:estudiante:exonerado:Carlos Hidalgo
+7777777:administrador: Panfilo astilla
+4444441:estudiante:Elestu diante
+4444442:estudiante:exonerado:Elpo breton
+4444443:estudiante:becario:Pancracio Paredes
+4444445:profesor: Dick Grayson
+4444446:empleado: Elfa natillo
+4444447:administrador
+3333331:estudiante:becario:Xavier Tovar
+3333332:profesor: Eliezer Castillo
+3333333:empleado: Fabricio Penia
+3333334:estudiante:Enrique Castillo
+3333335:estudiante:exonerado:Lars pera

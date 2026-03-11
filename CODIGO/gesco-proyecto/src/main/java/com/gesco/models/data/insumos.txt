@@ -1,11 +1,22 @@
 Nombre Insumo : Tipo Nutricional : Cantidad Insumo : Precio Insumo (Unitario) :
 Manzana : Fruta : 10 : 2.5 :
-Arroz : Carbohidrato : 50 : 1.2 :
+Arroz : Carbohidrato : 57 : 150.0 :
 Pollo : Proteina : 30 : 4.75 :
 Queso : Lacteo : 20 : 3.4 :
 Lechuga : Vegetal : 25 : 1.1 :
-Tomate : Vegetal : 25 : 1.3 :
+Tomate : Vegetal : 69 : 0.9 :
 Aceite : Grasa : 15 : 2.2 :
 Sal : Condimento : 100 : 0.1 :
 avena : aea : 10 : 100.0 :
-
+Carne de res : Proteina : 20 : 100.0 :
+Carne para guisar : Proteina : 25 : 75.0 :
+Pera : Fruta : 10 : 0.5 :
+Patilla : Fruta : 100 : 10.0 :
+Mantequilla : Lacteo : 27 : 300.0 :
+Pescado : Fibra : 99 : 99.0 :
+Zanahoria : Fibra : 99 : 0.5 :
+Papa : Fibra : 10 : 0.25 :
+Agua: Mineral: 1000: 0.1
+Granos: Carbohidrato: 45: 100
+Pasta: Carbohidrato : 5 : 200
+Pan: Carbohidrato : 100 : 30

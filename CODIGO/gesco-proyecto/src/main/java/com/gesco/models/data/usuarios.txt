@@ -1,8 +1,14 @@
-12345678:12345678:Gab:adads@aadfadaja.com:Administrador:10,00;
+12345678:12345678:Gab:adads@aadfadaja.com:Administrador:6777,00;
 25000123:123456789:SuperAdmin:SprAdmin@gmail.com:Administrador:0.0;
 33246679:123456789:Gabriel Castillo:abcde@gmail.com:Administrador:3996,34;
 11111111:12345678g:Eladmin:dadsdasdas@gmail.com:Administrador:10000.00;
 22334455:12345678a:Usuario Ucevista:dasdasdad@gmail.com:Estudiante:0.0;
-32111454:32111454Ramses:Ramses Cordoba:aaroncordobarivas@gmail.com:Administrador:11103,00;
+32111454:32111454Ramses:Ramses Cordoba:aaroncordobarivas@gmail.com:Administrador:21094,21;
 32111455:12345678R.:Usuario Ucevista:manolo@gmail.com:Becario:10006,40;
 32111456:32111456R:Padrino lopez:aa@gmai.com:Exonerado:1608.50;
+4444441:4444441R:Elestu diante:BendecidoEstudiante@gmail.com:Estudiante:9178,76;
+4444442:4444441R:Elpo breton:necesitoplata@gmail.com:Exonerado:9179,05;
+4444443:4444441R:Pancracio Paredes:albanilDeOficina@gmail.com:Becario:9178,99;
+4444445:4444441R:Dick Grayson:noDireUnChisteDeEsto@gmail.com:Profesor:9178,17;
+4444446:4444441R:Elfa natillo:soyUnGranFan@gmail.com:Empleado:9177,76;
+4444447:4444441R:Javier Contreras:soyDeLoPeor@gmail.com:Administrador:9177,76;
