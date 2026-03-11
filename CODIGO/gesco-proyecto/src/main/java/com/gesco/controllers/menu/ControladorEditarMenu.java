@@ -216,22 +216,22 @@ public class ControladorEditarMenu {
             if (!noDisponible) {
                 if (p1 != null && !p1.isBlank() && insumos1.isEmpty()) {
                     javax.swing.JOptionPane.showMessageDialog(vista,
-                        "El platillo 1 debe tener al menos un insumo.",
-                        "Platillo sin insumos",
+                        "El elemento 1 debe tener al menos un insumo.",
+                        "Elemento sin insumos",
                         javax.swing.JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 if (p2 != null && !p2.isBlank() && insumos2.isEmpty()) {
                     javax.swing.JOptionPane.showMessageDialog(vista,
-                        "El platillo 2 debe tener al menos un insumo.",
-                        "Platillo sin insumos",
+                        "El elemento 2 debe tener al menos un insumo.",
+                        "Elemento sin insumos",
                         javax.swing.JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 if (p3 != null && !p3.isBlank() && insumos3.isEmpty()) {
                     javax.swing.JOptionPane.showMessageDialog(vista,
-                        "El platillo 3 debe tener al menos un insumo.",
-                        "Platillo sin insumos",
+                        "El elemento 3 debe tener al menos un insumo.",
+                        "Elemento sin insumos",
                         javax.swing.JOptionPane.WARNING_MESSAGE);
                     return;
                 }

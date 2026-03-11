@@ -1,11 +1,26 @@
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 public class ComedorUCVLogin extends JFrame {
 
-    // Clase personalizada para botones con esquinas redondeadas
     class RoundedButton extends JButton {
-        private final int arc = 40; // Radio de las esquinas (ajustable)
+        private final int arc = 40; 
 
         public RoundedButton(String text) {
             super(text);
@@ -38,7 +53,6 @@ public class ComedorUCVLogin extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(Color.WHITE);
 
-        // === Barra superior ===
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(new Color(220, 220, 220));
         topPanel.setPreferredSize(new Dimension(400, 70));
@@ -55,7 +69,6 @@ public class ComedorUCVLogin extends JFrame {
         topPanel.add(topTitle, BorderLayout.CENTER);
         mainPanel.add(topPanel, BorderLayout.NORTH);
 
-        // === Panel central con BoxLayout para alineación vertical ===
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBackground(Color.WHITE);
