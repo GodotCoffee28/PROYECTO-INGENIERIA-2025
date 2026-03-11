@@ -164,7 +164,7 @@ public class ControladorFila {
             return;
         }
 
-        CCB ccbConfigurado = DataBase.obtenerUltimoCcbPorTipo(tipoUsuario);
+        CCB ccbConfigurado = DataBase.obtenerCcbPorFechaYTipo(LocalDate.now(), tipoUsuario);
         if (ccbConfigurado == null) {
             vista.setCobroInfo(0.0, 0.0, 0.0);
             return;
@@ -342,7 +342,7 @@ public class ControladorFila {
     }
 
     private double obtenerCcbBase() {
-        CCB ultimoCcb = DataBase.obtenerUltimoCcbPorTipo(obtenerTipoUsuarioSesion());
+        CCB ultimoCcb = DataBase.obtenerCcbPorFechaYTipo(LocalDate.now(), obtenerTipoUsuarioSesion());
         if (ultimoCcb == null) {
             return 0.0;
         }
