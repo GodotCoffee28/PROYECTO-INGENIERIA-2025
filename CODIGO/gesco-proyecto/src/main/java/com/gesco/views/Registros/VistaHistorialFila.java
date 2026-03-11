@@ -2,13 +2,14 @@ package com.gesco.views.Registros;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Locale;
 import com.gesco.views.PlantillasViews.PlantillaGesco;
 
 public class VistaHistorialFila extends PlantillaGesco {
 
     private JPanel contenedorVertical;
     private JLabel lblGananciaTotal;
-    private double ganancias=0.0;
+    private double ganancias = 0.0;
 
     public VistaHistorialFila() {
         super();
@@ -33,32 +34,57 @@ public class VistaHistorialFila extends PlantillaGesco {
     }
 
     private void agregarEncabezado() {
-    JLabel titulo = crearEtiquetaPersonalizada("HISTORIAL DE ASISTENCIA Y COBROS", "Times New Roman", Font.BOLD, 30, Color.WHITE, "centro");
-    contenedorVertical.add(titulo);
+        JLabel titulo = crearEtiquetaPersonalizada("HISTORIAL DE ASISTENCIA Y COBROS", "Times New Roman", Font.BOLD, 30, Color.WHITE, "centro");
+        contenedorVertical.add(titulo);
 
-    contenedorVertical.add(Box.createVerticalStrut(10));
-    JSeparator separadorTitulo = new JSeparator();
-    separadorTitulo.setMaximumSize(new Dimension(650, 2));
-    separadorTitulo.setForeground(Color.WHITE);
-    contenedorVertical.add(separadorTitulo);
-    
-    contenedorVertical.add(Box.createVerticalStrut(20));
+        contenedorVertical.add(Box.createVerticalStrut(10));
+        JSeparator separadorTitulo = new JSeparator();
+        separadorTitulo.setMaximumSize(new Dimension(650, 2));
+        separadorTitulo.setForeground(Color.WHITE);
+        contenedorVertical.add(separadorTitulo);
 
-    JPanel panelGanancias = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    panelGanancias.setOpaque(false);
-    lblGananciaTotal = crearEtiquetaPersonalizada("GANANCIAS TOTALES: " + ganancias + " Bs", "Segoe UI", Font.BOLD, 22, new Color(150, 255, 150), "centro");
-    panelGanancias.add(lblGananciaTotal);
-    
-    contenedorVertical.add(panelGanancias);
-    contenedorVertical.add(Box.createVerticalStrut(15));
+        contenedorVertical.add(Box.createVerticalStrut(20));
 
-    JSeparator sepInferior = new JSeparator();
-    sepInferior.setMaximumSize(new Dimension(550, 2));
-    sepInferior.setForeground(new Color(173, 216, 230));
-    contenedorVertical.add(sepInferior);
-    
-    contenedorVertical.add(Box.createVerticalStrut(25));
-}
+        JPanel panelGanancias = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panelGanancias.setOpaque(false);
+        lblGananciaTotal = crearEtiquetaPersonalizada(formatearTextoGanancia(ganancias), "Segoe UI", Font.BOLD, 22, new Color(150, 255, 150), "centro");
+        panelGanancias.add(lblGananciaTotal);
+        panelGanancias.setMaximumSize(new Dimension(Integer.MAX_VALUE, panelGanancias.getPreferredSize().height));
+
+        contenedorVertical.add(panelGanancias);
+        contenedorVertical.add(Box.createVerticalStrut(4));
+
+        JSeparator sepInferior = new JSeparator();
+        sepInferior.setMaximumSize(new Dimension(550, 2));
+        sepInferior.setForeground(new Color(173, 216, 230));
+        contenedorVertical.add(sepInferior);
+
+        contenedorVertical.add(Box.createVerticalStrut(14));
+    }
+
+    public void setGananciasTotales(double total) {
+        ganancias = total;
+        if (lblGananciaTotal != null) {
+            lblGananciaTotal.setText(formatearTextoGanancia(ganancias));
+            lblGananciaTotal.revalidate();
+            lblGananciaTotal.repaint();
+        }
+    }
+
+    public void mostrarMensajeVacio(String mensaje) {
+        JLabel lblVacio = crearEtiquetaPersonalizada(
+            mensaje,
+            "Segoe UI", Font.ITALIC, 16,
+            new Color(200, 200, 200), "centro"
+        );
+        contenedorVertical.add(lblVacio);
+        contenedorVertical.revalidate();
+        contenedorVertical.repaint();
+    }
+
+    private String formatearTextoGanancia(double monto) {
+        return String.format(Locale.ROOT, "GANANCIAS TOTALES: %.2f Bs", monto);
+    }
 
     public void agregarRegistroALista(String fecha, String tipoServicio, String ci, String tipoUsuario, double cobro) {
         JPanel bloque = new JPanel();
@@ -71,7 +97,14 @@ public class VistaHistorialFila extends PlantillaGesco {
         String detalle = "CI: " + ci + "  -  TIPO: " + tipoUsuario;
         JLabel lblDetalle = crearEtiquetaPersonalizada(detalle, "Segoe UI", Font.PLAIN, 14, Color.WHITE, "izquierda");
 
-        JLabel lblCobro = crearEtiquetaPersonalizada("MONTO COBRADO: " + cobro + " Bs", "Segoe UI", Font.BOLD, 14, new Color(200, 200, 200), "izquierda");
+        JLabel lblCobro = crearEtiquetaPersonalizada(
+            String.format(Locale.ROOT, "MONTO COBRADO: %.2f Bs", cobro),
+            "Segoe UI",
+            Font.BOLD,
+            14,
+            new Color(200, 200, 200),
+            "izquierda"
+        );
 
         bloque.add(lblEncabezado);
         bloque.add(Box.createVerticalStrut(5));

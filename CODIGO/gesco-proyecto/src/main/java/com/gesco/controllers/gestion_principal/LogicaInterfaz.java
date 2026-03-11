@@ -19,10 +19,12 @@ import com.gesco.controllers.otros.ControladorCambiarTipoEstudiante;
 import com.gesco.controllers.otros.ControladorEspera;
 import com.gesco.controllers.otros.ControladorFila;
 import com.gesco.controllers.otros.ControladorTurnos;
+import com.gesco.controllers.registros.ControladorHistorialFila;
 import com.gesco.controllers.registros.ControladorHistorialMenu;
 import com.gesco.controllers.registros.ControladorHistorialSaldo;
 import com.gesco.models.menu.Menu;
 import com.gesco.views.Registros.VistaHistorialCCB;
+import com.gesco.views.Registros.VistaHistorialFila;
 import com.gesco.views.Registros.VistaHistorialMenu;
 import com.gesco.views.Registros.VistaHistorialSaldo;
 import com.gesco.views.auntentificacion.VistaInicioSesion;
@@ -60,6 +62,7 @@ public class LogicaInterfaz {
     private VistaEditarMenu vistaEditarMenu;
     private VistaAgregarInsumo vistaAgregarInsumo;
     private VistaGestionMenu vistaGestionMenu;
+    private VistaHistorialFila vistaHistorialFila;
     private VistaHistorialMenu vistaHistorialMenu;
     private VistaHistorialSaldo vistaHistorialSaldo;
     private VistaCambiarTipoEstudiante vistaCambiarTipoEstudiante;
@@ -187,7 +190,8 @@ public class LogicaInterfaz {
             this::mostrarVerCcb,
             this::swapInteraccion,
             this::mostrarHistorialMenu,
-            this::mostrarCambiarTipoEstudiante
+            this::mostrarCambiarTipoEstudiante,
+            this::mostrarHistorialFila
         ).conectar();
     }
 
@@ -379,6 +383,13 @@ public class LogicaInterfaz {
         new ControladorHistorialMenu(vistaHistorialMenu, this::volverAPantallaPrincipal).conectar();
     }
 
+    private void mostrarHistorialFila() {
+        cerrarVistas();
+        vistaHistorialFila = new VistaHistorialFila();
+        menuGescoController.conectar(vistaHistorialFila, sesionAdmin, cedulaSesionActual);
+        new ControladorHistorialFila(vistaHistorialFila, this::volverAPantallaPrincipal).conectar();
+    }
+
     private void mostrarHistorialSaldo() {
         if (cedulaSesionActual == null || cedulaSesionActual.isBlank()) {
             javax.swing.JOptionPane.showMessageDialog(null,
@@ -403,6 +414,13 @@ public class LogicaInterfaz {
         if (vistaHistorialMenu != null) {
             vistaHistorialMenu.dispose();
             vistaHistorialMenu = null;
+        }
+    }
+
+    private void cerrarVistaHistorialFila() {
+        if (vistaHistorialFila != null) {
+            vistaHistorialFila.dispose();
+            vistaHistorialFila = null;
         }
     }
 
@@ -742,6 +760,7 @@ public class LogicaInterfaz {
         cerrarVistaGestionMenu();
         cerrarVistaRecargarSaldo();
         cerrarVistaCambiarTipoEstudiante();
+        cerrarVistaHistorialFila();
         cerrarVistaHistorialMenu();
         cerrarVistaHistorialSaldo();
     }

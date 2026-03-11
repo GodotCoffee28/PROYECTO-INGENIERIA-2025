@@ -22,8 +22,8 @@
 =======
 2026-03-05|CON_MENU|DESAYUNO|lllll>Manzana~1~2.50;
 2026-03-08|CON_MENU|DESAYUNO|lllll>Manzana~1~2.50;
-
 =======
 2026-03-06|NO_DISPONIBLE|ALMUERZO|
 >>>>>>> Stashed changes
 >>>>>>> 1df8bd280463bf9f7784a992b667dc66106015f8
+2026-03-10|CON_MENU|DESAYUNO|popo>Manzana~1~2.50;
