@@ -241,16 +241,28 @@ public class ControladorCrearMenu {
             }
 
             if (p1 != null && !p1.isBlank()) {
+                if (!esNombrePlatilloValido(p1)) {
+                    mostrarErrorNombrePlatillo(1);
+                    return;
+                }
                 Platillo platillo = new Platillo(p1.trim());
                 agregarInsumos(platillo, insumos1);
                 menu.agregarPlatillo(platillo);
             }
             if (p2 != null && !p2.isBlank()) {
+                if (!esNombrePlatilloValido(p2)) {
+                    mostrarErrorNombrePlatillo(2);
+                    return;
+                }
                 Platillo platillo = new Platillo(p2.trim());
                 agregarInsumos(platillo, insumos2);
                 menu.agregarPlatillo(platillo);
             }
             if (p3 != null && !p3.isBlank()) {
+                if (!esNombrePlatilloValido(p3)) {
+                    mostrarErrorNombrePlatillo(3);
+                    return;
+                }
                 Platillo platillo = new Platillo(p3.trim());
                 agregarInsumos(platillo, insumos3);
                 menu.agregarPlatillo(platillo);
@@ -284,6 +296,20 @@ public class ControladorCrearMenu {
         for (Insumo insumo : insumos) {
             platillo.agregarInsumo(insumo);
         }
+    }
+
+    private boolean esNombrePlatilloValido(String nombre) {
+        String nombreLimpio = nombre == null ? "" : nombre.trim();
+        return !nombreLimpio.isEmpty() && nombreLimpio.matches("^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]+$");
+    }
+
+    private void mostrarErrorNombrePlatillo(int numeroPlatillo) {
+        JOptionPane.showMessageDialog(
+            vista,
+            "El nombre del platillo " + numeroPlatillo + " solo puede contener letras y espacios.",
+            "Nombre de platillo inválido",
+            JOptionPane.WARNING_MESSAGE
+        );
     }
 
     private void actualizarDiaSemanaSeleccionado() {
