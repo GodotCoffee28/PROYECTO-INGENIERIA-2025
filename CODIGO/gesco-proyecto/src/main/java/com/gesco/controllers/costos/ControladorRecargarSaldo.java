@@ -12,6 +12,7 @@ import com.gesco.views.costos.VistaRecargarSaldo;
 public class ControladorRecargarSaldo {
 
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final double MONTO_MINIMO_RECARGA = 10.0;
 
     private final VistaRecargarSaldo vista;
     private final String cedulaSesion;
@@ -181,10 +182,10 @@ public class ControladorRecargarSaldo {
             return;
         }
 
-        if (monto <= 0) {
+        if (monto < MONTO_MINIMO_RECARGA) {
             JOptionPane.showMessageDialog(
                 vista,
-                "El monto debe ser mayor a 0.",
+                "El monto mínimo a recargar es de 10 Bs.",
                 "Monto inválido",
                 JOptionPane.WARNING_MESSAGE
             );
