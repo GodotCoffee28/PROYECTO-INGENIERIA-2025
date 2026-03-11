@@ -100,6 +100,16 @@ public class ControladorAgregarInsumo {
             return;
         }
 
+        if (precio == 0.0f) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "El precio unitario no puede ser cero.",
+                "Precio inválido",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
         if (!Float.isFinite(precio) || precio > DataBase.PRECIO_MAXIMO_INSUMO) {
             JOptionPane.showMessageDialog(
                 vista,
