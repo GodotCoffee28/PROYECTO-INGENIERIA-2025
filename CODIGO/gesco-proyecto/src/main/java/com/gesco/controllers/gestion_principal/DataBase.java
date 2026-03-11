@@ -105,26 +105,58 @@ public class DataBase {
 
         List<String> lineas = leerLineasGenericas(ARCHIVO_REGISTRO_SALDO);
         for (String linea : lineas) {
-            String[] partes = linea.split(":");
-            if (partes.length < 5) {
+            String[] recarga = parsearLineaRegistroSaldo(linea);
+            if (recarga == null) {
                 continue;
             }
 
-            String cedulaRegistro = normalizarCedula(partes[4]);
+            String cedulaRegistro = normalizarCedula(recarga[4]);
             if (!cedulaLimpia.equals(cedulaRegistro)) {
                 continue;
             }
 
             recargas.add(new String[] {
-                partes[0].trim(),
-                partes[1].trim(),
-                partes[2].trim(),
-                partes[3].trim(),
+                recarga[0],
+                recarga[1],
+                recarga[2],
+                recarga[3],
                 cedulaRegistro
             });
         }
 
         return recargas;
+    }
+
+    private static String[] parsearLineaRegistroSaldo(String linea) {
+        String texto = valorSeguro(linea);
+        if (texto.isBlank()) {
+            return null;
+        }
+
+        int ultimoSeparador = texto.lastIndexOf(':');
+        int penultimoSeparador = texto.lastIndexOf(':', ultimoSeparador - 1);
+        int primerSeparador = texto.indexOf(':');
+        int segundoSeparador = texto.indexOf(':', primerSeparador + 1);
+
+        if (primerSeparador < 0 || segundoSeparador < 0 || penultimoSeparador < 0 || ultimoSeparador < 0) {
+            return null;
+        }
+
+        if (!(primerSeparador < segundoSeparador && segundoSeparador < penultimoSeparador && penultimoSeparador < ultimoSeparador)) {
+            return null;
+        }
+
+        String referencia = texto.substring(0, primerSeparador).trim();
+        String monto = texto.substring(primerSeparador + 1, segundoSeparador).trim();
+        String banco = texto.substring(segundoSeparador + 1, penultimoSeparador).trim();
+        String fecha = texto.substring(penultimoSeparador + 1, ultimoSeparador).trim();
+        String cedula = texto.substring(ultimoSeparador + 1).trim();
+
+        if (referencia.isEmpty() || monto.isEmpty() || fecha.isEmpty() || cedula.isEmpty()) {
+            return null;
+        }
+
+        return new String[] { referencia, monto, banco, fecha, cedula };
     }
 
     public static boolean referenciaRecargaExiste(String referencia) {

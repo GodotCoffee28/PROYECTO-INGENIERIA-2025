@@ -29,6 +29,8 @@ public class ControladorHistorialSaldo {
     public void cargar(String cedulaSesion) {
         vista.limpiarHistorial();
         List<String[]> recargas = DataBase.obtenerRecargasPorCedula(cedulaSesion);
+        String cedulaSesionNormalizada = DataBase.normalizarCedula(cedulaSesion);
+        boolean tieneMovimientos = false;
 
         for (int i = recargas.size() - 1; i >= 0; i--) {
             String[] recarga = recargas.get(i);
@@ -37,7 +39,17 @@ public class ControladorHistorialSaldo {
             String banco = recarga[2];
             String fecha = recarga[3];
             String cedula = recarga[4];
+
+            if (!cedulaSesionNormalizada.equals(DataBase.normalizarCedula(cedula))) {
+                continue;
+            }
+
             vista.agregarTransaccionALista(fecha, referencia, monto, banco, cedula);
+            tieneMovimientos = true;
+        }
+
+        if (!tieneMovimientos) {
+            vista.mostrarMensajeSinMovimientos("No hay movimientos registrados");
         }
     }
 }
