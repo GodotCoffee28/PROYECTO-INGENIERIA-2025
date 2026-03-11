@@ -219,22 +219,22 @@ public class ControladorCrearMenu {
             if (!noDisponible) {
                 if (p1 != null && !p1.isBlank() && insumos1.isEmpty()) {
                     javax.swing.JOptionPane.showMessageDialog(vista,
-                        "El platillo 1 debe tener al menos un insumo.",
-                        "Platillo sin insumos",
+                        "El elemento 1 debe tener al menos un insumo.",
+                        "Elemento sin insumos",
                         javax.swing.JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 if (p2 != null && !p2.isBlank() && insumos2.isEmpty()) {
                     javax.swing.JOptionPane.showMessageDialog(vista,
-                        "El platillo 2 debe tener al menos un insumo.",
-                        "Platillo sin insumos",
+                        "El elemento 2 debe tener al menos un insumo.",
+                        "Elemento sin insumos",
                         javax.swing.JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 if (p3 != null && !p3.isBlank() && insumos3.isEmpty()) {
                     javax.swing.JOptionPane.showMessageDialog(vista,
-                        "El platillo 3 debe tener al menos un insumo.",
-                        "Platillo sin insumos",
+                        "El elemento 3 debe tener al menos un insumo.",
+                        "Elemento sin insumos",
                         javax.swing.JOptionPane.WARNING_MESSAGE);
                     return;
                 }
@@ -270,7 +270,7 @@ public class ControladorCrearMenu {
 
             if (!noDisponible && !menu.tienePlatillos()) {
                 javax.swing.JOptionPane.showMessageDialog(vista,
-                    "Debe cargar al menos un platillo o marcar la opción 'Menu no disponible'.",
+                    "Debe cargar al menos un elemento del menu o marcar la opción 'Menu no disponible'.",
                     "Menú vacío",
                     javax.swing.JOptionPane.WARNING_MESSAGE);
                 return;
@@ -306,8 +306,8 @@ public class ControladorCrearMenu {
     private void mostrarErrorNombrePlatillo(int numeroPlatillo) {
         JOptionPane.showMessageDialog(
             vista,
-            "El nombre del platillo " + numeroPlatillo + " solo puede contener letras y espacios.",
-            "Nombre de platillo inválido",
+            "El nombre del elemento " + numeroPlatillo + " solo puede contener letras y espacios.",
+            "Nombre de elemento inválido",
             JOptionPane.WARNING_MESSAGE
         );
     }
