@@ -246,15 +246,73 @@ public class DataBase {
         return reescribirArchivoGenerico(ARCHIVO_ACUDIERON, lineas);
     }
 
-    private static int buscarIndiceRegistroAcudieron(List<String> lineas, String cedula, String fecha) {
-        for (int i = lineas.size() - 1; i >= 0; i--) {
-            String linea = valorSeguro(lineas.get(i));
-            if (linea.isBlank()) {
+    public static int contarAcudieronPorFecha(LocalDate fecha) {
+        if (fecha == null) {
+            return 0;
+        }
+
+        String fechaTexto = fecha.format(DateTimeFormatter.ISO_LOCAL_DATE);
+        List<String> lineas = leerLineasGenericas(ARCHIVO_ACUDIERON);
+        int total = 0;
+
+        for (String linea : lineas) {
+            String[] partes = parsearPartesRegistroAcudieron(linea);
+            if (partes == null) {
                 continue;
             }
 
-            String[] partes = linea.contains(":") ? linea.split(":") : linea.split("\\|");
-            if (partes.length < 2) {
+            String fechaRegistro = valorSeguro(partes[0]);
+            if (fechaTexto.equals(fechaRegistro)) {
+                total++;
+            }
+        }
+
+        return total;
+    }
+
+    public static boolean existeRegistroAcudieronPorCedulaYFecha(String cedula, LocalDate fecha) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (!cedulaValida(cedulaLimpia) || fecha == null) {
+            return false;
+        }
+
+        String fechaTexto = fecha.format(DateTimeFormatter.ISO_LOCAL_DATE);
+        List<String> lineas = leerLineasGenericas(ARCHIVO_ACUDIERON);
+
+        for (String linea : lineas) {
+            String[] partes = parsearPartesRegistroAcudieron(linea);
+            if (partes == null) {
+                continue;
+            }
+
+            String fechaRegistro = valorSeguro(partes[0]);
+            String cedulaRegistro = valorSeguro(partes[1]);
+            if (fechaTexto.equals(fechaRegistro) && cedulaLimpia.equals(cedulaRegistro)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static String[] parsearPartesRegistroAcudieron(String linea) {
+        String texto = valorSeguro(linea);
+        if (texto.isBlank()) {
+            return null;
+        }
+
+        String[] partes = texto.contains(":") ? texto.split(":") : texto.split("\\|");
+        if (partes.length < 2) {
+            return null;
+        }
+
+        return partes;
+    }
+
+    private static int buscarIndiceRegistroAcudieron(List<String> lineas, String cedula, String fecha) {
+        for (int i = lineas.size() - 1; i >= 0; i--) {
+            String[] partes = parsearPartesRegistroAcudieron(lineas.get(i));
+            if (partes == null) {
                 continue;
             }
 
@@ -595,6 +653,10 @@ public class DataBase {
 
         TipoUsuario tipoAnterior = obtenerTipoUsuarioSecretaria(cedulaLimpia);
         if (tipoAnterior == null) {
+            return false;
+        }
+
+        if (!esTipoEstudiante(tipoAnterior) || !esTipoEstudiante(nuevoTipo)) {
             return false;
         }
 

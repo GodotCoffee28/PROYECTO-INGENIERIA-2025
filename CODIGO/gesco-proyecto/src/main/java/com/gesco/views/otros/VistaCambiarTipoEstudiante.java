@@ -37,7 +37,7 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
     }
 
     private void inicializarComponentes() {
-        titulo = crearEtiquetaPersonalizada("Cambiar tipo de usuario", "Times New Roman", Font.BOLD, 45, new Color(240, 240, 240), "centro");
+        titulo = crearEtiquetaPersonalizada("Cambiar tipo de estudiante", "Times New Roman", Font.BOLD, 45, new Color(240, 240, 240), "centro");
         titulo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         Dimension tamBoton = new Dimension(400, 60);
         btnCambiar = new BotonNeon("Cambiar tipo");
@@ -51,7 +51,7 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
         formPanel.setOpaque(false);
-        formPanel.setMaximumSize(new Dimension(450, 220));
+        formPanel.setMaximumSize(new Dimension(450, 180));
         formPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         Dimension tamCaja = new Dimension(450, 40);
@@ -63,7 +63,7 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
         formPanel.add(ciField);
         formPanel.add(Box.createVerticalStrut(16));
 
-        formPanel.add(crearEtiquetaPersonalizada("Tipo de usuario", "Times New Roman", Font.PLAIN, 19, Color.WHITE, "izquierda"));
+        formPanel.add(crearEtiquetaPersonalizada("Tipo estudiante", "Times New Roman", Font.PLAIN, 19, Color.WHITE, "izquierda"));
         formPanel.add(Box.createVerticalStrut(8));
         comboTipoEstudiante = new JComboBox<>(new String[] {
             "Estudiante regular",
@@ -75,13 +75,7 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
         comboTipoEstudiante.setAlignmentX(Component.LEFT_ALIGNMENT);
         comboTipoEstudiante.setFont(new Font("TimesNewRoman", Font.PLAIN, 16));
         formPanel.add(comboTipoEstudiante);
-        formPanel.add(Box.createVerticalStrut(16));
-
-        formPanel.add(crearEtiquetaPersonalizada("Cédula", "Times New Roman", Font.PLAIN, 23, Color.WHITE, "izquierda"));
         formPanel.add(Box.createVerticalStrut(8));
-        ciField = new JTextField();
-        diseñarCaja(ciField, tamCaja);
-        formPanel.add(ciField);
 
 
         panelFondoBase.add(formPanel);

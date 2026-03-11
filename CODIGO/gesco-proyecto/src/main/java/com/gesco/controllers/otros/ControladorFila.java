@@ -38,6 +38,8 @@ public class ControladorFila {
     }
 
     public void conectar() {
+        sincronizarEstadoFilaDesdeArchivo();
+
         vista.getBtnBack().addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -54,6 +56,8 @@ public class ControladorFila {
     }
 
     private void procesarEntrada() {
+        sincronizarEstadoFilaDesdeArchivo();
+
         if (usuarioEnFila) {
             JOptionPane.showMessageDialog(
                 vista,
@@ -100,6 +104,8 @@ public class ControladorFila {
     }
 
     private void procesarSalida() {
+        sincronizarEstadoFilaDesdeArchivo();
+
         if (!usuarioEnFila) {
             JOptionPane.showMessageDialog(
                 vista,
@@ -132,8 +138,7 @@ public class ControladorFila {
             );
         }
 
-        vista.setEnFila(vista.getEnFila() - 1);
-        usuarioEnFila = false;
+        sincronizarEstadoFilaDesdeArchivo();
     }
 
     private void seleccionarArchivo() {
@@ -200,7 +205,6 @@ public class ControladorFila {
             return;
         }
         if(!vista.getArchivoSeleccionado().getName().toLowerCase().matches(".*\\.(jpg|jpeg|png)$")) {
-            //Archivo invalido, no es una imagen
                 JOptionPane.showMessageDialog(
                 vista,
                 "Seleccione un archivo de imagen válido (.jpg, .jpeg, .png).",
@@ -293,8 +297,7 @@ public class ControladorFila {
             );
         }
 
-        vista.setEnFila(vista.getEnFila() + 1);
-        usuarioEnFila = true;
+        sincronizarEstadoFilaDesdeArchivo();
 
         JOptionPane.showMessageDialog(
             vista,
@@ -368,5 +371,12 @@ public class ControladorFila {
         return menu != null
             && menu.getEstado() != Menu.EstadoMenu.NO_DISPONIBLE
             && menu.tienePlatillos();
+    }
+
+    private void sincronizarEstadoFilaDesdeArchivo() {
+        LocalDate hoy = LocalDate.now();
+        int enFilaHoy = DataBase.contarAcudieronPorFecha(hoy);
+        vista.setEnFila(enFilaHoy);
+        usuarioEnFila = DataBase.existeRegistroAcudieronPorCedulaYFecha(cedulaSesion, hoy);
     }
 }
