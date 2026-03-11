@@ -89,21 +89,19 @@ public class ControladorAgregarInsumo {
         float precio;
         try {
             precio = Float.parseFloat(precioStr.replace(',', '.'));
-            if (precio < 0) throw new NumberFormatException();
+            if (precio < 1.0f) {
+                JOptionPane.showMessageDialog(
+                    vista,
+                    "No se puede ingresar un valor menor a 1.",
+                    "Precio inválido",
+                    JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(
                 vista,
-                "El precio unitario debe ser un número válido y no negativo.",
-                "Precio inválido",
-                JOptionPane.WARNING_MESSAGE
-            );
-            return;
-        }
-
-        if (precio == 0.0f) {
-            JOptionPane.showMessageDialog(
-                vista,
-                "El precio unitario no puede ser cero.",
+                "El precio unitario debe ser un número válido.",
                 "Precio inválido",
                 JOptionPane.WARNING_MESSAGE
             );

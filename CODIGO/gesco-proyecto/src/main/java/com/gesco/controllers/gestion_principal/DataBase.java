@@ -417,7 +417,7 @@ public class DataBase {
         asegurarArchivoGenerico(nombreArchivo);
         File archivo = obtenerArchivo(nombreArchivo);
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, false))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, StandardCharsets.UTF_8, false))) {
             for (String linea : nuevasLineas) {
                 writer.write(linea);
                 writer.newLine();
@@ -1276,7 +1276,7 @@ public class DataBase {
         if (!nombreLimpio.matches("^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]+$")) return false;
         if (!tipoLimpio.matches("^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]+$")) return false;
         if (cantidadAgregar <= 0 || cantidadAgregar > CANTIDAD_MAXIMA_INSUMO) return false;
-        if (!Float.isFinite(precioUnitario) || precioUnitario <= 0 || precioUnitario > PRECIO_MAXIMO_INSUMO) return false;
+        if (!Float.isFinite(precioUnitario) || precioUnitario < 1.0f || precioUnitario > PRECIO_MAXIMO_INSUMO) return false;
 
         List<String> lineas = leerLineasGenericas(ARCHIVO_INSUMOS);
         List<String> nuevas = new ArrayList<>();
@@ -1580,7 +1580,7 @@ public class DataBase {
 
         String[] partes = limpio.split("~");
         if (partes.length >= 3) {
-            String nombre = partes[0].trim();
+            String nombre = repararTextoMojibakeBasico(partes[0].trim());
             int cantidad = (int) parseFloatSeguro(partes[1]);
             float total = parseFloatSeguro(partes[2]);
             float unitario = (cantidad > 0) ? (total / cantidad) : 0.0f;
@@ -1589,7 +1589,7 @@ public class DataBase {
             return insumo;
         }
 
-        return new Insumo(limpio, 1, "Ingrediente", 0.0f);
+        return new Insumo(repararTextoMojibakeBasico(limpio), 1, "Ingrediente", 0.0f);
     }
 
     private static Insumo parsearLineaInsumo(String linea) {
@@ -1597,7 +1597,7 @@ public class DataBase {
         String[] partes = sinPuntoYComa.split(":");
         if (partes.length < 4) return null;
 
-        String nombre = partes[0].trim();
+        String nombre = repararTextoMojibakeBasico(partes[0].trim());
         String tipo = partes[1].trim();
         int cantidad = (int) parseFloatSeguro(partes[2]);
         float precioUnitario = parseFloatSeguro(partes[3]);
@@ -1627,6 +1627,27 @@ public class DataBase {
 
     private static String valorSeguro(String valor) {
         return valor == null ? "" : valor.trim();
+    }
+
+    private static String repararTextoMojibakeBasico(String valor) {
+        String texto = valorSeguro(valor);
+        if (texto.isEmpty()) {
+            return texto;
+        }
+
+        return texto
+            .replace("Ã±", "ñ")
+            .replace("Ã‘", "Ñ")
+            .replace("Ã¡", "á")
+            .replace("Ã©", "é")
+            .replace("Ã­", "í")
+            .replace("Ã³", "ó")
+            .replace("Ãº", "ú")
+            .replace("Ã", "Á")
+            .replace("Ã‰", "É")
+            .replace("Ã", "Í")
+            .replace("Ã“", "Ó")
+            .replace("Ãš", "Ú");
     }
 
     private static boolean nombreValido(String nombre) {
