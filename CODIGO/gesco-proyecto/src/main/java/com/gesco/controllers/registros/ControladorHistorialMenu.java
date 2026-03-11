@@ -1,6 +1,5 @@
 package com.gesco.controllers.registros;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import com.gesco.controllers.gestion_principal.DataBase;
@@ -32,26 +31,28 @@ public class ControladorHistorialMenu {
 
     public void cargar() {
         vista.limpiarHistorial();
-        List<LocalDate> diasHabiles = DataBase.obtenerUltimosCincoDiasHabiles(LocalDate.now());
+        List<Menu> menus = DataBase.obtenerTodosLosMenus();
 
         boolean hayDatos = false;
 
-        for (LocalDate fecha : diasHabiles) {
-            String fechaStr = fecha.toString();
+        for (Menu menu : menus) {
+            if (menu == null) {
+                continue;
+            }
 
-            for (Menu.TipoMenu tipo : new Menu.TipoMenu[] { Menu.TipoMenu.DESAYUNO, Menu.TipoMenu.ALMUERZO }) {
-                Menu menu = DataBase.obtenerMenuPorFechaYTipo(fechaStr, tipo);
+            String fechaStr = menu.getFecha().toString();
+            String tipo = menu.getTipoMenu().name();
+            List<Platillo> platillos = menu.getPlatillos();
 
-                if (menu == null || menu.getEstado() == Menu.EstadoMenu.NO_DISPONIBLE || !menu.tienePlatillos()) {
-                    continue;
-                }
+            String p1 = "", ins1 = "-", cant1 = "-", costo1 = "-";
+            String p2 = "", ins2 = "-", cant2 = "-", costo2 = "-";
+            String p3 = "", ins3 = "-", cant3 = "-", costo3 = "-";
 
-                List<Platillo> platillos = menu.getPlatillos();
-
-                String p1 = "", ins1 = "-", cant1 = "-", costo1 = "-";
-                String p2 = "", ins2 = "-", cant2 = "-", costo2 = "-";
-                String p3 = "", ins3 = "-", cant3 = "-", costo3 = "-";
-
+            if (menu.getEstado() == Menu.EstadoMenu.NO_DISPONIBLE) {
+                p1 = "Menú no disponible";
+            } else if (!menu.tienePlatillos()) {
+                p1 = "Sin platillos registrados";
+            } else {
                 if (platillos.size() >= 1) {
                     Platillo plat = platillos.get(0);
                     p1 = plat.getNombre();
@@ -82,25 +83,25 @@ public class ControladorHistorialMenu {
                         costo3 = String.format("%.2f", i.getCostoUnitario());
                     }
                 }
-
-                vista.agregarMenuALista(
-                    fechaStr,
-                    tipo.name(),
-                    p1,
-                    ins1,
-                    cant1,
-                    costo1,
-                    p2,
-                    ins2,
-                    cant2,
-                    costo2,
-                    p3,
-                    ins3,
-                    cant3,
-                    costo3
-                );
-                hayDatos = true;
             }
+
+            vista.agregarMenuALista(
+                fechaStr,
+                tipo,
+                p1,
+                ins1,
+                cant1,
+                costo1,
+                p2,
+                ins2,
+                cant2,
+                costo2,
+                p3,
+                ins3,
+                cant3,
+                costo3
+            );
+            hayDatos = true;
         }
 
         if (!hayDatos) {

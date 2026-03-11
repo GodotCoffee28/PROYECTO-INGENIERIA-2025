@@ -1490,13 +1490,25 @@ public class DataBase {
         return calcularMontoCcbPorTipo(ccbHoy.getCcb(), tipoUsuario, porcentajeCcb);
     }
 
-    public static List<Menu> obtenerUltimos5Menus() {
+    public static List<Menu> obtenerTodosLosMenus() {
         List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
         List<Menu> resultado = new ArrayList<>();
-        int inicio = Math.max(0, lineas.size() - 5);
-        for (int i = inicio; i < lineas.size(); i++) {
-            String[] partes = lineas.get(i).split("\\|");
+        for (String linea : lineas) {
+            if (linea == null || linea.isBlank()) {
+                continue;
+            }
+            String[] partes = linea.split("\\|");
             resultado.add(parsearLineaMenu(partes));
+        }
+        return resultado;
+    }
+
+    public static List<Menu> obtenerUltimos5Menus() {
+        List<Menu> menus = obtenerTodosLosMenus();
+        List<Menu> resultado = new ArrayList<>();
+        int inicio = Math.max(0, menus.size() - 5);
+        for (int i = inicio; i < menus.size(); i++) {
+            resultado.add(menus.get(i));
         }
         return resultado;
     }
