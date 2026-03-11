@@ -286,6 +286,18 @@ public class VistaEditarMenu extends PlantillaGesco {
     public String getMes(){ return campoFecha.getMes(); }
     public String getAnio(){ return campoFecha.getAnio(); }
     public String getFechaTexto(){ return campoFecha.getFechaTexto(); }
+    public void setDiaSemanaTexto(String texto) {
+        if (lblDiaSemana != null) {
+            String valor = (texto == null || texto.isBlank()) ? "-" : texto;
+            lblDiaSemana.setText("Día seleccionado: " + valor);
+        }
+    }
+
+    public void addFechaChangeListener(Runnable listener) {
+        if (campoFecha != null) {
+            campoFecha.addFechaChangeListener(listener);
+        }
+    }
     public boolean isMenuNoDisponibleSeleccionado() { return chkNoDisponible.isSelected(); }
     public Menu.TipoMenu getTipoMenu() { return (Menu.TipoMenu) comboTipoMenu.getSelectedItem(); }
     public void setTipoMenu(Menu.TipoMenu tipoMenu) { comboTipoMenu.setSelectedItem(tipoMenu); }

@@ -1276,7 +1276,7 @@ public class DataBase {
         if (!nombreLimpio.matches("^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]+$")) return false;
         if (!tipoLimpio.matches("^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]+$")) return false;
         if (cantidadAgregar <= 0 || cantidadAgregar > CANTIDAD_MAXIMA_INSUMO) return false;
-        if (!Float.isFinite(precioUnitario) || precioUnitario < 0 || precioUnitario > PRECIO_MAXIMO_INSUMO) return false;
+        if (!Float.isFinite(precioUnitario) || precioUnitario <= 0 || precioUnitario > PRECIO_MAXIMO_INSUMO) return false;
 
         List<String> lineas = leerLineasGenericas(ARCHIVO_INSUMOS);
         List<String> nuevas = new ArrayList<>();
