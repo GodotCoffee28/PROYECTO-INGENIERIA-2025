@@ -3,6 +3,8 @@ package com.gesco.controllers.menu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.time.LocalDate;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -31,6 +33,8 @@ public class ControladorEditarMenu {
         vista.setInsumos(insumosDisponibles);
         conectarAccionesInsumos();
         actualizarTodosLosSpinners();
+        vista.addFechaChangeListener(this::actualizarDiaSemanaSeleccionado);
+        actualizarDiaSemanaSeleccionado();
         vista.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -307,6 +311,31 @@ public class ControladorEditarMenu {
             "Nombre de platillo inválido",
             JOptionPane.WARNING_MESSAGE
         );
+    }
+
+    private void actualizarDiaSemanaSeleccionado() {
+        try {
+            LocalDate fecha = obtenerFechaSeleccionada();
+            vista.setDiaSemanaTexto(capitalizar(fecha.getDayOfWeek().getDisplayName(java.time.format.TextStyle.FULL, new Locale("es", "ES"))));
+        } catch (Exception ex) {
+            vista.setDiaSemanaTexto("-");
+        }
+    }
+
+    private LocalDate obtenerFechaSeleccionada() {
+        String dia = vista.getDia();
+        String mes = vista.getMes();
+        String anio = vista.getAnio();
+        String fechaStr = String.format("%s-%02d-%02d",
+            anio.trim(),
+            Integer.parseInt(mes.trim()),
+            Integer.parseInt(dia.trim()));
+        return LocalDate.parse(fechaStr);
+    }
+
+    private String capitalizar(String texto) {
+        if (texto == null || texto.isBlank()) return texto;
+        return texto.substring(0, 1).toUpperCase(new Locale("es", "ES")) + texto.substring(1);
     }
 }
 
