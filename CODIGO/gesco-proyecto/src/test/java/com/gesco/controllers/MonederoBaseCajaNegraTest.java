@@ -1,15 +1,18 @@
 package com.gesco.controllers;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
 import com.gesco.controllers.gestion_principal.DataBase;
 
-public abstract class MonederoBaseCajaNegraTest {
+public class MonederoBaseCajaNegraTest {
 
     protected Path dataDirTemporal;
     protected String dataDirAnterior;
@@ -53,5 +56,13 @@ public abstract class MonederoBaseCajaNegraTest {
                     }
                 });
         }
+    }
+
+    @Test
+    public void entornoTemporal_baseMonedero_seInicializaCorrectamente() {
+        Path carpetaSecretaria = dataDirTemporal.resolve("secretaria");
+        assertTrue(Files.exists(dataDirTemporal));
+        assertTrue(Files.isDirectory(carpetaSecretaria));
+        assertTrue(Files.exists(carpetaSecretaria.resolve("cedulas_ocupaciones.txt")));
     }
 }
