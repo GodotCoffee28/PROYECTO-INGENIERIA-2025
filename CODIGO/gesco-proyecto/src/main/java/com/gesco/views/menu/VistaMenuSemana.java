@@ -46,7 +46,7 @@ public class VistaMenuSemana extends PlantillaGesco {
         panelTitulo.setLayout(new BoxLayout(panelTitulo, BoxLayout.Y_AXIS));
         panelTitulo.setOpaque(false);
         panelTitulo.add(crearEtiquetaPersonalizada("Menú de la semana", "Times New Roman", Font.BOLD, 30, Color.WHITE,"centro"));
-        panelTitulo.add(Box.createVerticalStrut(20));
+        panelTitulo.add(Box.createVerticalStrut(10));
 
         panelContenedorTarjetas = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20)) {
             @Override
@@ -60,7 +60,7 @@ public class VistaMenuSemana extends PlantillaGesco {
                         int anchoTarjeta = 200 + 20;
                         int tarjetasPorFila = Math.max(1, (d.width - 20) / anchoTarjeta);
                         int filas = (int) Math.ceil((double) nComponentes / tarjetasPorFila);
-                        int altoTarjeta = 260 + 20;
+                        int altoTarjeta = 270 + 20;
                         d.height = filas * altoTarjeta + 40;
                     }
                 }
@@ -98,7 +98,7 @@ public class VistaMenuSemana extends PlantillaGesco {
             Menu menuDesayuno = DataBase.obtenerMenuPorFechaYTipo(fechaStr, Menu.TipoMenu.DESAYUNO);
             Menu menuAlmuerzo = DataBase.obtenerMenuPorFechaYTipo(fechaStr, Menu.TipoMenu.ALMUERZO);
             TarjetaMenu tarjeta = new TarjetaMenu(menuDesayuno, menuAlmuerzo);
-            tarjeta.setPreferredSize(new Dimension(250, 240));
+            tarjeta.setPreferredSize(new Dimension(250, 270));
             tarjetasSemana.add(tarjeta);
             panelContenedorTarjetas.add(tarjeta);
         }

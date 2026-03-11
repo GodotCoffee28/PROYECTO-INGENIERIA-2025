@@ -9,5 +9,8 @@ public class Main {
         logica.iniciar();
     }
 }
+<<<<<<< Updated upstream
 
  
+=======
+>>>>>>> Stashed changes

@@ -10,6 +10,7 @@ public abstract class TarjetaGeneral extends JPanel {
     private final Color colorBlanco = new Color(255, 255, 255); 
 
     public TarjetaGeneral(Color colorFondo, Color colorCabecera) {
+        
         setLayout(new BorderLayout());
  
         setOpaque(false); 
@@ -46,7 +47,7 @@ public abstract class TarjetaGeneral extends JPanel {
     }
 
     protected void configurarLabelPlatillo(JLabel label) {
-        label.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        label.setFont(new Font("Segoe UI", Font.BOLD, 13));
         label.setForeground(Color.WHITE); 
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
     }

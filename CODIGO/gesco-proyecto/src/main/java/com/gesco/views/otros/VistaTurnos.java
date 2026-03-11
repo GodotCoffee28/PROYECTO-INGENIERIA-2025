@@ -36,9 +36,9 @@ public class VistaTurnos extends PlantillaGesco {
         
         listaTurnos = new ArrayList<>();
         
-        btnVerMenu = new BotonNeon("Ver menú del día");
+        btnVerMenu = new BotonNeon("Ver menú de la semana");
 
-        btnVerMenu.setFont(new Font("Arial", Font.BOLD, 20)); 
+        btnVerMenu.setFont(new Font("Times New Roman", Font.BOLD, 20)); 
         btnVerMenu.setPreferredSize(new Dimension(250, 60));
     }
 
