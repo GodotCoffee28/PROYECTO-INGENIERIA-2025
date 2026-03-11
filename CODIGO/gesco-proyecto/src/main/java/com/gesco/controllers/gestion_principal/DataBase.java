@@ -471,7 +471,7 @@ public class DataBase {
             String limpia = valorSeguro(linea);
             if (limpia.isEmpty() || limpia.startsWith("#")) continue;
 
-            String[] partes = limpia.split(":", 3);
+            String[] partes = limpia.split(":", 4);
             if (partes.length < 2) continue;
 
             String cedulaPadron = normalizarCedula(partes[0]);

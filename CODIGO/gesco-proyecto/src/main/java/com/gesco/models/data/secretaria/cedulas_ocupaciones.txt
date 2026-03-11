@@ -27,3 +27,4 @@
 11111111:administrador:Eladmin
 32111455:estudiante:becario:Ramses Lopez
 32111456:estudiante:exonerado
+19999999:estudiante:exonerado:Hola
