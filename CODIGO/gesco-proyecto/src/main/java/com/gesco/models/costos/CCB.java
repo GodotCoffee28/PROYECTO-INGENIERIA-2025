@@ -19,6 +19,7 @@ NB: Número de bandejas proyectadas o servidas en un periodo
 
 public class CCB {
     private static final double LIMITE_COSTO = 10_000.0;
+    private static final double NB_MAXIMO_EXCLUSIVO = 2500.0;
     private static final double CCB_ESTUDIANTE_MIN = 0.20;
     private static final double CCB_ESTUDIANTE_MAX = 0.30;
     private static final double CCB_BECARIO_PORCENTAJE = 0.05;
@@ -41,8 +42,8 @@ public class CCB {
         if (fecha == null) {
             throw new IllegalArgumentException("La fecha no puede ser null.");
         }
-        if (Double.isNaN(nb) || Double.isInfinite(nb) || nb <= 0) {
-            throw new IllegalArgumentException("NB debe ser mayor que cero.");
+        if (Double.isNaN(nb) || Double.isInfinite(nb) || nb <= 0 || nb >= NB_MAXIMO_EXCLUSIVO) {
+            throw new IllegalArgumentException("NB debe ser mayor que cero y menor a 2500.");
         }
         if (Double.isNaN(merma) || Double.isInfinite(merma) || merma < 0 || merma > 100) {
             throw new IllegalArgumentException("MERMA debe estar entre 0 y 100.");
