@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.After;
@@ -15,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.gesco.controllers.gestion_principal.DataBase;
+import com.gesco.models.costos.CCB;
 import com.gesco.models.usuarios.Usuario.TipoUsuario;
 
 public class CambioTipoEstudianteTest {
@@ -50,6 +52,8 @@ public class CambioTipoEstudianteTest {
         crearImagenSecretaria("32650004");
         crearImagenSecretaria("32650005");
         crearImagenSecretaria("32650006");
+
+        assertTrue(DataBase.guardarCcb(new CCB(LocalDate.now(), "Estudiante", 1000.0, 500.0, 100.0, 0.0, 0.25)));
     }
 
     @After
@@ -75,10 +79,11 @@ public class CambioTipoEstudianteTest {
         String cedula = "32650001";
 
         assertTrue(DataBase.registrarUsuario(cedula, "clave123", "Ana Regular", "ana@email.com", TipoUsuario.ESTUDIANTE));
-        assertTrue(DataBase.cambiarTipoUsuarioPorCedula(cedula, TipoUsuario.BECARIO));
+        assertTrue(DataBase.cambiarTipoUsuarioPorCedula(cedula, TipoUsuario.BECARIO, 0.05));
 
         assertEquals(TipoUsuario.BECARIO, DataBase.obtenerTipoUsuarioSecretaria(cedula));
         assertEquals(TipoUsuario.BECARIO, DataBase.obtenerTipoUsuario(cedula));
+        assertEquals(0.05, DataBase.obtenerPorcentajeBecario(cedula), 0.0001);
         assertTrue(padronContiene("32650001:estudiante:becario"));
     }
 
@@ -87,10 +92,12 @@ public class CambioTipoEstudianteTest {
         String cedula = "32650002";
 
         assertTrue(DataBase.registrarUsuario(cedula, "clave123", "Pedro Becario", "pedro@email.com", TipoUsuario.BECARIO));
+        assertTrue(DataBase.guardarPorcentajeBecario(cedula, 0.05));
         assertTrue(DataBase.cambiarTipoUsuarioPorCedula(cedula, TipoUsuario.EXONERADO));
 
         assertEquals(TipoUsuario.EXONERADO, DataBase.obtenerTipoUsuarioSecretaria(cedula));
         assertEquals(TipoUsuario.EXONERADO, DataBase.obtenerTipoUsuario(cedula));
+        assertEquals(null, DataBase.obtenerPorcentajeBecario(cedula));
         assertTrue(padronContiene("32650002:estudiante:exonerado"));
     }
 
@@ -113,11 +120,24 @@ public class CambioTipoEstudianteTest {
         assertEquals(TipoUsuario.ESTUDIANTE, DataBase.obtenerTipoUsuarioSecretaria(cedula));
         assertEquals(TipoUsuario.COMENSAL, DataBase.obtenerTipoUsuario(cedula));
 
-        assertTrue(DataBase.cambiarTipoUsuarioPorCedula(cedula, TipoUsuario.BECARIO));
+        assertTrue(DataBase.cambiarTipoUsuarioPorCedula(cedula, TipoUsuario.BECARIO, 0.05));
 
         assertEquals(TipoUsuario.BECARIO, DataBase.obtenerTipoUsuarioSecretaria(cedula));
         assertEquals(TipoUsuario.COMENSAL, DataBase.obtenerTipoUsuario(cedula));
+        assertEquals(0.05, DataBase.obtenerPorcentajeBecario(cedula), 0.0001);
         assertTrue(padronContiene("32650006:estudiante:becario"));
+    }
+
+    @Test
+    public void cambiarTipoUsuarioPorCedula_becarioConPorcentajeMayorAlEstudianteHoy_rechazaCambio() {
+        String cedula = "32650001";
+
+        assertTrue(DataBase.registrarUsuario(cedula, "clave123", "Ana Regular", "ana@email.com", TipoUsuario.ESTUDIANTE));
+
+        assertFalse(DataBase.cambiarTipoUsuarioPorCedula(cedula, TipoUsuario.BECARIO, 0.25));
+
+        assertEquals(TipoUsuario.ESTUDIANTE, DataBase.obtenerTipoUsuarioSecretaria(cedula));
+        assertEquals(TipoUsuario.ESTUDIANTE, DataBase.obtenerTipoUsuario(cedula));
     }
 
     @Test

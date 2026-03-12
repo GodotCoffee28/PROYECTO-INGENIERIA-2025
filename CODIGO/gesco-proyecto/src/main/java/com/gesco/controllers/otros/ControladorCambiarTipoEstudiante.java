@@ -25,6 +25,7 @@ public class ControladorCambiarTipoEstudiante {
         });
 
         vista.getBtnCambiar().addActionListener(e -> procesarCambioTipo());
+        vista.actualizarEstadoPorcentajeBecario();
     }
 
     private void procesarCambioTipo() {
@@ -71,11 +72,58 @@ public class ControladorCambiarTipoEstudiante {
             return;
         }
 
-        boolean actualizado = DataBase.cambiarTipoUsuarioPorCedula(cedula, nuevoTipo);
+        Double porcentajeBecario = null;
+        if (nuevoTipo == TipoUsuario.BECARIO) {
+            double porcentajeEstudianteHoy = DataBase.obtenerPorcentajeCcbEstudiantilHoy();
+            if (porcentajeEstudianteHoy <= 0.0) {
+                JOptionPane.showMessageDialog(
+                    vista,
+                    "Primero debe existir un CCB de estudiante regular configurado para hoy.",
+                    "CCB estudiantil no disponible",
+                    JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+
+            String valorPorcentaje = vista.getPorcentajeBecario();
+            if (valorPorcentaje == null || valorPorcentaje.isBlank()) {
+                JOptionPane.showMessageDialog(
+                    vista,
+                    "Debe indicar el % individual del becario.",
+                    "% de becario requerido",
+                    JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+
+            try {
+                porcentajeBecario = Double.parseDouble(valorPorcentaje.trim().replace(',', '.')) / 100.0;
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(
+                    vista,
+                    "El % individual del becario debe ser numérico.",
+                    "% inválido",
+                    JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+
+            if (!DataBase.esPorcentajeBecarioValidoParaHoy(porcentajeBecario)) {
+                JOptionPane.showMessageDialog(
+                    vista,
+                    "El % del becario debe ser menor al % del estudiante regular de hoy (" + String.format("%.2f", porcentajeEstudianteHoy * 100.0) + "% ).",
+                    "% de becario inválido",
+                    JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+        }
+
+        boolean actualizado = DataBase.cambiarTipoUsuarioPorCedula(cedula, nuevoTipo, porcentajeBecario);
         if (!actualizado) {
             JOptionPane.showMessageDialog(
                 vista,
-                "No se pudo actualizar el tipo. Verifique si la cédula es válida o si intenta modificar un super administrador.",
+                "No se pudo actualizar el tipo. Verifique si la cédula es válida y que el cambio cumpla las reglas del porcentaje becario.",
                 "Error al actualizar",
                 JOptionPane.ERROR_MESSAGE
             );
@@ -91,8 +139,6 @@ public class ControladorCambiarTipoEstudiante {
     }
 
     private boolean esTipoEstudiante(TipoUsuario tipoUsuario) {
-        return tipoUsuario == TipoUsuario.ESTUDIANTE
-            || tipoUsuario == TipoUsuario.BECARIO
-            || tipoUsuario == TipoUsuario.EXONERADO;
+        return tipoUsuario != null && tipoUsuario.esTipoEstudiantil();
     }
 }

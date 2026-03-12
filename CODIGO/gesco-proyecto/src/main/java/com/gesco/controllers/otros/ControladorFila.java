@@ -89,6 +89,16 @@ public class ControladorFila {
         }
 
         TipoUsuario tipoUsuarioSesion = obtenerTipoUsuarioSesion();
+        if (tipoUsuarioSesion == TipoUsuario.BECARIO && !DataBase.tienePorcentajeBecarioConfigurado(cedulaSesion)) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "El becario no tiene un % individual configurado.",
+                "% de becario no disponible",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
         if (tipoUsuarioSesion != TipoUsuario.EXONERADO && obtenerCcbBase() <= 0) {
             JOptionPane.showMessageDialog(
                 vista,
@@ -169,15 +179,22 @@ public class ControladorFila {
             return;
         }
 
-        CCB ccbConfigurado = DataBase.obtenerCcbPorFechaYTipo(LocalDate.now(), tipoUsuario);
+        TipoUsuario tipoConfiguracion = tipoUsuario.esTipoEstudiantil() ? TipoUsuario.ESTUDIANTE : tipoUsuario;
+        CCB ccbConfigurado = DataBase.obtenerCcbPorFechaYTipo(LocalDate.now(), tipoConfiguracion);
         if (ccbConfigurado == null) {
             vista.setCobroInfo(0.0, 0.0, 0.0);
             return;
         }
 
-        double ccbBase = ccbConfigurado.getCcb();
-        double porcentaje = CCB.normalizarPorcentajeParaTipo(tipoUsuario, ccbConfigurado.getPorcentajeAplicado());
-        double costoCcb = CCB.calcularMontoPorTipo(ccbBase, tipoUsuario, porcentaje);
+        double costoCcb = DataBase.calcularMontoCcbParaCedula(cedulaSesion);
+        if (costoCcb <= 0.0 && tipoUsuario != TipoUsuario.EXONERADO) {
+            vista.setCobroInfo(0.0, 0.0, 0.0);
+            return;
+        }
+
+        double porcentaje = tipoUsuario == TipoUsuario.BECARIO
+            ? valorSeguroPorcentajeBecario()
+            : CCB.normalizarPorcentajeParaTipo(tipoUsuario, ccbConfigurado.getPorcentajeAplicado());
         double costoFinal = costoMenu + costoCcb;
         double ajuste = porcentaje * 100.0;
 
@@ -345,11 +362,18 @@ public class ControladorFila {
     }
 
     private double obtenerCcbBase() {
-        CCB ultimoCcb = DataBase.obtenerCcbPorFechaYTipo(LocalDate.now(), obtenerTipoUsuarioSesion());
+        TipoUsuario tipoUsuario = obtenerTipoUsuarioSesion();
+        TipoUsuario tipoConfiguracion = tipoUsuario.esTipoEstudiantil() ? TipoUsuario.ESTUDIANTE : tipoUsuario;
+        CCB ultimoCcb = DataBase.obtenerCcbPorFechaYTipo(LocalDate.now(), tipoConfiguracion);
         if (ultimoCcb == null) {
             return 0.0;
         }
         return ultimoCcb.getCcb();
+    }
+
+    private double valorSeguroPorcentajeBecario() {
+        Double porcentajeBecario = DataBase.obtenerPorcentajeBecario(cedulaSesion);
+        return porcentajeBecario == null ? 0.0 : porcentajeBecario;
     }
 
     private TipoUsuario obtenerTipoUsuarioSesion() {

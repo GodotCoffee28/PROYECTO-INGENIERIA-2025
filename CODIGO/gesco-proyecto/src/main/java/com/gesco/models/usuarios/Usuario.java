@@ -11,11 +11,14 @@ public class Usuario {
 		EXONERADO,
 		PROFESOR,
 		EMPLEADO,
-		ADMIN,
-		SUPER_ADMIN;
+		ADMIN;
 
 		public boolean esAdmin() {
-			return this == ADMIN || this == SUPER_ADMIN;
+			return this == ADMIN;
+		}
+
+		public boolean esTipoEstudiantil() {
+			return this == ESTUDIANTE || this == BECARIO || this == EXONERADO;
 		}
 
 		public String toEtiqueta() {
@@ -25,7 +28,7 @@ public class Usuario {
 				case EXONERADO -> "Exonerado";
 				case PROFESOR -> "Profesor";
 				case EMPLEADO -> "Empleado";
-				case ADMIN, SUPER_ADMIN -> "Administrador";
+				case ADMIN -> "Administrador";
 				default -> "Comensal";
 			};
 		}
@@ -45,7 +48,7 @@ public class Usuario {
 				case "exonerado" -> EXONERADO;
 				case "profesor" -> PROFESOR;
 				case "empleado" -> EMPLEADO;
-				case "administrador" -> ADMIN;
+				case "administrador", "super_admin", "super admin" -> ADMIN;
 				default -> COMENSAL;
 			};
 		}

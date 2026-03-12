@@ -30,7 +30,7 @@ public class PlantillaGesco extends JFrame {
 
     protected JPanel contenedorPrincipal; 
     private JLabel backIcon;  
-    private JLabel menuIcon, lblIconoUsuario, lblSprAdmin;
+    private JLabel menuIcon, lblIconoUsuario;
     private final MenuDesplegable menuDesplegableGeneral;
     private Image imagenFondo;
     
@@ -95,23 +95,6 @@ public class PlantillaGesco extends JFrame {
         panelDerecho.setOpaque(false);
         panelDerecho.setPreferredSize(new Dimension(250, 100));
 
-        ImageIcon iconoSprAdminBlanco = obtenerIcono("/personaMasBlanca.png", 35);
-        ImageIcon iconoSprAdminGris = obtenerIcono("/personaMasGris.png", 35);
-
-        lblSprAdmin = new JLabel(iconoSprAdminGris);
-        lblSprAdmin.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        lblSprAdmin.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                lblSprAdmin.setIcon(iconoSprAdminBlanco);
-            }
-            @Override
-            public void mouseExited(MouseEvent e) {
-                lblSprAdmin.setIcon(iconoSprAdminGris);
-            }
-        });
-
         ImageIcon iconoBlanco = obtenerIcono("/iconoBlanco.png", 35);
         ImageIcon iconoGris = obtenerIcono("/iconoGris.png", 35);
 
@@ -143,7 +126,6 @@ public class PlantillaGesco extends JFrame {
         backIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         panelDerecho.add(lblIconoUsuario);
-        panelDerecho.add(lblSprAdmin);
         panelDerecho.add(backIcon);
         
         backIcon.addMouseListener(new MouseAdapter() {
@@ -345,19 +327,13 @@ public class PlantillaGesco extends JFrame {
 }
 
     protected void ocultarlblSprAdmin() {
-            if (lblSprAdmin != null) {
-                lblSprAdmin.setVisible(false);
-                lblSprAdmin.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                for (java.awt.event.MouseListener ml : lblSprAdmin.getMouseListeners()) {
-                    lblSprAdmin.removeMouseListener(ml);
-                }
-            }
+    }
+
+    public JLabel getIlblSprAdmin(){
+        return null;
     }
 
     public JLabel getIconoUsuario(){
         return  lblIconoUsuario;
-    }
-    public JLabel getIlblSprAdmin(){
-        return  lblSprAdmin;
     }
 }

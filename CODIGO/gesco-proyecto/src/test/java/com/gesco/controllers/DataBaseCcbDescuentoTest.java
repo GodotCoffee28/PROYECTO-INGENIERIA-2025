@@ -76,8 +76,8 @@ public class DataBaseCcbDescuentoTest {
     }
 
     @Test
-    public void calcularMontoCcbPorTipo_becario_descuentoFijoCincoPorciento() {
-        double monto = DataBase.calcularMontoCcbPorTipo(100.0, TipoUsuario.BECARIO);
+    public void calcularMontoCcbPorTipo_becario_aplicaDescuentoSobreCcbBase() {
+        double monto = DataBase.calcularMontoCcbPorTipo(100.0, TipoUsuario.BECARIO, 0.05);
         assertEquals(5.0, monto, 0.0001);
     }
 
@@ -100,7 +100,7 @@ public class DataBaseCcbDescuentoTest {
     @Test
     public void calcularMontoCcbParaCedula_usandoTipoGuardado() {
         DataBase.registrarUsuario("12345678", "clave123", "Juan Perez", "juan@email.com", TipoUsuario.ESTUDIANTE);
-        DataBase.guardarCcb(new CCB(LocalDate.now(), "Estudiante", 1000.0, 500.0, 100.0, 0.0));
+        DataBase.guardarCcb(new CCB(LocalDate.now(), "Estudiante", 1000.0, 500.0, 100.0, 0.0, 0.20));
 
         double monto = DataBase.calcularMontoCcbParaCedula("12345678", 0.20);
         assertEquals(3.0, monto, 0.0001);
@@ -155,14 +155,39 @@ public class DataBaseCcbDescuentoTest {
     public void calcularMontoCcbParaCedula_usaCcbDeHoy_yNoElDeFechaFutura() {
         DataBase.registrarUsuario("12345678", "clave123", "Juan Perez", "juan@email.com", TipoUsuario.ESTUDIANTE);
 
-        CCB ccbHoy = new CCB(LocalDate.now(), "Estudiante", 1000.0, 500.0, 100.0, 0.0); // ccb = 15
-        CCB ccbFuturo = new CCB(LocalDate.now().plusDays(1), "Estudiante", 2000.0, 500.0, 100.0, 0.0); // ccb = 25
+        CCB ccbHoy = new CCB(LocalDate.now(), "Estudiante", 1000.0, 500.0, 100.0, 0.0, 0.20); // ccb = 15
+        CCB ccbFuturo = new CCB(LocalDate.now().plusDays(1), "Estudiante", 2000.0, 500.0, 100.0, 0.0, 0.25); // ccb = 25
 
         assertTrue(DataBase.guardarCcb(ccbHoy));
         assertTrue(DataBase.guardarCcb(ccbFuturo));
 
         double monto = DataBase.calcularMontoCcbParaCedula("12345678", 0.20);
         assertEquals(3.0, monto, 0.0001);
+    }
+
+    @Test
+    public void guardarPorcentajeBecario_menorAlPorcentajeEstudiantilHoy_sePersiste() {
+        assertTrue(DataBase.guardarCcb(new CCB(LocalDate.now(), "Estudiante", 1000.0, 500.0, 100.0, 0.0, 0.25)));
+        assertTrue(DataBase.guardarPorcentajeBecario("12345678", 0.05));
+
+        assertEquals(0.05, DataBase.obtenerPorcentajeBecario("12345678"), 0.0001);
+    }
+
+    @Test
+    public void guardarPorcentajeBecario_mayorOIgualAlPorcentajeEstudiantilHoy_rechazaGuardado() {
+        assertTrue(DataBase.guardarCcb(new CCB(LocalDate.now(), "Estudiante", 1000.0, 500.0, 100.0, 0.0, 0.25)));
+
+        assertEquals(false, DataBase.guardarPorcentajeBecario("12345678", 0.25));
+    }
+
+    @Test
+    public void calcularMontoCcbParaCedula_becario_usaPorcentajeIndividual() {
+        assertTrue(DataBase.registrarUsuario("12345678", "clave123", "Juan Perez", "juan@email.com", TipoUsuario.ESTUDIANTE));
+        assertTrue(DataBase.guardarCcb(new CCB(LocalDate.now(), "Estudiante", 1000.0, 500.0, 100.0, 0.0, 0.25)));
+        assertTrue(DataBase.cambiarTipoUsuarioPorCedula("12345678", TipoUsuario.BECARIO, 0.05));
+
+        double monto = DataBase.calcularMontoCcbParaCedula("12345678");
+        assertEquals(0.75, monto, 0.0001);
     }
 }
 
