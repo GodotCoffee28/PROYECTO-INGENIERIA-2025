@@ -122,4 +122,20 @@ public class VistaHistorialSaldo extends PlantillaGesco {
         contenedorVertical.revalidate();
         contenedorVertical.repaint();
     }
+
+    public void mostrarMensajeSinMovimientos(String mensaje) {
+        JLabel lblMensaje = crearEtiquetaPersonalizada(
+            mensaje,
+            "Segoe UI",
+            Font.PLAIN,
+            18,
+            new Color(220, 220, 220),
+            "centro"
+        );
+
+        contenedorVertical.add(Box.createVerticalStrut(10));
+        contenedorVertical.add(lblMensaje);
+        contenedorVertical.revalidate();
+        contenedorVertical.repaint();
+    }
 }

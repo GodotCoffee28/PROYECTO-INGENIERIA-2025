@@ -17,6 +17,8 @@ public interface MenuAcciones {
     void irAgregarInsumo();
     void irHistorialMenu();
     void irHistorialCcb();
+    void irHistorialFila();
+    void irCambiarTipoEstudiante();
     void swapInteraccion();
     void salir();
 }

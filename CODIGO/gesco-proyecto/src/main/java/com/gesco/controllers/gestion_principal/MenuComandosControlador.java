@@ -37,6 +37,8 @@ public class MenuComandosControlador {
             case "CMD_AGREGAR_INSUMO" -> acciones.irAgregarInsumo();
             case "CMD_HISTORIAL_MENU" -> acciones.irHistorialMenu();
             case "CMD_HISTORIAL_CCB"  -> acciones.irHistorialCcb();
+            case "CMD_HISTORIAL_FILA" -> acciones.irHistorialFila();
+            case "CMD_CAMBIAR_TIPO_ESTUDIANTE" -> acciones.irCambiarTipoEstudiante();
             case "CMD_SWAP"        -> acciones.swapInteraccion();
             default -> {
             }

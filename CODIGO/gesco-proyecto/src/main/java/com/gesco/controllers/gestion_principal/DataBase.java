@@ -105,26 +105,58 @@ public class DataBase {
 
         List<String> lineas = leerLineasGenericas(ARCHIVO_REGISTRO_SALDO);
         for (String linea : lineas) {
-            String[] partes = linea.split(":");
-            if (partes.length < 5) {
+            String[] recarga = parsearLineaRegistroSaldo(linea);
+            if (recarga == null) {
                 continue;
             }
 
-            String cedulaRegistro = normalizarCedula(partes[4]);
+            String cedulaRegistro = normalizarCedula(recarga[4]);
             if (!cedulaLimpia.equals(cedulaRegistro)) {
                 continue;
             }
 
             recargas.add(new String[] {
-                partes[0].trim(),
-                partes[1].trim(),
-                partes[2].trim(),
-                partes[3].trim(),
+                recarga[0],
+                recarga[1],
+                recarga[2],
+                recarga[3],
                 cedulaRegistro
             });
         }
 
         return recargas;
+    }
+
+    private static String[] parsearLineaRegistroSaldo(String linea) {
+        String texto = valorSeguro(linea);
+        if (texto.isBlank()) {
+            return null;
+        }
+
+        int ultimoSeparador = texto.lastIndexOf(':');
+        int penultimoSeparador = texto.lastIndexOf(':', ultimoSeparador - 1);
+        int primerSeparador = texto.indexOf(':');
+        int segundoSeparador = texto.indexOf(':', primerSeparador + 1);
+
+        if (primerSeparador < 0 || segundoSeparador < 0 || penultimoSeparador < 0 || ultimoSeparador < 0) {
+            return null;
+        }
+
+        if (!(primerSeparador < segundoSeparador && segundoSeparador < penultimoSeparador && penultimoSeparador < ultimoSeparador)) {
+            return null;
+        }
+
+        String referencia = texto.substring(0, primerSeparador).trim();
+        String monto = texto.substring(primerSeparador + 1, segundoSeparador).trim();
+        String banco = texto.substring(segundoSeparador + 1, penultimoSeparador).trim();
+        String fecha = texto.substring(penultimoSeparador + 1, ultimoSeparador).trim();
+        String cedula = texto.substring(ultimoSeparador + 1).trim();
+
+        if (referencia.isEmpty() || monto.isEmpty() || fecha.isEmpty() || cedula.isEmpty()) {
+            return null;
+        }
+
+        return new String[] { referencia, monto, banco, fecha, cedula };
     }
 
     public static boolean referenciaRecargaExiste(String referencia) {
@@ -214,15 +246,73 @@ public class DataBase {
         return reescribirArchivoGenerico(ARCHIVO_ACUDIERON, lineas);
     }
 
-    private static int buscarIndiceRegistroAcudieron(List<String> lineas, String cedula, String fecha) {
-        for (int i = lineas.size() - 1; i >= 0; i--) {
-            String linea = valorSeguro(lineas.get(i));
-            if (linea.isBlank()) {
+    public static int contarAcudieronPorFecha(LocalDate fecha) {
+        if (fecha == null) {
+            return 0;
+        }
+
+        String fechaTexto = fecha.format(DateTimeFormatter.ISO_LOCAL_DATE);
+        List<String> lineas = leerLineasGenericas(ARCHIVO_ACUDIERON);
+        int total = 0;
+
+        for (String linea : lineas) {
+            String[] partes = parsearPartesRegistroAcudieron(linea);
+            if (partes == null) {
                 continue;
             }
 
-            String[] partes = linea.contains(":") ? linea.split(":") : linea.split("\\|");
-            if (partes.length < 2) {
+            String fechaRegistro = valorSeguro(partes[0]);
+            if (fechaTexto.equals(fechaRegistro)) {
+                total++;
+            }
+        }
+
+        return total;
+    }
+
+    public static boolean existeRegistroAcudieronPorCedulaYFecha(String cedula, LocalDate fecha) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (!cedulaValida(cedulaLimpia) || fecha == null) {
+            return false;
+        }
+
+        String fechaTexto = fecha.format(DateTimeFormatter.ISO_LOCAL_DATE);
+        List<String> lineas = leerLineasGenericas(ARCHIVO_ACUDIERON);
+
+        for (String linea : lineas) {
+            String[] partes = parsearPartesRegistroAcudieron(linea);
+            if (partes == null) {
+                continue;
+            }
+
+            String fechaRegistro = valorSeguro(partes[0]);
+            String cedulaRegistro = valorSeguro(partes[1]);
+            if (fechaTexto.equals(fechaRegistro) && cedulaLimpia.equals(cedulaRegistro)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static String[] parsearPartesRegistroAcudieron(String linea) {
+        String texto = valorSeguro(linea);
+        if (texto.isBlank()) {
+            return null;
+        }
+
+        String[] partes = texto.contains(":") ? texto.split(":") : texto.split("\\|");
+        if (partes.length < 2) {
+            return null;
+        }
+
+        return partes;
+    }
+
+    private static int buscarIndiceRegistroAcudieron(List<String> lineas, String cedula, String fecha) {
+        for (int i = lineas.size() - 1; i >= 0; i--) {
+            String[] partes = parsearPartesRegistroAcudieron(lineas.get(i));
+            if (partes == null) {
                 continue;
             }
 
@@ -417,7 +507,7 @@ public class DataBase {
         asegurarArchivoGenerico(nombreArchivo);
         File archivo = obtenerArchivo(nombreArchivo);
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, false))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, StandardCharsets.UTF_8, false))) {
             for (String linea : nuevasLineas) {
                 writer.write(linea);
                 writer.newLine();
@@ -563,6 +653,10 @@ public class DataBase {
 
         TipoUsuario tipoAnterior = obtenerTipoUsuarioSecretaria(cedulaLimpia);
         if (tipoAnterior == null) {
+            return false;
+        }
+
+        if (!esTipoEstudiante(tipoAnterior) || !esTipoEstudiante(nuevoTipo)) {
             return false;
         }
 
@@ -1276,7 +1370,7 @@ public class DataBase {
         if (!nombreLimpio.matches("^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]+$")) return false;
         if (!tipoLimpio.matches("^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]+$")) return false;
         if (cantidadAgregar <= 0 || cantidadAgregar > CANTIDAD_MAXIMA_INSUMO) return false;
-        if (!Float.isFinite(precioUnitario) || precioUnitario <= 0 || precioUnitario > PRECIO_MAXIMO_INSUMO) return false;
+        if (!Float.isFinite(precioUnitario) || precioUnitario < 1.0f || precioUnitario > PRECIO_MAXIMO_INSUMO) return false;
 
         List<String> lineas = leerLineasGenericas(ARCHIVO_INSUMOS);
         List<String> nuevas = new ArrayList<>();
@@ -1490,13 +1584,25 @@ public class DataBase {
         return calcularMontoCcbPorTipo(ccbHoy.getCcb(), tipoUsuario, porcentajeCcb);
     }
 
-    public static List<Menu> obtenerUltimos5Menus() {
+    public static List<Menu> obtenerTodosLosMenus() {
         List<String> lineas = leerLineasGenericas(ARCHIVO_MENUS);
         List<Menu> resultado = new ArrayList<>();
-        int inicio = Math.max(0, lineas.size() - 5);
-        for (int i = inicio; i < lineas.size(); i++) {
-            String[] partes = lineas.get(i).split("\\|");
+        for (String linea : lineas) {
+            if (linea == null || linea.isBlank()) {
+                continue;
+            }
+            String[] partes = linea.split("\\|");
             resultado.add(parsearLineaMenu(partes));
+        }
+        return resultado;
+    }
+
+    public static List<Menu> obtenerUltimos5Menus() {
+        List<Menu> menus = obtenerTodosLosMenus();
+        List<Menu> resultado = new ArrayList<>();
+        int inicio = Math.max(0, menus.size() - 5);
+        for (int i = inicio; i < menus.size(); i++) {
+            resultado.add(menus.get(i));
         }
         return resultado;
     }
@@ -1580,7 +1686,7 @@ public class DataBase {
 
         String[] partes = limpio.split("~");
         if (partes.length >= 3) {
-            String nombre = partes[0].trim();
+            String nombre = repararTextoMojibakeBasico(partes[0].trim());
             int cantidad = (int) parseFloatSeguro(partes[1]);
             float total = parseFloatSeguro(partes[2]);
             float unitario = (cantidad > 0) ? (total / cantidad) : 0.0f;
@@ -1589,7 +1695,7 @@ public class DataBase {
             return insumo;
         }
 
-        return new Insumo(limpio, 1, "Ingrediente", 0.0f);
+        return new Insumo(repararTextoMojibakeBasico(limpio), 1, "Ingrediente", 0.0f);
     }
 
     private static Insumo parsearLineaInsumo(String linea) {
@@ -1597,7 +1703,7 @@ public class DataBase {
         String[] partes = sinPuntoYComa.split(":");
         if (partes.length < 4) return null;
 
-        String nombre = partes[0].trim();
+        String nombre = repararTextoMojibakeBasico(partes[0].trim());
         String tipo = partes[1].trim();
         int cantidad = (int) parseFloatSeguro(partes[2]);
         float precioUnitario = parseFloatSeguro(partes[3]);
@@ -1627,6 +1733,27 @@ public class DataBase {
 
     private static String valorSeguro(String valor) {
         return valor == null ? "" : valor.trim();
+    }
+
+    private static String repararTextoMojibakeBasico(String valor) {
+        String texto = valorSeguro(valor);
+        if (texto.isEmpty()) {
+            return texto;
+        }
+
+        return texto
+            .replace("Ã±", "ñ")
+            .replace("Ã‘", "Ñ")
+            .replace("Ã¡", "á")
+            .replace("Ã©", "é")
+            .replace("Ã­", "í")
+            .replace("Ã³", "ó")
+            .replace("Ãº", "ú")
+            .replace("Ã", "Á")
+            .replace("Ã‰", "É")
+            .replace("Ã", "Í")
+            .replace("Ã“", "Ó")
+            .replace("Ãš", "Ú");
     }
 
     private static boolean nombreValido(String nombre) {

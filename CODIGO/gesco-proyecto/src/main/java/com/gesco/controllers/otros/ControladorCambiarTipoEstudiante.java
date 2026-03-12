@@ -50,6 +50,16 @@ public class ControladorCambiarTipoEstudiante {
             return;
         }
 
+        if (!esTipoEstudiante(tipoActual)) {
+            JOptionPane.showMessageDialog(
+                vista,
+                "El usuario solicitado no es un estudiante/exonerado/becario.",
+                "Tipo no permitido",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
         TipoUsuario nuevoTipo = vista.getTipoUsuarioSeleccionado();
         if (nuevoTipo == null) {
             JOptionPane.showMessageDialog(
@@ -78,5 +88,11 @@ public class ControladorCambiarTipoEstudiante {
             "Actualización exitosa",
             JOptionPane.INFORMATION_MESSAGE
         );
+    }
+
+    private boolean esTipoEstudiante(TipoUsuario tipoUsuario) {
+        return tipoUsuario == TipoUsuario.ESTUDIANTE
+            || tipoUsuario == TipoUsuario.BECARIO
+            || tipoUsuario == TipoUsuario.EXONERADO;
     }
 }

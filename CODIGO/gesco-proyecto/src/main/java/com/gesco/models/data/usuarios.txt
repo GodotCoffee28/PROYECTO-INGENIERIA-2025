@@ -1,6 +1,6 @@
 12345678:12345678:Gab:adads@aadfadaja.com:Administrador:6777,00;
-25000123:123456789:SuperAdmin:SprAdmin@gmail.com:Administrador:0.0;
-33246679:123456789:Gabriel Castillo:abcde@gmail.com:Administrador:3996,34;
+25000123:123456789:SuperAdmin:SprAdmin@gmail.com:Administrador:100,00;
+33246679:123456789:Gabriel Castillo:abcde@gmail.com:Administrador:4006,34;
 11111111:12345678g:Eladmin:dadsdasdas@gmail.com:Administrador:10000.00;
 22334455:12345678a:Usuario Ucevista:dasdasdad@gmail.com:Estudiante:0.0;
 32111454:32111454Ramses:Ramses Cordoba:aaroncordobarivas@gmail.com:Administrador:21094,21;
