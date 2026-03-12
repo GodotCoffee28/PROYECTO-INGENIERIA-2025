@@ -90,6 +90,8 @@ public class LogicaInterfaz {
             this::mostrarAgregarInsumo,
             this::mostrarHistorialMenu,
             this::mostrarVerCcb,
+            this::mostrarHistorialFila,
+            this::mostrarCambiarTipoEstudiante,
             this::swapInteraccion,
             this::manejarSolicitudSalida
         )

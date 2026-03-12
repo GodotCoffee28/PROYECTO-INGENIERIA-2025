@@ -18,6 +18,8 @@ public class MenuAccionesControlador implements MenuAcciones {
     private final Runnable onAgregarInsumo;
     private final Runnable onHistorialMenu;
     private final Runnable onHistorialCcb;
+    private final Runnable onHistorialFila;
+    private final Runnable onCambiarTipoEstudiante;
     private final Runnable onSwapInteraccion;
     private final Runnable onSalir;
 
@@ -38,6 +40,8 @@ public class MenuAccionesControlador implements MenuAcciones {
         Runnable onAgregarInsumo,
         Runnable onHistorialMenu,
         Runnable onHistorialCcb,
+        Runnable onHistorialFila,
+        Runnable onCambiarTipoEstudiante,
         Runnable onSwapInteraccion,
         Runnable onSalir
     ) {
@@ -57,6 +61,8 @@ public class MenuAccionesControlador implements MenuAcciones {
         this.onAgregarInsumo = onAgregarInsumo;
         this.onHistorialMenu = onHistorialMenu;
         this.onHistorialCcb = onHistorialCcb;
+        this.onHistorialFila = onHistorialFila;
+        this.onCambiarTipoEstudiante = onCambiarTipoEstudiante;
         this.onSwapInteraccion = onSwapInteraccion;
         this.onSalir = onSalir;
     }
@@ -139,6 +145,16 @@ public class MenuAccionesControlador implements MenuAcciones {
     @Override
     public void irHistorialCcb() {
         onHistorialCcb.run();
+    }
+
+    @Override
+    public void irHistorialFila() {
+        onHistorialFila.run();
+    }
+
+    @Override
+    public void irCambiarTipoEstudiante() {
+        onCambiarTipoEstudiante.run();
     }
 
     @Override
