@@ -8,24 +8,10 @@
 2026-03-09|CON_MENU|DESAYUNO|Pescado frito>Pescado~1~99.00;Arroz>Arroz~1~150.00;Jugo de manzana>Manzana~2~5.00;
 2026-03-09|CON_MENU|ALMUERZO|Ensalada de zanahoria>Zanahoria~6~3.00;Carne de guisada>Carne para guisar~1~75.00;Manzana>Manzana~1~2.50;
 2026-03-10|CON_MENU|DESAYUNO|Carne de res>Carne de res~1~100.00;Jugo de frutas>Manzana~3~7.50;Ensalada>Lechuga~3~3.30,Tomate~3~0.00,Sal~2~0.20;
-2026-03-10|CON_MENU|ALMUERZO|-1>Manzana~1~2.50;-1>Manzana~1~2.50;-1>Manzana~1~2.50;
+2026-03-10|CON_MENU|ALMUERZO|Albondigas>Carne para guisar~2~150.00;Pan>Pan~1~30.00;Pasta>Pasta~2~400.00;
 2026-03-11|CON_MENU|DESAYUNO|Hamburguesa>Pollo~1~4.75,Carne de res~1~100.00,Mantequilla~2~600.00,Queso~2~6.80,Lechuga~4~4.40,Aceite~1~2.20;Refresco>avena~1~100.00;Zanahorias fritas>Zanahoria~5~2.50,Sal~3~0.30;
 2026-03-11|CON_MENU|ALMUERZO|Ensalada de frutas>Manzana~4~10.00,Pera~3~1.50;Queso frito>Queso~2~6.80,Sal~1~0.10,Aceite~1~2.20;Carne molida>Carne para guisar~2~150.00,Sal~2~0.20;
 2026-03-12|CON_MENU|DESAYUNO|Pasta>Pasta~3~600.00,Agua~1~0.10;Patilla>Patilla~10~100.00;Caraotas>Granos~5~500.00,Zanahoria~3~1.50;
 2026-03-12|CON_MENU|ALMUERZO|Caraotas fritas>Granos~1~100.00,Mantequilla~1~300.00;Agua>Agua~3~0.30;Pan con queso>Pan~2~60.00,Mantequilla~1~300.00,Queso~2~6.80;
 2026-03-13|CON_MENU|DESAYUNO|Pasta con carne molida>Mantequilla~1~300.00,Pasta~2~400.00,Carne para guisar~1~75.00,Queso~3~10.20;Jugo de frutas>Agua~4~0.40,Manzana~4~10.00,Pera~3~1.50;Lentejas>Granos~1~100.00;
 2026-03-13|CON_MENU|ALMUERZO|Arepa de queso>Mantequilla~1~300.00,Queso~3~10.20,Sal~1~0.10;Jugo de frutas>Agua~4~0.40,Manzana~4~10.00,Pera~3~1.50;Caraotas>Granos~1~100.00;
-2026-03-02|NO_DISPONIBLE|DESAYUNO|
-2026-03-02|NO_DISPONIBLE|ALMUERZO|
-2026-03-03|NO_DISPONIBLE|DESAYUNO|
-2026-03-03|NO_DISPONIBLE|ALMUERZO|
-2026-03-04|NO_DISPONIBLE|DESAYUNO|
-2026-03-04|NO_DISPONIBLE|ALMUERZO|
-2026-03-05|NO_DISPONIBLE|DESAYUNO|
-2026-03-05|NO_DISPONIBLE|ALMUERZO|
-2026-03-06|NO_DISPONIBLE|DESAYUNO|
-2026-03-06|CON_MENU|ALMUERZO|popo>Manzana~1~2.50;
-2026-03-05|CON_MENU|ALMUERZO|kkkkk>Manzana~1~2.50;
-2026-03-05|CON_MENU|DESAYUNO|lllll>Manzana~1~2.50;
-2026-03-06|NO_DISPONIBLE|ALMUERZO|
-
