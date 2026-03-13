@@ -104,6 +104,10 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
         }
     }
 
+    public void actualizarEstadoPorcentajeBecario() {
+        actualizarEstadoCampoBecario();
+    }
+
 
     private void construirCuerpo() {
         JPanel panelFondo = crearPanel(250, 15, 500, 150, 50, 50);
@@ -131,10 +135,6 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
     public String getTipoEstudiante() {
         Object tipoSeleccionado = comboTipoEstudiante.getSelectedItem();
         return tipoSeleccionado == null ? "" : tipoSeleccionado.toString();
-    }
-
-    public String getPorcentajeBecario() {
-        return porcentajeBecarioField == null ? "" : porcentajeBecarioField.getText();
     }
 
     public TipoUsuario getTipoUsuarioSeleccionado() {
