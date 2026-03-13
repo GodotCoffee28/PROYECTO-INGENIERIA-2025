@@ -713,7 +713,12 @@ public class DataBase {
                 continue;
             }
 
-            return redondearMoneda(parseDoubleSeguro(partes[1]));
+            Double porcentaje = parseDoubleEstricto(partes[1]);
+            if (porcentaje == null || porcentaje < 0.0 || porcentaje > 1.0) {
+                return null;
+            }
+
+            return redondearMoneda(porcentaje);
         }
 
         return null;
@@ -725,7 +730,9 @@ public class DataBase {
 
     public static boolean guardarPorcentajeBecario(String cedula, double porcentajeBecario) {
         String cedulaLimpia = normalizarCedula(cedula);
-        if (!cedulaValida(cedulaLimpia) || !esPorcentajeBecarioValidoParaHoy(porcentajeBecario)) {
+        if (!cedulaValida(cedulaLimpia)
+            || !esPorcentajeBecarioValidoParaHoy(porcentajeBecario)
+            || !esUsuarioBecario(cedulaLimpia)) {
             return false;
         }
 
@@ -1725,6 +1732,14 @@ public class DataBase {
             return 0.0;
         }
 
+        if (tipoUsuario == TipoUsuario.BECARIO) {
+            Double porcentajeBecario = obtenerPorcentajeBecario(cedula);
+            if (porcentajeBecario == null) {
+                return 0.0;
+            }
+            return calcularMontoCcbPorTipo(ccbHoy.getCcb(), tipoUsuario, porcentajeBecario);
+        }
+
         return calcularMontoCcbPorTipo(ccbHoy.getCcb(), tipoUsuario, porcentajeCcb);
     }
 
@@ -1802,6 +1817,15 @@ public class DataBase {
             return Double.parseDouble(valor.trim().replace(',', '.'));
         } catch (NumberFormatException ex) {
             return 0.0;
+        }
+    }
+
+    private static Double parseDoubleEstricto(String valor) {
+        if (valor == null) return null;
+        try {
+            return Double.parseDouble(valor.trim().replace(',', '.'));
+        } catch (NumberFormatException ex) {
+            return null;
         }
     }
 
@@ -2086,6 +2110,15 @@ public class DataBase {
     public static String normalizarCedula(String cedula) {
         if (cedula == null) return "";
         return cedula.trim().replaceAll("[.\\-\\s]", "");
+    }
+
+    private static boolean esUsuarioBecario(String cedula) {
+        TipoUsuario tipoSecretaria = obtenerTipoUsuarioSecretaria(cedula);
+        if (tipoSecretaria == TipoUsuario.BECARIO) {
+            return true;
+        }
+
+        return obtenerTipoUsuario(cedula) == TipoUsuario.BECARIO;
     }
 
     private static boolean cedulaValida(String cedula) {
