@@ -38,13 +38,14 @@ public class ControladorHistorialSaldo {
             String monto = recarga[1];
             String banco = recarga[2];
             String fecha = recarga[3];
-            String cedula = recarga[4];
+            String cedulaOrigen = recarga[4];
+            String cedulaDestino = recarga[5];
 
-            if (!cedulaSesionNormalizada.equals(DataBase.normalizarCedula(cedula))) {
+            if (!cedulaSesionNormalizada.equals(DataBase.normalizarCedula(cedulaOrigen))) {
                 continue;
             }
 
-            vista.agregarTransaccionALista(fecha, referencia, monto, banco, cedula);
+            vista.agregarTransaccionALista(fecha, referencia, monto, banco, cedulaDestino);
             tieneMovimientos = true;
         }
 

@@ -216,7 +216,7 @@ public class ControladorRecargarSaldo {
             return;
         }
 
-        boolean registrado = DataBase.registrarRecarga(referencia, monto, banco, fecha, cedulaSesion);
+        boolean registrado = DataBase.registrarRecarga(referencia, monto, banco, fecha, cedulaSesion, cedulaDestino);
         if (!registrado) {
             JOptionPane.showMessageDialog(
                 vista,

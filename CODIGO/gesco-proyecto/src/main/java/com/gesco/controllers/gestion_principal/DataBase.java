@@ -78,6 +78,10 @@ public class DataBase {
     public static String getDataDir() { return DATA_DIR; }
 
     public static boolean registrarRecarga(String referencia, double monto, String banco, String fecha, String cedula) {
+        return registrarRecarga(referencia, monto, banco, fecha, cedula, cedula);
+    }
+
+    public static boolean registrarRecarga(String referencia, double monto, String banco, String fecha, String cedulaOrigen, String cedulaDestino) {
         String referenciaLimpia = valorSeguro(referencia);
         if (referenciaLimpia.isBlank() || referenciaRecargaExiste(referenciaLimpia)) {
             return false;
@@ -86,12 +90,13 @@ public class DataBase {
         double montoRedondeado = redondearMoneda(monto);
         String linea = String.format(
             Locale.ROOT,
-            "%s:%.2f:%s:%s:%s",
+            "%s:%.2f:%s:%s:%s:%s",
             referenciaLimpia,
             montoRedondeado,
             valorSeguro(banco),
             valorSeguro(fecha),
-            valorSeguro(cedula)
+            valorSeguro(cedulaOrigen),
+            valorSeguro(cedulaDestino)
         );
         return escribirLineaGenerica(ARCHIVO_REGISTRO_SALDO, linea + System.lineSeparator());
     }
@@ -110,8 +115,9 @@ public class DataBase {
                 continue;
             }
 
-            String cedulaRegistro = normalizarCedula(recarga[4]);
-            if (!cedulaLimpia.equals(cedulaRegistro)) {
+            String cedulaOrigenRegistro = normalizarCedula(recarga[4]);
+            String cedulaDestinoRegistro = normalizarCedula(recarga[5]);
+            if (!cedulaLimpia.equals(cedulaOrigenRegistro)) {
                 continue;
             }
 
@@ -120,7 +126,8 @@ public class DataBase {
                 recarga[1],
                 recarga[2],
                 recarga[3],
-                cedulaRegistro
+                cedulaOrigenRegistro,
+                cedulaDestinoRegistro
             });
         }
 
@@ -133,30 +140,23 @@ public class DataBase {
             return null;
         }
 
-        int ultimoSeparador = texto.lastIndexOf(':');
-        int penultimoSeparador = texto.lastIndexOf(':', ultimoSeparador - 1);
-        int primerSeparador = texto.indexOf(':');
-        int segundoSeparador = texto.indexOf(':', primerSeparador + 1);
-
-        if (primerSeparador < 0 || segundoSeparador < 0 || penultimoSeparador < 0 || ultimoSeparador < 0) {
+        String[] partes = texto.split(":", 6);
+        if (partes.length < 5) {
             return null;
         }
 
-        if (!(primerSeparador < segundoSeparador && segundoSeparador < penultimoSeparador && penultimoSeparador < ultimoSeparador)) {
+        String referencia = valorSeguro(partes[0]);
+        String monto = valorSeguro(partes[1]);
+        String banco = valorSeguro(partes[2]);
+        String fecha = valorSeguro(partes[3]);
+        String cedulaOrigen = valorSeguro(partes[4]);
+        String cedulaDestino = partes.length >= 6 ? valorSeguro(partes[5]) : cedulaOrigen;
+
+        if (referencia.isEmpty() || monto.isEmpty() || banco.isEmpty() || fecha.isEmpty() || cedulaOrigen.isEmpty() || cedulaDestino.isEmpty()) {
             return null;
         }
 
-        String referencia = texto.substring(0, primerSeparador).trim();
-        String monto = texto.substring(primerSeparador + 1, segundoSeparador).trim();
-        String banco = texto.substring(segundoSeparador + 1, penultimoSeparador).trim();
-        String fecha = texto.substring(penultimoSeparador + 1, ultimoSeparador).trim();
-        String cedula = texto.substring(ultimoSeparador + 1).trim();
-
-        if (referencia.isEmpty() || monto.isEmpty() || fecha.isEmpty() || cedula.isEmpty()) {
-            return null;
-        }
-
-        return new String[] { referencia, monto, banco, fecha, cedula };
+        return new String[] { referencia, monto, banco, fecha, cedulaOrigen, cedulaDestino };
     }
 
     public static boolean referenciaRecargaExiste(String referencia) {

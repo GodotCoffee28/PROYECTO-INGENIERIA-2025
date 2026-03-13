@@ -33,7 +33,7 @@ public class MonederoSaldoPanaCajaNegraTest extends MonederoBaseCajaNegraTest {
         double saldoOrigenAntes = DataBase.obtenerSaldo(cedulaOrigen);
         double saldoDestinoAntes = DataBase.obtenerSaldo(cedulaDestino);
 
-        assertTrue(DataBase.registrarRecarga(referencia, montoRecarga, banco, fecha, cedulaOrigen));
+        assertTrue(DataBase.registrarRecarga(referencia, montoRecarga, banco, fecha, cedulaOrigen, cedulaDestino));
         assertTrue(DataBase.actualizarSaldo(cedulaDestino, saldoDestinoAntes + montoRecarga));
 
         assertEquals(80.00, DataBase.obtenerSaldo(cedulaOrigen), 0.0001);
@@ -41,6 +41,6 @@ public class MonederoSaldoPanaCajaNegraTest extends MonederoBaseCajaNegraTest {
         assertEquals(saldoOrigenAntes, DataBase.obtenerSaldo(cedulaOrigen), 0.0001);
 
         assertTrue(DataBase.obtenerRecargasPorCedula(cedulaOrigen).stream()
-            .anyMatch(r -> r[0].equals(referencia) && r[1].equals("35.50")));
+            .anyMatch(r -> r[0].equals(referencia) && r[1].equals("35.50") && r[5].equals(cedulaDestino)));
     }
 }

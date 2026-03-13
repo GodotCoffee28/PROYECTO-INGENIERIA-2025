@@ -63,7 +63,7 @@ public class VistaHistorialSaldo extends PlantillaGesco {
         }
     }
 
-    public void agregarTransaccionALista(String fecha, String referencia, String monto, String banco, String cedula) {
+    public void agregarTransaccionALista(String fecha, String referencia, String monto, String banco, String cedulaDestino) {
         JPanel bloqueTexto = new JPanel();
         bloqueTexto.setLayout(new BoxLayout(bloqueTexto, BoxLayout.Y_AXIS));
         bloqueTexto.setOpaque(false);
@@ -76,7 +76,7 @@ public class VistaHistorialSaldo extends PlantillaGesco {
         bloqueTexto.add(crearFilaDetalle("Referencia:", referencia));
         bloqueTexto.add(crearFilaDetalle("Monto Recarga:", monto + " BS."));
         bloqueTexto.add(crearFilaDetalle("Banco:", banco));
-        bloqueTexto.add(crearFilaDetalle("Cédula Cliente:", cedula));
+        bloqueTexto.add(crearFilaDetalle("Cédula recargada:", cedulaDestino));
 
         JSeparator separador = new JSeparator();
         separador.setMaximumSize(new Dimension(750, 1));
