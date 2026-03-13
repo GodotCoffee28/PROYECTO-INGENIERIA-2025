@@ -133,6 +133,10 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
         return tipoSeleccionado == null ? "" : tipoSeleccionado.toString();
     }
 
+    public String getPorcentajeBecario() {
+        return porcentajeBecarioField == null ? "" : porcentajeBecarioField.getText();
+    }
+
     public TipoUsuario getTipoUsuarioSeleccionado() {
         String valor = getTipoEstudiante();
         return switch (valor) {

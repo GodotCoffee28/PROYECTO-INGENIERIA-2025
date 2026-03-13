@@ -39,7 +39,7 @@ public class DataBase {
 
     private static final String ARCHIVO_USUARIOS = "usuarios.txt";
     private static final String ARCHIVO_ADMINS = "admins.txt";
-    private static final String ARCHIVO_SUPER_ADMINS = "super_admins.txt";
+    private static final String ARCHIVO_PORCENTAJES_BECARIOS = "porcentajes_becarios.txt";
     private static final String ARCHIVO_MENUS = "menus.txt";
     private static final String ARCHIVO_CFCV = "cfcv.txt";
     private static final String ARCHIVO_CCB = "ccb.txt";
@@ -531,10 +531,6 @@ public class DataBase {
         if (usuarioExiste(cedulaLimpia)) return false;
 
         TipoUsuario tipo = tipoUsuario == null ? TipoUsuario.COMENSAL : tipoUsuario;
-        if (tipo == TipoUsuario.SUPER_ADMIN) {
-            return false;
-        }
-
         if (tipo != TipoUsuario.ADMIN) {
             if (!cedulaAutorizadaPorSecretaria(cedulaLimpia)) return false;
             if (!tipoUsuarioCoincideConSecretaria(cedulaLimpia, tipo)) return false;
@@ -627,7 +623,7 @@ public class DataBase {
                 ? TipoUsuario.ESTUDIANTE
                 : tipoUsuario;
 
-        if (tipoSolicitado == TipoUsuario.ESTUDIANTE && esTipoEstudiante(tipoPadron)) {
+        if (tipoSolicitado == TipoUsuario.ESTUDIANTE && tipoPadron.esTipoEstudiantil()) {
             return true;
         }
         return tipoPadron == tipoSolicitado;
@@ -646,6 +642,10 @@ public class DataBase {
     }
 
     public static boolean cambiarTipoUsuarioPorCedula(String cedula, TipoUsuario nuevoTipo) {
+        return cambiarTipoUsuarioPorCedula(cedula, nuevoTipo, null);
+    }
+
+    public static boolean cambiarTipoUsuarioPorCedula(String cedula, TipoUsuario nuevoTipo, Double porcentajeBecario) {
         String cedulaLimpia = normalizarCedula(cedula);
         if (!cedulaValida(cedulaLimpia) || nuevoTipo == null || nuevoTipo == TipoUsuario.COMENSAL) {
             return false;
@@ -656,12 +656,14 @@ public class DataBase {
             return false;
         }
 
-        if (!esTipoEstudiante(tipoAnterior) || !esTipoEstudiante(nuevoTipo)) {
+        if (!tipoAnterior.esTipoEstudiantil() || !nuevoTipo.esTipoEstudiantil()) {
             return false;
         }
 
-        if (esSuperAdmin(cedulaLimpia) && !nuevoTipo.esAdmin()) {
-            return false;
+        if (nuevoTipo == TipoUsuario.BECARIO) {
+            if (porcentajeBecario == null || !esPorcentajeBecarioValidoParaHoy(porcentajeBecario)) {
+                return false;
+            }
         }
 
         if (!actualizarTipoEnPadronSecretaria(cedulaLimpia, nuevoTipo)) {
@@ -672,11 +674,118 @@ public class DataBase {
             return false;
         }
 
-        if (nuevoTipo.esAdmin()) {
-            return agregarAdmin(cedulaLimpia);
+        boolean adminActualizado = nuevoTipo.esAdmin()
+            ? agregarAdmin(cedulaLimpia)
+            : removerAdmin(cedulaLimpia);
+        if (!adminActualizado) {
+            return false;
         }
 
-        return removerAdmin(cedulaLimpia);
+        if (nuevoTipo == TipoUsuario.BECARIO) {
+            return guardarPorcentajeBecario(cedulaLimpia, porcentajeBecario);
+        }
+
+        return eliminarPorcentajeBecario(cedulaLimpia);
+    }
+
+    public static double obtenerPorcentajeCcbEstudiantilHoy() {
+        CCB ccbEstudiantil = obtenerCcbPorFechaYTipo(LocalDate.now(), TipoUsuario.ESTUDIANTE);
+        if (ccbEstudiantil == null) {
+            return 0.0;
+        }
+        return CCB.normalizarPorcentajeParaTipo(TipoUsuario.ESTUDIANTE, ccbEstudiantil.getPorcentajeAplicado());
+    }
+
+    public static Double obtenerPorcentajeBecario(String cedula) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (!cedulaValida(cedulaLimpia)) {
+            return null;
+        }
+
+        List<String> lineas = leerLineasGenericas(ARCHIVO_PORCENTAJES_BECARIOS);
+        for (int i = lineas.size() - 1; i >= 0; i--) {
+            String[] partes = lineas.get(i).split("\\|");
+            if (partes.length < 2) {
+                continue;
+            }
+
+            if (!cedulaLimpia.equals(normalizarCedula(partes[0]))) {
+                continue;
+            }
+
+            return redondearMoneda(parseDoubleSeguro(partes[1]));
+        }
+
+        return null;
+    }
+
+    public static boolean tienePorcentajeBecarioConfigurado(String cedula) {
+        return obtenerPorcentajeBecario(cedula) != null;
+    }
+
+    public static boolean guardarPorcentajeBecario(String cedula, double porcentajeBecario) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (!cedulaValida(cedulaLimpia) || !esPorcentajeBecarioValidoParaHoy(porcentajeBecario)) {
+            return false;
+        }
+
+        List<String> lineas = leerLineasGenericas(ARCHIVO_PORCENTAJES_BECARIOS);
+        List<String> actualizadas = new ArrayList<>();
+        boolean actualizado = false;
+        String nuevaLinea = String.format(Locale.US, "%s|%.4f", cedulaLimpia, redondearMoneda(porcentajeBecario));
+
+        for (String linea : lineas) {
+            String[] partes = linea.split("\\|");
+            if (partes.length >= 1 && cedulaLimpia.equals(normalizarCedula(partes[0]))) {
+                if (!actualizado) {
+                    actualizadas.add(nuevaLinea);
+                    actualizado = true;
+                }
+                continue;
+            }
+            actualizadas.add(linea);
+        }
+
+        if (!actualizado) {
+            actualizadas.add(nuevaLinea);
+        }
+
+        return reescribirArchivoGenerico(ARCHIVO_PORCENTAJES_BECARIOS, actualizadas);
+    }
+
+    private static boolean eliminarPorcentajeBecario(String cedula) {
+        String cedulaLimpia = normalizarCedula(cedula);
+        if (!cedulaValida(cedulaLimpia)) {
+            return false;
+        }
+
+        List<String> lineas = leerLineasGenericas(ARCHIVO_PORCENTAJES_BECARIOS);
+        List<String> actualizadas = new ArrayList<>();
+        boolean eliminado = false;
+
+        for (String linea : lineas) {
+            String[] partes = linea.split("\\|");
+            if (partes.length >= 1 && cedulaLimpia.equals(normalizarCedula(partes[0]))) {
+                eliminado = true;
+                continue;
+            }
+            actualizadas.add(linea);
+        }
+
+        if (!eliminado) {
+            return true;
+        }
+
+        return reescribirArchivoGenerico(ARCHIVO_PORCENTAJES_BECARIOS, actualizadas);
+    }
+
+    public static boolean esPorcentajeBecarioValidoParaHoy(double porcentajeBecario) {
+        double porcentajeEstudiantilHoy = obtenerPorcentajeCcbEstudiantilHoy();
+        return porcentajeEstudiantilHoy > 0.0
+            && !Double.isNaN(porcentajeBecario)
+            && !Double.isInfinite(porcentajeBecario)
+            && porcentajeBecario >= 0.0
+            && porcentajeBecario < porcentajeEstudiantilHoy;
     }
 
     public static boolean validarInicioSesion(String cedula, String clave) {
@@ -693,7 +802,6 @@ public class DataBase {
     }
 
     public static TipoUsuario obtenerTipoUsuario(String cedula) {
-        if (esSuperAdmin(cedula)) return TipoUsuario.SUPER_ADMIN;
         if (esAdmin(cedula)) return TipoUsuario.ADMIN;
 
         List<String> lineas = leerLineasGenericas(ARCHIVO_USUARIOS);
@@ -736,19 +844,7 @@ public class DataBase {
     public static boolean esAdmin(String cedula) {
         String cedulaLimpia = normalizarCedula(cedula);
         if (!cedulaValida(cedulaLimpia)) return false;
-        return esSuperAdmin(cedulaLimpia) || esAdminDirecto(cedulaLimpia);
-    }
-
-    public static boolean esSuperAdmin(String cedula) {
-        String cedulaLimpia = normalizarCedula(cedula);
-        if (!cedulaValida(cedulaLimpia)) return false;
-        if (!esAdminDirecto(cedulaLimpia)) return false;
-
-        List<String> supers = leerLineasGenericas(ARCHIVO_SUPER_ADMINS);
-        for (String linea : supers) {
-            if (normalizarCedula(linea).equals(cedulaLimpia)) return true;
-        }
-        return false;
+        return esAdminDirecto(cedulaLimpia);
     }
 
     private static boolean esAdminDirecto(String cedula) {
@@ -823,7 +919,6 @@ public class DataBase {
     private static boolean removerAdmin(String cedula) {
         String cedulaLimpia = normalizarCedula(cedula);
         if (!cedulaValida(cedulaLimpia)) return false;
-        if (esSuperAdmin(cedulaLimpia)) return false;
 
         List<String> admins = leerLineasGenericas(ARCHIVO_ADMINS);
         List<String> actualizados = new ArrayList<>();
@@ -1463,7 +1558,7 @@ public class DataBase {
             Locale.US,
             "%s|%s|%.2f|%.2f|%.2f|%.4f|%.4f|%.4f",
             ccb.getFecha().toString(),
-            valorSeguro(ccb.getTipoUsuario()),
+            CCB.normalizarTipoConfiguracion(ccb.getTipoUsuario()),
             ccb.getCf(),
             ccb.getCv(),
             ccb.getNb(),
@@ -1486,9 +1581,23 @@ public class DataBase {
             return null;
         }
 
+        CCB coincidenciaCompatible = null;
+
         for (int i = lineas.size() - 1; i >= 0; i--) {
             CCB ccb = parsearLineaCcb(lineas.get(i));
             if (ccb == null) {
+                continue;
+            }
+
+            TipoUsuario tipoRegistro = CCB.parseTipoUsuario(ccb.getTipoUsuario());
+            if (tipoUsuario != null && tipoUsuario.esTipoEstudiantil()) {
+                if (tipoRegistro == TipoUsuario.ESTUDIANTE) {
+                    return ccb;
+                }
+
+                if (coincidenciaCompatible == null && CCB.coincideTipoCcb(ccb.getTipoUsuario(), tipoUsuario)) {
+                    coincidenciaCompatible = ccb;
+                }
                 continue;
             }
 
@@ -1497,7 +1606,7 @@ public class DataBase {
             }
         }
 
-        return null;
+        return coincidenciaCompatible;
     }
 
     public static CCB obtenerCcbPorFechaYTipo(LocalDate fecha, TipoUsuario tipoUsuario) {
@@ -1510,6 +1619,8 @@ public class DataBase {
             return null;
         }
 
+        CCB coincidenciaCompatible = null;
+
         for (int i = lineas.size() - 1; i >= 0; i--) {
             CCB ccb = parsearLineaCcb(lineas.get(i));
             if (ccb == null) {
@@ -1520,12 +1631,24 @@ public class DataBase {
                 continue;
             }
 
+            TipoUsuario tipoRegistro = CCB.parseTipoUsuario(ccb.getTipoUsuario());
+            if (tipoUsuario.esTipoEstudiantil()) {
+                if (tipoRegistro == TipoUsuario.ESTUDIANTE) {
+                    return ccb;
+                }
+
+                if (coincidenciaCompatible == null && CCB.coincideTipoCcb(ccb.getTipoUsuario(), tipoUsuario)) {
+                    coincidenciaCompatible = ccb;
+                }
+                continue;
+            }
+
             if (CCB.coincideTipoCcb(ccb.getTipoUsuario(), tipoUsuario)) {
                 return ccb;
             }
         }
 
-        return null;
+        return coincidenciaCompatible;
     }
 
     public static List<CCB> obtenerHistorialCcb() {
@@ -1562,12 +1685,30 @@ public class DataBase {
         }
 
         TipoUsuario tipoUsuario = obtenerTipoUsuario(cedula);
-        CCB ccbHoy = obtenerCcbPorFechaYTipo(LocalDate.now(), tipoUsuario);
+        TipoUsuario tipoConfiguracion = tipoUsuario != null && tipoUsuario.esTipoEstudiantil()
+            ? TipoUsuario.ESTUDIANTE
+            : tipoUsuario;
+        CCB ccbHoy = obtenerCcbPorFechaYTipo(LocalDate.now(), tipoConfiguracion);
         if (ccbHoy == null) {
             return 0.0;
         }
 
-        return calcularMontoCcbPorTipo(ccbHoy.getCcb(), tipoUsuario);
+        if (tipoUsuario == TipoUsuario.EXONERADO) {
+            return 0.0;
+        }
+
+        double porcentajeAplicado;
+        if (tipoUsuario == TipoUsuario.BECARIO) {
+            Double porcentajeBecario = obtenerPorcentajeBecario(cedula);
+            if (porcentajeBecario == null) {
+                return 0.0;
+            }
+            porcentajeAplicado = porcentajeBecario;
+        } else {
+            porcentajeAplicado = CCB.normalizarPorcentajeParaTipo(tipoUsuario, ccbHoy.getPorcentajeAplicado());
+        }
+
+        return calcularMontoCcbPorTipo(ccbHoy.getCcb(), tipoUsuario, porcentajeAplicado);
     }
 
     public static double calcularMontoCcbParaCedula(String cedula, double porcentajeCcb) {
@@ -1576,7 +1717,10 @@ public class DataBase {
         }
 
         TipoUsuario tipoUsuario = obtenerTipoUsuario(cedula);
-        CCB ccbHoy = obtenerCcbPorFechaYTipo(LocalDate.now(), tipoUsuario);
+        TipoUsuario tipoConfiguracion = tipoUsuario != null && tipoUsuario.esTipoEstudiantil()
+            ? TipoUsuario.ESTUDIANTE
+            : tipoUsuario;
+        CCB ccbHoy = obtenerCcbPorFechaYTipo(LocalDate.now(), tipoConfiguracion);
         if (ccbHoy == null) {
             return 0.0;
         }
@@ -1895,7 +2039,7 @@ public class DataBase {
             case EXONERADO -> cedula + ":estudiante:exonerado";
             case PROFESOR -> cedula + ":profesor";
             case EMPLEADO -> cedula + ":empleado";
-            case ADMIN, SUPER_ADMIN -> cedula + ":administrador";
+            case ADMIN -> cedula + ":administrador";
             default -> null;
         };
     }
@@ -1910,12 +2054,6 @@ public class DataBase {
         String limpio = valor.trim();
         if (limpio.isEmpty()) return false;
         return limpio.matches("[-+]?\\d+(?:[\\.,]\\d+)?");
-    }
-
-    private static boolean esTipoEstudiante(TipoUsuario tipoUsuario) {
-        return tipoUsuario == TipoUsuario.ESTUDIANTE
-            || tipoUsuario == TipoUsuario.BECARIO
-            || tipoUsuario == TipoUsuario.EXONERADO;
     }
 
     private static String normalizarTextoTipo(String valorTipo) {

@@ -94,6 +94,7 @@ public class VistaHistorialCCB extends PlantillaGesco {
         String merma = String.format(Locale.US, "%.4f", registro.getMerma());
         String ccb = String.format(Locale.US, "%.4f", registro.getCcb());
         String porcentajeAplicado = String.format(Locale.US, "%.2f%%", registro.getPorcentajeAplicado() * 100.0);
+        boolean registroEstudiantil = "ESTUDIANTE".equalsIgnoreCase(tipoUsuario);
 
         JPanel bloqueTexto = new JPanel();
         bloqueTexto.setLayout(new BoxLayout(bloqueTexto, BoxLayout.Y_AXIS));
@@ -112,7 +113,7 @@ public class VistaHistorialCCB extends PlantillaGesco {
         bloqueTexto.add(crearFilaDetalle("Costos Variables (CV):", cv + " BS."));
         bloqueTexto.add(crearFilaDetalle("Número de Bandejas (NB):", nb));
         bloqueTexto.add(crearFilaDetalle("Merma:", merma));
-        bloqueTexto.add(crearFilaDetalle("% aplicado por tipo:", porcentajeAplicado));
+        bloqueTexto.add(crearFilaDetalle(registroEstudiantil ? "% aplicado al estudiante regular:" : "% aplicado por tipo:", porcentajeAplicado));
 
         bloqueTexto.add(crearFilaDetalle("COSTO COMEDOR/BANDEJA (CCB):", ccb + " BS."));
 
