@@ -43,7 +43,6 @@ public class GestionUsuariosCajaNegraNegativaTest {
         crearImagenSecretaria("32653002");
 
         Files.writeString(dataDirTemporal.resolve("admins.txt"), "32653001" + System.lineSeparator(), StandardCharsets.UTF_8);
-        Files.writeString(dataDirTemporal.resolve("super_admins.txt"), "32653001" + System.lineSeparator(), StandardCharsets.UTF_8);
     }
 
     @After
@@ -65,10 +64,10 @@ public class GestionUsuariosCajaNegraNegativaTest {
     }
 
     @Test
-    public void cambiarTipoUsuarioPorCedula_superAdminARolInferior_devuelveFalse() {
-        assertTrue(DataBase.esSuperAdmin("32653001"));
+    public void cambiarTipoUsuarioPorCedula_adminANoEstudiantil_devuelveFalse() {
+        assertTrue(DataBase.esAdmin("32653001"));
         assertFalse(DataBase.cambiarTipoUsuarioPorCedula("32653001", TipoUsuario.EMPLEADO));
-        assertTrue(DataBase.esSuperAdmin("32653001"));
+        assertTrue(DataBase.esAdmin("32653001"));
     }
 
     @Test

@@ -22,6 +22,7 @@ public class ControladorCargarCCB {
         LocalDate hoy = LocalDate.now();
         vista.setFecha(hoy);
         vista.setCV(DataBase.calcularCostoMenusDelDia(hoy));
+        vista.actualizarEstadoDescuento();
 
         vista.getBackIcon().addMouseListener(new java.awt.event.MouseAdapter() {
             @Override

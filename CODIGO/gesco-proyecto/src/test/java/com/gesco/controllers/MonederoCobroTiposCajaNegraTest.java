@@ -37,13 +37,14 @@ public class MonederoCobroTiposCajaNegraTest extends MonederoBaseCajaNegraTest {
     }
 
     @Test
-    public void cobroPedidoMenu_becario_aplicaCincoPorcientoCcb_yActualizaSaldo_cajaNegra() {
+    public void cobroPedidoMenu_becario_aplicaDescuentoSobreCcbBase_yActualizaSaldo_cajaNegra() {
         String cedula = "33555555";
 
         assertTrue(DataBase.registrarUsuario(cedula, "clave123", "Becario Test", "becario@email.com", TipoUsuario.BECARIO));
         assertTrue(DataBase.actualizarSaldo(cedula, 200.00));
 
-        assertTrue(DataBase.guardarCcb(new CCB(LocalDate.now(), "Estudiante", 1000.0, 500.0, 100.0, 0.0)));
+        assertTrue(DataBase.guardarCcb(new CCB(LocalDate.now(), "Estudiante", 1000.0, 500.0, 100.0, 0.0, 0.25)));
+        assertTrue(DataBase.guardarPorcentajeBecario(cedula, 0.05));
 
         double costoMenu = 50.00;
         double montoCcb = DataBase.calcularMontoCcbParaCedula(cedula);

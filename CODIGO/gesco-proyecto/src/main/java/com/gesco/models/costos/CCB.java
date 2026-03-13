@@ -22,7 +22,9 @@ public class CCB {
     private static final double NB_MAXIMO_EXCLUSIVO = 2500.0;
     private static final double CCB_ESTUDIANTE_MIN = 0.20;
     private static final double CCB_ESTUDIANTE_MAX = 0.30;
-    private static final double CCB_BECARIO_PORCENTAJE = 0.05;
+    private static final double CCB_BECARIO_MIN = 0.00;
+    private static final double CCB_BECARIO_MAX = 0.30;
+    private static final double CCB_BECARIO_POR_DEFECTO = 0.05;
     private static final double CCB_EXONERADO_PORCENTAJE = 0.00;
     private static final double CCB_PROFESOR_MIN = 0.70;
     private static final double CCB_PROFESOR_MAX = 0.90;
@@ -130,6 +132,15 @@ public class CCB {
             throw new IllegalArgumentException("El CCB base no puede ser negativo.");
         }
 
+        if (tipoUsuario == TipoUsuario.EXONERADO) {
+            return 0.0;
+        }
+
+        if (tipoUsuario == TipoUsuario.BECARIO) {
+            validarPorcentajeBecario(porcentajeCcb);
+            return redondearMoneda(ccbBase * porcentajeCcb);
+        }
+
         double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
         if (porcentajeCcb < rango[0] || porcentajeCcb > rango[1]) {
             throw new IllegalArgumentException("El porcentaje no esta en el rango permitido para el tipo de usuario.");
@@ -139,6 +150,16 @@ public class CCB {
     }
 
     public static double normalizarPorcentajeParaTipo(TipoUsuario tipoUsuario, double porcentajeSugerido) {
+        if (tipoUsuario == TipoUsuario.BECARIO) {
+            if (porcentajeSugerido >= CCB_BECARIO_MIN && porcentajeSugerido <= CCB_BECARIO_MAX) {
+                return redondearMoneda(porcentajeSugerido);
+            }
+            return CCB_BECARIO_POR_DEFECTO;
+        }
+        if (tipoUsuario == TipoUsuario.EXONERADO) {
+            return CCB_EXONERADO_PORCENTAJE;
+        }
+
         double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
         if (porcentajeSugerido >= rango[0] && porcentajeSugerido <= rango[1]) {
             return redondearMoneda(porcentajeSugerido);
@@ -158,8 +179,7 @@ public class CCB {
             case "EXONERADO" -> TipoUsuario.EXONERADO;
             case "PROFESOR" -> TipoUsuario.PROFESOR;
             case "EMPLEADO" -> TipoUsuario.EMPLEADO;
-            case "ADMIN" -> TipoUsuario.ADMIN;
-            case "SUPER_ADMIN", "SUPER ADMIN" -> TipoUsuario.SUPER_ADMIN;
+            case "ADMIN", "SUPER_ADMIN", "SUPER ADMIN" -> TipoUsuario.ADMIN;
             default -> null;
         };
     }
@@ -170,18 +190,21 @@ public class CCB {
             return false;
         }
 
+        if (esBeneficioEstudiantil(tipoRegistro) && esBeneficioEstudiantil(tipoUsuario)) {
+            return true;
+        }
+
         if (tipoRegistro == tipoUsuario) {
             return true;
         }
 
-        // Compatibilidad: tipos laborales comparten CCB (empleado/admin/super_admin)
+        // Compatibilidad: tipos laborales comparten CCB (empleado/admin)
         return esTipoLaboral(tipoRegistro) && esTipoLaboral(tipoUsuario);
     }
 
     private static boolean esTipoLaboral(TipoUsuario tipoUsuario) {
         return tipoUsuario == TipoUsuario.EMPLEADO
-            || tipoUsuario == TipoUsuario.ADMIN
-            || tipoUsuario == TipoUsuario.SUPER_ADMIN;
+            || tipoUsuario == TipoUsuario.ADMIN;
     }
 
     public static double[] obtenerRangoPorTipoUsuario(TipoUsuario tipoUsuario) {
@@ -191,12 +214,22 @@ public class CCB {
 
         return switch (tipoUsuario) {
             case ESTUDIANTE -> new double[] { CCB_ESTUDIANTE_MIN, CCB_ESTUDIANTE_MAX };
-            case BECARIO -> new double[] { CCB_BECARIO_PORCENTAJE, CCB_BECARIO_PORCENTAJE };
+            case BECARIO -> new double[] { CCB_BECARIO_MIN, CCB_BECARIO_MAX };
             case EXONERADO -> new double[] { CCB_EXONERADO_PORCENTAJE, CCB_EXONERADO_PORCENTAJE };
             case PROFESOR -> new double[] { CCB_PROFESOR_MIN, CCB_PROFESOR_MAX };
-            case EMPLEADO, ADMIN, SUPER_ADMIN -> new double[] { CCB_EMPLEADO_MIN, CCB_EMPLEADO_MAX };
+            case EMPLEADO, ADMIN -> new double[] { CCB_EMPLEADO_MIN, CCB_EMPLEADO_MAX };
             default -> new double[] { 1.0, 1.0 };
         };
+    }
+
+    public static String normalizarTipoConfiguracion(String tipoUsuarioTexto) {
+        TipoUsuario tipo = parseTipoUsuario(tipoUsuarioTexto);
+        if (tipo == null) {
+            return tipoUsuarioTexto == null ? "" : tipoUsuarioTexto.trim();
+        }
+
+        TipoUsuario tipoNormalizado = esBeneficioEstudiantil(tipo) ? TipoUsuario.ESTUDIANTE : tipo;
+        return tipoNormalizado.toString().charAt(0) + tipoNormalizado.toString().substring(1).toLowerCase();
     }
 
     private static double obtenerPorcentajeDeterministicoPorTipo(TipoUsuario tipoUsuario) {
@@ -208,11 +241,20 @@ public class CCB {
     }
 
     private static void validarPorcentajeEnRango(TipoUsuario tipoUsuario, double porcentaje) {
-        double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
-        if (porcentaje < rango[0] || porcentaje > rango[1]) {
-            if (tipoUsuario == TipoUsuario.EXONERADO) {
+        if (tipoUsuario == TipoUsuario.BECARIO) {
+            validarPorcentajeBecario(porcentaje);
+            return;
+        }
+
+        if (tipoUsuario == TipoUsuario.EXONERADO) {
+            if (redondearMoneda(porcentaje) != CCB_EXONERADO_PORCENTAJE) {
                 throw new IllegalArgumentException("El usuario exonerado no debe pagar porcentaje de CCB.");
             }
+            return;
+        }
+
+        double[] rango = obtenerRangoPorTipoUsuario(tipoUsuario);
+        if (porcentaje < rango[0] || porcentaje > rango[1]) {
             throw new IllegalArgumentException(
                 String.format(
                     "El porcentaje debe estar entre %.2f%% y %.2f%% para el tipo seleccionado.",
@@ -220,6 +262,18 @@ public class CCB {
                     rango[1] * 100.0
                 )
             );
+        }
+    }
+
+    private static boolean esBeneficioEstudiantil(TipoUsuario tipoUsuario) {
+        return tipoUsuario == TipoUsuario.ESTUDIANTE
+            || tipoUsuario == TipoUsuario.BECARIO
+            || tipoUsuario == TipoUsuario.EXONERADO;
+    }
+
+    private static void validarPorcentajeBecario(double porcentajeAplicado) {
+        if (porcentajeAplicado < CCB_BECARIO_MIN || porcentajeAplicado > CCB_BECARIO_MAX) {
+            throw new IllegalArgumentException("El porcentaje del becario debe estar entre 0% y 30%.");
         }
     }
 

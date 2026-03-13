@@ -16,7 +16,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 import com.gesco.models.costos.CCB;
 import com.gesco.views.PlantillasViews.BotonNeon;
 import com.gesco.views.PlantillasViews.CampoFecha;
@@ -70,9 +69,9 @@ public class VistaCargaCCB extends PlantillaGesco {
         formPanel.add(campoFecha);
         formPanel.add(Box.createVerticalStrut(12));
 
-        formPanel.add(crearEtiquetaPersonalizada("Tipo de usuario (Estudiante/Becario/Exonerado/Profesor/Empleado)", "Times New Roman", Font.PLAIN, 18, new Color(180, 180, 180), "izquierda"));
+        formPanel.add(crearEtiquetaPersonalizada("Tipo de usuario (Estudiante/Profesor/Empleado)", "Times New Roman", Font.PLAIN, 18, new Color(180, 180, 180), "izquierda"));
         formPanel.add(Box.createVerticalStrut(5));
-        usuario = new JComboBox<>(new String[] {"Estudiante", "Becario", "Exonerado", "Profesor", "Empleado"});
+        usuario = new JComboBox<>(new String[] {"Estudiante", "Profesor", "Empleado"});
         usuario.setPreferredSize(tamCaja);
         usuario.setMaximumSize(tamCaja);
         usuario.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -81,7 +80,7 @@ public class VistaCargaCCB extends PlantillaGesco {
         formPanel.add(usuario);
         formPanel.add(Box.createVerticalStrut(12));
 
-        formPanel.add(crearEtiquetaPersonalizada("% descuento a aplicar (ej: 25)", "Arial", Font.BOLD, 14, new Color(180, 180, 180), "izquierda"));
+        formPanel.add(crearEtiquetaPersonalizada("% aplicado al tipo (ej: 25)", "Arial", Font.BOLD, 14, new Color(180, 180, 180), "izquierda"));
         formPanel.add(Box.createVerticalStrut(5));
         porcentajeDescuento = new JTextField();
         CajaCCB(porcentajeDescuento, tamCaja);
@@ -164,6 +163,12 @@ public class VistaCargaCCB extends PlantillaGesco {
     public String getPorcentajeDescuento(){ return porcentajeDescuento.getText();}
     public BotonNeon getBtnSubirDatos() { return btnSubirDatos; }
 
+    public void actualizarEstadoDescuento() {
+        porcentajeDescuento.setEnabled(true);
+        porcentajeDescuento.setEditable(true);
+        porcentajeDescuento.setBackground(new Color(255, 255, 255, 240));
+    }
+
     public void setCV(double valor) {
         CV.setText(String.format(java.util.Locale.US, "%.2f", valor));
     }
@@ -197,7 +202,7 @@ public class VistaCargaCCB extends PlantillaGesco {
         double merma = parseDouble(getMERMA(), "MERMA");
         double cf = parseDouble(getCF(), "CF");
         double cv = parseDouble(getCV(), "CV");
-        double porcentaje = parseDouble(getPorcentajeDescuento(), "% descuento") / 100.0;
+        double porcentaje = parseDouble(getPorcentajeDescuento(), "% aplicado") / 100.0;
         return new CCB(fecha, getUsuario(), cf, cv, nb, merma, porcentaje);
     }
 

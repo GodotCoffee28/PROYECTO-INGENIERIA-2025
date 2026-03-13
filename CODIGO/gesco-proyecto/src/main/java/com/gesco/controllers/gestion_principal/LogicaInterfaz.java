@@ -181,8 +181,6 @@ public class LogicaInterfaz {
         sesionAdmin = true;
         nombreUsuario = nombre;
         vistaInicioAdmin = new VistaInicioAdmin();
-        boolean esSuperAdmin = DataBase.esSuperAdmin(cedulaSesionActual);
-        vistaInicioAdmin.setEsSuperAdmin(esSuperAdmin);
         menuGescoController.conectar(vistaInicioAdmin, true, cedulaSesionActual);
         new ControladorInicioAdmin(
             vistaInicioAdmin,
