@@ -51,16 +51,19 @@ public class VistaRegistro extends PlantillaGesco {
         Font labelFont = new Font("Arial", Font.BOLD, 14);
 
         formPanel.add(crearLabelForm("Cédula de identidad", labelFont));
+        formPanel.add(Box.createVerticalStrut(5));
         TxtCedula = crearTextField(tamanoCaja);
         formPanel.add(TxtCedula);
-        formPanel.add(Box.createVerticalStrut(8));
+        formPanel.add(Box.createVerticalStrut(20));
 
         formPanel.add(crearLabelForm("Correo electrónico", labelFont));
+        formPanel.add(Box.createVerticalStrut(5));
         TxtCorreo = crearTextField(tamanoCaja);
         formPanel.add(TxtCorreo);
-        formPanel.add(Box.createVerticalStrut(8));
+        formPanel.add(Box.createVerticalStrut(20));
 
         formPanel.add(crearLabelForm("Contraseña", labelFont));
+        formPanel.add(Box.createVerticalStrut(5));
         TxtContra = new JPasswordField();
         estilizarComponente(TxtContra, tamanoCaja);
         formPanel.add(TxtContra);
