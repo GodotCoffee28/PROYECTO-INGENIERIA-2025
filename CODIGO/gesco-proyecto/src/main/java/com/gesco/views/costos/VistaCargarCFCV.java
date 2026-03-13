@@ -14,7 +14,6 @@ public class VistaCargarCFCV extends PlantillaGesco {
     public VistaCargarCFCV() {
         super();
         ocultarIcono();
-        ocultarlblSprAdmin();
         setImagenFondo("/FondoPrincipal2.png");
         inicializarComponentes();
         construirCuerpo();

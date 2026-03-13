@@ -34,7 +34,6 @@ public class VistaCargaCCB extends PlantillaGesco {
     public VistaCargaCCB() {
         super();
         ocultarIcono();
-        ocultarlblSprAdmin();
         setImagenFondo("/FondoPrincipal2.png");
         inicializarComponentes();
         construirCuerpo();

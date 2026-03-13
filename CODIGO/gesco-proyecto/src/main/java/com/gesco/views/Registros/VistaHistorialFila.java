@@ -15,7 +15,6 @@ public class VistaHistorialFila extends PlantillaGesco {
         super();
         setImagenFondo("/FondoPrincipal2.png");
         ocultarIcono();
-        ocultarlblSprAdmin();
         inicializarComponentes();
         construirCuerpo();
         this.revalidate();
@@ -58,6 +57,7 @@ public class VistaHistorialFila extends PlantillaGesco {
 
         lblGananciaGeneral = crearEtiquetaPersonalizada("GANANCIA GENERAL: 0.00 Bs", "Segoe UI", Font.BOLD, 22, new Color(150, 255, 150), "centro");
         lblConteoGeneral = crearEtiquetaPersonalizada("Estudiantes: 0 | Becarios: 0 | Exonerados: 0 | Empleados: 0 | Profesores: 0", "Segoe UI", Font.PLAIN, 15, new Color(200, 230, 255), "centro");
+
         panelResumen.add(lblGananciaGeneral);
         panelResumen.add(Box.createVerticalStrut(5));
         panelResumen.add(lblConteoGeneral);
