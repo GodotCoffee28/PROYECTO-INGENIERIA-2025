@@ -157,7 +157,7 @@ public class VistaHistorialFila extends PlantillaGesco {
     lblFin.setForeground(new Color(255, 200, 100)); 
 
     JSeparator lineaDer = new JSeparator();
-    lineaDer.setPreferredSize(new Dimension(150, 2)); 
+    lineaDer.setPreferredSize(new Dimension(150, 2));  
     lineaDer.setForeground(new Color(255, 200, 100));
 
     panelSeparador.add(lineaIzq);
