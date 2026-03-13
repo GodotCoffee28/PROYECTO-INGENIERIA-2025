@@ -67,7 +67,7 @@ public class VistaRegistro extends PlantillaGesco {
         TxtContra = new JPasswordField();
         estilizarComponente(TxtContra, tamanoCaja);
         formPanel.add(TxtContra);
- 
+  
         panelFondoBase.add(formPanel);
     }
  
