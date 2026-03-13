@@ -24,7 +24,6 @@ public class VistaMenuSemana extends PlantillaGesco {
         setImagenFondo("/FondoPrincipal.png");
         inicializarComponentes();
         construirCuerpo();
-        ocultarlblSprAdmin();
         cargarDatosReales();
         revalidate();
         repaint();

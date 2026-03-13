@@ -326,13 +326,6 @@ public class PlantillaGesco extends JFrame {
         }
 }
 
-    protected void ocultarlblSprAdmin() {
-    }
-
-    public JLabel getIlblSprAdmin(){
-        return null;
-    }
-
     public JLabel getIconoUsuario(){
         return  lblIconoUsuario;
     }

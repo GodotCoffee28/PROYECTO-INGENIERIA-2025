@@ -33,7 +33,6 @@ public class VistaRecargarSaldo extends PlantillaGesco {
     public VistaRecargarSaldo() {
         super();
         setImagenFondo("/FondoPrincipal2.png");
-        ocultarlblSprAdmin();
         inicializarComponentes();
         construirCuerpo();
         revalidate();

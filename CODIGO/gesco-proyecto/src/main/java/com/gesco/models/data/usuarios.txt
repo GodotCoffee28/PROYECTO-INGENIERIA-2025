@@ -7,8 +7,10 @@
 32111455:12345678R.:Usuario Ucevista:manolo@gmail.com:Becario:10006,40;
 32111456:32111456R:Padrino lopez:aa@gmai.com:Exonerado:1608.50;
 4444441:4444441R:Elestu diante:BendecidoEstudiante@gmail.com:Estudiante:9178,76;
+5555551:4444441R:Elestu diante2:BendecidoEstudiante@gmail.com:Becario:9178,76;
 4444442:4444441R:Elpo breton:necesitoplata@gmail.com:Exonerado:9179,05;
 4444443:4444441R:Pancracio Paredes:albanilDeOficina@gmail.com:Becario:9178,99;
 4444445:4444441R:Dick Grayson:noDireUnChisteDeEsto@gmail.com:Profesor:9178,17;
 4444446:4444441R:Elfa natillo:soyUnGranFan@gmail.com:Empleado:9177,76;
 4444447:4444441R:Javier Contreras:soyDeLoPeor@gmail.com:Administrador:9177,76;
+32654321:1234re556:Maria Fernanda Ruiz:probando@gmail.com:Estudiante:12,00;

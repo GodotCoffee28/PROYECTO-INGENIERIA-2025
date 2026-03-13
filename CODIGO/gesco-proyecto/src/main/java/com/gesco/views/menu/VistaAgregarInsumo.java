@@ -16,7 +16,6 @@ public class VistaAgregarInsumo  extends PlantillaGesco {
         super();
         setImagenFondo("/FondoPrincipal2.png");
         ocultarIcono();
-        ocultarlblSprAdmin();
         inicializarComponentes();
         construirCuerpo();
         revalidate();

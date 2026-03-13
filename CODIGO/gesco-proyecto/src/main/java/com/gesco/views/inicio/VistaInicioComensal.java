@@ -29,7 +29,6 @@ public class VistaInicioComensal extends PlantillaGesco {
         this.nombreUsuario = nombre;
         this.saldoDisponible = saldo;
         setImagenFondo("/FondoPrincipal.png");
-        ocultarlblSprAdmin();
         inicializarComponentes();
         construirCuerpo();
         revalidate();

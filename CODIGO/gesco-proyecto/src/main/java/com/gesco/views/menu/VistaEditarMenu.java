@@ -32,7 +32,6 @@ public class VistaEditarMenu extends PlantillaGesco {
     public VistaEditarMenu() {
         super();
         ocultarIcono();
-        ocultarlblSprAdmin();
         setImagenFondo("/FondoPrincipal2.png");
         inicializarComponentes();
         construirCuerpo();

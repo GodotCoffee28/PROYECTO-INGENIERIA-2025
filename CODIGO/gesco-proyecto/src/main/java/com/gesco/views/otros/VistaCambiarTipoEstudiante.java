@@ -29,7 +29,6 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
         super();
         setImagenFondo("/FondoPrincipal2.png");
         ocultarIcono();
-        ocultarlblSprAdmin();
         inicializarComponentes();
         construirCuerpo();
         revalidate();
@@ -122,7 +121,7 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
 
         agregarCampos(panelFondo);
 
-        panelFondo.add(Box.createVerticalStrut(50));
+        panelFondo.add(Box.createVerticalStrut(30));
         panelFondo.add(btnCambiar);
 
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
