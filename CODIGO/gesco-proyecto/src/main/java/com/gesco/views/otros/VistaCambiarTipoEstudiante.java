@@ -20,8 +20,8 @@ import com.gesco.views.PlantillasViews.PlantillaGesco;
 public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
     private BotonNeon btnCambiar;
     private JLabel titulo;
-    private JTextField ciField;
-    private JTextField porcentajeBecarioField;
+    private JLabel becarioLabel;
+    private JTextField ciField, becarioField;
     private JComboBox<String> comboTipoEstudiante;
 
     
@@ -45,6 +45,8 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
         btnCambiar.setPreferredSize(tamBoton);
         btnCambiar.setMaximumSize(tamBoton);
         btnCambiar.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        becarioLabel = crearEtiquetaPersonalizada("Porcentaje de becario individual", "Times New Roman", Font.PLAIN, 19, Color.WHITE, "izquierda");
     }
     
 
@@ -52,7 +54,7 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
         formPanel.setOpaque(false);
-        formPanel.setMaximumSize(new Dimension(450, 260));
+        formPanel.setMaximumSize(new Dimension(450, 210));
         formPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         Dimension tamCaja = new Dimension(450, 40);
@@ -71,25 +73,39 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
             "Estudiante becario",
             "Estudiante exonerado"
         });
+
+
         comboTipoEstudiante.setPreferredSize(tamCaja);
         comboTipoEstudiante.setMaximumSize(tamCaja);
         comboTipoEstudiante.setAlignmentX(Component.LEFT_ALIGNMENT);
         comboTipoEstudiante.setFont(new Font("TimesNewRoman", Font.PLAIN, 16));
+        comboTipoEstudiante.addActionListener(e -> actualizarEstadoCampoBecario());
         formPanel.add(comboTipoEstudiante);
         formPanel.add(Box.createVerticalStrut(16));
-
-        formPanel.add(crearEtiquetaPersonalizada("% individual del becario", "Times New Roman", Font.PLAIN, 19, Color.WHITE, "izquierda"));
+        formPanel.add(becarioLabel);
         formPanel.add(Box.createVerticalStrut(8));
-        porcentajeBecarioField = new JTextField();
-        diseñarCaja(porcentajeBecarioField, tamCaja);
-        formPanel.add(porcentajeBecarioField);
-        formPanel.add(Box.createVerticalStrut(8));
+        becarioField = new JTextField();
+        diseñarCaja(becarioField, tamCaja);
+        formPanel.add(becarioField);
 
-        comboTipoEstudiante.addActionListener(e -> actualizarEstadoPorcentajeBecario());
-        actualizarEstadoPorcentajeBecario();
-
+        actualizarEstadoCampoBecario();
 
         panelFondoBase.add(formPanel);
+    }
+
+    private void actualizarEstadoCampoBecario() {
+        boolean esBecario = getTipoUsuarioSeleccionado() == TipoUsuario.BECARIO;
+        becarioLabel.setVisible(esBecario);
+        becarioField.setVisible(esBecario);
+        becarioField.setEnabled(esBecario);
+
+        if (!esBecario) {
+            becarioField.setText("");
+        }
+    }
+
+    public void actualizarEstadoPorcentajeBecario() {
+        actualizarEstadoCampoBecario();
     }
 
 
@@ -106,7 +122,7 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
 
         agregarCampos(panelFondo);
 
-        panelFondo.add(Box.createVerticalStrut(5));
+        panelFondo.add(Box.createVerticalStrut(50));
         panelFondo.add(btnCambiar);
 
         this.contenedorPrincipal.add(panelFondo, BorderLayout.CENTER);
@@ -115,13 +131,10 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
 
     public BotonNeon getBtnCambiar() { return btnCambiar; }
     public String getCedula() { return ciField.getText(); }
+    public String getBecario() { return becarioField.getText().trim(); }
     public String getTipoEstudiante() {
         Object tipoSeleccionado = comboTipoEstudiante.getSelectedItem();
         return tipoSeleccionado == null ? "" : tipoSeleccionado.toString();
-    }
-
-    public String getPorcentajeBecario() {
-        return porcentajeBecarioField == null ? "" : porcentajeBecarioField.getText();
     }
 
     public TipoUsuario getTipoUsuarioSeleccionado() {
@@ -133,7 +146,7 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
             default -> TipoUsuario.ESTUDIANTE;
         };
     }
-
+    public String getPorcentajeBecario() {return becarioField.getText().trim();}
     public void setTipoUsuarioSeleccionado(TipoUsuario tipoUsuario) {
         if (tipoUsuario == null || comboTipoEstudiante == null) {
             return;
@@ -145,21 +158,7 @@ public class VistaCambiarTipoEstudiante  extends PlantillaGesco {
             default -> "Estudiante regular";
         };
         comboTipoEstudiante.setSelectedItem(etiqueta);
-        actualizarEstadoPorcentajeBecario();
-    }
-
-    public void actualizarEstadoPorcentajeBecario() {
-        boolean becarioSeleccionado = getTipoUsuarioSeleccionado() == TipoUsuario.BECARIO;
-        if (porcentajeBecarioField == null) {
-            return;
-        }
-
-        porcentajeBecarioField.setEnabled(becarioSeleccionado);
-        porcentajeBecarioField.setEditable(becarioSeleccionado);
-        porcentajeBecarioField.setBackground(becarioSeleccionado ? Color.WHITE : new Color(220, 220, 220));
-        if (!becarioSeleccionado) {
-            porcentajeBecarioField.setText("");
-        }
+        actualizarEstadoCampoBecario();
     }
 
 }
