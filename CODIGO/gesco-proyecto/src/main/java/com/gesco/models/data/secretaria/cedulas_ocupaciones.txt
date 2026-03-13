@@ -39,3 +39,4 @@
 3333333:empleado: Fabricio Penia
 3333334:estudiante:Enrique Castillo
 3333335:estudiante:exonerado:Lars pera
+5555551:estudiante:becario
